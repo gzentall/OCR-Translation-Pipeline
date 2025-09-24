@@ -1,0 +1,70 @@
+# API Keys and sensitive files
+.gcp_api_key
+*.key
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*_tmp/
+*_temp/
+
+# Logs
+*.log
+
+# Test files and temporary outputs
+letters/work/*.vision.txt
+letters/work/*.translated.txt
+letters/work/*_vision_tmp/
+letters/work/*_temp/
+test_*.txt
+*_test.txt
+
+# Keep directory structure but ignore content
+letters/work/.gitkeep
+letters/inbox/.gitkeep
+letters/out/en/.gitkeep
+letters/out/pdf/.gitkeep
+letters/out/qa/.gitkeep

@@ -1,0 +1,14 @@
+{
+  "servers": {
+    "vision_ocr": {
+      "command": "bash",
+      "args": ["-lc", "bash $(pwd)/vision_project/scripts/run_vision_ocr.sh {{input}}"],
+      "env": {}
+    },
+    "vision_batch": {
+      "command": "bash",
+      "args": ["-lc", "bash $(pwd)/vision_project/scripts/run_all_vision_ocr.sh"],
+      "env": {}
+    }
+  }
+}
