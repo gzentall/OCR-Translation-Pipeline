@@ -1,5 +1,7 @@
 # API Keys and sensitive files
 .gcp_api_key
+.notion_api_key
+.openai_api_key
 *.key
 *.pem
 
@@ -61,6 +63,11 @@ letters/work/*_vision_tmp/
 letters/work/*_temp/
 test_*.txt
 *_test.txt
+
+# Local storage and exports
+ocr_storage/
+ocr_export.json
+ocr_report.txt
 
 # Keep directory structure but ignore content
 letters/work/.gitkeep
