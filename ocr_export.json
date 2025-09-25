@@ -1,0 +1,36 @@
+{
+  "documents": {
+    "doc_20250925_085826": {
+      "title": "Test Letter - 1938",
+      "date_processed": "2025-09-25T08:58:26.374782",
+      "source_language": "de",
+      "target_language": "en",
+      "file_size": 1024,
+      "people_count": 2,
+      "summary": "A personal letter from 1938 discussing family matters"
+    }
+  },
+  "people": {
+    "john smith": {
+      "aliases": [
+        "John Smith"
+      ],
+      "first_mentioned": "2025-09-25T08:58:26.374782",
+      "documents": [
+        "doc_20250925_085826"
+      ]
+    },
+    "maria schmidt": {
+      "aliases": [
+        "Maria Schmidt"
+      ],
+      "first_mentioned": "2025-09-25T08:58:26.374782",
+      "documents": [
+        "doc_20250925_085826"
+      ]
+    }
+  },
+  "export_date": "2025-09-25T09:36:51.740598",
+  "total_documents": 1,
+  "total_people": 2
+}

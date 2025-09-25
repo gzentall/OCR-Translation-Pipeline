@@ -1,0 +1,12 @@
+{
+  "title": "Test Document",
+  "summary": "This is a test document for editing",
+  "people": [
+    "John Doe",
+    "Jane Smith"
+  ],
+  "source_language": "en",
+  "target_language": "en",
+  "original_text": "Test original text",
+  "translated_text": "Test translated text"
+}

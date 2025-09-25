@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Document Browser</title>
+    
+    <!-- Material Design Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Material Design CSS -->
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --mdc-theme-primary: #1976d2;
+            --mdc-theme-secondary: #dc004e;
+            --mdc-theme-surface: #ffffff;
+            --mdc-theme-background: #fafafa;
+            --mdc-theme-on-primary: #ffffff;
+            --mdc-theme-on-secondary: #ffffff;
+            --mdc-theme-on-surface: #000000;
+            --mdc-theme-on-background: #000000;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--mdc-theme-background);
+        }
+
+        .app-bar {
+            background-color: var(--mdc-theme-primary);
+            color: var(--mdc-theme-on-primary);
+            padding: 16px 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .app-bar h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .main-content {
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--mdc-theme-surface);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--mdc-theme-primary);
+            margin: 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin: 4px 0 0 0;
+        }
+
+        .search-section {
+            background: var(--mdc-theme-surface);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .search-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .mdc-text-field {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .documents-section {
+            background: var(--mdc-theme-surface);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0 0 16px 0;
+            color: var(--mdc-theme-on-surface);
+        }
+
+        .document-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .document-content {
+            padding: 16px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .document-content:hover {
+            background: #f5f5f5;
+        }
+
+        .document-actions {
+            padding: 12px 16px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .edit-btn {
+            --mdc-theme-primary: #1976d2;
+        }
+
+        .delete-btn {
+            --mdc-theme-primary: #d32f2f;
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .document-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0;
+            color: var(--mdc-theme-primary);
+        }
+
+        .document-date {
+            font-size: 12px;
+            color: #666;
+            margin-left: auto;
+        }
+
+        .document-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .document-summary {
+            font-size: 14px;
+            color: var(--mdc-theme-on-surface);
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .document-people {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .person-chip {
+            background: #e3f2fd;
+            color: var(--mdc-theme-primary);
+            padding: 4px 8px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+
+        .mdc-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--mdc-theme-surface);
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .edit-form {
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--mdc-theme-on-surface);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--mdc-theme-primary);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin: 0;
+        }
+
+        select.form-input {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+
+        select.form-input:focus {
+            outline: none;
+            border-color: var(--mdc-theme-primary);
+        }
+
+
+        .modal-section {
+            margin-bottom: 24px;
+        }
+
+        .modal-section h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 0 8px 0;
+            color: var(--mdc-theme-primary);
+        }
+
+        .modal-text {
+            background: #f5f5f5;
+            padding: 16px;
+            border-radius: 4px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+            
+            .search-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .document-meta {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- App Bar -->
+    <div class="app-bar">
+        <h1>OCR Document Browser</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Statistics -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalDocuments">-</div>
+                <div class="stat-label">Documents</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPeople">-</div>
+                <div class="stat-label">People</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalLanguages">-</div>
+                <div class="stat-label">Languages</div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <h2 class="section-title">Search Documents</h2>
+            <div class="search-row">
+                <div class="mdc-text-field mdc-text-field--outlined">
+                    <input type="text" class="mdc-text-field__input" id="searchInput" placeholder="Search documents...">
+                    <div class="mdc-notched-outline">
+                        <div class="mdc-notched-outline__leading"></div>
+                        <div class="mdc-notched-outline__notch">
+                            <label class="mdc-floating-label">Search</label>
+                        </div>
+                        <div class="mdc-notched-outline__trailing"></div>
+                    </div>
+                </div>
+                <button class="mdc-button mdc-button--raised" id="searchBtn">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">Search</span>
+                </button>
+                <button class="mdc-button mdc-button--outlined" id="clearBtn">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">Clear</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Documents Section -->
+        <div class="documents-section">
+            <h2 class="section-title">Documents</h2>
+            <div id="documentsContainer">
+                <div class="loading">
+                    <p>Loading documents...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="mdc-fab" id="uploadFab" onclick="window.location.href='/'">
+        <span class="mdc-fab__ripple"></span>
+        <span class="mdc-fab__icon">+</span>
+    </button>
+
+    <!-- Document Detail Modal -->
+    <div class="modal" id="documentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Document Details</h2>
+                <div class="modal-actions">
+                    <button class="mdc-button mdc-button--outlined edit-btn" id="modalEditBtn" onclick="editCurrentDocument()">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Edit</span>
+                    </button>
+                    <button class="mdc-button mdc-button--outlined delete-btn" id="modalDeleteBtn" onclick="deleteCurrentDocument()">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Delete</span>
+                    </button>
+                    <button class="mdc-button mdc-button--outlined" onclick="closeModal()">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Close</span>
+                    </button>
+                </div>
+            </div>
+            <div id="modalContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Material Components JavaScript -->
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    
+    <script>
+        // Initialize Material Components
+        mdc.autoInit();
+
+        // Global variables
+        let allDocuments = [];
+        let filteredDocuments = [];
+
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch('/stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.statistics;
+                    document.getElementById('totalDocuments').textContent = stats.total_documents;
+                    document.getElementById('totalPeople').textContent = stats.total_people;
+                    document.getElementById('totalLanguages').textContent = Object.keys(stats.languages).length;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load documents
+        async function loadDocuments() {
+            try {
+                const response = await fetch('/documents');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allDocuments = data.documents;
+                    filteredDocuments = [...allDocuments];
+                    renderDocuments();
+                } else {
+                    showError('Failed to load documents: ' + data.error);
+                }
+            } catch (error) {
+                showError('Error loading documents: ' + error.message);
+            }
+        }
+
+        // Render documents
+        function renderDocuments() {
+            const container = document.getElementById('documentsContainer');
+            
+            if (filteredDocuments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>No documents found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredDocuments.map(([docId, metadata]) => `
+                <div class="document-card">
+                    <div class="document-content" onclick="showDocument('${docId}')">
+                        <div class="document-header">
+                            <h3 class="document-title">${escapeHtml(metadata.title)}</h3>
+                            <span class="document-date">${formatDate(metadata.date_processed)}</span>
+                        </div>
+                        <div class="document-meta">
+                            <span><strong>Language:</strong> ${metadata.source_language} → ${metadata.target_language}</span>
+                            <span><strong>People:</strong> ${metadata.people_count}</span>
+                        </div>
+                        <div class="document-summary">${escapeHtml(metadata.summary)}</div>
+                    </div>
+                    <div class="document-actions">
+                        <button class="mdc-button mdc-button--outlined edit-btn" onclick="event.stopPropagation(); editDocument('${docId}')">
+                            <span class="mdc-button__ripple"></span>
+                            <span class="mdc-button__label">Edit</span>
+                        </button>
+                        <button class="mdc-button mdc-button--outlined delete-btn" onclick="event.stopPropagation(); deleteDocument('${docId}')">
+                            <span class="mdc-button__ripple"></span>
+                            <span class="mdc-button__label">Delete</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show document details
+        async function showDocument(docId) {
+            currentDocumentId = docId;
+            try {
+                const response = await fetch(`/documents/${docId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const doc = data.document;
+                    document.getElementById('modalTitle').textContent = doc.title;
+                    
+                    document.getElementById('modalContent').innerHTML = `
+                        <div class="modal-section">
+                            <h3>Summary</h3>
+                            <div class="modal-text">${escapeHtml(doc.summary)}</div>
+                        </div>
+                        <div class="modal-section">
+                            <h3>Original Text</h3>
+                            <div class="modal-text">${escapeHtml(doc.original_text)}</div>
+                        </div>
+                        <div class="modal-section">
+                            <h3>Translated Text</h3>
+                            <div class="modal-text">${escapeHtml(doc.translated_text)}</div>
+                        </div>
+                        <div class="modal-section">
+                            <h3>People Mentioned</h3>
+                            <div class="document-people">
+                                ${doc.people.map(person => `
+                                    <span class="person-chip">${escapeHtml(person.original_name)}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('documentModal').style.display = 'block';
+                } else {
+                    showError('Failed to load document: ' + data.error);
+                }
+            } catch (error) {
+                showError('Error loading document: ' + error.message);
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('documentModal').style.display = 'none';
+        }
+
+        // Search documents
+        function searchDocuments() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            if (query === '') {
+                filteredDocuments = [...allDocuments];
+            } else {
+                filteredDocuments = allDocuments.filter(([docId, metadata]) => 
+                    metadata.title.toLowerCase().includes(query) ||
+                    metadata.summary.toLowerCase().includes(query)
+                );
+            }
+            
+            renderDocuments();
+        }
+
+        // Clear search
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            filteredDocuments = [...allDocuments];
+            renderDocuments();
+        }
+
+        // Utility functions
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString();
+        }
+
+        function showError(message) {
+            const container = document.getElementById('documentsContainer');
+            container.innerHTML = `
+                <div class="error">
+                    ${escapeHtml(message)}
+                </div>
+            `;
+        }
+
+        // Global variable to track current document being viewed/edited
+        let currentDocumentId = null;
+
+        // Edit document function
+        async function editDocument(docId) {
+            currentDocumentId = docId;
+            try {
+                const response = await fetch(`/documents/${docId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const doc = data.document;
+                    showEditModal(doc);
+                } else {
+                    alert('Error loading document: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error loading document: ' + error.message);
+            }
+        }
+
+        // Delete document function
+        async function deleteDocument(docId) {
+            if (confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
+                const container = document.getElementById('documentsContainer');
+                const originalContent = container.innerHTML;
+                
+                try {
+                    // Show loading state
+                    container.innerHTML = '<div class="loading"><p>Deleting document...</p></div>';
+                    
+                    const response = await fetch(`/documents/${docId}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Success - refresh the list
+                        await loadDocuments();
+                    } else {
+                        // Error - restore original content and show error
+                        container.innerHTML = originalContent;
+                        alert('Error deleting document: ' + data.error);
+                    }
+                } catch (error) {
+                    // Error - restore original content and show error
+                    container.innerHTML = originalContent;
+                    alert('Error deleting document: ' + error.message);
+                }
+            }
+        }
+
+        // Edit current document (from modal)
+        function editCurrentDocument() {
+            if (currentDocumentId) {
+                editDocument(currentDocumentId);
+            }
+        }
+
+        // Delete current document (from modal)
+        async function deleteCurrentDocument() {
+            if (currentDocumentId) {
+                await deleteDocument(currentDocumentId);
+                closeModal();
+            }
+        }
+
+        // Show edit modal
+        function showEditModal(doc) {
+            const modal = document.getElementById('documentModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalTitle.textContent = 'Edit Document';
+            modalContent.innerHTML = `
+                <div class="edit-form">
+                    <div class="form-group">
+                        <label for="editTitle">Title:</label>
+                        <input type="text" id="editTitle" value="${escapeHtml(doc.title)}" class="form-input">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editSourceLanguage">Source Language:</label>
+                            <select id="editSourceLanguage" class="form-input">
+                                <option value="unknown" ${doc.source_language === 'unknown' ? 'selected' : ''}>Unknown</option>
+                                <option value="en" ${doc.source_language === 'en' ? 'selected' : ''}>English</option>
+                                <option value="de" ${doc.source_language === 'de' ? 'selected' : ''}>German</option>
+                                <option value="fr" ${doc.source_language === 'fr' ? 'selected' : ''}>French</option>
+                                <option value="es" ${doc.source_language === 'es' ? 'selected' : ''}>Spanish</option>
+                                <option value="it" ${doc.source_language === 'it' ? 'selected' : ''}>Italian</option>
+                                <option value="pt" ${doc.source_language === 'pt' ? 'selected' : ''}>Portuguese</option>
+                                <option value="ru" ${doc.source_language === 'ru' ? 'selected' : ''}>Russian</option>
+                                <option value="zh" ${doc.source_language === 'zh' ? 'selected' : ''}>Chinese</option>
+                                <option value="ja" ${doc.source_language === 'ja' ? 'selected' : ''}>Japanese</option>
+                                <option value="ko" ${doc.source_language === 'ko' ? 'selected' : ''}>Korean</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTargetLanguage">Target Language:</label>
+                            <select id="editTargetLanguage" class="form-input">
+                                <option value="en" ${doc.target_language === 'en' ? 'selected' : ''}>English</option>
+                                <option value="de" ${doc.target_language === 'de' ? 'selected' : ''}>German</option>
+                                <option value="fr" ${doc.target_language === 'fr' ? 'selected' : ''}>French</option>
+                                <option value="es" ${doc.target_language === 'es' ? 'selected' : ''}>Spanish</option>
+                                <option value="it" ${doc.target_language === 'it' ? 'selected' : ''}>Italian</option>
+                                <option value="pt" ${doc.target_language === 'pt' ? 'selected' : ''}>Portuguese</option>
+                                <option value="ru" ${doc.target_language === 'ru' ? 'selected' : ''}>Russian</option>
+                                <option value="zh" ${doc.target_language === 'zh' ? 'selected' : ''}>Chinese</option>
+                                <option value="ja" ${doc.target_language === 'ja' ? 'selected' : ''}>Japanese</option>
+                                <option value="ko" ${doc.target_language === 'ko' ? 'selected' : ''}>Korean</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editTranslatedText">Translated Text:</label>
+                        <textarea id="editTranslatedText" rows="8" class="form-textarea">${escapeHtml(doc.translated_text || '')}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editSummary">Summary:</label>
+                        <textarea id="editSummary" rows="4" class="form-textarea">${escapeHtml(doc.summary)}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="regenerateSummary" checked>
+                            <span class="checkmark"></span>
+                            Regenerate summary based on translated text
+                        </label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="mdc-button mdc-button--raised" onclick="saveDocument()">
+                            <span class="mdc-button__ripple"></span>
+                            <span class="mdc-button__label">Save Changes</span>
+                        </button>
+                        <button class="mdc-button mdc-button--outlined" onclick="closeModal()">
+                            <span class="mdc-button__ripple"></span>
+                            <span class="mdc-button__label">Cancel</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        // Save document changes
+        async function saveDocument() {
+            if (!currentDocumentId) return;
+            
+            const title = document.getElementById('editTitle').value.trim();
+            const sourceLanguage = document.getElementById('editSourceLanguage').value;
+            const targetLanguage = document.getElementById('editTargetLanguage').value;
+            const translatedText = document.getElementById('editTranslatedText').value.trim();
+            const summary = document.getElementById('editSummary').value.trim();
+            const regenerateSummary = document.getElementById('regenerateSummary').checked;
+            
+            if (!title) {
+                alert('Please fill in the title');
+                return;
+            }
+            
+            if (!translatedText) {
+                alert('Please fill in the translated text');
+                return;
+            }
+            
+            if (!regenerateSummary && !summary) {
+                alert('Please fill in the summary or check "Regenerate summary"');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                const saveButton = document.querySelector('.mdc-button--raised');
+                const originalText = saveButton.querySelector('.mdc-button__label').textContent;
+                saveButton.querySelector('.mdc-button__label').textContent = 'Saving...';
+                saveButton.disabled = true;
+                
+                const requestData = {
+                    title: title,
+                    source_language: sourceLanguage,
+                    target_language: targetLanguage,
+                    translated_text: translatedText,
+                    regenerate_summary: regenerateSummary
+                };
+                
+                // Only include summary if not regenerating
+                if (!regenerateSummary) {
+                    requestData.summary = summary;
+                }
+                
+                const response = await fetch(`/documents/${currentDocumentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (regenerateSummary && data.regenerated_summary) {
+                        // Update the summary field with the regenerated summary
+                        document.getElementById('editSummary').value = data.regenerated_summary;
+                        
+                        // Show success message with regeneration info
+                        alert('Document updated successfully! Summary has been regenerated based on the translated text.');
+                    } else {
+                        alert('Document updated successfully');
+                    }
+                    
+                    closeModal();
+                    loadDocuments(); // Refresh the list
+                } else {
+                    alert('Error updating document: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error updating document: ' + error.message);
+            } finally {
+                // Restore button state
+                const saveButton = document.querySelector('.mdc-button--raised');
+                saveButton.querySelector('.mdc-button__label').textContent = 'Save Changes';
+                saveButton.disabled = false;
+            }
+        }
+
+        // Event listeners
+        document.getElementById('searchBtn').addEventListener('click', searchDocuments);
+        document.getElementById('clearBtn').addEventListener('click', clearSearch);
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchDocuments();
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('documentModal').addEventListener('click', (e) => {
+            if (e.target.id === 'documentModal') {
+                closeModal();
+            }
+        });
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+            loadDocuments();
+        });
+    </script>
+</body>
+</html>

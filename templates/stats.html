@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Statistics</title>
+    
+    <!-- Material Design Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Material Design CSS -->
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --mdc-theme-primary: #1976d2;
+            --mdc-theme-secondary: #dc004e;
+            --mdc-theme-surface: #ffffff;
+            --mdc-theme-background: #fafafa;
+            --mdc-theme-on-primary: #ffffff;
+            --mdc-theme-on-secondary: #ffffff;
+            --mdc-theme-on-surface: #000000;
+            --mdc-theme-on-background: #000000;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--mdc-theme-background);
+        }
+
+        .app-bar {
+            background-color: var(--mdc-theme-primary);
+            color: var(--mdc-theme-on-primary);
+            padding: 16px 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .app-bar h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+
+        .main-content {
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--mdc-theme-surface);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--mdc-theme-primary);
+            margin: 0;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #666;
+            margin: 8px 0 0 0;
+        }
+
+        .chart-section {
+            background: var(--mdc-theme-surface);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0 0 24px 0;
+            color: var(--mdc-theme-on-surface);
+        }
+
+        .language-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .language-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .language-name {
+            font-weight: 500;
+            min-width: 100px;
+        }
+
+        .language-bar {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 0 16px;
+            overflow: hidden;
+        }
+
+        .language-fill {
+            height: 100%;
+            background: var(--mdc-theme-primary);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .language-count {
+            font-weight: 500;
+            color: var(--mdc-theme-primary);
+        }
+
+        .people-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .person-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            border-left: 4px solid var(--mdc-theme-primary);
+        }
+
+        .person-name {
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .person-docs {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .people-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- App Bar -->
+    <div class="app-bar">
+        <button class="mdc-button mdc-button--outlined" onclick="window.location.href='/'">
+            <span class="mdc-button__ripple"></span>
+            <span class="mdc-button__label">Back</span>
+        </button>
+        <h1>OCR Statistics</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Statistics Cards -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalDocuments">-</div>
+                <div class="stat-label">Total Documents</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPeople">-</div>
+                <div class="stat-label">People Mentioned</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalLanguages">-</div>
+                <div class="stat-label">Languages</div>
+            </div>
+        </div>
+
+        <!-- Language Distribution -->
+        <div class="chart-section">
+            <h2 class="section-title">Documents by Language</h2>
+            <div class="language-chart" id="languageChart">
+                <div class="loading">
+                    <p>Loading language data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Most Mentioned People -->
+        <div class="chart-section">
+            <h2 class="section-title">Most Mentioned People</h2>
+            <div class="people-list" id="peopleList">
+                <div class="loading">
+                    <p>Loading people data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch('/stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.statistics;
+                    
+                    // Update main stats
+                    document.getElementById('totalDocuments').textContent = stats.total_documents;
+                    document.getElementById('totalPeople').textContent = stats.total_people;
+                    document.getElementById('totalLanguages').textContent = Object.keys(stats.languages).length;
+                    
+                    // Render language chart
+                    renderLanguageChart(stats.languages);
+                    
+                    // Render people list
+                    renderPeopleList(stats.most_mentioned_people);
+                } else {
+                    showError('Failed to load statistics: ' + data.error);
+                }
+            } catch (error) {
+                showError('Error loading statistics: ' + error.message);
+            }
+        }
+
+        // Render language chart
+        function renderLanguageChart(languages) {
+            const container = document.getElementById('languageChart');
+            
+            if (Object.keys(languages).length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No language data available</p>';
+                return;
+            }
+            
+            const total = Object.values(languages).reduce((sum, count) => sum + count, 0);
+            const sortedLanguages = Object.entries(languages).sort((a, b) => b[1] - a[1]);
+            
+            container.innerHTML = sortedLanguages.map(([lang, count]) => {
+                const percentage = (count / total) * 100;
+                return `
+                    <div class="language-item">
+                        <div class="language-name">${escapeHtml(lang)}</div>
+                        <div class="language-bar">
+                            <div class="language-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <div class="language-count">${count}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render people list
+        function renderPeopleList(people) {
+            const container = document.getElementById('peopleList');
+            
+            if (people.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No people data available</p>';
+                return;
+            }
+            
+            container.innerHTML = people.map(([name, count]) => `
+                <div class="person-card">
+                    <div class="person-name">${escapeHtml(name)}</div>
+                    <div class="person-docs">Mentioned in ${count} document${count !== 1 ? 's' : ''}</div>
+                </div>
+            `).join('');
+        }
+
+        // Utility functions
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showError(message) {
+            const container = document.getElementById('statsGrid');
+            container.innerHTML = `
+                <div class="error">
+                    ${escapeHtml(message)}
+                </div>
+            `;
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+        });
+    </script>
+</body>
+</html>

@@ -45,6 +45,25 @@
             opacity: 0.9;
         }
 
+        .nav-links {
+            margin-top: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 0 10px;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
         .content {
             padding: 40px;
         }
@@ -242,13 +261,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📄 OCR Translation Pipeline</h1>
+            <h1>OCR Translation Pipeline</h1>
             <p>Upload PDF documents for handwriting recognition and translation to English</p>
+            <div class="nav-links">
+                <a href="/browse">Browse Documents</a>
+                <a href="/stats-page">Statistics</a>
+            </div>
         </div>
 
         <div class="content">
             <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">📁</div>
+                <div class="upload-icon">Upload</div>
                 <div class="upload-text">Drop your PDF here or click to browse</div>
                 <div class="upload-subtext">Supports PDF files up to 200MB</div>
                 <input type="file" id="fileInput" accept=".pdf">

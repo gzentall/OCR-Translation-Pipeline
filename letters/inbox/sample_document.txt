@@ -1,8 +1,0 @@
-Dear Sir,
-
-This is a test document for OCR processing.
-It contains handwritten-style text that should be recognized.
-The system should be able to extract this text and translate it.
-
-Best regards,
-Test User
