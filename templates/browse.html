@@ -36,12 +36,47 @@
             color: var(--mdc-theme-on-primary);
             padding: 16px 24px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         .app-bar h1 {
             margin: 0;
             font-size: 24px;
             font-weight: 500;
+            flex: 1;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--mdc-theme-on-primary, white);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-links a {
+            color: var(--mdc-theme-on-primary, white);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .main-content {
@@ -118,13 +153,41 @@
             margin-bottom: 16px;
             transition: box-shadow 0.2s ease;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            overflow: hidden;
+        }
+
+        .document-thumbnail {
+            width: 120px;
+            height: 160px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #e0e0e0;
+            flex-shrink: 0;
+        }
+
+        .document-thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .document-thumbnail .no-image {
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+            padding: 8px;
         }
 
         .document-content {
             padding: 16px;
             cursor: pointer;
             flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .document-content:hover {
@@ -309,6 +372,122 @@
             margin-top: 24px;
         }
 
+        .tab-container {
+            margin-bottom: 16px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 16px;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button:hover {
+            color: #1976d2;
+            background: rgba(25, 118, 210, 0.04);
+        }
+
+        .tab-button.active {
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .image-viewer {
+            text-align: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-viewer img {
+            max-width: 100%;
+            max-height: 600px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .image-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .page-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-selector select {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .zoom-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .zoom-btn:hover {
+            background: #1565c0;
+        }
+
+        .zoom-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .image-loading {
+            color: #666;
+            font-style: italic;
+        }
+
+        .image-error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 16px;
+            border-radius: 4px;
+        }
+
         .form-row {
             display: flex;
             gap: 16px;
@@ -383,13 +562,31 @@
                 flex-direction: column;
                 gap: 4px;
             }
+            
+            .document-card {
+                flex-direction: column;
+            }
+            
+            .document-thumbnail {
+                width: 100%;
+                height: 120px;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
         }
     </style>
 </head>
 <body>
     <!-- App Bar -->
     <div class="app-bar">
+        <button class="back-button" onclick="window.location.href='/'">
+            <span class="material-icons">arrow_back</span>
+        </button>
         <h1>OCR Document Browser</h1>
+        <div class="nav-links">
+            <a href="/people-page">People</a>
+            <a href="/stats-page">Statistics</a>
+        </div>
     </div>
 
     <!-- Main Content -->
@@ -536,26 +733,37 @@
                 `;
                 return;
             }
+            
 
-            container.innerHTML = filteredDocuments.map(([docId, metadata]) => `
+            container.innerHTML = filteredDocuments.map(doc => `
                 <div class="document-card">
-                    <div class="document-content" onclick="showDocument('${docId}')">
+                    <div class="document-thumbnail">
+                        ${doc.page_count > 0 ? 
+                            `<img src="/documents/${doc.id}/images/1?t=${Date.now()}" 
+                                  alt="Document thumbnail" 
+                                  style="display: block; max-width: 100%; max-height: 100%; object-fit: contain;"
+                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                             <div class="no-image" style="display: none;">No image available</div>` :
+                            `<div class="no-image">No image available</div>`
+                        }
+                    </div>
+                    <div class="document-content" onclick="showDocument('${doc.id}')">
                         <div class="document-header">
-                            <h3 class="document-title">${escapeHtml(metadata.title)}</h3>
-                            <span class="document-date">${formatDate(metadata.date_processed)}</span>
+                            <h3 class="document-title">${escapeHtml(doc.title)}</h3>
+                            <span class="document-date">${formatDate(doc.date_processed)}</span>
                         </div>
                         <div class="document-meta">
-                            <span><strong>Language:</strong> ${metadata.source_language} → ${metadata.target_language}</span>
-                            <span><strong>People:</strong> ${metadata.people_count}</span>
+                            <span><strong>Language:</strong> ${doc.source_language} → ${doc.target_language}</span>
+                            <span><strong>People:</strong> ${doc.people_count}</span>
                         </div>
-                        <div class="document-summary">${escapeHtml(metadata.summary)}</div>
+                        <div class="document-summary">${escapeHtml(doc.summary)}</div>
                     </div>
                     <div class="document-actions">
-                        <button class="mdc-button mdc-button--outlined edit-btn" onclick="event.stopPropagation(); editDocument('${docId}')">
+                        <button class="mdc-button mdc-button--outlined edit-btn" onclick="event.stopPropagation(); editDocument('${doc.id}')">
                             <span class="mdc-button__ripple"></span>
                             <span class="mdc-button__label">Edit</span>
                         </button>
-                        <button class="mdc-button mdc-button--outlined delete-btn" onclick="event.stopPropagation(); deleteDocument('${docId}')">
+                        <button class="mdc-button mdc-button--outlined delete-btn" onclick="event.stopPropagation(); deleteDocument('${doc.id}')">
                             <span class="mdc-button__ripple"></span>
                             <span class="mdc-button__label">Delete</span>
                         </button>
@@ -619,9 +827,9 @@
             if (query === '') {
                 filteredDocuments = [...allDocuments];
             } else {
-                filteredDocuments = allDocuments.filter(([docId, metadata]) => 
-                    metadata.title.toLowerCase().includes(query) ||
-                    metadata.summary.toLowerCase().includes(query)
+                filteredDocuments = allDocuments.filter(doc => 
+                    doc.title.toLowerCase().includes(query) ||
+                    doc.summary.toLowerCase().includes(query)
                 );
             }
             
@@ -770,9 +978,38 @@
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="editTranslatedText">Translated Text:</label>
-                        <textarea id="editTranslatedText" rows="8" class="form-textarea">${escapeHtml(doc.translated_text || '')}</textarea>
+                    <div class="tab-container">
+                        <div class="tab-buttons">
+                            <button class="tab-button active" onclick="switchTab('translation')">Translation</button>
+                            <button class="tab-button" onclick="switchTab('original')">Original Image</button>
+                        </div>
+                        
+                        <div id="translation-tab" class="tab-content active">
+                            <div class="form-group">
+                                <label for="editTranslatedText">Translated Text:</label>
+                                <textarea id="editTranslatedText" rows="8" class="form-textarea">${escapeHtml(doc.translated_text || '')}</textarea>
+                            </div>
+                        </div>
+                        
+                        <div id="original-tab" class="tab-content">
+                            <div class="image-controls">
+                                <div class="page-selector">
+                                    <label>Page:</label>
+                                    <select id="pageSelector" onchange="loadDocumentImage('${doc.id}')">
+                                        ${generatePageOptions(doc.page_count || 1)}
+                                    </select>
+                                </div>
+                                <div class="zoom-controls">
+                                    <button class="zoom-btn" onclick="zoomImage(-0.1)">-</button>
+                                    <span id="zoomLevel">100%</span>
+                                    <button class="zoom-btn" onclick="zoomImage(0.1)">+</button>
+                                    <button class="zoom-btn" onclick="resetZoom()">Reset</button>
+                                </div>
+                            </div>
+                            <div class="image-viewer" id="imageViewer">
+                                <div class="image-loading">Loading image...</div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -802,6 +1039,12 @@
             `;
             
             modal.style.display = 'block';
+            
+            // Load the first page image
+            console.log('showEditModal called with doc:', doc);
+            console.log('Document ID:', doc.id);
+            console.log('Page count:', doc.page_count);
+            loadDocumentImage(doc.id);
         }
 
         // Save document changes
@@ -894,6 +1137,91 @@
                 searchDocuments();
             }
         });
+
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Remove active class from all tabs and buttons
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and button
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        // Generate page options for the selector
+        function generatePageOptions(pageCount) {
+            let options = '';
+            for (let i = 1; i <= pageCount; i++) {
+                options += `<option value="${i}">Page ${i}</option>`;
+            }
+            return options;
+        }
+
+        // Load document image
+        async function loadDocumentImage(docId) {
+            const pageSelector = document.getElementById('pageSelector');
+            const imageViewer = document.getElementById('imageViewer');
+            const pageNum = pageSelector ? pageSelector.value : 1;
+            
+            console.log('Loading image for docId:', docId, 'page:', pageNum);
+            
+            if (!imageViewer) {
+                console.error('ImageViewer element not found');
+                return;
+            }
+            
+            imageViewer.innerHTML = '<div class="image-loading">Loading image...</div>';
+            
+            try {
+                const imageUrl = `/documents/${docId}/images/${pageNum}?t=${Date.now()}`;
+                console.log('Fetching image from:', imageUrl);
+                
+                const response = await fetch(imageUrl);
+                console.log('Response status:', response.status);
+                
+                if (response.ok) {
+                    imageViewer.innerHTML = `
+                        <img id="documentImage" src="${imageUrl}" alt="Document page ${pageNum}" 
+                             style="transform: scale(${currentZoom || 1}); transition: transform 0.2s ease;"
+                             onload="console.log('Image loaded successfully')"
+                             onerror="console.error('Image failed to load'); this.parentElement.innerHTML='<div class=\\"image-error\\">Image failed to load</div>'">
+                    `;
+                } else {
+                    const errorText = await response.text();
+                    console.error('Image request failed:', response.status, errorText);
+                    imageViewer.innerHTML = `<div class="image-error">Image not found (${response.status})</div>`;
+                }
+            } catch (error) {
+                console.error('Error loading image:', error);
+                imageViewer.innerHTML = '<div class="image-error">Error loading image: ' + error.message + '</div>';
+            }
+        }
+
+        // Zoom functionality
+        let currentZoom = 1;
+
+        function zoomImage(zoomDelta) {
+            currentZoom = Math.max(0.1, Math.min(3, currentZoom + zoomDelta));
+            updateZoom();
+        }
+
+        function resetZoom() {
+            currentZoom = 1;
+            updateZoom();
+        }
+
+        function updateZoom() {
+            const image = document.getElementById('documentImage');
+            const zoomLevel = document.getElementById('zoomLevel');
+            
+            if (image) {
+                image.style.transform = `scale(${currentZoom})`;
+            }
+            if (zoomLevel) {
+                zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
+            }
+        }
 
         // Close modal when clicking outside
         document.getElementById('documentModal').addEventListener('click', (e) => {

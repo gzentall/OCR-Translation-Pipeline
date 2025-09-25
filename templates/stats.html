@@ -36,12 +36,47 @@
             color: var(--mdc-theme-on-primary);
             padding: 16px 24px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         .app-bar h1 {
             margin: 0;
             font-size: 24px;
             font-weight: 500;
+            flex: 1;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--mdc-theme-on-primary, white);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-links a {
+            color: var(--mdc-theme-on-primary, white);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
 
@@ -197,11 +232,14 @@
 <body>
     <!-- App Bar -->
     <div class="app-bar">
-        <button class="mdc-button mdc-button--outlined" onclick="window.location.href='/'">
-            <span class="mdc-button__ripple"></span>
-            <span class="mdc-button__label">Back</span>
+        <button class="back-button" onclick="window.location.href='/'">
+            <span class="material-icons">arrow_back</span>
         </button>
         <h1>OCR Statistics</h1>
+        <div class="nav-links">
+            <a href="/browse">Browse</a>
+            <a href="/people-page">People</a>
+        </div>
     </div>
 
     <!-- Main Content -->

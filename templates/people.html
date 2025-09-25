@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People Management - OCR Translation Pipeline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .app-bar {
+            background: var(--mdc-theme-primary, #1976d2);
+            color: var(--mdc-theme-on-primary, white);
+            padding: 16px 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .app-bar h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .main-content {
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0 0 16px 0;
+            color: var(--mdc-theme-on-surface);
+        }
+
+        .people-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .person-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: box-shadow 0.2s ease;
+            position: relative;
+        }
+
+        .person-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .person-content {
+            cursor: pointer;
+        }
+
+        .person-actions {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-size: 16px;
+        }
+
+        .action-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .edit-btn:hover {
+            color: #1976d2;
+        }
+
+        .delete-btn:hover {
+            color: #d32f2f;
+        }
+
+        .person-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .person-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--mdc-theme-primary);
+            margin: 0;
+        }
+
+        .document-count {
+            background: var(--mdc-theme-primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .person-aliases {
+            margin-bottom: 12px;
+        }
+
+        .alias-tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 4px;
+            margin-bottom: 4px;
+        }
+
+        .person-context {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .person-documents {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 12px;
+        }
+
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .document-item:last-child {
+            border-bottom: none;
+        }
+
+        .document-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .document-date {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .document-language {
+            background: #f5f5f5;
+            color: #666;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .mdc-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 64px;
+            height: 36px;
+            padding: 0 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mdc-button--raised {
+            background: var(--mdc-theme-primary, #1976d2);
+            color: var(--mdc-theme-on-primary, white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .mdc-button--raised:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .mdc-button--outlined {
+            background: transparent;
+            color: var(--mdc-theme-primary, #1976d2);
+            border: 1px solid var(--mdc-theme-primary, #1976d2);
+        }
+
+        .mdc-button--outlined:hover {
+            background: rgba(25, 118, 210, 0.04);
+        }
+
+        .mdc-button__ripple {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            overflow: hidden;
+        }
+
+        .mdc-button__label {
+            position: relative;
+            z-index: 1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .person-detail-section {
+            margin-bottom: 24px;
+        }
+
+        .person-detail-section h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 0 12px 0;
+            color: var(--mdc-theme-primary);
+        }
+
+        .document-detail {
+            background: #f8f9fa;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .document-detail h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0 0 8px 0;
+            color: #333;
+        }
+
+        .document-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .document-summary {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--mdc-theme-on-primary, white);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .edit-form {
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- App Bar -->
+    <div class="app-bar">
+        <button class="back-button" onclick="window.location.href='/'">
+            <span class="material-icons">arrow_back</span>
+        </button>
+        <h1>People Management</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2 class="section-title">All People Mentioned in Documents</h2>
+        
+        <div id="peopleContainer">
+            <div class="loading">
+                <p>Loading people...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Person Detail Modal -->
+    <div class="modal" id="personModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="personModalTitle">Person Details</h2>
+                <div class="modal-actions">
+                    <button class="mdc-button mdc-button--outlined" onclick="closePersonModal()">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Close</span>
+                    </button>
+                </div>
+            </div>
+            <div id="personModalContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allPeople = [];
+
+        // Load people data
+        async function loadPeople() {
+            try {
+                const response = await fetch('/people/detailed');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allPeople = data.people;
+                    renderPeople();
+                } else {
+                    showError('Error loading people: ' + data.error);
+                }
+            } catch (error) {
+                showError('Error loading people: ' + error.message);
+            }
+        }
+
+        // Render people cards
+        function renderPeople() {
+            const container = document.getElementById('peopleContainer');
+            
+            if (allPeople.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>No people found in documents</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allPeople.map(person => `
+                <div class="person-card">
+                    <div class="person-actions">
+                        <button class="action-btn edit-btn" onclick="event.stopPropagation(); editPerson('${escapeHtml(person.name)}')" title="Edit person">
+                            <span class="material-icons">edit</span>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="event.stopPropagation(); deletePerson('${escapeHtml(person.name)}')" title="Delete person">
+                            <span class="material-icons">delete</span>
+                        </button>
+                    </div>
+                    
+                    <div class="person-content" onclick="showPersonDetails('${escapeHtml(person.name)}')">
+                        <div class="person-header">
+                            <h3 class="person-name">${escapeHtml(person.name)}</h3>
+                            <span class="document-count">${person.document_count} docs</span>
+                        </div>
+                        
+                        ${person.aliases && person.aliases.length > 0 ? `
+                            <div class="person-aliases">
+                                ${person.aliases.map(alias => `
+                                    <span class="alias-tag">${escapeHtml(alias)}</span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        ${person.context ? `
+                            <div class="person-context">${escapeHtml(person.context)}</div>
+                        ` : ''}
+                        
+                        <div class="person-documents">
+                            <strong>Documents:</strong>
+                            ${person.documents.slice(0, 3).map(doc => `
+                                <div class="document-item">
+                                    <span class="document-title">${escapeHtml(doc.title)}</span>
+                                    <div>
+                                        <span class="document-date">${formatDate(doc.date_processed)}</span>
+                                        <span class="document-language">${doc.source_language}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                            ${person.documents.length > 3 ? `
+                                <div class="document-item">
+                                    <span class="document-title">... and ${person.documents.length - 3} more</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show person details modal
+        async function showPersonDetails(personName) {
+            try {
+                const response = await fetch(`/people/${encodeURIComponent(personName)}/documents`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const person = allPeople.find(p => p.name === personName);
+                    const documents = data.documents;
+                    
+                    document.getElementById('personModalTitle').textContent = personName;
+                    document.getElementById('personModalContent').innerHTML = `
+                        <div class="person-detail-section">
+                            <h3>Person Information</h3>
+                            <p><strong>Name:</strong> ${escapeHtml(personName)}</p>
+                            ${person.aliases && person.aliases.length > 0 ? `
+                                <p><strong>Aliases:</strong> ${person.aliases.map(alias => escapeHtml(alias)).join(', ')}</p>
+                            ` : ''}
+                            ${person.context ? `
+                                <p><strong>Context:</strong> ${escapeHtml(person.context)}</p>
+                            ` : ''}
+                            <p><strong>First Mentioned:</strong> ${formatDate(person.first_mentioned)}</p>
+                            <p><strong>Total Documents:</strong> ${documents.length}</p>
+                        </div>
+                        
+                        <div class="person-detail-section">
+                            <h3>Documents Mentioning This Person</h3>
+                            ${documents.map(doc => `
+                                <div class="document-detail">
+                                    <h4>${escapeHtml(doc.title)}</h4>
+                                    <div class="document-meta">
+                                        <span>Date: ${formatDate(doc.date_processed)}</span>
+                                        <span>Language: ${doc.source_language}</span>
+                                        <span>People: ${doc.people_mentioned.length}</span>
+                                    </div>
+                                    <div class="document-summary">${escapeHtml(doc.summary)}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                    document.getElementById('personModal').style.display = 'block';
+                } else {
+                    alert('Error loading person details: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error loading person details: ' + error.message);
+            }
+        }
+
+        // Close person modal
+        function closePersonModal() {
+            document.getElementById('personModal').style.display = 'none';
+        }
+
+        // Edit person
+        function editPerson(personName) {
+            const person = allPeople.find(p => p.name === personName);
+            if (!person) {
+                alert('Person not found');
+                return;
+            }
+
+            document.getElementById('personModalTitle').textContent = 'Edit Person';
+            document.getElementById('personModalContent').innerHTML = `
+                <div class="edit-form">
+                    <div class="form-group">
+                        <label for="editPersonName">Name:</label>
+                        <input type="text" id="editPersonName" value="${escapeHtml(personName)}" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editPersonContext">Context:</label>
+                        <textarea id="editPersonContext" class="form-textarea" placeholder="Enter context about this person (e.g., role, relationship, etc.)">${escapeHtml(person.context || '')}</textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="mdc-button mdc-button--raised" onclick="savePersonEdit('${escapeHtml(personName)}')">
+                            <span class="mdc-button__ripple"></span>
+                            <span class="mdc-button__label">Save Changes</span>
+                        </button>
+                        <button class="mdc-button mdc-button--outlined" onclick="closePersonModal()">
+                            <span class="mdc-button__ripple"></span>
+                            <span class="mdc-button__label">Cancel</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('personModal').style.display = 'block';
+        }
+
+        // Save person edit
+        async function savePersonEdit(oldName) {
+            const newName = document.getElementById('editPersonName').value.trim();
+            const newContext = document.getElementById('editPersonContext').value.trim();
+
+            if (!newName) {
+                alert('Name is required');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/people/${encodeURIComponent(oldName)}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: newName,
+                        context: newContext || null
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    closePersonModal();
+                    await loadPeople(); // Reload the people list
+                    alert('Person updated successfully');
+                } else {
+                    alert('Error updating person: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error updating person: ' + error.message);
+            }
+        }
+
+        // Delete person
+        async function deletePerson(personName) {
+            if (!confirm(`Are you sure you want to delete "${personName}"? This will remove them from all documents.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/people/${encodeURIComponent(personName)}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    await loadPeople(); // Reload the people list
+                    alert('Person deleted successfully');
+                } else {
+                    alert('Error deleting person: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error deleting person: ' + error.message);
+            }
+        }
+
+        // Utility functions
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Unknown';
+            return new Date(dateString).toLocaleDateString();
+        }
+
+        function showError(message) {
+            const container = document.getElementById('peopleContainer');
+            container.innerHTML = `
+                <div class="error">
+                    ${escapeHtml(message)}
+                </div>
+            `;
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('personModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('personModal')) {
+                closePersonModal();
+            }
+        });
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPeople();
+        });
+    </script>
+</body>
+</html>

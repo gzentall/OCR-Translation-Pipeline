@@ -48,14 +48,18 @@ class LocalOCRStorage:
         with open(self.metadata_file, 'w') as f:
             json.dump(self.metadata, f, indent=2)
     
-    def add_document(self, document_data: Dict) -> str:
+    def add_document(self, document_data: Dict, doc_id: str = None) -> str:
         """Add a processed document to local storage."""
-        doc_id = f"doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        if doc_id is None:
+            doc_id = f"doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         
         # Save document content
         doc_file = self.documents_dir / f"{doc_id}.json"
         with open(doc_file, 'w') as f:
             json.dump(document_data, f, indent=2)
+        
+        # Count pages from image files if available
+        page_count = self._count_document_pages(doc_id)
         
         # Update metadata
         self.metadata["documents"][doc_id] = {
@@ -65,7 +69,8 @@ class LocalOCRStorage:
             "target_language": document_data.get("target_language", "en"),
             "file_size": document_data.get("file_size", 0),
             "people_count": len(document_data.get("people", [])),
-            "summary": document_data.get("summary", "")[:100] + "..." if len(document_data.get("summary", "")) > 100 else document_data.get("summary", "")
+            "summary": document_data.get("summary", "")[:100] + "..." if len(document_data.get("summary", "")) > 100 else document_data.get("summary", ""),
+            "page_count": page_count
         }
         
         # Add people to metadata
@@ -96,12 +101,51 @@ class LocalOCRStorage:
         self._save_metadata()
         return doc_id
     
+    def _count_document_pages(self, doc_id: str) -> int:
+        """Count the number of pages for a document based on image files."""
+        try:
+            work_dir = Path("letters/work")
+            page_count = 0
+            
+            # Look for image files with the document ID
+            for i in range(1, 100):  # Check up to 100 pages
+                image_patterns = [
+                    f"{doc_id}_page_{i:03d}.png",
+                    f"{doc_id}_page_{i}.png",
+                    f"{doc_id}_{i}.png"
+                ]
+                
+                found = False
+                for pattern in image_patterns:
+                    if (work_dir / pattern).exists():
+                        page_count = i
+                        found = True
+                        break
+                
+                if not found:
+                    break
+            
+            return page_count
+        except Exception as e:
+            print(f"Error counting pages for {doc_id}: {e}")
+            return 0
+    
     def get_document(self, doc_id: str) -> Optional[Dict]:
         """Get a document by ID."""
         doc_file = self.documents_dir / f"{doc_id}.json"
         if doc_file.exists():
             with open(doc_file, 'r') as f:
-                return json.load(f)
+                document = json.load(f)
+                # Add the document ID to the document object
+                document['id'] = doc_id
+                
+                # Add metadata fields if available
+                if doc_id in self.metadata["documents"]:
+                    metadata = self.metadata["documents"][doc_id]
+                    document['page_count'] = metadata.get('page_count', 0)
+                    document['people_count'] = metadata.get('people_count', 0)
+                
+                return document
         else:
             # Document file doesn't exist, clean up orphaned metadata
             if doc_id in self.metadata["documents"]:
@@ -228,6 +272,197 @@ class LocalOCRStorage:
     def get_people(self) -> Dict:
         """Get all people with their metadata."""
         return self.metadata["people"]
+    
+    def get_people_with_documents(self) -> List[Dict]:
+        """Get all people with their associated documents."""
+        people_list = []
+        for person_name, person_data in self.metadata["people"].items():
+            # Get document details for each person
+            document_details = []
+            for doc_id in person_data.get("documents", []):
+                if doc_id in self.metadata["documents"]:
+                    doc_metadata = self.metadata["documents"][doc_id]
+                    document_details.append({
+                        "id": doc_id,
+                        "title": doc_metadata.get("title", "Unknown"),
+                        "date_processed": doc_metadata.get("date_processed", ""),
+                        "source_language": doc_metadata.get("source_language", "unknown")
+                    })
+            
+            people_list.append({
+                "name": person_name,
+                "aliases": person_data.get("aliases", []),
+                "first_mentioned": person_data.get("first_mentioned", ""),
+                "context": person_data.get("context", ""),
+                "documents": document_details,
+                "document_count": len(document_details)
+            })
+        
+        # Sort by document count (most mentioned first)
+        people_list.sort(key=lambda x: x["document_count"], reverse=True)
+        return people_list
+    
+    def get_person_documents(self, person_name: str) -> List[Dict]:
+        """Get all documents that mention a specific person."""
+        normalized_name = self.normalize_name(person_name)
+        
+        if normalized_name not in self.metadata["people"]:
+            return []
+        
+        person_data = self.metadata["people"][normalized_name]
+        document_details = []
+        
+        for doc_id in person_data.get("documents", []):
+            if doc_id in self.metadata["documents"]:
+                doc_metadata = self.metadata["documents"][doc_id]
+                # Get full document data
+                full_doc = self.get_document(doc_id)
+                if full_doc:
+                    document_details.append({
+                        "id": doc_id,
+                        "title": doc_metadata.get("title", "Unknown"),
+                        "date_processed": doc_metadata.get("date_processed", ""),
+                        "source_language": doc_metadata.get("source_language", "unknown"),
+                        "summary": doc_metadata.get("summary", ""),
+                        "translated_text": full_doc.get("translated_text", ""),
+                        "people_mentioned": full_doc.get("people", [])
+                    })
+        
+        # Sort by date (most recent first)
+        document_details.sort(key=lambda x: x["date_processed"], reverse=True)
+        return document_details
+    
+    def normalize_name(self, name: str) -> str:
+        """Normalize a name for consistent matching."""
+        import re
+        # Remove common titles and suffixes
+        name = re.sub(r'\b(Mr|Mrs|Ms|Dr|Prof|Rev|Sir|Lady)\b\.?\s*', '', name, flags=re.IGNORECASE)
+        name = re.sub(r'\b(Jr|Sr|III|IV|V)\b\.?$', '', name, flags=re.IGNORECASE)
+        
+        # Clean up whitespace and punctuation
+        name = re.sub(r'[^\w\s]', '', name)
+        name = ' '.join(name.split())
+        
+        return name.lower().strip()
+    
+    def update_person(self, old_name: str, new_name: str, new_context: str = None) -> bool:
+        """Update a person's name and context."""
+        try:
+            old_normalized = self.normalize_name(old_name)
+            new_normalized = self.normalize_name(new_name)
+            
+            if old_normalized not in self.metadata["people"]:
+                return False
+            
+            # Get the person data
+            person_data = self.metadata["people"][old_normalized]
+            
+            # Update the name if it changed
+            if old_normalized != new_normalized:
+                # Remove from old location
+                del self.metadata["people"][old_normalized]
+                
+                # Add to new location
+                self.metadata["people"][new_normalized] = person_data
+                
+                # Update aliases
+                if new_normalized not in person_data.get("aliases", []):
+                    person_data.setdefault("aliases", []).append(new_normalized)
+                
+                # Update all documents that reference this person
+                for doc_id in person_data.get("documents", []):
+                    if doc_id in self.metadata["documents"]:
+                        # Update the document's people list
+                        doc_file = self.documents_dir / f"{doc_id}.json"
+                        if doc_file.exists():
+                            with open(doc_file, 'r') as f:
+                                doc_data = json.load(f)
+                            
+                            # Update people in document
+                            updated_people = []
+                            for person in doc_data.get("people", []):
+                                if isinstance(person, dict):
+                                    if person.get("normalized_name") == old_normalized:
+                                        person["normalized_name"] = new_normalized
+                                        person["original_name"] = new_name
+                                    updated_people.append(person)
+                                else:
+                                    # Handle string format
+                                    if self.normalize_name(person) == old_normalized:
+                                        updated_people.append(new_name)
+                                    else:
+                                        updated_people.append(person)
+                            
+                            doc_data["people"] = updated_people
+                            
+                            # Save updated document
+                            with open(doc_file, 'w') as f:
+                                json.dump(doc_data, f, indent=2)
+            
+            # Update context if provided
+            if new_context is not None:
+                person_data["context"] = new_context
+            
+            # Update aliases to include the new name
+            if new_normalized not in person_data.get("aliases", []):
+                person_data.setdefault("aliases", []).append(new_normalized)
+            
+            self._save_metadata()
+            return True
+            
+        except Exception as e:
+            print(f"Error updating person {old_name}: {e}")
+            return False
+    
+    def remove_person(self, person_name: str) -> bool:
+        """Remove a person from the database and all documents."""
+        try:
+            normalized_name = self.normalize_name(person_name)
+            
+            if normalized_name not in self.metadata["people"]:
+                return False
+            
+            person_data = self.metadata["people"][normalized_name]
+            
+            # Remove person from all documents
+            for doc_id in person_data.get("documents", []):
+                if doc_id in self.metadata["documents"]:
+                    # Update the document's people list
+                    doc_file = self.documents_dir / f"{doc_id}.json"
+                    if doc_file.exists():
+                        with open(doc_file, 'r') as f:
+                            doc_data = json.load(f)
+                        
+                        # Remove person from document
+                        updated_people = []
+                        for person in doc_data.get("people", []):
+                            if isinstance(person, dict):
+                                if person.get("normalized_name") != normalized_name:
+                                    updated_people.append(person)
+                            else:
+                                # Handle string format
+                                if self.normalize_name(person) != normalized_name:
+                                    updated_people.append(person)
+                        
+                        doc_data["people"] = updated_people
+                        
+                        # Update metadata people count
+                        if doc_id in self.metadata["documents"]:
+                            self.metadata["documents"][doc_id]["people_count"] = len(updated_people)
+                        
+                        # Save updated document
+                        with open(doc_file, 'w') as f:
+                            json.dump(doc_data, f, indent=2)
+            
+            # Remove person from metadata
+            del self.metadata["people"][normalized_name]
+            
+            self._save_metadata()
+            return True
+            
+        except Exception as e:
+            print(f"Error removing person {person_name}: {e}")
+            return False
     
     def search_documents(self, query: str) -> List[Dict]:
         """Search documents by title or content."""

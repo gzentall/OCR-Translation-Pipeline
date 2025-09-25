@@ -13,10 +13,10 @@ import traceback
 import html
 import sys
 from pathlib import Path
+from datetime import datetime
 from flask import Flask, request, jsonify, render_template, send_file
 from werkzeug.utils import secure_filename
 import uuid
-from datetime import datetime
 
 # Add scripts directory to path for local storage
 sys.path.append(str(Path(__file__).parent / 'scripts'))
@@ -50,12 +50,16 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def run_ocr_script(pdf_path):
+def run_ocr_script(pdf_path, doc_id=None):
     """Run the Vision OCR script on a PDF file."""
     script_path = PROJECT_ROOT / "scripts" / "run_vision_ocr.sh"
     try:
+        cmd = [str(script_path), str(pdf_path)]
+        if doc_id:
+            cmd.append(doc_id)
+        
         result = subprocess.run(
-            [str(script_path), str(pdf_path)],
+            cmd,
             capture_output=True,
             text=True,
             cwd=str(PROJECT_ROOT),
@@ -104,6 +108,49 @@ def stats_page():
     return render_template('stats.html')
 
 
+@app.route('/people-page')
+def people_page():
+    """Serve the people management page."""
+    return render_template('people.html')
+
+
+@app.route('/documents/<doc_id>/images/<int:page_num>')
+def get_document_image(doc_id, page_num):
+    """Serve original document images."""
+    try:
+        # Get document metadata to find image path
+        doc_metadata = local_storage.metadata["documents"].get(doc_id)
+        if not doc_metadata:
+            return "Document not found", 404
+        
+        # Look for image files in the work directory
+        work_dir = Path("letters/work")
+        image_pattern = f"{doc_id}_page_{page_num:03d}.png"
+        image_path = work_dir / image_pattern
+        
+        if not image_path.exists():
+            # Try alternative naming patterns
+            alt_patterns = [
+                f"{doc_id}_page_{page_num}.png",
+                f"{doc_id}_{page_num}.png",
+                f"{doc_id}_page_{page_num:02d}.png"
+            ]
+            
+            for pattern in alt_patterns:
+                alt_path = work_dir / pattern
+                if alt_path.exists():
+                    image_path = alt_path
+                    break
+            else:
+                return "Image not found", 404
+        
+        return send_file(str(image_path), mimetype='image/png')
+        
+    except Exception as e:
+        print(f"Error serving image: {e}")
+        return "Error serving image", 500
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     """Handle PDF file upload and processing."""
@@ -133,9 +180,12 @@ def upload_file():
     try:
         print(f"[DEBUG] Starting OCR processing for: {pdf_path}")
         
+        # Generate document ID for image naming
+        doc_id = f"doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
         # Run OCR - pass relative path to the script
         relative_pdf_path = f"letters/inbox/{unique_filename}"
-        success, stdout, stderr = run_ocr_script(relative_pdf_path)
+        success, stdout, stderr = run_ocr_script(relative_pdf_path, doc_id)
         print(f"[DEBUG] OCR result - success: {success}, stdout: {stdout[:200]}, stderr: {stderr[:200]}")
         
         if not success:
@@ -228,8 +278,8 @@ def upload_file():
                 "people": ai_result.get("people", [])
             }
             
-            # Store in local database
-            doc_id = local_storage.add_document(document_data)
+            # Store in local database with the same doc_id used for images
+            doc_id = local_storage.add_document(document_data, doc_id)
             print(f"[DEBUG] Document stored with ID: {doc_id}")
             
         except Exception as e:
@@ -246,7 +296,7 @@ def upload_file():
                 "summary": "AI processing failed - manual review required",
                 "people": []
             }
-            doc_id = local_storage.add_document(document_data)
+            doc_id = local_storage.add_document(document_data, doc_id)
             print(f"[DEBUG] Document stored without AI processing, ID: {doc_id}")
         
         return jsonify({
@@ -326,10 +376,18 @@ def list_documents():
     """List all stored documents."""
     try:
         documents = local_storage.list_documents()
+        # Convert tuples to dictionaries
+        document_list = []
+        for doc_id, metadata in documents:
+            document_list.append({
+                'id': doc_id,
+                **metadata
+            })
+        
         return jsonify({
             'success': True,
-            'documents': documents,
-            'total': len(documents)
+            'documents': document_list,
+            'total': len(document_list)
         })
     except Exception as e:
         return jsonify({
@@ -370,6 +428,105 @@ def list_people():
             'people': people,
             'total': len(people)
         })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/people/detailed')
+def get_people_detailed():
+    """Get all people with their associated documents."""
+    try:
+        people = local_storage.get_people_with_documents()
+        return jsonify({
+            'success': True,
+            'people': people,
+            'total': len(people)
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/people/<person_name>/documents')
+def get_person_documents(person_name):
+    """Get all documents that mention a specific person."""
+    try:
+        documents = local_storage.get_person_documents(person_name)
+        return jsonify({
+            'success': True,
+            'person_name': person_name,
+            'documents': documents,
+            'total': len(documents)
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/people/<person_name>', methods=['PUT'])
+def update_person(person_name):
+    """Update a person's name and context."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'No data provided'
+            }), 400
+        
+        new_name = data.get('name', person_name)
+        new_context = data.get('context')
+        
+        if not new_name:
+            return jsonify({
+                'success': False,
+                'error': 'Name is required'
+            }), 400
+        
+        success = local_storage.update_person(person_name, new_name, new_context)
+        
+        if success:
+            return jsonify({
+                'success': True,
+                'message': 'Person updated successfully'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Person not found or update failed'
+            }), 404
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/people/<person_name>', methods=['DELETE'])
+def remove_person(person_name):
+    """Remove a person from the database."""
+    try:
+        success = local_storage.remove_person(person_name)
+        
+        if success:
+            return jsonify({
+                'success': True,
+                'message': 'Person removed successfully'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Person not found or removal failed'
+            }), 404
+            
     except Exception as e:
         return jsonify({
             'success': False,
