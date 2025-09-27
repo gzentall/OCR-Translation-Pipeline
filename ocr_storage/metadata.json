@@ -36,7 +36,7 @@
       "source_language": "unknown",
       "target_language": "en",
       "file_size": 534312,
-      "people_count": 3,
+      "people_count": 0,
       "summary": "This appears to be a personal letter involving On Jalmelle, Jon Zob, Zweigenthal Agele. discusses bu...",
       "page_count": 4
     },
@@ -46,7 +46,7 @@
       "source_language": "fr",
       "target_language": "en",
       "file_size": 319709,
-      "people_count": 0,
+      "people_count": 2,
       "summary": "WHO: The text is written by Eduoard Maurel to Madam Ruberk in Neidenthal.\nNATURE: This document appe...",
       "page_count": 4
     },
@@ -56,7 +56,7 @@
       "source_language": "unknown",
       "target_language": "en",
       "file_size": 286325,
-      "people_count": 3,
+      "people_count": 0,
       "summary": "This appears to be a personal letter involving Gene Markle, In Paris, Poste Restante. discusses fami...",
       "page_count": 2
     },
@@ -69,18 +69,79 @@
       "people_count": 1,
       "summary": "This appears to be a personal letter involving His Rol. discusses business/financial matters, health...",
       "page_count": 2
+    },
+    "doc_20250927_100809": {
+      "title": "049-1940-05-16-fre - 2025-09-27",
+      "date_processed": "2025-09-27T10:08:36.138431",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 315860,
+      "people_count": 5,
+      "summary": "This appears to be a personal letter involving Military Postal, Robert Lweisenthal, Vel Rota. discus...",
+      "page_count": 3
+    },
+    "doc_20250927_102706": {
+      "title": "054-1940-09-18-fre - 2025-09-27",
+      "date_processed": "2025-09-27T10:27:25.371278",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 155104,
+      "people_count": 3,
+      "summary": "This appears to be a personal letter involving Police Station, Inveigenthal Robert, Rue Republique. ...",
+      "page_count": 1
+    },
+    "doc_20250927_104916": {
+      "title": "051-1940-09-22-fre - 2025-09-27",
+      "date_processed": "2025-09-27T10:49:56.847319",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 277464,
+      "people_count": 3,
+      "summary": "This appears to be a personal letter involving Mme Pelisuir. discusses family matters, health concer...",
+      "page_count": 3
+    },
+    "doc_20250927_105223": {
+      "title": "047-1940-05-22-fre - 2025-09-27",
+      "date_processed": "2025-09-27T10:52:49.976224",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 292485,
+      "people_count": 8,
+      "summary": "This appears to be a personal letter involving Bubi Bubi, Deza Here, Le Vaguemestre. discusses busin...",
+      "page_count": 3
+    },
+    "doc_20250927_111247": {
+      "title": "053-xxx-ger - 2025-09-27",
+      "date_processed": "2025-09-27T11:13:09.579550",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 251918,
+      "people_count": 6,
+      "summary": "This appears to be a personal letter involving Mater Niti, Du Sape, Palm Sunday. discusses health co...",
+      "page_count": 2
+    },
+    "doc_20250927_113042": {
+      "title": "057-1940-05-14-fre - 2025-09-27",
+      "date_processed": "2025-09-27T11:31:19.287560",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 397545,
+      "people_count": 6,
+      "summary": "This appears to be a personal letter involving Lo Bur, Robert Erreipenthal. discusses family matters...",
+      "page_count": 4
+    },
+    "doc_20250927_122524": {
+      "title": "048-1940-07-24-fre - 2025-09-27",
+      "date_processed": "2025-09-27T12:26:24.574535",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 565968,
+      "people_count": 3,
+      "summary": "This appears to be a personal letter involving Nocigenthal Mine, Cameri Versa, Nocigenthal Mine Mone...",
+      "page_count": 5
     }
   },
   "people": {
-    "dear gabe": {
-      "aliases": [
-        "Dear Gabe"
-      ],
-      "first_mentioned": "2025-09-25T16:52:03.129192",
-      "documents": [
-        "doc_20250925_165151"
-      ]
-    },
     "elizabeth zentall": {
       "aliases": [
         "Elizabeth Zentall",
@@ -90,78 +151,6 @@
       "documents": [],
       "context": ""
     },
-    "on jalmelle": {
-      "aliases": [
-        "On Jalmelle"
-      ],
-      "first_mentioned": "2025-09-26T16:48:30.328142",
-      "documents": [
-        "doc_20250926_164736"
-      ]
-    },
-    "jon zob": {
-      "aliases": [
-        "Jon Zob"
-      ],
-      "first_mentioned": "2025-09-26T16:48:30.328142",
-      "documents": [
-        "doc_20250926_164736"
-      ]
-    },
-    "zweigenthal agele": {
-      "aliases": [
-        "Zweigenthal Agele"
-      ],
-      "first_mentioned": "2025-09-26T16:48:30.328142",
-      "documents": [
-        "doc_20250926_164736"
-      ]
-    },
-    "because because": {
-      "aliases": [
-        "Because Because"
-      ],
-      "first_mentioned": "2025-09-26T17:31:23.516701",
-      "documents": [
-        "doc_20250926_173049"
-      ]
-    },
-    "madam ruberk": {
-      "aliases": [
-        "Madam Ruberk"
-      ],
-      "first_mentioned": "2025-09-26T17:31:23.516701",
-      "documents": [
-        "doc_20250926_173049"
-      ]
-    },
-    "gene markle": {
-      "aliases": [
-        "Gene Markle"
-      ],
-      "first_mentioned": "2025-09-26T17:31:57.890318",
-      "documents": [
-        "doc_20250926_173124"
-      ]
-    },
-    "in paris": {
-      "aliases": [
-        "In Paris"
-      ],
-      "first_mentioned": "2025-09-26T17:31:57.890318",
-      "documents": [
-        "doc_20250926_173124"
-      ]
-    },
-    "poste restante": {
-      "aliases": [
-        "Poste Restante"
-      ],
-      "first_mentioned": "2025-09-26T17:31:57.890318",
-      "documents": [
-        "doc_20250926_173124"
-      ]
-    },
     "his rol": {
       "aliases": [
         "His Rol"
@@ -170,7 +159,333 @@
       "documents": [
         "doc_20250926_173158"
       ]
+    },
+    "gabe": {
+      "aliases": [
+        "Gabe"
+      ],
+      "first_mentioned": "2025-09-26T19:35:16.298198",
+      "documents": [
+        "doc_20250926_173049"
+      ],
+      "context": ""
+    },
+    "joan": {
+      "aliases": [
+        "joan"
+      ],
+      "first_mentioned": "2025-09-26T19:35:19.320884",
+      "documents": [
+        "doc_20250926_173049"
+      ],
+      "context": ""
+    },
+    "military postal": {
+      "aliases": [
+        "Military Postal"
+      ],
+      "first_mentioned": "2025-09-27T10:08:36.138431",
+      "documents": [
+        "doc_20250927_100809"
+      ]
+    },
+    "robert lweisenthal": {
+      "aliases": [
+        "Robert Lweisenthal"
+      ],
+      "first_mentioned": "2025-09-27T10:08:36.138431",
+      "documents": [
+        "doc_20250927_100809"
+      ]
+    },
+    "vel rota": {
+      "aliases": [
+        "Vel Rota"
+      ],
+      "first_mentioned": "2025-09-27T10:08:36.138431",
+      "documents": [
+        "doc_20250927_100809"
+      ]
+    },
+    "pezenas herault": {
+      "aliases": [
+        "Pezenas Herault"
+      ],
+      "first_mentioned": "2025-09-27T10:08:36.138431",
+      "documents": [
+        "doc_20250927_100809"
+      ]
+    },
+    "military postal control": {
+      "aliases": [
+        "Military Postal Control"
+      ],
+      "first_mentioned": "2025-09-27T10:08:36.138431",
+      "documents": [
+        "doc_20250927_100809"
+      ]
+    },
+    "police station": {
+      "aliases": [
+        "Police Station"
+      ],
+      "first_mentioned": "2025-09-27T10:27:25.371278",
+      "documents": [
+        "doc_20250927_102706"
+      ]
+    },
+    "inveigenthal robert": {
+      "aliases": [
+        "Inveigenthal Robert"
+      ],
+      "first_mentioned": "2025-09-27T10:27:25.371278",
+      "documents": [
+        "doc_20250927_102706"
+      ]
+    },
+    "rue republique": {
+      "aliases": [
+        "Rue Republique"
+      ],
+      "first_mentioned": "2025-09-27T10:27:25.371278",
+      "documents": [
+        "doc_20250927_102706"
+      ]
+    },
+    "that touring": {
+      "aliases": [
+        "That Touring"
+      ],
+      "first_mentioned": "2025-09-27T10:49:56.847319",
+      "documents": [
+        "doc_20250927_104916"
+      ]
+    },
+    "mme pelisuir": {
+      "aliases": [
+        "Mme Pelisuir"
+      ],
+      "first_mentioned": "2025-09-27T10:49:56.847319",
+      "documents": [
+        "doc_20250927_104916"
+      ]
+    },
+    "that touring robert": {
+      "aliases": [
+        "That Touring Robert"
+      ],
+      "first_mentioned": "2025-09-27T10:49:56.847319",
+      "documents": [
+        "doc_20250927_104916"
+      ]
+    },
+    "bubi bubi": {
+      "aliases": [
+        "Bubi Bubi"
+      ],
+      "first_mentioned": "2025-09-27T10:52:49.976224",
+      "documents": [
+        "doc_20250927_105223"
+      ]
+    },
+    "deza here": {
+      "aliases": [
+        "Deza Here"
+      ],
+      "first_mentioned": "2025-09-27T10:52:49.976224",
+      "documents": [
+        "doc_20250927_105223"
+      ]
+    },
+    "le vaguemestre": {
+      "aliases": [
+        "Le Vaguemestre"
+      ],
+      "first_mentioned": "2025-09-27T10:52:49.976224",
+      "documents": [
+        "doc_20250927_105223"
+      ]
+    },
+    "brancion paris": {
+      "aliases": [
+        "Brancion Paris"
+      ],
+      "first_mentioned": "2025-09-27T10:52:49.976224",
+      "documents": [
+        "doc_20250927_105223"
+      ]
+    },
+    "zweigniters cras": {
+      "aliases": [
+        "Zweigniters Cras"
+      ],
+      "first_mentioned": "2025-09-27T10:52:49.976224",
+      "documents": [
+        "doc_20250927_105223"
+      ]
+    },
+    "rours jean": {
+      "aliases": [
+        "Rours Jean"
+      ],
+      "first_mentioned": "2025-09-27T10:52:49.976224",
+      "documents": [
+        "doc_20250927_105223"
+      ]
+    },
+    "rosa pezenas": {
+      "aliases": [
+        "Rosa Pezenas"
+      ],
+      "first_mentioned": "2025-09-27T10:52:49.976224",
+      "documents": [
+        "doc_20250927_105223"
+      ]
+    },
+    "zweigniters cras rours": {
+      "aliases": [
+        "Zweigniters Cras Rours"
+      ],
+      "first_mentioned": "2025-09-27T10:52:49.976224",
+      "documents": [
+        "doc_20250927_105223"
+      ]
+    },
+    "mater niti": {
+      "aliases": [
+        "Mater Niti"
+      ],
+      "first_mentioned": "2025-09-27T11:13:09.579550",
+      "documents": [
+        "doc_20250927_111247"
+      ]
+    },
+    "du sape": {
+      "aliases": [
+        "Du Sape"
+      ],
+      "first_mentioned": "2025-09-27T11:13:09.579550",
+      "documents": [
+        "doc_20250927_111247"
+      ]
+    },
+    "palm sunday": {
+      "aliases": [
+        "Palm Sunday"
+      ],
+      "first_mentioned": "2025-09-27T11:13:09.579550",
+      "documents": [
+        "doc_20250927_111247"
+      ]
+    },
+    "thursday diel": {
+      "aliases": [
+        "Thursday Diel"
+      ],
+      "first_mentioned": "2025-09-27T11:13:09.579550",
+      "documents": [
+        "doc_20250927_111247"
+      ]
+    },
+    "la much": {
+      "aliases": [
+        "La Much"
+      ],
+      "first_mentioned": "2025-09-27T11:13:09.579550",
+      "documents": [
+        "doc_20250927_111247"
+      ]
+    },
+    "much leele": {
+      "aliases": [
+        "Much Leele"
+      ],
+      "first_mentioned": "2025-09-27T11:13:09.579550",
+      "documents": [
+        "doc_20250927_111247"
+      ]
+    },
+    "lo bur": {
+      "aliases": [
+        "Lo Bur"
+      ],
+      "first_mentioned": "2025-09-27T11:31:19.287560",
+      "documents": [
+        "doc_20250927_113042"
+      ]
+    },
+    "to colonel": {
+      "aliases": [
+        "To Colonel"
+      ],
+      "first_mentioned": "2025-09-27T11:31:19.287560",
+      "documents": [
+        "doc_20250927_113042"
+      ]
+    },
+    "robert erreipenthal": {
+      "aliases": [
+        "Robert Erreipenthal"
+      ],
+      "first_mentioned": "2025-09-27T11:31:19.287560",
+      "documents": [
+        "doc_20250927_113042"
+      ]
+    },
+    "rep fuf": {
+      "aliases": [
+        "Rep Fuf"
+      ],
+      "first_mentioned": "2025-09-27T11:31:19.287560",
+      "documents": [
+        "doc_20250927_113042"
+      ]
+    },
+    "to colonel mack": {
+      "aliases": [
+        "To Colonel Mack"
+      ],
+      "first_mentioned": "2025-09-27T11:31:19.287560",
+      "documents": [
+        "doc_20250927_113042"
+      ]
+    },
+    "robert erreipenthal rep": {
+      "aliases": [
+        "Robert Erreipenthal Rep"
+      ],
+      "first_mentioned": "2025-09-27T11:31:19.287560",
+      "documents": [
+        "doc_20250927_113042"
+      ]
+    },
+    "nocigenthal mine": {
+      "aliases": [
+        "Nocigenthal Mine"
+      ],
+      "first_mentioned": "2025-09-27T12:26:24.574535",
+      "documents": [
+        "doc_20250927_122524"
+      ]
+    },
+    "cameri versa": {
+      "aliases": [
+        "Cameri Versa"
+      ],
+      "first_mentioned": "2025-09-27T12:26:24.574535",
+      "documents": [
+        "doc_20250927_122524"
+      ]
+    },
+    "nocigenthal mine monex": {
+      "aliases": [
+        "Nocigenthal Mine Monex"
+      ],
+      "first_mentioned": "2025-09-27T12:26:24.574535",
+      "documents": [
+        "doc_20250927_122524"
+      ]
     }
   },
-  "last_updated": "2025-09-26T17:37:35.491859"
+  "last_updated": "2025-09-27T12:26:24.575601"
 }

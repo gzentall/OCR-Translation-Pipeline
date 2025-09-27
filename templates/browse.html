@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCR Document Browser</title>
+    <title>Zentall Documents</title>
     
     <!-- Material Design Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -188,14 +188,16 @@
         }
 
         .app-bar {
-            background-color: var(--md-sys-color-surface-container);
+            background-color: #ffffff;
             color: var(--md-sys-color-on-surface);
-            padding: var(--md-sys-spacing-4) var(--md-sys-spacing-6);
+            padding: var(--md-sys-spacing-2) var(--md-sys-spacing-6);
             box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             gap: var(--md-sys-spacing-4);
             border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            position: relative;
+            min-height: 48px;
         }
 
         .app-bar h1 {
@@ -205,7 +207,10 @@
             font-weight: var(--md-sys-typescale-headline-small-weight);
             line-height: var(--md-sys-typescale-headline-small-line-height);
             letter-spacing: var(--md-sys-typescale-headline-small-tracking);
-            flex: 1;
+            position: absolute;
+            left: var(--md-sys-spacing-6);
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         .back-button {
@@ -225,30 +230,44 @@
         .nav-tabs {
             display: flex;
             gap: 0;
-            margin: 0 var(--md-sys-spacing-6);
-            background: var(--md-sys-color-surface-container-low);
-            border-radius: 12px;
-            padding: var(--md-sys-spacing-1);
+            margin: 0 auto;
+            background: none;
+            border-radius: 0;
+            padding: 0;
+            position: relative;
+            justify-content: center;
         }
 
         .nav-tab {
             background: none;
             border: none;
             color: var(--md-sys-color-on-surface-variant);
-            padding: var(--md-sys-spacing-3) var(--md-sys-spacing-6);
+            padding: var(--md-sys-spacing-2) var(--md-sys-spacing-4);
             cursor: pointer;
-            font-family: var(--md-sys-typescale-label-large-font);
-            font-size: var(--md-sys-typescale-label-large-size);
-            font-weight: var(--md-sys-typescale-label-large-weight);
-            line-height: var(--md-sys-typescale-label-large-line-height);
-            letter-spacing: var(--md-sys-typescale-label-large-tracking);
-            border-radius: 8px;
+            border-radius: 0;
             transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
             position: relative;
-            min-height: 44px; /* M3 minimum touch target */
+            min-height: 48px; /* M3 primary tab height */
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            flex: 1;
+            overflow: hidden;
+            gap: var(--md-sys-spacing-1);
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--md-sys-color-primary);
+            transform: scaleX(0);
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+            transform-origin: center;
         }
 
         .nav-tab:hover {
@@ -257,17 +276,43 @@
         }
 
         .nav-tab.active {
-            color: var(--md-sys-color-on-primary-container);
-            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-primary);
+            background: none;
+        }
+
+        .nav-tab.active::before {
+            transform: scaleX(1);
+        }
+
+        .nav-tab .material-icons {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .nav-tab-label {
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            line-height: var(--md-sys-typescale-label-large-line-height);
+            letter-spacing: var(--md-sys-typescale-label-large-tracking);
+            margin: 0;
         }
 
         .nav-actions {
-            margin-left: auto;
+            position: absolute;
+            right: var(--md-sys-spacing-6);
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         .nav-actions .mdc-button {
-            --mdc-theme-primary: #ffffff;
-            --mdc-theme-on-primary: #1976d2;
+            --mdc-theme-primary: var(--md-sys-color-primary);
+            --mdc-theme-on-primary: #ffffff;
+            background-color: var(--mdc-theme-primary) !important;
+            color: var(--mdc-theme-on-primary) !important;
+            height: 40px;
+            padding: 0 var(--md-sys-spacing-6);
+            border-radius: 20px;
         }
 
         .main-content {
@@ -1587,52 +1632,575 @@
             right: 24px;
         }
 
-        .modal {
-            display: none;
+        /* M3 Dialog Styles */
+        .mdc-dialog {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000; /* Increased z-index to ensure it's above other elements */
-        }
-
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--mdc-theme-surface);
-            border-radius: 8px;
-            padding: 24px;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow-y: auto;
-            width: 90%;
-            box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
+            z-index: 2000;
+            display: none;
             align-items: center;
-            margin-bottom: 16px;
+            justify-content: center;
+            padding: var(--md-sys-spacing-4);
+            box-sizing: border-box;
         }
 
-        .modal-title {
-            font-size: 20px;
-            font-weight: 500;
+        .mdc-dialog.mdc-dialog--open {
+            display: flex;
+        }
+
+        .mdc-dialog__container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mdc-dialog__surface {
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: 28px;
+            box-shadow: 0 11px 15px -7px rgba(0,0,0,0.2), 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12);
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .mdc-dialog__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--md-sys-spacing-6);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            background: var(--md-sys-color-surface-container);
+            flex-shrink: 0;
+        }
+
+        .mdc-dialog__title {
+            font-family: var(--md-sys-typescale-headline-small-font);
+            font-size: var(--md-sys-typescale-headline-small-size);
+            font-weight: var(--md-sys-typescale-headline-small-weight);
+            line-height: var(--md-sys-typescale-headline-small-line-height);
+            letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+            flex: 1;
+        }
+
+        .mdc-dialog__close {
+            background: none;
+            border: none;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+            padding: var(--md-sys-spacing-2);
+            border-radius: 50%;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .mdc-dialog__close:hover {
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .mdc-dialog__content {
+            flex: 1;
+            padding: var(--md-sys-spacing-6);
+            overflow-y: auto;
+            background: var(--md-sys-color-surface-container-lowest);
+            position: relative;
+            z-index: 1;
+        }
+
+        .mdc-dialog__actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--md-sys-spacing-3);
+            padding: var(--md-sys-spacing-6);
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+            background: var(--md-sys-color-surface-container);
+            flex-shrink: 0;
+        }
+
+        .mdc-dialog__button {
+            min-width: auto;
+        }
+
+        .mdc-dialog__scrim {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.32);
+            z-index: -1;
+        }
+
+        /* M3 Text Field Styles */
+        .mdc-text-field {
+            margin-bottom: var(--md-sys-spacing-4);
+        }
+
+        .mdc-text-field--textarea {
+            min-height: 120px;
+        }
+
+        .mdc-text-field--textarea .mdc-text-field__input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* M3 Tab Styles */
+        .mdc-tab-bar {
+            margin: var(--md-sys-spacing-4) 0;
+            background: var(--md-sys-color-surface-container);
+            border-radius: 12px;
+            padding: var(--md-sys-spacing-1);
+        }
+
+        .mdc-tab {
+            min-width: 0;
+            flex: 1;
+            height: 48px;
+            padding: 0 var(--md-sys-spacing-3);
+            border-radius: 8px;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .mdc-tab__text-label {
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            line-height: var(--md-sys-typescale-label-large-line-height);
+            letter-spacing: var(--md-sys-typescale-label-large-tracking);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .mdc-tab--active .mdc-tab__text-label {
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .mdc-tab-indicator__content--underline {
+            background-color: var(--md-sys-color-primary);
+            height: 3px;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .mdc-tab--active {
+            background: var(--md-sys-color-primary-container);
+        }
+
+        /* Tab Content Panels */
+        .tab-content-panels {
+            margin-top: var(--md-sys-spacing-4);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* People Section in Tab */
+        .people-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--md-sys-spacing-4);
+        }
+
+        /* M3 Button Styles */
+        .mdc-button {
+            min-width: 64px;
+            height: 40px;
+            border-radius: 20px;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            line-height: var(--md-sys-typescale-label-large-line-height);
+            letter-spacing: var(--md-sys-typescale-label-large-tracking);
+            text-transform: none;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .mdc-button--outlined {
+            border: 1px solid var(--md-sys-color-outline);
+            background: transparent;
+            color: var(--md-sys-color-primary);
+        }
+
+        .mdc-button--outlined:hover {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .mdc-button--raised {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+
+        .mdc-button--raised:hover {
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.12);
+        }
+
+        .delete-btn {
+            --mdc-theme-primary: var(--md-sys-color-error);
+            --mdc-theme-on-primary: var(--md-sys-color-on-error);
+        }
+
+        /* Read-only text styles */
+        /* Summary section styling with M3 spacing */
+        .summary-section {
+            margin-bottom: var(--md-sys-spacing-6); /* 24px - M3 spacing for section separation */
+        }
+
+        .summary-title {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            line-height: var(--md-sys-typescale-title-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0 0 var(--md-sys-spacing-2) 0; /* 8px bottom margin */
+        }
+
+        .summary-text {
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
+            color: var(--md-sys-color-on-surface-variant);
             margin: 0;
         }
 
-        .modal-actions {
+        /* M3 Select/Menu styles */
+        .mdc-select {
+            margin-bottom: var(--md-sys-spacing-4);
+        }
+
+        .mdc-select .mdc-select__anchor {
+            background: var(--md-sys-color-surface-container-highest);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 4px;
+            min-height: 56px;
+        }
+
+        .mdc-select .mdc-select__anchor:hover {
+            border-color: var(--md-sys-color-on-surface);
+        }
+
+        .mdc-select .mdc-select__anchor:focus-within {
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 1px var(--md-sys-color-primary);
+        }
+
+        .mdc-select .mdc-select__selected-text {
+            color: var(--md-sys-color-on-surface);
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
+        }
+
+        .mdc-select .mdc-floating-label {
+            color: var(--md-sys-color-on-surface-variant);
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
+        }
+
+        .mdc-select .mdc-floating-label--float-above {
+            color: var(--md-sys-color-primary);
+        }
+
+        /* Date picker styles */
+        .mdc-text-field--date {
+            margin-bottom: var(--md-sys-spacing-4);
+        }
+
+        .mdc-text-field--date .mdc-text-field__input {
+            color: var(--md-sys-color-on-surface);
+        }
+
+        /* Form layout */
+        .form-section {
+            margin-bottom: var(--md-sys-spacing-6);
+        }
+
+        .form-section h3 {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            line-height: var(--md-sys-typescale-title-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0 0 var(--md-sys-spacing-4) 0;
+        }
+
+        .form-row {
+            display: grid;
+            gap: var(--md-sys-spacing-4); /* 16px - M3 spacing for form elements */
+            margin-bottom: var(--md-sys-spacing-6); /* 24px - M3 spacing for section separation */
+        }
+
+        .form-row.three-columns {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .form-row.two-columns {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .form-row.single-column {
+            grid-template-columns: 1fr;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* References section with M3 spacing */
+        .references-section {
             display: flex;
-            gap: 8px;
+            flex-direction: column;
+            gap: var(--md-sys-spacing-4); /* 16px - M3 spacing for form elements */
+            margin-bottom: var(--md-sys-spacing-6); /* 24px - M3 spacing for section separation */
+        }
+
+        .references-section h4 {
+            font-family: var(--md-sys-typescale-title-small-font);
+            font-size: var(--md-sys-typescale-title-small-size);
+            font-weight: var(--md-sys-typescale-title-small-weight);
+            line-height: var(--md-sys-typescale-title-small-line-height);
+            letter-spacing: var(--md-sys-typescale-title-small-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0 0 var(--md-sys-spacing-2) 0; /* 8px bottom margin */
+        }
+
+        /* M3 Menu styles */
+        .mdc-menu {
+            background: var(--md-sys-color-surface-container);
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.12);
+        }
+
+        .mdc-list-item {
+            color: var(--md-sys-color-on-surface);
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
+        }
+
+        .mdc-list-item:hover {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .mdc-list-item--selected {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        /* M3 Menu Button Styling */
+        .mdc-icon-button--menu {
+            color: var(--md-sys-color-on-surface-variant);
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .mdc-icon-button--menu .material-icons {
+            font-size: 20px;
+        }
+
+        .mdc-icon-button--menu:hover {
+            color: var(--md-sys-color-on-surface);
+        }
+
+        /* Ensure text field has relative positioning for absolute button */
+        .mdc-text-field {
+            position: relative;
+        }
+
+        /* Position the button in the trailing area with M3 spacing */
+        .mdc-notched-outline__trailing {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: var(--md-sys-spacing-2); /* 8px - M3 spacing for internal padding */
+        }
+
+        /* M3 Menu Styling */
+        .mdc-menu {
+            background: var(--md-sys-color-surface-container);
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.12);
+        }
+
+        .mdc-menu .mdc-list-item {
+            color: var(--md-sys-color-on-surface);
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
+            cursor: pointer;
+        }
+
+        .mdc-menu .mdc-list-item:hover {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .mdc-menu .mdc-list-item:active {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        /* Full Width Text Areas */
+        .full-width-textarea {
+            width: 100%;
+        }
+
+        /* Upload Side Sheet - M3 Side Sheet Styling */
+        #uploadSideSheet {
+            --mdc-drawer-container-color: var(--md-sys-color-surface-container);
+            --mdc-drawer-subtitle-text-color: var(--md-sys-color-on-surface);
+            --mdc-drawer-supporting-text-color: var(--md-sys-color-on-surface-variant);
+        }
+
+        #uploadSideSheet {
+            width: 400px !important;
+            max-width: 90vw !important;
+            height: 100vh !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: auto !important;
+            right: -400px !important;
+            z-index: 2000 !important;
+            background: var(--md-sys-color-surface-container) !important;
+            box-shadow: 0 8px 10px -5px rgba(0,0,0,0.2), 0 16px 24px 2px rgba(0,0,0,0.14), 0 6px 30px 5px rgba(0,0,0,0.12) !important;
+            transition: right 0.3s cubic-bezier(0.2, 0, 0, 1) !important;
+        }
+
+        #uploadSideSheet.mdc-drawer--open {
+            right: 0 !important;
+            left: auto !important;
+        }
+
+        #uploadSideSheet .mdc-drawer__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--md-sys-spacing-6);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        #uploadSideSheet .mdc-drawer__title {
+            font-family: var(--md-sys-typescale-headline-small-font);
+            font-size: var(--md-sys-typescale-headline-small-size);
+            font-weight: var(--md-sys-typescale-headline-small-weight);
+            line-height: var(--md-sys-typescale-headline-small-line-height);
+            letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+        }
+
+        #uploadSideSheet .mdc-drawer__close {
+            color: var(--md-sys-color-on-surface-variant);
+            width: 24px;
+            height: 24px;
+            padding: 0;
+        }
+
+        #uploadSideSheet .mdc-drawer__close .material-icons {
+            font-size: 20px;
+        }
+
+        #uploadSideSheet .mdc-drawer__close:hover {
+            color: var(--md-sys-color-on-surface);
+        }
+
+        #uploadSideSheet .mdc-drawer__content {
+            padding: var(--md-sys-spacing-6);
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        #uploadScrim {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.32);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s cubic-bezier(0.2, 0, 0, 1), visibility 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        #uploadScrim.mdc-drawer-scrim--open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .full-width-textarea .mdc-text-field__input {
+            width: 100%;
+        }
+
+        /* Extra Small Button */
+        .mdc-button--extra-small {
+            height: 24px;
+            min-width: 24px;
+            padding: 0 var(--md-sys-spacing-2);
+            font-size: 12px;
+        }
+
+        /* References Section Layout */
+        .add-person-section {
+            display: flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-2);
+            margin-top: var(--md-sys-spacing-2);
+        }
+
+        .add-person-section .mdc-chip-set--input {
+            flex: 1;
+        }
+
+        /* Dialog Actions Layout */
+        .mdc-dialog__actions {
+            justify-content: space-between;
         }
 
         .edit-form {
-            max-width: 600px;
+            max-width: 100%;
         }
 
         .form-group {
@@ -1836,26 +2404,38 @@
 
 
         .modal-section {
-            margin-bottom: 24px;
+            margin-bottom: var(--md-sys-spacing-6);
         }
 
         .modal-section h3 {
-            font-size: 16px;
-            font-weight: 500;
-            margin: 0 0 8px 0;
-            color: var(--mdc-theme-primary);
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            line-height: var(--md-sys-typescale-title-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0 0 var(--md-sys-spacing-3) 0;
         }
 
         .modal-text {
-            background: #f5f5f5;
-            padding: 16px;
-            border-radius: 4px;
-            font-family: 'Roboto Mono', monospace;
-            font-size: 14px;
-            line-height: 1.4;
+            background: var(--md-sys-color-surface-container);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            padding: var(--md-sys-spacing-4);
+            border-radius: 12px;
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+            color: var(--md-sys-color-on-surface);
             white-space: pre-wrap;
-            max-height: 200px;
+            max-height: 300px;
             overflow-y: auto;
+            transition: border-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .modal-text:hover {
+            border-color: var(--md-sys-color-outline);
         }
 
         @media (max-width: 768px) {
@@ -1885,50 +2465,88 @@
             .mdc-list-item__meta {
                 padding: 12px 12px 16px 0; /* Reduced padding for mobile */
             }
+            
+            /* Mobile dialog adjustments */
+            .mdc-dialog {
+                padding: 0;
+            }
+            
+            .mdc-dialog__surface {
+                border-radius: 0;
+                height: 100vh;
+                max-height: 100vh;
+            }
+            
+            .mdc-dialog__header {
+                padding: var(--md-sys-spacing-4);
+            }
+            
+            .mdc-dialog__content {
+                padding: var(--md-sys-spacing-4);
+            }
+            
+            .mdc-dialog__actions {
+                padding: var(--md-sys-spacing-4);
+                flex-wrap: wrap;
+                gap: var(--md-sys-spacing-2);
+            }
+            
+            .mdc-dialog__button {
+                flex: 1;
+                min-width: 0;
+            }
         }
 
         /* M3 Snackbar Styles */
         .mdc-snackbar {
-            position: fixed;
-            bottom: 16px;
-            left: 16px;
-            right: 16px;
-            z-index: 1000;
+            position: fixed !important;
+            bottom: 16px !important;
+            left: 16px !important;
+            right: 16px !important;
+            z-index: 99999 !important;
             pointer-events: none;
             visibility: hidden;
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), visibility 0.3s;
+            isolation: isolate !important;
         }
 
         .mdc-snackbar.mdc-snackbar--open {
-            visibility: visible;
-            transform: translateY(0);
-            pointer-events: auto;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+            pointer-events: auto !important;
+            z-index: 99999 !important;
         }
 
         .mdc-snackbar__surface {
-            background-color: var(--md-sys-color-inverse-surface);
-            color: var(--md-sys-color-on-inverse-surface);
-            border-radius: 4px;
-            box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            min-height: 48px;
-            max-width: 672px;
-            margin: 0 auto;
+            background-color: #1c1b1f !important;
+            background: #1c1b1f !important;
+            color: #e6e0e9 !important;
+            border-radius: 4px !important;
+            box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 14px 16px !important;
+            min-height: 48px !important;
+            max-width: 672px !important;
+            margin: 0 auto !important;
+            position: relative !important;
+            z-index: 100000 !important;
+            opacity: 1 !important;
+            backdrop-filter: none !important;
         }
 
         .mdc-snackbar__label {
-            font-family: var(--md-sys-typescale-body-medium-font);
-            font-size: var(--md-sys-typescale-body-medium-size);
-            font-weight: var(--md-sys-typescale-body-medium-weight);
-            line-height: var(--md-sys-typescale-body-medium-line-height);
-            letter-spacing: var(--md-sys-typescale-body-medium-tracking);
-            color: var(--md-sys-color-on-inverse-surface);
-            flex: 1;
-            margin-right: 8px;
+            font-family: var(--md-sys-typescale-body-medium-font) !important;
+            font-size: var(--md-sys-typescale-body-medium-size) !important;
+            font-weight: var(--md-sys-typescale-body-medium-weight) !important;
+            line-height: var(--md-sys-typescale-body-medium-line-height) !important;
+            letter-spacing: var(--md-sys-typescale-body-medium-tracking) !important;
+            color: #e6e0e9 !important;
+            flex: 1 !important;
+            margin-right: 8px !important;
+            opacity: 1 !important;
         }
 
         .mdc-snackbar__actions {
@@ -1938,20 +2556,21 @@
         }
 
         .mdc-snackbar__action {
-            color: var(--md-sys-color-inverse-primary);
-            font-family: var(--md-sys-typescale-label-large-font);
-            font-size: var(--md-sys-typescale-label-large-size);
-            font-weight: var(--md-sys-typescale-label-large-weight);
-            line-height: var(--md-sys-typescale-label-large-line-height);
-            letter-spacing: var(--md-sys-typescale-label-large-tracking);
-            text-transform: uppercase;
-            padding: 0;
-            min-width: auto;
-            height: auto;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
+            color: #d0bcff !important;
+            font-family: var(--md-sys-typescale-label-large-font) !important;
+            font-size: var(--md-sys-typescale-label-large-size) !important;
+            font-weight: var(--md-sys-typescale-label-large-weight) !important;
+            line-height: var(--md-sys-typescale-label-large-line-height) !important;
+            letter-spacing: var(--md-sys-typescale-label-large-tracking) !important;
+            text-transform: uppercase !important;
+            padding: 0 !important;
+            min-width: auto !important;
+            height: auto !important;
+            background: none !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1) !important;
+            opacity: 1 !important;
         }
 
         .mdc-snackbar__action:hover {
@@ -1981,15 +2600,21 @@
 <body>
     <!-- App Bar -->
     <div class="app-bar">
-        <h1>OCR Translation Pipeline</h1>
+        <h1>Zentall Documents</h1>
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchTab('documents')">Documents</button>
-            <button class="nav-tab" onclick="switchTab('references')">References</button>
+            <button class="nav-tab active" onclick="switchTab('documents')">
+                <span class="material-icons">description</span>
+                <span class="nav-tab-label">Documents</span>
+            </button>
+            <button class="nav-tab" onclick="switchTab('references')">
+                <span class="material-icons">people</span>
+                <span class="nav-tab-label">References</span>
+            </button>
         </div>
         <div class="nav-actions">
-            <button class="mdc-button mdc-button--raised" onclick="showUploadModal()">
+            <button class="mdc-button mdc-button--filled" onclick="showUploadModal()">
                 <span class="mdc-button__ripple"></span>
-                <span class="mdc-button__label">Upload Document</span>
+                <span class="mdc-button__label">Upload Documents</span>
             </button>
         </div>
     </div>
@@ -2172,46 +2797,52 @@
         </div>
     </div>
 
-    <!-- Upload Modal -->
-    <div class="modal" id="uploadModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Upload Document</h2>
-                <button class="mdc-button mdc-button--outlined" onclick="closeUploadModal()">
-                    <span class="mdc-button__ripple"></span>
-                    <span class="mdc-button__label">Close</span>
-                </button>
-            </div>
-            <div id="uploadContent">
-                <!-- Upload form will be loaded here -->
-            </div>
+    <!-- Upload Side Sheet - M3 Side Sheet -->
+    <div class="mdc-drawer mdc-drawer--modal" id="uploadSideSheet" aria-hidden="true">
+        <div class="mdc-drawer__header">
+            <h3 class="mdc-drawer__title">Upload Document</h3>
+            <button class="mdc-icon-button mdc-drawer__close" onclick="closeUploadSideSheet()" aria-label="Close side sheet">
+                <span class="mdc-icon-button__ripple"></span>
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="mdc-drawer__content" id="uploadContent">
+            <!-- Upload form will be loaded here -->
         </div>
     </div>
+    <div class="mdc-drawer-scrim" id="uploadScrim"></div>
 
-    <!-- Document Detail Modal -->
-    <div class="modal" id="documentModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Document Details</h2>
-                <div class="modal-actions">
-                    <button class="mdc-button mdc-button--outlined edit-btn" id="modalEditBtn" onclick="editCurrentDocument()">
-                        <span class="mdc-button__ripple"></span>
-                        <span class="mdc-button__label">Edit</span>
+    <!-- Document Detail Modal - M3 Full-Screen Dialog -->
+    <div class="mdc-dialog" id="documentModal" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+        <div class="mdc-dialog__container">
+            <div class="mdc-dialog__surface">
+                <!-- Dialog Header -->
+                <div class="mdc-dialog__header">
+                    <h2 class="mdc-dialog__title" id="dialogTitle">Document Details</h2>
+                    <button class="mdc-icon-button mdc-dialog__close" onclick="closeModal()" aria-label="Close dialog">
+                        <span class="material-icons">close</span>
                     </button>
-                    <button class="mdc-button mdc-button--outlined delete-btn" id="modalDeleteBtn" onclick="deleteCurrentDocument()">
+                </div>
+                
+                <!-- Dialog Content -->
+                <div class="mdc-dialog__content" id="modalContent">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                
+                <!-- Dialog Actions -->
+                <div class="mdc-dialog__actions">
+                    <button class="mdc-button mdc-button--outlined mdc-dialog__button delete-btn" id="modalDeleteBtn" onclick="deleteCurrentDocument()">
                         <span class="mdc-button__ripple"></span>
                         <span class="mdc-button__label">Delete</span>
                     </button>
-                    <button class="mdc-button mdc-button--outlined" onclick="closeModal()">
+                    <button class="mdc-button mdc-button--raised mdc-dialog__button" id="modalSaveBtn" onclick="saveDocument()">
                         <span class="mdc-button__ripple"></span>
-                        <span class="mdc-button__label">Close</span>
+                        <span class="mdc-button__label">Save Changes</span>
                     </button>
                 </div>
             </div>
-            <div id="modalContent">
-                <!-- Content will be populated by JavaScript -->
-            </div>
         </div>
+        <div class="mdc-dialog__scrim"></div>
     </div>
 
     <!-- M3 Snackbar -->
@@ -2334,7 +2965,7 @@
             return html;
         }
 
-        // Show document details
+        // Show document details (go directly to edit mode)
         async function showDocument(docId) {
             currentDocumentId = docId;
             try {
@@ -2343,58 +2974,10 @@
                 
                 if (data.success) {
                     const doc = data.document;
-                    document.getElementById('modalTitle').textContent = doc.title;
+                    document.getElementById('dialogTitle').textContent = `Edit: ${doc.title}`;
                     
-                    document.getElementById('modalContent').innerHTML = `
-                        <div class="modal-section">
-                            <h3>Summary</h3>
-                            <div class="modal-text">${escapeHtml(doc.summary)}</div>
-                        </div>
-                        <div class="modal-section">
-                            <h3>Original Text</h3>
-                            <div class="modal-text">${escapeHtml(doc.original_text)}</div>
-                        </div>
-                        <div class="modal-section">
-                            <h3>Translated Text</h3>
-                            <div class="modal-text">${escapeHtml(doc.translated_text)}</div>
-                        </div>
-                        <div class="modal-section">
-                            <div class="modal-section-header">
-                                <h3>People Mentioned</h3>
-                                <button class="mdc-button mdc-button--outlined edit-people-btn" onclick="toggleEditMode()">
-                                    <span class="mdc-button__ripple"></span>
-                                    <span class="mdc-button__label">Edit</span>
-                                </button>
-                            </div>
-                            <div class="document-people" id="documentPeople">
-                                ${doc.people.map(person => `
-                                    <span class="person-chip" data-person-name="${escapeHtml(person.original_name)}">
-                                        ${escapeHtml(person.original_name)}
-                                        <button class="chip-remove-btn" onclick="removePersonFromDocument('${escapeHtml(person.original_name)}')" style="display: none;">
-                                            <span class="material-icons">close</span>
-                                        </button>
-                                    </span>
-                                `).join('')}
-                            </div>
-                            <div class="add-person-section" id="addPersonSection" style="display: none;">
-                                <div class="mdc-chip-set mdc-chip-set--input" role="grid">
-                                    <div class="mdc-chip mdc-chip--input" role="row">
-                                        <div class="mdc-chip__ripple"></div>
-                                        <span class="mdc-chip__text">
-                                            <input type="text" id="newPersonName" placeholder="Add person..." class="input-chip-field" onkeydown="handleInputChipKeydown(event)" onblur="handleInputChipBlur()">
-                                        </span>
-                                        <button class="mdc-chip__action mdc-chip__action--primary" onclick="addPersonToDocument()" tabindex="-1">
-                                            <span class="mdc-chip__icon mdc-chip__icon--primary">
-                                                <span class="material-icons">add</span>
-                                            </span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    
-                    document.getElementById('documentModal').style.display = 'block';
+                    // Go directly to edit mode
+                    showEditModal(doc);
                 } else {
                     showError('Failed to load document: ' + data.error);
                 }
@@ -2405,7 +2988,7 @@
 
         // Close modal
         function closeModal() {
-            document.getElementById('documentModal').style.display = 'none';
+            document.getElementById('documentModal').classList.remove('mdc-dialog--open');
         }
 
         // Enhanced search functionality
@@ -2626,11 +3209,10 @@
             }
         }
 
-        // Edit current document (from modal)
+        // Edit current document (from modal) - now handled directly in showDocument
         function editCurrentDocument() {
-            if (currentDocumentId) {
-                editDocument(currentDocumentId);
-            }
+            // This function is no longer needed as we go directly to edit mode
+            console.log('editCurrentDocument called - now handled directly in showDocument');
         }
 
         // Delete current document (from modal)
@@ -2641,68 +3223,174 @@
             }
         }
 
-        // Show edit modal
+        // Show edit modal with M3 components
         function showEditModal(doc) {
             const modal = document.getElementById('documentModal');
-            const modalTitle = document.getElementById('modalTitle');
+            const modalTitle = document.getElementById('dialogTitle');
             const modalContent = document.getElementById('modalContent');
             
-            modalTitle.textContent = 'Edit Document';
+            modalTitle.textContent = doc.title;
+            
+            // Store document people data for menu population
+            window.currentDocumentPeople = doc.people || [];
             modalContent.innerHTML = `
                 <div class="edit-form">
-                    <div class="form-group">
-                        <label for="editTitle">Title:</label>
-                        <input type="text" id="editTitle" value="${escapeHtml(doc.title)}" class="form-input">
+                    <!-- Read-only Summary -->
+                    <div class="summary-section">
+                        <h3 class="summary-title">Summary</h3>
+                        <p class="summary-text">${escapeHtml(doc.summary || 'No summary available')}</p>
                     </div>
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="editSourceLanguage">Source Language:</label>
-                            <select id="editSourceLanguage" class="form-input">
-                                <option value="unknown" ${doc.source_language === 'unknown' ? 'selected' : ''}>Unknown</option>
-                                <option value="en" ${doc.source_language === 'en' ? 'selected' : ''}>English</option>
-                                <option value="de" ${doc.source_language === 'de' ? 'selected' : ''}>German</option>
-                                <option value="fr" ${doc.source_language === 'fr' ? 'selected' : ''}>French</option>
-                                <option value="es" ${doc.source_language === 'es' ? 'selected' : ''}>Spanish</option>
-                                <option value="it" ${doc.source_language === 'it' ? 'selected' : ''}>Italian</option>
-                                <option value="pt" ${doc.source_language === 'pt' ? 'selected' : ''}>Portuguese</option>
-                                <option value="ru" ${doc.source_language === 'ru' ? 'selected' : ''}>Russian</option>
-                                <option value="zh" ${doc.source_language === 'zh' ? 'selected' : ''}>Chinese</option>
-                                <option value="ja" ${doc.source_language === 'ja' ? 'selected' : ''}>Japanese</option>
-                                <option value="ko" ${doc.source_language === 'ko' ? 'selected' : ''}>Korean</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="editTargetLanguage">Target Language:</label>
-                            <select id="editTargetLanguage" class="form-input">
-                                <option value="en" ${doc.target_language === 'en' ? 'selected' : ''}>English</option>
-                                <option value="de" ${doc.target_language === 'de' ? 'selected' : ''}>German</option>
-                                <option value="fr" ${doc.target_language === 'fr' ? 'selected' : ''}>French</option>
-                                <option value="es" ${doc.target_language === 'es' ? 'selected' : ''}>Spanish</option>
-                                <option value="it" ${doc.target_language === 'it' ? 'selected' : ''}>Italian</option>
-                                <option value="pt" ${doc.target_language === 'pt' ? 'selected' : ''}>Portuguese</option>
-                                <option value="ru" ${doc.target_language === 'ru' ? 'selected' : ''}>Russian</option>
-                                <option value="zh" ${doc.target_language === 'zh' ? 'selected' : ''}>Chinese</option>
-                                <option value="ja" ${doc.target_language === 'ja' ? 'selected' : ''}>Japanese</option>
-                                <option value="ko" ${doc.target_language === 'ko' ? 'selected' : ''}>Korean</option>
-                            </select>
+                    <!-- Editable Fields -->
+                    <!-- Date Field -->
+                    <div class="form-row single-column">
+                        <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--date" data-mdc-auto-init="MDCTextField">
+                            <input type="date" id="editDocumentDate" class="mdc-text-field__input" value="${extractDateFromFilename(doc.title)}">
+                            <div class="mdc-notched-outline">
+                                <div class="mdc-notched-outline__leading"></div>
+                                <div class="mdc-notched-outline__notch">
+                                    <label class="mdc-floating-label">Document Date</label>
+                                </div>
+                                <div class="mdc-notched-outline__trailing"></div>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="tab-container">
-                        <div class="tab-buttons">
-                            <button class="tab-button active" onclick="switchTab('translation')">Translation</button>
-                            <button class="tab-button" onclick="switchTab('original')">Original Image</button>
-                        </div>
-                        
-                        <div id="translation-tab" class="tab-content active">
-                            <div class="form-group">
-                                <label for="editTranslatedText">Translated Text:</label>
-                                <textarea id="editTranslatedText" rows="8" class="form-textarea">${escapeHtml(doc.translated_text || '')}</textarea>
+                    <!-- Sender and Recipient Fields -->
+                    <div class="form-row two-columns">
+                        <!-- Sender -->
+                        <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                            <input type="text" id="senderInput" class="mdc-text-field__input" readonly value="${doc.sender || ''}">
+                            <div class="mdc-notched-outline">
+                                <div class="mdc-notched-outline__leading"></div>
+                                <div class="mdc-notched-outline__notch">
+                                    <label class="mdc-floating-label ${doc.sender ? 'mdc-floating-label--float-above' : ''}">Sender</label>
+                                </div>
+                                <div class="mdc-notched-outline__trailing">
+                                    <button class="mdc-icon-button mdc-icon-button--menu" id="senderMenuButton" type="button">
+                                        <span class="mdc-icon-button__ripple"></span>
+                                        <span class="material-icons">arrow_drop_down</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         
-                        <div id="original-tab" class="tab-content">
+                        <!-- Recipient -->
+                        <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                            <input type="text" id="recipientInput" class="mdc-text-field__input" readonly value="${doc.recipient || ''}">
+                            <div class="mdc-notched-outline">
+                                <div class="mdc-notched-outline__leading"></div>
+                                <div class="mdc-notched-outline__notch">
+                                    <label class="mdc-floating-label ${doc.recipient ? 'mdc-floating-label--float-above' : ''}">Recipient</label>
+                                </div>
+                                <div class="mdc-notched-outline__trailing">
+                                    <button class="mdc-icon-button mdc-icon-button--menu" id="recipientMenuButton" type="button">
+                                        <span class="mdc-icon-button__ripple"></span>
+                                        <span class="material-icons">arrow_drop_down</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- References Section -->
+                    <div class="references-section">
+                        <h4>References</h4>
+                        <div class="document-people" id="documentPeople">
+                            ${doc.people.map(person => `
+                                <span class="person-chip" data-person-name="${escapeHtml(person.original_name)}">
+                                    ${escapeHtml(person.original_name)}
+                                    <button class="chip-remove-btn" onclick="removePersonFromDocument('${escapeHtml(person.original_name)}')">
+                                        <span class="material-icons">close</span>
+                                    </button>
+                                </span>
+                            `).join('')}
+                        </div>
+                        <div class="add-person-section">
+                            <div class="mdc-chip-set mdc-chip-set--input" role="grid">
+                                <div class="mdc-chip mdc-chip--input" role="row">
+                                    <div class="mdc-chip__ripple"></div>
+                                    <span class="mdc-chip__text">
+                                        <input type="text" id="newPersonName" placeholder="Add person..." class="input-chip-field" onkeydown="handleInputChipKeydown(event)" onblur="handleInputChipBlur()">
+                                    </span>
+                                </div>
+                            </div>
+                            <button class="mdc-button mdc-button--outlined mdc-button--extra-small" onclick="addPersonToDocument()">
+                                <span class="mdc-button__ripple"></span>
+                                <span class="mdc-button__label">Add</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- M3 Tabs for Content Sections -->
+                    <div class="mdc-tab-bar" role="tablist" data-mdc-auto-init="MDCTabBar">
+                        <div class="mdc-tab-scroller">
+                            <div class="mdc-tab-scroller__scroll-area">
+                                <div class="mdc-tab-scroller__scroll-content">
+                                    <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0" data-tab="translation">
+                                        <span class="mdc-tab__content">
+                                            <span class="mdc-tab__text-label">Translation</span>
+                                        </span>
+                                        <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                        </span>
+                                        <span class="mdc-tab__ripple"></span>
+                                    </button>
+                                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="original">
+                                        <span class="mdc-tab__content">
+                                            <span class="mdc-tab__text-label">Original</span>
+                                        </span>
+                                        <span class="mdc-tab-indicator">
+                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                        </span>
+                                        <span class="mdc-tab__ripple"></span>
+                                    </button>
+                                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="image">
+                                        <span class="mdc-tab__content">
+                                            <span class="mdc-tab__text-label">Image</span>
+                                        </span>
+                                        <span class="mdc-tab-indicator">
+                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                        </span>
+                                        <span class="mdc-tab__ripple"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Content Panels -->
+                    <div class="tab-content-panels">
+                        <!-- Translation Tab -->
+                        <div class="tab-panel active" id="tab-translation">
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea full-width-textarea" data-mdc-auto-init="MDCTextField">
+                                <textarea id="editTranslatedText" class="mdc-text-field__input" rows="12">${escapeHtml(doc.translated_text || '')}</textarea>
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                        <label class="mdc-floating-label">Translated Text</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Original Text Tab -->
+                        <div class="tab-panel" id="tab-original">
+                            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea full-width-textarea" data-mdc-auto-init="MDCTextField">
+                                <textarea id="editOriginalText" class="mdc-text-field__input" rows="12">${escapeHtml(doc.original_text || '')}</textarea>
+                                <div class="mdc-notched-outline">
+                                    <div class="mdc-notched-outline__leading"></div>
+                                    <div class="mdc-notched-outline__notch">
+                                        <label class="mdc-floating-label">Original Text</label>
+                                    </div>
+                                    <div class="mdc-notched-outline__trailing"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Tab -->
+                        <div class="tab-panel" id="tab-image">
                             <div class="image-controls">
                                 <div class="page-selector">
                                     <label>Page:</label>
@@ -2722,87 +3410,337 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="editSummary">Summary:</label>
-                        <textarea id="editSummary" rows="4" class="form-textarea">${escapeHtml(doc.summary)}</textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="regenerateSummary" checked>
-                            <span class="checkmark"></span>
-                            Regenerate summary based on translated text
-                        </label>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button class="mdc-button mdc-button--raised" onclick="saveDocument()">
-                            <span class="mdc-button__ripple"></span>
-                            <span class="mdc-button__label">Save Changes</span>
-                        </button>
-                        <button class="mdc-button mdc-button--outlined" onclick="closeModal()">
-                            <span class="mdc-button__ripple"></span>
-                            <span class="mdc-button__label">Cancel</span>
-                        </button>
-                    </div>
                 </div>
             `;
             
-            modal.style.display = 'block';
+            // Add M3 menu components to the modal
+            modalContent.insertAdjacentHTML('beforeend', `
+                <!-- Sender Menu -->
+                <div class="mdc-menu mdc-menu-surface" id="senderMenu" data-mdc-auto-init="MDCMenu">
+                    <ul class="mdc-list" role="menu" aria-hidden="true">
+                        <li class="mdc-list-item" role="menuitem" data-value="">
+                            <span class="mdc-list-item__ripple"></span>
+                            <span class="mdc-list-item__text">No Sender</span>
+                        </li>
+                        ${generatePeopleOptions(doc.people)}
+                    </ul>
+                </div>
+                
+                <!-- Recipient Menu -->
+                <div class="mdc-menu mdc-menu-surface" id="recipientMenu" data-mdc-auto-init="MDCMenu">
+                    <ul class="mdc-list" role="menu" aria-hidden="true">
+                        <li class="mdc-list-item" role="menuitem" data-value="">
+                            <span class="mdc-list-item__ripple"></span>
+                            <span class="mdc-list-item__text">No Recipient</span>
+                        </li>
+                        ${generatePeopleOptions(doc.people)}
+                    </ul>
+                </div>
+            `);
+            
+            modal.classList.add('mdc-dialog--open');
+            
+            // Initialize M3 components
+            mdc.autoInit();
+            
+            // Set up tab switching
+            setupTabSwitching();
+            
+            // Set up menu interactions
+            setupMenuInteractions();
+            
+            // Initial population of menus
+            setTimeout(() => {
+                console.log('Initial menu population starting...');
+                console.log('Current document people:', window.currentDocumentPeople);
+                refreshMenuOptions('sender');
+                refreshMenuOptions('recipient');
+            }, 200);
+            
             
             // Load the first page image
-            console.log('showEditModal called with doc:', doc);
-            console.log('Document ID:', doc.id);
-            console.log('Page count:', doc.page_count);
             loadDocumentImage(doc.id);
+        }
+
+        // Helper function to extract date from filename
+        function extractDateFromFilename(filename) {
+            // Try to extract date in various formats: YYYY-MM-DD, YYYY_MM_DD, etc.
+            const datePatterns = [
+                /(\d{4})-(\d{2})-(\d{2})/,  // YYYY-MM-DD
+                /(\d{4})_(\d{2})_(\d{2})/,  // YYYY_MM_DD
+                /(\d{4})(\d{2})(\d{2})/,    // YYYYMMDD
+                /(\d{2})-(\d{2})-(\d{4})/,  // MM-DD-YYYY
+                /(\d{2})_(\d{2})_(\d{4})/,  // MM_DD_YYYY
+            ];
+            
+            for (const pattern of datePatterns) {
+                const match = filename.match(pattern);
+                if (match) {
+                    if (pattern.source.includes('(\\d{4})-(\\d{2})-(\\d{2})') || 
+                        pattern.source.includes('(\\d{4})_(\\d{2})_(\\d{2})') ||
+                        pattern.source.includes('(\\d{4})(\\d{2})(\\d{2})')) {
+                        // YYYY-MM-DD format
+                        return `${match[1]}-${match[2]}-${match[3]}`;
+                    } else {
+                        // MM-DD-YYYY format
+                        return `${match[3]}-${match[1]}-${match[2]}`;
+                    }
+                }
+            }
+            
+            // Default to today's date if no date found
+            return new Date().toISOString().split('T')[0];
+        }
+
+        // Helper function to generate people options for selects
+        function generatePeopleOptions(people) {
+            console.log('generatePeopleOptions called with:', people);
+            if (!people || people.length === 0) {
+                console.log('No people data, returning empty string');
+                return '';
+            }
+            
+            const options = people.map(person => `
+                <li class="mdc-list-item" data-value="${escapeHtml(person.original_name)}" role="menuitem">
+                    <span class="mdc-list-item__ripple"></span>
+                    <span class="mdc-list-item__text">${escapeHtml(person.original_name)}</span>
+                </li>
+            `).join('');
+            
+            console.log('Generated options HTML:', options);
+            return options;
+        }
+
+
+        // Set up M3 menu interactions for sender/recipient
+        function setupMenuInteractions() {
+            // Add a small delay to ensure DOM is fully ready
+            setTimeout(() => {
+                // Initialize M3 menu components
+                const senderMenuButton = document.getElementById('senderMenuButton');
+                const recipientMenuButton = document.getElementById('recipientMenuButton');
+                const senderMenu = document.getElementById('senderMenu');
+                const recipientMenu = document.getElementById('recipientMenu');
+                
+                console.log('Setting up menu interactions:', {
+                    senderMenuButton: !!senderMenuButton,
+                    recipientMenuButton: !!recipientMenuButton,
+                    senderMenu: !!senderMenu,
+                    recipientMenu: !!recipientMenu
+                });
+            
+            if (senderMenuButton && senderMenu) {
+                // Initialize M3 menu
+                const senderMenuComponent = new mdc.menu.MDCMenu(senderMenu);
+                
+                // Set menu anchor
+                senderMenuComponent.setAnchorElement(senderMenuButton);
+                
+                // Handle menu button click
+                senderMenuButton.addEventListener('click', () => {
+                    console.log('Sender menu button clicked');
+                    // Refresh menu options before opening
+                    refreshMenuOptions('sender');
+                    senderMenuComponent.open = !senderMenuComponent.open;
+                });
+                
+                // Handle menu item selection
+                senderMenu.addEventListener('MDCMenu:selected', (e) => {
+                    const selectedIndex = e.detail.index;
+                    const selectedItem = senderMenu.querySelectorAll('.mdc-list-item')[selectedIndex];
+                    const selectedText = selectedItem.querySelector('.mdc-list-item__text').textContent;
+                    const selectedValue = selectedItem.dataset.value;
+                    
+                    // Update input field
+                    const senderInput = document.getElementById('senderInput');
+                    senderInput.value = selectedText;
+                    
+                    // Update floating label
+                    const label = senderInput.closest('.mdc-text-field').querySelector('.mdc-floating-label');
+                    if (selectedText) {
+                        label.classList.add('mdc-floating-label--float-above');
+                    } else {
+                        label.classList.remove('mdc-floating-label--float-above');
+                    }
+                });
+                
+                // Store reference for later use
+                window.senderMenuComponent = senderMenuComponent;
+            }
+            
+            if (recipientMenuButton && recipientMenu) {
+                // Initialize M3 menu
+                const recipientMenuComponent = new mdc.menu.MDCMenu(recipientMenu);
+                
+                // Set menu anchor
+                recipientMenuComponent.setAnchorElement(recipientMenuButton);
+                
+                // Handle menu button click
+                recipientMenuButton.addEventListener('click', () => {
+                    console.log('Recipient menu button clicked');
+                    // Refresh menu options before opening
+                    refreshMenuOptions('recipient');
+                    recipientMenuComponent.open = !recipientMenuComponent.open;
+                });
+                
+                // Handle menu item selection
+                recipientMenu.addEventListener('MDCMenu:selected', (e) => {
+                    const selectedIndex = e.detail.index;
+                    const selectedItem = recipientMenu.querySelectorAll('.mdc-list-item')[selectedIndex];
+                    const selectedText = selectedItem.querySelector('.mdc-list-item__text').textContent;
+                    const selectedValue = selectedItem.dataset.value;
+                    
+                    // Update input field
+                    const recipientInput = document.getElementById('recipientInput');
+                    recipientInput.value = selectedText;
+                    
+                    // Update floating label
+                    const label = recipientInput.closest('.mdc-text-field').querySelector('.mdc-floating-label');
+                    if (selectedText) {
+                        label.classList.add('mdc-floating-label--float-above');
+                    } else {
+                        label.classList.remove('mdc-floating-label--float-above');
+                    }
+                });
+                
+                // Store reference for later use
+                window.recipientMenuComponent = recipientMenuComponent;
+            }
+            }, 100);
+        }
+
+        // Refresh menu options with current document people
+        function refreshMenuOptions(menuType) {
+            const menu = document.getElementById(`${menuType}Menu`);
+            if (!menu) {
+                console.log(`Menu ${menuType}Menu not found`);
+                return;
+            }
+            
+            // Get current people from the document - try multiple sources
+            let currentPeople = [];
+            
+            // First try to get from people chips
+            const peopleChips = document.querySelectorAll('#documentPeople .person-chip');
+            if (peopleChips.length > 0) {
+                currentPeople = Array.from(peopleChips).map(chip => ({
+                    original_name: chip.dataset.personName
+                }));
+                console.log(`Found people from chips:`, currentPeople);
+            } else {
+                // If no chips, try to get from the original document data
+                // This should be available from the showEditModal function
+                if (window.currentDocumentPeople) {
+                    currentPeople = window.currentDocumentPeople;
+                    console.log(`Found people from window.currentDocumentPeople:`, currentPeople);
+                } else {
+                    console.log(`No people data found for ${menuType} menu`);
+                }
+            }
+            
+            console.log(`Refreshing ${menuType} menu with people:`, currentPeople);
+            
+            // Update the menu options
+            const list = menu.querySelector('.mdc-list');
+            if (!list) {
+                console.log(`List not found in ${menuType}Menu`);
+                return;
+            }
+            
+            const noOption = list.querySelector('li[data-value=""]');
+            const peopleOptions = generatePeopleOptions(currentPeople);
+            
+            console.log(`Generated options for ${menuType}:`, peopleOptions);
+            
+            // Clear existing options except the "No" option
+            list.innerHTML = '';
+            if (noOption) {
+                list.appendChild(noOption);
+            }
+            list.insertAdjacentHTML('beforeend', peopleOptions);
+            
+            // Debug: Log the final menu HTML
+            console.log(`Final ${menuType} menu HTML:`, list.innerHTML);
+        }
+
+        // Generate M3 select options for people
+        function generateM3SelectOptions(people) {
+            if (!people || people.length === 0) {
+                return '';
+            }
+            
+            return people.map(person => `
+                <li class="mdc-list-item" data-value="${escapeHtml(person.original_name)}" role="option">
+                    <span class="mdc-list-item__ripple"></span>
+                    <span class="mdc-list-item__text">${escapeHtml(person.original_name)}</span>
+                </li>
+            `).join('');
+        }
+
+        // Set up tab switching for M3 tabs
+        function setupTabSwitching() {
+            const tabs = document.querySelectorAll('.mdc-tab[data-tab]');
+            const panels = document.querySelectorAll('.tab-panel');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.dataset.tab;
+                    
+                    // Update tab states
+                    tabs.forEach(t => {
+                        t.classList.remove('mdc-tab--active');
+                        t.setAttribute('aria-selected', 'false');
+                        t.setAttribute('tabindex', '-1');
+                    });
+                    
+                    tab.classList.add('mdc-tab--active');
+                    tab.setAttribute('aria-selected', 'true');
+                    tab.setAttribute('tabindex', '0');
+                    
+                    // Update panel visibility
+                    panels.forEach(panel => {
+                        panel.classList.remove('active');
+                    });
+                    
+                    const targetPanel = document.getElementById(`tab-${targetTab}`);
+                    if (targetPanel) {
+                        targetPanel.classList.add('active');
+                    }
+                });
+            });
         }
 
         // Save document changes
         async function saveDocument() {
             if (!currentDocumentId) return;
             
-            const title = document.getElementById('editTitle').value.trim();
-            const sourceLanguage = document.getElementById('editSourceLanguage').value;
-            const targetLanguage = document.getElementById('editTargetLanguage').value;
+            const title = document.getElementById('dialogTitle').textContent.trim();
+            const documentDate = document.getElementById('editDocumentDate').value;
+            const sender = document.getElementById('senderInput').value;
+            const recipient = document.getElementById('recipientInput').value;
+            const originalText = document.getElementById('editOriginalText').value.trim();
             const translatedText = document.getElementById('editTranslatedText').value.trim();
-            const summary = document.getElementById('editSummary').value.trim();
-            const regenerateSummary = document.getElementById('regenerateSummary').checked;
             
             if (!title) {
-                alert('Please fill in the title');
-                return;
-            }
-            
-            if (!translatedText) {
-                alert('Please fill in the translated text');
-                return;
-            }
-            
-            if (!regenerateSummary && !summary) {
-                alert('Please fill in the summary or check "Regenerate summary"');
+                showSnackbar('Please enter a title for the document.');
                 return;
             }
             
             try {
                 // Show loading state
-                const saveButton = document.querySelector('.mdc-button--raised');
+                const saveButton = document.getElementById('modalSaveBtn');
                 const originalText = saveButton.querySelector('.mdc-button__label').textContent;
                 saveButton.querySelector('.mdc-button__label').textContent = 'Saving...';
                 saveButton.disabled = true;
                 
                 const requestData = {
                     title: title,
-                    source_language: sourceLanguage,
-                    target_language: targetLanguage,
-                    translated_text: translatedText,
-                    regenerate_summary: regenerateSummary
+                    document_date: documentDate,
+                    sender: sender === 'Select Sender' ? '' : sender,
+                    recipient: recipient === 'Select Recipient' ? '' : recipient,
+                    original_text: originalText,
+                    translated_text: translatedText
                 };
-                
-                // Only include summary if not regenerating
-                if (!regenerateSummary) {
-                    requestData.summary = summary;
-                }
                 
                 const response = await fetch(`/documents/${currentDocumentId}`, {
                     method: 'PUT',
@@ -2815,26 +3753,18 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    if (regenerateSummary && data.regenerated_summary) {
-                        // Update the summary field with the regenerated summary
-                        document.getElementById('editSummary').value = data.regenerated_summary;
-                        
-                        // Show success message with regeneration info
-                        alert('Document updated successfully! Summary has been regenerated based on the translated text.');
-                    } else {
-                        alert('Document updated successfully');
-                    }
-                    
                     closeModal();
-                    loadDocuments(); // Refresh the list
+                    loadDocuments(); // Refresh the document list
+                    showSnackbar('Document updated successfully!');
                 } else {
-                    alert('Error updating document: ' + data.error);
+                    throw new Error(data.error || 'Failed to update document');
                 }
             } catch (error) {
-                alert('Error updating document: ' + error.message);
+                console.error('Error saving document:', error);
+                showSnackbar('Error saving document: ' + error.message);
             } finally {
                 // Restore button state
-                const saveButton = document.querySelector('.mdc-button--raised');
+                const saveButton = document.getElementById('modalSaveBtn');
                 saveButton.querySelector('.mdc-button__label').textContent = 'Save Changes';
                 saveButton.disabled = false;
             }
@@ -2974,12 +3904,6 @@
             }
         });
 
-        // Close upload modal when clicking outside
-        document.getElementById('uploadModal').addEventListener('click', (e) => {
-            if (e.target.id === 'uploadModal') {
-                closeUploadModal();
-            }
-        });
 
         // Tab switching functionality
         function switchTab(tabName) {
@@ -2997,12 +3921,13 @@
             }
         }
 
-        // Upload modal functions
+        // Upload side sheet functions
         async function showUploadModal() {
-            const modal = document.getElementById('uploadModal');
+            const sideSheet = document.getElementById('uploadSideSheet');
+            const scrim = document.getElementById('uploadScrim');
             const uploadContent = document.getElementById('uploadContent');
             
-            console.log('Opening upload modal...');
+            console.log('Opening upload side sheet...');
             
             // Load the upload form content
             try {
@@ -3021,14 +3946,30 @@
                 uploadContent.innerHTML = '<div class="error">Error loading upload form: ' + error.message + '</div>';
             }
             
-            modal.style.display = 'block';
-            console.log('Modal display set to block');
+            // Open the M3 side sheet
+            sideSheet.classList.add('mdc-drawer--open');
+            sideSheet.setAttribute('aria-hidden', 'false');
+            scrim.classList.add('mdc-drawer-scrim--open');
+            
+            // Add scrim click handler to close side sheet
+            scrim.addEventListener('click', closeUploadSideSheet);
+            
+            console.log('M3 side sheet opened');
         }
 
-        function closeUploadModal() {
-            console.log('Closing upload modal...');
-            document.getElementById('uploadModal').style.display = 'none';
-            console.log('Modal display set to none');
+        function closeUploadSideSheet() {
+            console.log('Closing upload side sheet...');
+            const sideSheet = document.getElementById('uploadSideSheet');
+            const scrim = document.getElementById('uploadScrim');
+            
+            sideSheet.classList.remove('mdc-drawer--open');
+            sideSheet.setAttribute('aria-hidden', 'true');
+            scrim.classList.remove('mdc-drawer-scrim--open');
+            
+            // Remove scrim click handler
+            scrim.removeEventListener('click', closeUploadSideSheet);
+            
+            console.log('M3 side sheet closed');
         }
 
         // Initialize upload form functionality
@@ -3184,27 +4125,36 @@
                         progressFill.style.width = '100%';
                         progressText.textContent = 'Complete!';
                         
-                        // Close upload modal immediately
-                        closeUploadModal();
-                        
-                        // Show snackbar with results
+                        // Show success message in side sheet
                         const message = successfulUploads > 0 
                             ? `Successfully uploaded ${successfulUploads} document${successfulUploads > 1 ? 's' : ''}`
                             : 'Upload failed';
                         
-                        const actionText = successfulUploads > 0 ? 'View Documents' : null;
-                        const actionCallback = successfulUploads > 0 ? () => {
-                            // Switch to documents tab and refresh
-                            document.querySelector('.nav-tab[data-tab="documents"]').click();
-                            loadDocuments();
-                        } : null;
+                        // Update the side sheet content to show success message
+                        const uploadContent = document.getElementById('uploadContent');
+                        uploadContent.innerHTML = `
+                            <div style="text-align: center; padding: 40px 20px;">
+                                <div style="font-size: 48px; color: var(--md-sys-color-primary); margin-bottom: 16px;">
+                                    ${successfulUploads > 0 ? '✓' : '✗'}
+                                </div>
+                                <h3 style="color: var(--md-sys-color-on-surface); margin-bottom: 16px; font-family: var(--md-sys-typescale-headline-small-font);">
+                                    ${message}
+                                </h3>
+                                <p style="color: var(--md-sys-color-on-surface-variant); font-family: var(--md-sys-typescale-body-medium-font);">
+                                    ${successfulUploads > 0 ? 'The document list will refresh automatically.' : 'Please try again.'}
+                                </p>
+                            </div>
+                        `;
                         
-                        showSnackbar(message, actionText, actionCallback);
-                        
-                        // Refresh document list to show new documents
+                        // Auto-refresh document list if successful
                         if (successfulUploads > 0) {
                             loadDocuments();
                         }
+                        
+                        // Close side sheet after 2 second delay
+                        setTimeout(() => {
+                            closeUploadSideSheet();
+                        }, 2000);
                         
                         return;
                     }
@@ -3834,6 +4784,10 @@
                     // Clear the input
                     document.getElementById('newPersonName').value = '';
                     
+                    // Refresh menu options to include the new person
+                    refreshMenuOptions('sender');
+                    refreshMenuOptions('recipient');
+                    
                     showSnackbar(`Added ${personName} to document`);
                 } else {
                     showSnackbar('Error adding person: ' + (data.error || 'Unknown error'));
@@ -3867,6 +4821,10 @@
                     if (chip) {
                         chip.remove();
                     }
+                    
+                    // Refresh menu options to remove the person
+                    refreshMenuOptions('sender');
+                    refreshMenuOptions('recipient');
                     
                     showSnackbar(`Removed ${personName} from document`);
                 } else {
@@ -3902,11 +4860,20 @@
             document.getElementById('sideSheetClose').addEventListener('click', closePersonSideSheet);
             document.getElementById('sideSheetOverlay').addEventListener('click', closePersonSideSheet);
             
-            // Close side sheet on Escape key
+            // Dialog event listeners
+            const documentModal = document.getElementById('documentModal');
+            documentModal.addEventListener('click', (e) => {
+                if (e.target === documentModal || e.target.classList.contains('mdc-dialog__scrim')) {
+                    closeModal();
+                }
+            });
+            
+            // Close dialogs on Escape key
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     closePersonSideSheet();
                     closeAddReferenceModal();
+                    closeModal();
                 }
             });
             
