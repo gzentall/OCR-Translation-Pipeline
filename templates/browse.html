@@ -2274,11 +2274,7 @@
         }
 
         .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
+            margin-top: 16px;
         }
 
         .image-viewer {
@@ -2300,50 +2296,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .image-controls {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
 
-        .page-selector {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .page-selector select {
-            padding: 4px 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .zoom-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .zoom-btn {
-            background: #1976d2;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .zoom-btn:hover {
-            background: #1565c0;
-        }
-
-        .zoom-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
 
         .image-loading {
             color: #666;
@@ -2881,24 +2834,32 @@
         // Load documents
         async function loadDocuments() {
             try {
+                console.log('Loading documents...');
                 const response = await fetch('/documents');
                 const data = await response.json();
+                
+                console.log('Documents response:', data);
                 
                 if (data.success) {
                     allDocuments = data.documents;
                     filteredDocuments = [...allDocuments];
+                    console.log('Documents loaded:', allDocuments.length);
                     renderDocuments();
                 } else {
+                    console.error('Failed to load documents:', data.error);
                     showError('Failed to load documents: ' + data.error);
                 }
             } catch (error) {
+                console.error('Error loading documents:', error);
                 showError('Error loading documents: ' + error.message);
             }
         }
 
         // Render documents
         function renderDocuments() {
+            console.log('Rendering documents...');
             const container = document.getElementById('documentsContainer');
+            console.log('Container found:', !!container);
             
             if (filteredDocuments.length === 0) {
                 const query = document.getElementById('searchInput').value.trim();
@@ -2924,12 +2885,12 @@
                                      <div class="no-image" style="display: none;">📄</div>` :
                                     `<div class="no-image">📄</div>`
                                 }
-                                <div class="page-badge">${doc.page_count}</div>
+                                <div class="page-badge">${doc.page_count || 0}</div>
                             </div>
                             <div class="mdc-list-item__text">
-                                <div class="mdc-list-item__primary-text">${escapeHtml(doc.title)}</div>
+                                <div class="mdc-list-item__primary-text">${escapeHtml(doc.title || doc.id || 'Untitled Document')}</div>
                                 <div class="mdc-list-item__secondary-text">
-                                    ${escapeHtml(doc.summary).substring(0, 100)}${doc.summary.length > 100 ? '...' : ''}
+                                    ${doc.summary ? escapeHtml(doc.summary).substring(0, 100) + (doc.summary.length > 100 ? '...' : '') : 'No summary available'}
                                 </div>
                                 ${(doc.people && doc.people.length > 0) ? `
                                 <div class="mdc-list-item__tertiary-text">
@@ -2977,7 +2938,7 @@
                     document.getElementById('dialogTitle').textContent = `Edit: ${doc.title}`;
                     
                     // Go directly to edit mode
-                    showEditModal(doc);
+                    await showEditModal(doc);
                 } else {
                     showError('Failed to load document: ' + data.error);
                 }
@@ -3169,7 +3130,7 @@
                 
                 if (data.success) {
                     const doc = data.document;
-                    showEditModal(doc);
+                    await showEditModal(doc);
                 } else {
                     alert('Error loading document: ' + data.error);
                 }
@@ -3223,16 +3184,51 @@
             }
         }
 
-        // Show edit modal with M3 components
-        function showEditModal(doc) {
+        // Helper function for HTML escaping
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // OLD FUNCTION - REMOVED
+        async function showEditModal_OLD(doc) {
+            console.log('=== Starting showEditModal ===');
+            
             const modal = document.getElementById('documentModal');
             const modalTitle = document.getElementById('dialogTitle');
             const modalContent = document.getElementById('modalContent');
             
             modalTitle.textContent = doc.title;
             
+            try {
+                // 1. Fetch data first
+                console.log('Fetching frequency-sorted people...');
+                const response = await fetch('/people/sorted');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                if (!data.success || !data.people) {
+                    throw new Error('Invalid API response');
+                }
+                
+                const frequencySortedPeople = data.people;
+                console.log(`✓ Fetched ${frequencySortedPeople.length} frequency-sorted people`);
+                console.log('✓ Sample data:', frequencySortedPeople.slice(0, 3));
+            } catch (error) {
+                console.error('Error fetching frequency-sorted people:', error);
+                frequencySortedPeople = doc.people || [];
+            }
+            
             // Store document people data for menu population
             window.currentDocumentPeople = doc.people || [];
+            window.currentDocumentId = doc.id;
             modalContent.innerHTML = `
                 <div class="edit-form">
                     <!-- Read-only Summary -->
@@ -3422,7 +3418,7 @@
                             <span class="mdc-list-item__ripple"></span>
                             <span class="mdc-list-item__text">No Sender</span>
                         </li>
-                        ${generatePeopleOptions(doc.people)}
+                        ${generatePeopleOptions(frequencySortedPeople)}
                     </ul>
                 </div>
                 
@@ -3433,7 +3429,7 @@
                             <span class="mdc-list-item__ripple"></span>
                             <span class="mdc-list-item__text">No Recipient</span>
                         </li>
-                        ${generatePeopleOptions(doc.people)}
+                        ${generatePeopleOptions(frequencySortedPeople)}
                     </ul>
                 </div>
             `);
@@ -3449,47 +3445,916 @@
             // Set up menu interactions
             setupMenuInteractions();
             
-            // Initial population of menus
-            setTimeout(() => {
-                console.log('Initial menu population starting...');
-                console.log('Current document people:', window.currentDocumentPeople);
-                refreshMenuOptions('sender');
-                refreshMenuOptions('recipient');
-            }, 200);
+            // Menus are already populated with frequency-sorted people
+            console.log('Modal initialized with frequency-sorted people');
             
             
             // Load the first page image
             loadDocumentImage(doc.id);
         }
 
+        // Show edit modal with reliable HTML select elements and tabs
+        async function showEditModal(doc) {
+            console.log('=== Starting showEditModal ===');
+            console.log('Document data received:', doc);
+            
+            const modal = document.getElementById('documentModal');
+            const modalTitle = document.getElementById('dialogTitle');
+            const modalContent = document.getElementById('modalContent');
+            
+            console.log('Modal elements found:', {
+                modal: !!modal,
+                modalTitle: !!modalTitle,
+                modalContent: !!modalContent
+            });
+            
+            modalTitle.textContent = doc.title || doc.id || 'Untitled Document';
+            
+            try {
+                // 1. Fetch data first
+                console.log('Fetching frequency-sorted people...');
+                const response = await fetch('/people/sorted');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                
+                if (!data.success || !data.people) {
+                    throw new Error('Invalid API response');
+                }
+                
+                const frequencySortedPeople = data.people;
+                console.log(`✓ Fetched ${frequencySortedPeople.length} frequency-sorted people`);
+                console.log('✓ Sample data:', frequencySortedPeople.slice(0, 3));
+                
+                // 2. Create modal with simple HTML select elements
+                console.log('Creating modal with HTML select elements...');
+                window.currentDocumentPeople = doc.people || [];
+                window.currentDocumentId = doc.id;
+                
+                // Ensure we have required properties with fallbacks
+                const safeDoc = {
+                    title: doc.title || doc.id || 'Untitled Document',
+                    date: doc.date || '',
+                    filename: doc.filename || doc.id || '',
+                    sender: doc.sender || '',
+                    recipient: doc.recipient || '',
+                    people: doc.people || [],
+                    original_text: doc.original_text || '',
+                    translated_text: doc.translated_text || '',
+                    summary: doc.summary || 'No summary available'
+                };
+                
+                // Debug: Check if we have the required data
+                console.log('Debug - doc.title:', doc.title);
+                console.log('Debug - doc.summary:', doc.summary);
+                console.log('Debug - doc.people:', doc.people);
+                console.log('Debug - frequencySortedPeople length:', frequencySortedPeople.length);
+                console.log('Debug - doc.filename:', doc.filename);
+                console.log('Debug - safeDoc.filename:', safeDoc.filename);
+                console.log('Debug - extracted date from filename:', extractDateFromFilename(safeDoc.filename));
+                console.log('Debug - doc.date:', doc.date);
+                console.log('Debug - final date value:', safeDoc.date || extractDateFromFilename(safeDoc.filename));
+                
+                modalContent.innerHTML = `
+                    <div class="edit-form">
+                        <!-- M3 Tabs Container at Top -->
+                        <div class="mdc-tab-bar-container">
+                            <div class="mdc-tab-bar" role="tablist">
+                                <div class="mdc-tab-scroller">
+                                    <div class="mdc-tab-scroller__scroll-area">
+                                        <div class="mdc-tab-scroller__scroll-content">
+                                            <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0" data-tab="summary">
+                                                <span class="mdc-tab__content">
+                                                    <span class="mdc-tab__text-label">Summary</span>
+                                                </span>
+                                                <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                </span>
+                                                <span class="mdc-tab__ripple"></span>
+                                            </button>
+                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="translation">
+                                                <span class="mdc-tab__content">
+                                                    <span class="mdc-tab__text-label">Translation</span>
+                                                </span>
+                                                <span class="mdc-tab-indicator">
+                                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                </span>
+                                                <span class="mdc-tab__ripple"></span>
+                                            </button>
+                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="original">
+                                                <span class="mdc-tab__content">
+                                                    <span class="mdc-tab__text-label">Original</span>
+                                                </span>
+                                                <span class="mdc-tab-indicator">
+                                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                </span>
+                                                <span class="mdc-tab__ripple"></span>
+                                            </button>
+                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="image">
+                                                <span class="mdc-tab__content">
+                                                    <span class="mdc-tab__text-label">Image</span>
+                                                </span>
+                                                <span class="mdc-tab-indicator">
+                                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                </span>
+                                                <span class="mdc-tab__ripple"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab Content -->
+                        <div class="tab-content">
+                            <!-- Summary Tab -->
+                            <div id="summary-tab" class="tab-panel active">
+                                <!-- Document Summary -->
+                                <div class="form-row">
+                                    <div class="summary-section">
+                                        <h3 class="summary-title">Summary</h3>
+                                        <p class="summary-text">${escapeHtml(doc.summary || 'No summary available')}</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Document Date (Half-width with M3 Date Picker) -->
+                                <div class="form-row">
+                                    <div class="date-field-container">
+                                        <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                                            <input type="date" id="editDocumentDate" class="mdc-text-field__input" value="${safeDoc.date || extractDateFromFilename(safeDoc.filename)}">
+                                            <div class="mdc-notched-outline">
+                                                <div class="mdc-notched-outline__leading"></div>
+                                                <div class="mdc-notched-outline__notch">
+                                                    <label class="mdc-floating-label ${(safeDoc.date || extractDateFromFilename(safeDoc.filename)) ? 'mdc-floating-label--float-above' : ''}">Document Date</label>
+                                                </div>
+                                                <div class="mdc-notched-outline__trailing">
+                                                    <i class="material-icons mdc-text-field__icon">calendar_today</i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Sender and Recipient Fields (Half-width each) -->
+                                <div class="form-row two-columns">
+                                    <div class="form-field">
+                                        <label for="senderSelect">Sender</label>
+                                        <select id="senderSelect" class="form-select" style="width: 100%; padding: 12px; border: 1px solid rgba(0,0,0,0.12); border-radius: 4px; font-size: 16px;">
+                                            <option value="">No Sender</option>
+                                            ${frequencySortedPeople.map(p => 
+                                                `<option value="${escapeHtml(p.original_name)}">${escapeHtml(p.original_name)}</option>`
+                                            ).join('')}
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-field">
+                                        <label for="recipientSelect">Recipient</label>
+                                        <select id="recipientSelect" class="form-select" style="width: 100%; padding: 12px; border: 1px solid rgba(0,0,0,0.12); border-radius: 4px; font-size: 16px;">
+                                            <option value="">No Recipient</option>
+                                            ${frequencySortedPeople.map(p => 
+                                                `<option value="${escapeHtml(p.original_name)}">${escapeHtml(p.original_name)}</option>`
+                                            ).join('')}
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- References Section (Full-width with Input Chips) -->
+                                <div class="form-row full-width">
+                                    <div class="references-section">
+                                        <label class="section-label">References</label>
+                                        <div id="documentReferences" class="references-chips">
+                                            ${(safeDoc.people || []).map(person => {
+                                                const personName = typeof person === 'string' ? person : person.original_name;
+                                                return `
+                                                    <div class="mdc-chip mdc-chip--input" data-person-name="${escapeHtml(personName)}">
+                                                        <div class="mdc-chip__ripple"></div>
+                                                        <span class="mdc-chip__text">${escapeHtml(personName)}</span>
+                                                        <button class="mdc-chip__action mdc-chip__action--remove" onclick="removePersonFromDocument('${escapeHtml(personName)}')">
+                                                            <span class="material-icons">close</span>
+                                                        </button>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                        <div class="add-reference-section">
+                                            <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                                                <input type="text" id="newPersonName" class="mdc-text-field__input" placeholder="Add reference">
+                                                <div class="mdc-notched-outline">
+                                                    <div class="mdc-notched-outline__leading"></div>
+                                                    <div class="mdc-notched-outline__notch">
+                                                        <label class="mdc-floating-label">Add Reference</label>
+                                                    </div>
+                                                    <div class="mdc-notched-outline__trailing"></div>
+                                                </div>
+                                            </div>
+                                            <button class="mdc-button mdc-button--raised" onclick="addPersonToDocument()">
+                                                <span class="mdc-button__ripple"></span>
+                                                <span class="mdc-button__label">Add</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Translation Tab -->
+                            <div id="translation-tab" class="tab-panel">
+                                <textarea id="editTranslatedText" class="full-textarea" placeholder="Translated text">${escapeHtml(safeDoc.translated_text || '')}</textarea>
+                            </div>
+                            
+                            <!-- Original Tab -->
+                            <div id="original-tab" class="tab-panel">
+                                <textarea id="editOriginalText" class="full-textarea" placeholder="Original text">${escapeHtml(safeDoc.original_text || '')}</textarea>
+                            </div>
+                            
+                            <!-- Image Tab -->
+                            <div id="image-tab" class="tab-panel">
+                                <div class="carousel-container">
+                                    <div class="carousel-header">
+                                        <button class="carousel-nav-btn" id="prevPageBtn" onclick="navigatePage(-1)" disabled>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                            </svg>
+                                        </button>
+                                        <div class="carousel-indicator">
+                                            <span id="currentPage">1</span>
+                                            <span class="page-separator">of</span>
+                                            <span id="totalPages">1</span>
+                                        </div>
+                                        <button class="carousel-nav-btn" id="nextPageBtn" onclick="navigatePage(1)" disabled>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="carousel-content">
+                                        <div id="imageViewer" class="document-image-container">
+                                            <p class="image-placeholder">Document image will appear here</p>
+                                        </div>
+                                        
+                                        <!-- Floating Zoom Slider -->
+                                        <div class="zoom-slider-container">
+                                            <div class="zoom-slider">
+                                                <div class="zoom-slider__track">
+                                                    <div class="zoom-slider__track--inactive"></div>
+                                                    <div class="zoom-slider__track--active" id="zoomTrackActive"></div>
+                                                </div>
+                                                <div class="zoom-slider__thumb" id="zoomThumb">
+                                                    <div class="zoom-slider__thumb-knob"></div>
+                                                </div>
+                                                <div class="zoom-slider__value-display" id="zoomValueDisplay">100%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                console.log('Modal content set, checking for elements...');
+                console.log('Modal content HTML length:', modalContent.innerHTML.length);
+                console.log('Summary tab exists:', !!document.getElementById('summary-tab'));
+                console.log('Date field exists:', !!document.getElementById('editDocumentDate'));
+                console.log('Sender select exists:', !!document.getElementById('senderSelect'));
+                console.log('Tab content container exists:', !!document.querySelector('.tab-content'));
+                
+                // Check date field value and set it explicitly
+                const dateField = document.getElementById('editDocumentDate');
+                if (dateField) {
+                    console.log('=== DATE DEBUGGING ===');
+                    console.log('safeDoc.date:', safeDoc.date);
+                    console.log('safeDoc.filename:', safeDoc.filename);
+                    console.log('doc.title:', doc.title);
+                    
+                    const extractedDate = extractDateFromFilename(safeDoc.filename);
+                    console.log('extractedDate from filename:', extractedDate);
+                    
+                    const extractedFromTitle = extractDateFromFilename(doc.title);
+                    console.log('extractedDate from title:', extractedFromTitle);
+                    
+                    const expectedDate = safeDoc.date || extractedDate || extractedFromTitle;
+                    console.log('final expectedDate:', expectedDate);
+                    console.log('Date field value before setting:', dateField.value);
+                    
+                    if (expectedDate) {
+                        dateField.value = expectedDate;
+                        console.log('Date field value after setting:', dateField.value);
+                        
+                        // Also update the floating label
+                        const label = dateField.closest('.mdc-text-field').querySelector('.mdc-floating-label');
+                        if (label && expectedDate) {
+                            label.classList.add('mdc-floating-label--float-above');
+                        }
+                    } else {
+                        console.log('No date found - field will remain empty');
+                    }
+                    console.log('=== END DATE DEBUGGING ===');
+                }
+                
+                // 3. Set initial values if editing
+                if (safeDoc.sender) {
+                    const senderSelect = document.getElementById('senderSelect');
+                    if (senderSelect) {
+                        senderSelect.value = safeDoc.sender;
+                        console.log('✓ Set sender value:', safeDoc.sender);
+                    }
+                }
+                if (safeDoc.recipient) {
+                    const recipientSelect = document.getElementById('recipientSelect');
+                    if (recipientSelect) {
+                        recipientSelect.value = safeDoc.recipient;
+                        console.log('✓ Set recipient value:', safeDoc.recipient);
+                    }
+                }
+                
+                modal.classList.add('mdc-dialog--open');
+                
+                // Initialize M3 components for other fields
+                mdc.autoInit();
+                
+                // Initialize M3 date picker specifically
+                const dateFieldForPicker = document.getElementById('editDocumentDate');
+                if (dateFieldForPicker) {
+                    // Ensure the date input is properly initialized
+                    dateFieldForPicker.addEventListener('focus', () => {
+                        if (dateFieldForPicker.showPicker) {
+                            dateFieldForPicker.showPicker();
+                        }
+                    });
+                    
+                    // Also trigger on icon click
+                    const dateIcon = dateFieldForPicker.closest('.mdc-text-field').querySelector('.mdc-text-field__icon');
+                    if (dateIcon) {
+                        dateIcon.addEventListener('click', () => {
+                            dateFieldForPicker.focus();
+                            if (dateFieldForPicker.showPicker) {
+                                dateFieldForPicker.showPicker();
+                            }
+                        });
+                    }
+                    
+                    // Handle label floating based on value
+                    const label = dateFieldForPicker.closest('.mdc-text-field').querySelector('.mdc-floating-label');
+                    if (label && dateFieldForPicker.value) {
+                        label.classList.add('mdc-floating-label--float-above');
+                    }
+                }
+                
+                // Set up tab switching
+                setupTabSwitching();
+                
+                // Set up M3 tab functionality
+                setupM3Tabs();
+                
+                // Add custom styles for the new layout
+                addCustomStyles();
+                
+                console.log('✓ Modal created with', frequencySortedPeople.length, 'people in dropdowns');
+                
+                // Initialize carousel with document page count
+                initializeCarousel(doc.id, doc.page_count || 1);
+                
+            } catch (error) {
+                console.error('Failed to create modal:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    doc: doc
+                });
+                alert('Failed to load people data. Please try again. Error: ' + error.message);
+            }
+        }
+
+        // Add custom styles for the new layout
+        function addCustomStyles() {
+            const style = document.createElement('style');
+            style.textContent = `
+                .date-field-container {
+                    max-width: 50%;
+                }
+                
+                /* M3 Date Picker Styling */
+                .mdc-text-field--outlined .mdc-text-field__input[type="date"] {
+                    color: var(--mdc-theme-on-surface, #1c1b1f);
+                    font-size: 16px;
+                    line-height: 24px;
+                }
+                
+                .mdc-text-field--outlined .mdc-text-field__input[type="date"]::-webkit-calendar-picker-indicator {
+                    opacity: 0;
+                    position: absolute;
+                    right: 0;
+                    width: 100%;
+                    height: 100%;
+                    cursor: pointer;
+                }
+                
+                .mdc-text-field__icon {
+                    color: var(--mdc-theme-on-surface-variant, #49454f);
+                    cursor: pointer;
+                    pointer-events: auto;
+                }
+                
+                .mdc-text-field__icon:hover {
+                    color: var(--mdc-theme-primary, #6750a4);
+                }
+                
+                .form-row.full-width {
+                    width: 100%;
+                }
+                
+                .references-section {
+                    width: 100%;
+                }
+                
+                .references-chips {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    margin: 12px 0;
+                }
+                
+                .mdc-chip {
+                    margin: 4px;
+                }
+                
+                .mdc-chip--input {
+                    padding-left: 12px;
+                    padding-right: 8px;
+                    gap: 8px;
+                }
+                
+                .mdc-chip--input .mdc-chip__text {
+                    padding-right: 8px;
+                }
+                
+                .mdc-chip--input .mdc-chip__action--remove {
+                    display: flex !important;
+                    align-items: center;
+                    justify-content: center;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    color: rgba(0, 0, 0, 0.6);
+                    margin-left: 0;
+                }
+                
+                .mdc-chip--input .mdc-chip__action--remove:hover {
+                    background-color: rgba(0, 0, 0, 0.1);
+                }
+                
+                .mdc-chip--input .mdc-chip__action--remove .material-icons {
+                    font-size: 18px;
+                }
+                
+                .tab-content {
+                    margin-top: 16px;
+                    min-height: 200px;
+                }
+                
+                .tab-panel {
+                    display: none;
+                }
+                
+                .tab-panel.active {
+                    display: block;
+                }
+                
+                /* M3 Carousel Styles */
+                .carousel-container {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                }
+                
+                .carousel-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 16px;
+                    padding: 16px;
+                    background: #f8f9fa;
+                    border-bottom: 1px solid #e0e0e0;
+                }
+                
+                .carousel-nav-btn {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
+                    border: none;
+                    border-radius: 20px;
+                    background: #6750a4;
+                    color: white;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+                }
+                
+                .carousel-nav-btn:hover:not(:disabled) {
+                    background: #5a3d8a;
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.12);
+                }
+                
+                .carousel-nav-btn:disabled {
+                    background: #e0e0e0;
+                    color: #9e9e9e;
+                    cursor: not-allowed;
+                    box-shadow: none;
+                }
+                
+                .carousel-indicator {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: #333;
+                }
+                
+                .page-separator {
+                    color: #666;
+                    font-weight: 400;
+                }
+                
+                .carousel-content {
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                    overflow: auto;
+                }
+                
+                .document-image-container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 200px;
+                    width: 100%;
+                    overflow: hidden;
+                    position: relative;
+                }
+                
+                .document-image-container img {
+                    max-width: 100%;
+                    height: auto;
+                    border-radius: 4px;
+                    object-fit: contain;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+                
+                .image-placeholder {
+                    color: #666;
+                    font-style: italic;
+                    text-align: center;
+                }
+                
+                /* M3 Vertical Zoom Slider */
+                .zoom-slider-container {
+                    position: absolute;
+                    right: 20px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    z-index: 10;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 8px;
+                }
+                
+                .zoom-slider {
+                    position: relative;
+                    width: 20px;
+                    height: 200px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                
+                .zoom-slider__track {
+                    position: relative;
+                    width: 4px;
+                    height: 100%;
+                    background: #e0e0e0;
+                    border-radius: 2px;
+                    cursor: pointer;
+                }
+                
+                .zoom-slider__track--inactive {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: #e0e0e0;
+                    border-radius: 2px;
+                }
+                
+                .zoom-slider__track--active {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 50%;
+                    background: #6750a4;
+                    border-radius: 2px;
+                    transition: height 0.2s ease;
+                }
+                
+                .zoom-slider__thumb {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 20px;
+                    height: 20px;
+                    cursor: grab;
+                    z-index: 2;
+                }
+                
+                .zoom-slider__thumb:active {
+                    cursor: grabbing;
+                }
+                
+                .zoom-slider__thumb-knob {
+                    width: 100%;
+                    height: 100%;
+                    background: #6750a4;
+                    border: 2px solid #fff;
+                    border-radius: 50%;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                    transition: all 0.2s ease;
+                }
+                
+                .zoom-slider__thumb:hover .zoom-slider__thumb-knob {
+                    background: #5a3d8a;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+                }
+                
+                .zoom-slider__value-display {
+                    position: absolute;
+                    right: 30px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: rgba(0, 0, 0, 0.8);
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    white-space: nowrap;
+                    opacity: 0;
+                    transition: opacity 0.2s ease;
+                    pointer-events: none;
+                }
+                
+                .zoom-slider__thumb:hover + .zoom-slider__value-display,
+                .zoom-slider__value-display:hover {
+                    opacity: 1;
+                }
+                
+                .zoom-slider__labels {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 2px;
+                    margin-top: 8px;
+                }
+                
+                .zoom-label {
+                    font-size: 10px;
+                    color: #666;
+                    font-weight: 400;
+                    line-height: 1;
+                }
+                
+                .summary-section {
+                    margin-bottom: 16px;
+                }
+                
+                .summary-title {
+                    margin: 0 0 8px 0;
+                    font-size: 18px;
+                    font-weight: 500;
+                }
+                
+                .summary-text {
+                    margin: 0;
+                    line-height: 1.5;
+                    color: #333;
+                }
+                
+                /* M3 Tab Container Styling */
+                .mdc-tab-bar-container {
+                    margin-bottom: 24px;
+                }
+                
+                .mdc-tab-bar {
+                    background-color: transparent;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+                }
+                
+                .mdc-tab {
+                    min-width: 90px;
+                    height: 48px;
+                }
+                
+                .mdc-tab__text-label {
+                    font-size: 14px;
+                    font-weight: 500;
+                    text-transform: none;
+                }
+                
+                .mdc-tab--active .mdc-tab__text-label {
+                    color: var(--mdc-theme-primary, #6750a4);
+                }
+                
+                .mdc-tab-indicator__content--underline {
+                    height: 3px;
+                    background-color: var(--mdc-theme-primary, #6750a4);
+                }
+                
+                /* Ensure tab content is visible */
+                .tab-panel.active {
+                    display: block !important;
+                    visibility: visible !important;
+                }
+                
+                /* Full-width textarea for Translation and Original tabs */
+                .full-textarea {
+                    width: 100%;
+                    height: 400px;
+                    padding: 16px;
+                    border: 1px solid rgba(0, 0, 0, 0.12);
+                    border-radius: 4px;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 14px;
+                    line-height: 1.5;
+                    resize: vertical;
+                    box-sizing: border-box;
+                    background-color: #fff;
+                    color: #333;
+                }
+                
+                .full-textarea:focus {
+                    outline: none;
+                    border-color: #6750a4;
+                    box-shadow: 0 0 0 2px rgba(103, 80, 164, 0.2);
+                }
+                
+                .full-textarea::placeholder {
+                    color: rgba(0, 0, 0, 0.6);
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Load document image into the image tab
+        async function loadDocumentImageIntoTab(docId) {
+            try {
+                const response = await fetch(`/documents/${docId}/images`);
+                const data = await response.json();
+                
+                if (data.success && data.images && data.images.length > 0) {
+                    const imageContainer = document.getElementById('documentImageContainer');
+                    if (imageContainer) {
+                        imageContainer.innerHTML = '';
+                        
+                        data.images.forEach((imagePath, index) => {
+                            const img = document.createElement('img');
+                            img.src = imagePath;
+                            img.alt = `Document page ${index + 1}`;
+                            img.style.maxWidth = '100%';
+                            img.style.height = 'auto';
+                            img.style.marginBottom = '16px';
+                            img.style.borderRadius = '8px';
+                            img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                            
+                            imageContainer.appendChild(img);
+                        });
+                    }
+                } else {
+                    const imageContainer = document.getElementById('documentImageContainer');
+                    if (imageContainer) {
+                        imageContainer.innerHTML = '<p class="image-placeholder">No images available for this document</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading document images:', error);
+                const imageContainer = document.getElementById('documentImageContainer');
+                if (imageContainer) {
+                    imageContainer.innerHTML = '<p class="image-placeholder">Error loading document images</p>';
+                }
+            }
+        }
+
+        // Set up M3 tab functionality
+        function setupM3Tabs() {
+            const tabBar = document.querySelector('.mdc-tab-bar');
+            if (!tabBar) return;
+            
+            const tabs = tabBar.querySelectorAll('.mdc-tab');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    
+                    // Remove active class from all tabs and panels
+                    tabs.forEach(t => {
+                        t.classList.remove('mdc-tab--active');
+                        t.setAttribute('aria-selected', 'false');
+                        t.setAttribute('tabindex', '-1');
+                        t.querySelector('.mdc-tab-indicator').classList.remove('mdc-tab-indicator--active');
+                    });
+                    
+                    tabPanels.forEach(panel => {
+                        panel.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked tab and corresponding panel
+                    tab.classList.add('mdc-tab--active');
+                    tab.setAttribute('aria-selected', 'true');
+                    tab.setAttribute('tabindex', '0');
+                    tab.querySelector('.mdc-tab-indicator').classList.add('mdc-tab-indicator--active');
+                    
+                    const targetPanel = document.getElementById(`${tabName}-tab`);
+                    if (targetPanel) {
+                        targetPanel.classList.add('active');
+                    }
+                });
+            });
+        }
+
         // Helper function to extract date from filename
         function extractDateFromFilename(filename) {
+            if (!filename) return '';
+            
+            console.log('Extracting date from filename:', filename);
+            
             // Try to extract date in various formats: YYYY-MM-DD, YYYY_MM_DD, etc.
             const datePatterns = [
-                /(\d{4})-(\d{2})-(\d{2})/,  // YYYY-MM-DD
-                /(\d{4})_(\d{2})_(\d{2})/,  // YYYY_MM_DD
-                /(\d{4})(\d{2})(\d{2})/,    // YYYYMMDD
-                /(\d{2})-(\d{2})-(\d{4})/,  // MM-DD-YYYY
-                /(\d{2})_(\d{2})_(\d{4})/,  // MM_DD_YYYY
+                /(\d{4})-(\d{2})-(\d{2})/g,  // YYYY-MM-DD (global to find all matches)
+                /(\d{4})_(\d{2})_(\d{2})/g,  // YYYY_MM_DD (global to find all matches)
+                /(\d{4})(\d{2})(\d{2})/g,    // YYYYMMDD (global to find all matches)
+                /(\d{2})-(\d{2})-(\d{4})/g,  // MM-DD-YYYY (global to find all matches)
+                /(\d{2})_(\d{2})_(\d{4})/g,  // MM_DD_YYYY (global to find all matches)
             ];
             
+            let allDates = [];
+            
             for (const pattern of datePatterns) {
-                const match = filename.match(pattern);
-                if (match) {
+                let match;
+                while ((match = pattern.exec(filename)) !== null) {
+                    let year, month, day;
+                    
                     if (pattern.source.includes('(\\d{4})-(\\d{2})-(\\d{2})') || 
                         pattern.source.includes('(\\d{4})_(\\d{2})_(\\d{2})') ||
                         pattern.source.includes('(\\d{4})(\\d{2})(\\d{2})')) {
                         // YYYY-MM-DD format
-                        return `${match[1]}-${match[2]}-${match[3]}`;
+                        year = match[1];
+                        month = match[2];
+                        day = match[3];
                     } else {
                         // MM-DD-YYYY format
-                        return `${match[3]}-${match[1]}-${match[2]}`;
+                        year = match[3];
+                        month = match[1];
+                        day = match[2];
+                    }
+                    
+                    const dateString = `${year}-${month}-${day}`;
+                    const yearNum = parseInt(year);
+                    
+                    console.log('Found date:', dateString, 'Year:', yearNum);
+                    
+                    // Only include dates between 1930-1960 (original document dates)
+                    if (yearNum >= 1930 && yearNum <= 1960) {
+                        allDates.push({
+                            date: dateString,
+                            year: yearNum,
+                            index: match.index
+                        });
+                    } else {
+                        console.log('Skipping date (not in 1930-1960 range):', dateString);
                     }
                 }
             }
             
-            // Default to today's date if no date found
-            return new Date().toISOString().split('T')[0];
+            if (allDates.length > 0) {
+                // Sort by position in filename (first occurrence) and return the first one
+                allDates.sort((a, b) => a.index - b.index);
+                const result = allDates[0].date;
+                console.log('Using first original date:', result);
+                return result;
+            }
+            
+            console.log('No original document date found in filename');
+            return '';
         }
 
         // Helper function to generate people options for selects
@@ -3500,12 +4365,18 @@
                 return '';
             }
             
-            const options = people.map(person => `
-                <li class="mdc-list-item" data-value="${escapeHtml(person.original_name)}" role="menuitem">
+            const options = people.map(person => {
+                const name = escapeHtml(person.original_name);
+                const frequency = person.document_count || 0;
+                const frequencyText = frequency > 0 ? ` (${frequency} docs)` : '';
+                
+                return `
+                    <li class="mdc-list-item" data-value="${name}" role="menuitem">
                     <span class="mdc-list-item__ripple"></span>
-                    <span class="mdc-list-item__text">${escapeHtml(person.original_name)}</span>
+                        <span class="mdc-list-item__text">${name}${frequencyText}</span>
                 </li>
-            `).join('');
+                `;
+            }).join('');
             
             console.log('Generated options HTML:', options);
             return options;
@@ -3537,10 +4408,10 @@
                 senderMenuComponent.setAnchorElement(senderMenuButton);
                 
                 // Handle menu button click
-                senderMenuButton.addEventListener('click', () => {
+                senderMenuButton.addEventListener('click', async () => {
                     console.log('Sender menu button clicked');
                     // Refresh menu options before opening
-                    refreshMenuOptions('sender');
+                    await refreshMenuOptions('sender');
                     senderMenuComponent.open = !senderMenuComponent.open;
                 });
                 
@@ -3548,16 +4419,15 @@
                 senderMenu.addEventListener('MDCMenu:selected', (e) => {
                     const selectedIndex = e.detail.index;
                     const selectedItem = senderMenu.querySelectorAll('.mdc-list-item')[selectedIndex];
-                    const selectedText = selectedItem.querySelector('.mdc-list-item__text').textContent;
                     const selectedValue = selectedItem.dataset.value;
                     
-                    // Update input field
+                    // Update input field with just the name (without frequency info)
                     const senderInput = document.getElementById('senderInput');
-                    senderInput.value = selectedText;
+                    senderInput.value = selectedValue;
                     
                     // Update floating label
                     const label = senderInput.closest('.mdc-text-field').querySelector('.mdc-floating-label');
-                    if (selectedText) {
+                    if (selectedValue) {
                         label.classList.add('mdc-floating-label--float-above');
                     } else {
                         label.classList.remove('mdc-floating-label--float-above');
@@ -3576,10 +4446,10 @@
                 recipientMenuComponent.setAnchorElement(recipientMenuButton);
                 
                 // Handle menu button click
-                recipientMenuButton.addEventListener('click', () => {
+                recipientMenuButton.addEventListener('click', async () => {
                     console.log('Recipient menu button clicked');
                     // Refresh menu options before opening
-                    refreshMenuOptions('recipient');
+                    await refreshMenuOptions('recipient');
                     recipientMenuComponent.open = !recipientMenuComponent.open;
                 });
                 
@@ -3587,16 +4457,15 @@
                 recipientMenu.addEventListener('MDCMenu:selected', (e) => {
                     const selectedIndex = e.detail.index;
                     const selectedItem = recipientMenu.querySelectorAll('.mdc-list-item')[selectedIndex];
-                    const selectedText = selectedItem.querySelector('.mdc-list-item__text').textContent;
                     const selectedValue = selectedItem.dataset.value;
                     
-                    // Update input field
+                    // Update input field with just the name (without frequency info)
                     const recipientInput = document.getElementById('recipientInput');
-                    recipientInput.value = selectedText;
+                    recipientInput.value = selectedValue;
                     
                     // Update floating label
                     const label = recipientInput.closest('.mdc-text-field').querySelector('.mdc-floating-label');
-                    if (selectedText) {
+                    if (selectedValue) {
                         label.classList.add('mdc-floating-label--float-above');
                     } else {
                         label.classList.remove('mdc-floating-label--float-above');
@@ -3609,36 +4478,37 @@
             }, 100);
         }
 
-        // Refresh menu options with current document people
-        function refreshMenuOptions(menuType) {
+        // Refresh menu options with frequency-sorted people from all documents
+        async function refreshMenuOptions(menuType) {
             const menu = document.getElementById(`${menuType}Menu`);
             if (!menu) {
                 console.log(`Menu ${menuType}Menu not found`);
                 return;
             }
             
-            // Get current people from the document - try multiple sources
-            let currentPeople = [];
-            
-            // First try to get from people chips
+            try {
+                // Fetch frequency-sorted people from the API
+                const response = await fetch('/people/sorted');
+                const data = await response.json();
+                
+                let allPeople = [];
+                if (data.success && data.people) {
+                    allPeople = data.people;
+                    console.log(`Fetched ${allPeople.length} frequency-sorted people for ${menuType} menu`);
+                } else {
+                    console.log(`Failed to fetch people data: ${data.error || 'Unknown error'}`);
+                    // Fallback to current document people if API fails
             const peopleChips = document.querySelectorAll('#documentPeople .person-chip');
             if (peopleChips.length > 0) {
-                currentPeople = Array.from(peopleChips).map(chip => ({
+                        allPeople = Array.from(peopleChips).map(chip => ({
                     original_name: chip.dataset.personName
                 }));
-                console.log(`Found people from chips:`, currentPeople);
-            } else {
-                // If no chips, try to get from the original document data
-                // This should be available from the showEditModal function
-                if (window.currentDocumentPeople) {
-                    currentPeople = window.currentDocumentPeople;
-                    console.log(`Found people from window.currentDocumentPeople:`, currentPeople);
-                } else {
-                    console.log(`No people data found for ${menuType} menu`);
+                    } else if (window.currentDocumentPeople) {
+                        allPeople = window.currentDocumentPeople;
+                    }
                 }
-            }
-            
-            console.log(`Refreshing ${menuType} menu with people:`, currentPeople);
+                
+                console.log(`Refreshing ${menuType} menu with people:`, allPeople);
             
             // Update the menu options
             const list = menu.querySelector('.mdc-list');
@@ -3648,7 +4518,7 @@
             }
             
             const noOption = list.querySelector('li[data-value=""]');
-            const peopleOptions = generatePeopleOptions(currentPeople);
+                const peopleOptions = generatePeopleOptions(allPeople);
             
             console.log(`Generated options for ${menuType}:`, peopleOptions);
             
@@ -3658,6 +4528,31 @@
                 list.appendChild(noOption);
             }
             list.insertAdjacentHTML('beforeend', peopleOptions);
+                
+            } catch (error) {
+                console.error(`Error refreshing ${menuType} menu options:`, error);
+                // Fallback to current document people
+                const peopleChips = document.querySelectorAll('#documentPeople .person-chip');
+                let fallbackPeople = [];
+                if (peopleChips.length > 0) {
+                    fallbackPeople = Array.from(peopleChips).map(chip => ({
+                        original_name: chip.dataset.personName
+                    }));
+                } else if (window.currentDocumentPeople) {
+                    fallbackPeople = window.currentDocumentPeople;
+                }
+                
+                const list = menu.querySelector('.mdc-list');
+                if (list) {
+                    const noOption = list.querySelector('li[data-value=""]');
+                    const peopleOptions = generatePeopleOptions(fallbackPeople);
+                    list.innerHTML = '';
+                    if (noOption) {
+                        list.appendChild(noOption);
+                    }
+                    list.insertAdjacentHTML('beforeend', peopleOptions);
+                }
+            }
             
             // Debug: Log the final menu HTML
             console.log(`Final ${menuType} menu HTML:`, list.innerHTML);
@@ -3691,20 +4586,37 @@
                         t.classList.remove('mdc-tab--active');
                         t.setAttribute('aria-selected', 'false');
                         t.setAttribute('tabindex', '-1');
+                        const indicator = t.querySelector('.mdc-tab-indicator');
+                        if (indicator) {
+                            indicator.classList.remove('mdc-tab-indicator--active');
+                        }
                     });
                     
                     tab.classList.add('mdc-tab--active');
                     tab.setAttribute('aria-selected', 'true');
                     tab.setAttribute('tabindex', '0');
+                    const indicator = tab.querySelector('.mdc-tab-indicator');
+                    if (indicator) {
+                        indicator.classList.add('mdc-tab-indicator--active');
+                    }
                     
                     // Update panel visibility
                     panels.forEach(panel => {
                         panel.classList.remove('active');
                     });
                     
-                    const targetPanel = document.getElementById(`tab-${targetTab}`);
+                    const targetPanel = document.getElementById(`${targetTab}-tab`);
                     if (targetPanel) {
                         targetPanel.classList.add('active');
+                    }
+                    
+                    // Initialize carousel when image tab is clicked
+                    if (targetTab === 'image' && window.currentDocumentId) {
+                        // Get the current document data to initialize carousel
+                        const currentDoc = documents.find(d => d.id === window.currentDocumentId);
+                        if (currentDoc) {
+                            initializeCarousel(currentDoc.id, currentDoc.page_count || 1);
+                        }
                     }
                 });
             });
@@ -3716,8 +4628,8 @@
             
             const title = document.getElementById('dialogTitle').textContent.trim();
             const documentDate = document.getElementById('editDocumentDate').value;
-            const sender = document.getElementById('senderInput').value;
-            const recipient = document.getElementById('recipientInput').value;
+            const sender = document.getElementById('senderSelect')?.value || '';
+            const recipient = document.getElementById('recipientSelect')?.value || '';
             const originalText = document.getElementById('editOriginalText').value.trim();
             const translatedText = document.getElementById('editTranslatedText').value.trim();
             
@@ -3832,13 +4744,61 @@
             return options;
         }
 
-        // Load document image
-        async function loadDocumentImage(docId) {
-            const pageSelector = document.getElementById('pageSelector');
-            const imageViewer = document.getElementById('imageViewer');
-            const pageNum = pageSelector ? pageSelector.value : 1;
+        // Carousel state management
+        let currentPage = 1;
+        let totalPages = 1;
+        
+        // Zoom slider state
+        let currentZoom = 1.0; // Start at 100% (fit to width)
+        let isDragging = false;
+        
+        // Pan state
+        let isPanning = false;
+        let panStartX = 0;
+        let panStartY = 0;
+        let panOffsetX = 0;
+        let panOffsetY = 0;
+
+        // Initialize carousel for a document
+        function initializeCarousel(docId, pageCount) {
+            currentDocumentId = docId;
+            totalPages = pageCount || 1;
+            currentPage = 1;
             
-            console.log('Loading image for docId:', docId, 'page:', pageNum);
+            updateCarouselUI();
+            loadDocumentImage(docId, currentPage);
+            initializeZoomSlider();
+        }
+
+        // Update carousel UI elements
+        function updateCarouselUI() {
+            const currentPageSpan = document.getElementById('currentPage');
+            const totalPagesSpan = document.getElementById('totalPages');
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            
+            if (currentPageSpan) currentPageSpan.textContent = currentPage;
+            if (totalPagesSpan) totalPagesSpan.textContent = totalPages;
+            if (prevBtn) prevBtn.disabled = currentPage <= 1;
+            if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+        }
+
+        // Navigate between pages
+        function navigatePage(direction) {
+            const newPage = currentPage + direction;
+            if (newPage >= 1 && newPage <= totalPages && currentDocumentId) {
+                currentPage = newPage;
+                updateCarouselUI();
+                loadDocumentImage(currentDocumentId, currentPage);
+            }
+        }
+
+        // Load document image
+        async function loadDocumentImage(docId, pageNum = null) {
+            const imageViewer = document.getElementById('imageViewer');
+            const page = pageNum || currentPage;
+            
+            console.log('Loading image for docId:', docId, 'page:', page);
             
             if (!imageViewer) {
                 console.error('ImageViewer element not found');
@@ -3848,19 +4808,33 @@
             imageViewer.innerHTML = '<div class="image-loading">Loading image...</div>';
             
             try {
-                const imageUrl = `/documents/${docId}/images/${pageNum}?t=${Date.now()}`;
+                const imageUrl = `/documents/${docId}/images/${page}?t=${Date.now()}`;
                 console.log('Fetching image from:', imageUrl);
                 
                 const response = await fetch(imageUrl);
                 console.log('Response status:', response.status);
                 
                 if (response.ok) {
-                    imageViewer.innerHTML = `
-                        <img id="documentImage" src="${imageUrl}" alt="Document page ${pageNum}" 
-                             style="transform: scale(${currentZoom || 1}); transition: transform 0.2s ease;"
-                             onload="console.log('Image loaded successfully')"
-                             onerror="console.error('Image failed to load'); this.parentElement.innerHTML='<div class=\\"image-error\\">Image failed to load</div>'">
-                    `;
+                    // Create image element and handle loading properly
+                    const img = document.createElement('img');
+                    img.id = 'documentImage';
+                    img.src = imageUrl;
+                    img.alt = `Document page ${page}`;
+                    img.style.transition = 'opacity 0.3s ease';
+                    
+                    img.onload = function() {
+                        console.log('Image loaded successfully');
+                        imageViewer.innerHTML = '';
+                        imageViewer.appendChild(img);
+                        
+                        // Initialize panning for the new image
+                        initializeImagePanning();
+                    };
+                    
+                    img.onerror = function() {
+                        console.error('Image failed to load:', this.src);
+                        imageViewer.innerHTML = '<div class="image-error">Image failed to load</div>';
+                    };
                 } else {
                     const errorText = await response.text();
                     console.error('Image request failed:', response.status, errorText);
@@ -3872,28 +4846,211 @@
             }
         }
 
-        // Zoom functionality
-        let currentZoom = 1;
-
-        function zoomImage(zoomDelta) {
-            currentZoom = Math.max(0.1, Math.min(3, currentZoom + zoomDelta));
-            updateZoom();
-        }
-
-        function resetZoom() {
-            currentZoom = 1;
-            updateZoom();
-        }
-
-        function updateZoom() {
-            const image = document.getElementById('documentImage');
-            const zoomLevel = document.getElementById('zoomLevel');
+        // Initialize zoom slider
+        function initializeZoomSlider() {
+            const slider = document.querySelector('.zoom-slider');
+            const thumb = document.getElementById('zoomThumb');
+            const track = document.querySelector('.zoom-slider__track');
+            const trackActive = document.getElementById('zoomTrackActive');
+            const valueDisplay = document.getElementById('zoomValueDisplay');
             
-            if (image) {
-                image.style.transform = `scale(${currentZoom})`;
+            if (!slider || !thumb || !track || !trackActive || !valueDisplay) {
+                console.log('Zoom slider elements not found');
+                return;
             }
-            if (zoomLevel) {
-                zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
+            
+            // Set initial position (100% zoom at bottom of slider)
+            updateZoomSlider(1.0);
+            
+            // Mouse events
+            thumb.addEventListener('mousedown', startDrag);
+            track.addEventListener('click', handleTrackClick);
+            
+            // Touch events for mobile
+            thumb.addEventListener('touchstart', startDrag, { passive: false });
+            
+            // Global events
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', handleDrag, { passive: false });
+            document.addEventListener('touchend', endDrag);
+        }
+        
+        // Start dragging
+        function startDrag(e) {
+            e.preventDefault();
+            isDragging = true;
+            const thumb = document.getElementById('zoomThumb');
+            thumb.style.cursor = 'grabbing';
+        }
+        
+        // Handle dragging
+        function handleDrag(e) {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            const track = document.querySelector('.zoom-slider__track');
+            const rect = track.getBoundingClientRect();
+            
+            let clientY;
+            if (e.type === 'touchmove') {
+                clientY = e.touches[0].clientY;
+            } else {
+                clientY = e.clientY;
+            }
+            
+            const y = clientY - rect.top;
+            const percentage = Math.max(0, Math.min(1, y / rect.height));
+            
+            // Convert to zoom level (1.0 to 3.0) - 100% to 300%
+            const zoom = 1.0 + (percentage * 2.0);
+            updateZoomSlider(zoom);
+        }
+        
+        // End dragging
+        function endDrag() {
+            isDragging = false;
+            const thumb = document.getElementById('zoomThumb');
+            if (thumb) {
+                thumb.style.cursor = 'grab';
+            }
+        }
+        
+        // Handle track click
+        function handleTrackClick(e) {
+            const track = document.querySelector('.zoom-slider__track');
+            const rect = track.getBoundingClientRect();
+            const y = e.clientY - rect.top;
+            const percentage = Math.max(0, Math.min(1, y / rect.height));
+            
+            // Convert to zoom level (1.0 to 3.0) - 100% to 300%
+            const zoom = 1.0 + (percentage * 2.0);
+            updateZoomSlider(zoom);
+        }
+        
+        // Update zoom slider position and value
+        function updateZoomSlider(zoom) {
+            currentZoom = Math.max(1.0, Math.min(3.0, zoom));
+            
+            const thumb = document.getElementById('zoomThumb');
+            const trackActive = document.getElementById('zoomTrackActive');
+            const valueDisplay = document.getElementById('zoomValueDisplay');
+            
+            if (!thumb || !trackActive || !valueDisplay) return;
+            
+            // Calculate position (0 to 1)
+            const percentage = (currentZoom - 1.0) / 2.0;
+            
+            // Update thumb position
+            const trackHeight = 200; // Height of slider track
+            const thumbPosition = percentage * trackHeight;
+            thumb.style.top = `${thumbPosition}px`;
+            
+            // Update active track
+            trackActive.style.height = `${percentage * 100}%`;
+            
+            // Update value display
+            valueDisplay.textContent = `${Math.round(currentZoom * 100)}%`;
+            
+            // Reset pan when zoom changes
+            if (currentZoom <= 1.0) {
+                panOffsetX = 0;
+                panOffsetY = 0;
+            }
+            
+            // Apply zoom to image
+            applyZoomToImage();
+            
+            // Update cursor based on zoom level
+            const img = document.getElementById('documentImage');
+            if (img) {
+                img.style.cursor = currentZoom > 1.0 ? 'grab' : 'default';
+            }
+        }
+        
+        // Apply zoom and pan to the current image
+        function applyZoomToImage() {
+            const img = document.getElementById('documentImage');
+            if (img) {
+                img.style.transform = `scale(${currentZoom}) translate(${panOffsetX}px, ${panOffsetY}px)`;
+                img.style.transition = 'transform 0.2s ease';
+            }
+        }
+        
+        // Initialize pan functionality for image
+        function initializeImagePanning() {
+            const img = document.getElementById('documentImage');
+            if (!img) return;
+            
+            // Reset pan when zoom changes
+            if (currentZoom <= 1.0) {
+                panOffsetX = 0;
+                panOffsetY = 0;
+            }
+            
+            // Add pan event listeners
+            img.addEventListener('mousedown', startPan);
+            img.addEventListener('touchstart', startPan, { passive: false });
+            
+            // Global pan events
+            document.addEventListener('mousemove', handlePan);
+            document.addEventListener('mouseup', endPan);
+            document.addEventListener('touchmove', handlePan, { passive: false });
+            document.addEventListener('touchend', endPan);
+        }
+        
+        // Start panning
+        function startPan(e) {
+            if (currentZoom <= 1.0) return; // Only pan when zoomed in
+            
+            e.preventDefault();
+            isPanning = true;
+            
+            let clientX, clientY;
+            if (e.type === 'touchstart') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            panStartX = clientX - panOffsetX;
+            panStartY = clientY - panOffsetY;
+            
+            const img = document.getElementById('documentImage');
+            if (img) {
+                img.style.cursor = 'grabbing';
+            }
+        }
+        
+        // Handle panning
+        function handlePan(e) {
+            if (!isPanning || currentZoom <= 1.0) return;
+            
+            e.preventDefault();
+            
+            let clientX, clientY;
+            if (e.type === 'touchmove') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            panOffsetX = clientX - panStartX;
+            panOffsetY = clientY - panStartY;
+            
+            applyZoomToImage();
+        }
+        
+        // End panning
+        function endPan() {
+            isPanning = false;
+            const img = document.getElementById('documentImage');
+            if (img) {
+                img.style.cursor = currentZoom > 1.0 ? 'grab' : 'default';
             }
         }
 
@@ -4769,13 +5926,14 @@
 
                 if (data.success) {
                     // Add the chip to the UI
-                    const peopleContainer = document.getElementById('documentPeople');
-                    const newChip = document.createElement('span');
-                    newChip.className = 'person-chip';
+                    const peopleContainer = document.getElementById('documentReferences');
+                    const newChip = document.createElement('div');
+                    newChip.className = 'mdc-chip mdc-chip--input';
                     newChip.setAttribute('data-person-name', personName);
                     newChip.innerHTML = `
-                        ${escapeHtml(personName)}
-                        <button class="chip-remove-btn" onclick="removePersonFromDocument('${escapeHtml(personName)}')" style="display: ${isEditMode ? 'flex' : 'none'};">
+                        <div class="mdc-chip__ripple"></div>
+                        <span class="mdc-chip__text">${escapeHtml(personName)}</span>
+                        <button class="mdc-chip__action mdc-chip__action--remove" onclick="removePersonFromDocument('${escapeHtml(personName)}')">
                             <span class="material-icons">close</span>
                         </button>
                     `;
@@ -4785,8 +5943,8 @@
                     document.getElementById('newPersonName').value = '';
                     
                     // Refresh menu options to include the new person
-                    refreshMenuOptions('sender');
-                    refreshMenuOptions('recipient');
+                    await refreshMenuOptions('sender');
+                    await refreshMenuOptions('recipient');
                     
                     showSnackbar(`Added ${personName} to document`);
                 } else {
@@ -4823,8 +5981,8 @@
                     }
                     
                     // Refresh menu options to remove the person
-                    refreshMenuOptions('sender');
-                    refreshMenuOptions('recipient');
+                    await refreshMenuOptions('sender');
+                    await refreshMenuOptions('recipient');
                     
                     showSnackbar(`Removed ${personName} from document`);
                 } else {
@@ -4854,6 +6012,7 @@
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM Content Loaded - starting initialization');
             loadDocuments();
             
             // Side sheet event listeners
