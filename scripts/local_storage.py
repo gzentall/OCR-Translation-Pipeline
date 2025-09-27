@@ -345,6 +345,225 @@ class LocalOCRStorage:
         
         return name.lower().strip()
     
+    def add_person(self, name: str, aliases: List[str] = None, context: str = None) -> bool:
+        """Add a new person to the database."""
+        try:
+            normalized_name = self.normalize_name(name)
+            
+            # Check if person already exists
+            if normalized_name in self.metadata["people"]:
+                return False
+            
+            # Prepare aliases list
+            if aliases is None:
+                aliases = []
+            
+            # Add the main name to aliases if not already present
+            if name not in aliases:
+                aliases.insert(0, name)
+            
+            # Create person data
+            person_data = {
+                "aliases": aliases,
+                "first_mentioned": datetime.now().isoformat(),
+                "documents": [],
+                "context": context or ""
+            }
+            
+            # Add to metadata
+            self.metadata["people"][normalized_name] = person_data
+            
+            # Save metadata
+            self._save_metadata()
+            return True
+            
+        except Exception as e:
+            print(f"Error adding person {name}: {e}")
+            return False
+    
+    def merge_person(self, source_name: str, target_name: str) -> bool:
+        """Merge a source person into a target person."""
+        try:
+            source_normalized = self.normalize_name(source_name)
+            target_normalized = self.normalize_name(target_name)
+            
+            if source_normalized not in self.metadata["people"]:
+                return False
+            
+            if target_normalized not in self.metadata["people"]:
+                return False
+            
+            # Get both person data
+            source_data = self.metadata["people"][source_normalized]
+            target_data = self.metadata["people"][target_normalized]
+            
+            # Merge aliases
+            source_aliases = source_data.get("aliases", [])
+            target_aliases = target_data.get("aliases", [])
+            
+            # Combine aliases and remove duplicates
+            combined_aliases = list(set(target_aliases + source_aliases))
+            target_data["aliases"] = combined_aliases
+            
+            # Merge documents
+            source_docs = source_data.get("documents", [])
+            target_docs = target_data.get("documents", [])
+            
+            # Combine document lists and remove duplicates
+            combined_docs = list(set(target_docs + source_docs))
+            target_data["documents"] = combined_docs
+            
+            # Merge context if source has context and target doesn't
+            if source_data.get("context") and not target_data.get("context"):
+                target_data["context"] = source_data["context"]
+            
+            # Update all documents that reference the source person
+            for doc_id in source_docs:
+                if doc_id in self.metadata["documents"]:
+                    doc_file = self.documents_dir / f"{doc_id}.json"
+                    if doc_file.exists():
+                        with open(doc_file, 'r') as f:
+                            doc_data = json.load(f)
+                        
+                        # Update people in document
+                        updated_people = []
+                        for person in doc_data.get("people", []):
+                            if isinstance(person, dict):
+                                if person.get("normalized_name") == source_normalized:
+                                    person["normalized_name"] = target_normalized
+                                    person["original_name"] = target_name
+                                updated_people.append(person)
+                            else:
+                                # Handle string format
+                                if self.normalize_name(person) == source_normalized:
+                                    updated_people.append(target_name)
+                                else:
+                                    updated_people.append(person)
+                        
+                        doc_data["people"] = updated_people
+                        
+                        # Save updated document
+                        with open(doc_file, 'w') as f:
+                            json.dump(doc_data, f, indent=2)
+            
+            # Remove the source person
+            del self.metadata["people"][source_normalized]
+            
+            # Save metadata
+            self._save_metadata()
+            return True
+            
+        except Exception as e:
+            print(f"Error merging person {source_name} into {target_name}: {e}")
+            return False
+
+    def add_person_to_document(self, doc_id: str, person_name: str) -> bool:
+        """Add a person reference to a document."""
+        try:
+            doc_file = self.documents_dir / f"{doc_id}.json"
+            if not doc_file.exists():
+                return False
+            
+            with open(doc_file, 'r') as f:
+                doc_data = json.load(f)
+            
+            # Check if person already exists in document
+            existing_people = doc_data.get("people", [])
+            for person in existing_people:
+                if isinstance(person, dict):
+                    if person.get("original_name", "").lower() == person_name.lower():
+                        return False  # Person already exists
+                else:
+                    if person.lower() == person_name.lower():
+                        return False  # Person already exists
+            
+            # Add person to document
+            person_data = {
+                "original_name": person_name,
+                "normalized_name": self.normalize_name(person_name)
+            }
+            existing_people.append(person_data)
+            doc_data["people"] = existing_people
+            
+            with open(doc_file, 'w') as f:
+                json.dump(doc_data, f, indent=2)
+            
+            # Update person metadata
+            normalized_name = self.normalize_name(person_name)
+            if normalized_name not in self.metadata["people"]:
+                # Create new person entry
+                self.metadata["people"][normalized_name] = {
+                    "aliases": [person_name],
+                    "first_mentioned": datetime.now().isoformat(),
+                    "documents": [doc_id],
+                    "context": ""
+                }
+            else:
+                # Add document to existing person
+                person_data = self.metadata["people"][normalized_name]
+                if doc_id not in person_data.get("documents", []):
+                    person_data["documents"].append(doc_id)
+            
+            self._save_metadata()
+            return True
+            
+        except Exception as e:
+            print(f"Error adding person {person_name} to document {doc_id}: {e}")
+            return False
+
+    def remove_person_from_document(self, doc_id: str, person_name: str) -> bool:
+        """Remove a person reference from a document."""
+        try:
+            doc_file = self.documents_dir / f"{doc_id}.json"
+            if not doc_file.exists():
+                return False
+            
+            with open(doc_file, 'r') as f:
+                doc_data = json.load(f)
+            
+            # Remove person from document
+            existing_people = doc_data.get("people", [])
+            updated_people = []
+            person_removed = False
+            
+            for person in existing_people:
+                if isinstance(person, dict):
+                    if person.get("original_name", "").lower() != person_name.lower():
+                        updated_people.append(person)
+                    else:
+                        person_removed = True
+                else:
+                    if person.lower() != person_name.lower():
+                        updated_people.append(person)
+                    else:
+                        person_removed = True
+            
+            if not person_removed:
+                return False  # Person not found in document
+            
+            doc_data["people"] = updated_people
+            
+            with open(doc_file, 'w') as f:
+                json.dump(doc_data, f, indent=2)
+            
+            # Update person metadata
+            normalized_name = self.normalize_name(person_name)
+            if normalized_name in self.metadata["people"]:
+                person_data = self.metadata["people"][normalized_name]
+                if doc_id in person_data.get("documents", []):
+                    person_data["documents"].remove(doc_id)
+                    
+                    # If no documents left, remove person entirely
+                    if not person_data.get("documents", []):
+                        del self.metadata["people"][normalized_name]
+            
+            self._save_metadata()
+            return True
+            
+        except Exception as e:
+            print(f"Error removing person {person_name} from document {doc_id}: {e}")
+            return False
+    
     def update_person(self, old_name: str, new_name: str, new_context: str = None) -> bool:
         """Update a person's name and context."""
         try:

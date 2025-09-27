@@ -17,7 +17,8 @@
 
 set -euo pipefail
 
-INPUT_PDF="${1:?Usage: run_vision_ocr.sh <letters/inbox/your_document.pdf>}"
+INPUT_PDF="${1:?Usage: run_vision_ocr.sh <letters/inbox/your_document.pdf> [doc_id]}"
+DOC_ID="${2:-}"
 
 # Resolve the project root. This script lives in vision_project/scripts/
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -68,6 +69,32 @@ else
     # Fallback to Docker if local pdftoppm is not available
     docker run --rm -v "$PROJECT_ROOT/letters":/data ghcr.io/johnleetw/poppler:latest \
         pdftoppm -r 300 -png "/data/${INPUT_PDF#letters/}" "/data/${WORK_DIR#${PROJECT_ROOT}/}/${PDF_STEM}_vision_tmp/tmp"
+fi
+
+# Rename the generated PNG files to a consistent naming pattern
+echo "[run_vision_ocr] Renaming image files..."
+page_num=1
+for img_file in "$TMP_DIR"/tmp-*.png; do
+    if [ -f "$img_file" ]; then
+        new_name="${TMP_DIR}/${PDF_STEM}_page_$(printf "%03d" $page_num).png"
+        mv "$img_file" "$new_name"
+        echo "[run_vision_ocr] Renamed $(basename "$img_file") to $(basename "$new_name")"
+        ((page_num++))
+    fi
+done
+
+# Copy images to work directory with document ID naming
+echo "[run_vision_ocr] Copying images to work directory..."
+if [ -n "$DOC_ID" ]; then
+    page_num=1
+    for img_file in "$TMP_DIR"/*.png; do
+        if [ -f "$img_file" ]; then
+            work_image="${WORK_DIR}/${DOC_ID}_page_$(printf "%03d" $page_num).png"
+            cp "$img_file" "$work_image"
+            echo "[run_vision_ocr] Copied to work directory: $(basename "$work_image")"
+            ((page_num++))
+        fi
+    done
 fi
 
 echo "[run_vision_ocr] Performing OCR via Google Vision API…"

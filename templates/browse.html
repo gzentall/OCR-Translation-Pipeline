@@ -9,42 +9,202 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Material Design CSS -->
     <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Material Design 3 Type Scale -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Flex:wght@100..900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --mdc-theme-primary: #1976d2;
-            --mdc-theme-secondary: #dc004e;
-            --mdc-theme-surface: #ffffff;
-            --mdc-theme-background: #fafafa;
-            --mdc-theme-on-primary: #ffffff;
-            --mdc-theme-on-secondary: #ffffff;
-            --mdc-theme-on-surface: #000000;
-            --mdc-theme-on-background: #000000;
+            /* Material Design 3 Color System */
+            --md-sys-color-primary: #6750a4;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #eaddff;
+            --md-sys-color-on-primary-container: #21005d;
+            
+            --md-sys-color-secondary: #625b71;
+            --md-sys-color-on-secondary: #ffffff;
+            --md-sys-color-secondary-container: #e8def8;
+            --md-sys-color-on-secondary-container: #1d192b;
+            
+            --md-sys-color-tertiary: #7d5260;
+            --md-sys-color-on-tertiary: #ffffff;
+            --md-sys-color-tertiary-container: #ffd8e4;
+            --md-sys-color-on-tertiary-container: #31111d;
+            
+            --md-sys-color-error: #ba1a1a;
+            --md-sys-color-on-error: #ffffff;
+            --md-sys-color-error-container: #ffdad6;
+            --md-sys-color-on-error-container: #410002;
+            
+            --md-sys-color-surface: #fffbfe;
+            --md-sys-color-on-surface: #1c1b1f;
+            --md-sys-color-surface-variant: #e7e0ec;
+            --md-sys-color-on-surface-variant: #49454f;
+            
+            --md-sys-color-outline: #79747e;
+            --md-sys-color-outline-variant: #cac4d0;
+            
+            --md-sys-color-background: #fffbfe;
+            --md-sys-color-on-background: #1c1b1f;
+            
+            --md-sys-color-surface-container-lowest: #ffffff;
+            --md-sys-color-surface-container-low: #f7f2fa;
+            --md-sys-color-surface-container: #f3edf7;
+            --md-sys-color-surface-container-high: #ece6f0;
+            --md-sys-color-surface-container-highest: #e6e0e9;
+            
+            /* Legacy support for existing components */
+            --mdc-theme-primary: var(--md-sys-color-primary);
+            --mdc-theme-secondary: var(--md-sys-color-secondary);
+            --mdc-theme-surface: var(--md-sys-color-surface);
+            --mdc-theme-background: var(--md-sys-color-background);
+            --mdc-theme-on-primary: var(--md-sys-color-on-primary);
+            --mdc-theme-on-secondary: var(--md-sys-color-on-secondary);
+            --mdc-theme-on-surface: var(--md-sys-color-on-surface);
+            --mdc-theme-on-background: var(--md-sys-color-on-background);
+        }
+
+        /* Material Design 3 Typography */
+        :root {
+            --md-sys-typescale-display-large-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-display-large-size: 57px;
+            --md-sys-typescale-display-large-weight: 400;
+            --md-sys-typescale-display-large-line-height: 64px;
+            --md-sys-typescale-display-large-tracking: -0.25px;
+            
+            --md-sys-typescale-display-medium-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-display-medium-size: 45px;
+            --md-sys-typescale-display-medium-weight: 400;
+            --md-sys-typescale-display-medium-line-height: 52px;
+            --md-sys-typescale-display-medium-tracking: 0px;
+            
+            --md-sys-typescale-display-small-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-display-small-size: 36px;
+            --md-sys-typescale-display-small-weight: 400;
+            --md-sys-typescale-display-small-line-height: 44px;
+            --md-sys-typescale-display-small-tracking: 0px;
+            
+            --md-sys-typescale-headline-large-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-headline-large-size: 32px;
+            --md-sys-typescale-headline-large-weight: 400;
+            --md-sys-typescale-headline-large-line-height: 40px;
+            --md-sys-typescale-headline-large-tracking: 0px;
+            
+            --md-sys-typescale-headline-medium-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-headline-medium-size: 28px;
+            --md-sys-typescale-headline-medium-weight: 400;
+            --md-sys-typescale-headline-medium-line-height: 36px;
+            --md-sys-typescale-headline-medium-tracking: 0px;
+            
+            --md-sys-typescale-headline-small-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-headline-small-size: 24px;
+            --md-sys-typescale-headline-small-weight: 400;
+            --md-sys-typescale-headline-small-line-height: 32px;
+            --md-sys-typescale-headline-small-tracking: 0px;
+            
+            --md-sys-typescale-title-large-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-title-large-size: 22px;
+            --md-sys-typescale-title-large-weight: 400;
+            --md-sys-typescale-title-large-line-height: 28px;
+            --md-sys-typescale-title-large-tracking: 0px;
+            
+            --md-sys-typescale-title-medium-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-title-medium-size: 16px;
+            --md-sys-typescale-title-medium-weight: 500;
+            --md-sys-typescale-title-medium-line-height: 24px;
+            --md-sys-typescale-title-medium-tracking: 0.15px;
+            
+            --md-sys-typescale-title-small-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-title-small-size: 14px;
+            --md-sys-typescale-title-small-weight: 500;
+            --md-sys-typescale-title-small-line-height: 20px;
+            --md-sys-typescale-title-small-tracking: 0.1px;
+            
+            --md-sys-typescale-body-large-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-body-large-size: 16px;
+            --md-sys-typescale-body-large-weight: 400;
+            --md-sys-typescale-body-large-line-height: 24px;
+            --md-sys-typescale-body-large-tracking: 0.5px;
+            
+            --md-sys-typescale-body-medium-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-body-medium-size: 14px;
+            --md-sys-typescale-body-medium-weight: 400;
+            --md-sys-typescale-body-medium-line-height: 20px;
+            --md-sys-typescale-body-medium-tracking: 0.25px;
+            
+            --md-sys-typescale-body-small-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-body-small-size: 12px;
+            --md-sys-typescale-body-small-weight: 400;
+            --md-sys-typescale-body-small-line-height: 16px;
+            --md-sys-typescale-body-small-tracking: 0.4px;
+            
+            --md-sys-typescale-label-large-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-label-large-size: 14px;
+            --md-sys-typescale-label-large-weight: 500;
+            --md-sys-typescale-label-large-line-height: 20px;
+            --md-sys-typescale-label-large-tracking: 0.1px;
+            
+            --md-sys-typescale-label-medium-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-label-medium-size: 12px;
+            --md-sys-typescale-label-medium-weight: 500;
+            --md-sys-typescale-label-medium-line-height: 16px;
+            --md-sys-typescale-label-medium-tracking: 0.5px;
+            
+            --md-sys-typescale-label-small-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-label-small-size: 11px;
+            --md-sys-typescale-label-small-weight: 500;
+            --md-sys-typescale-label-small-line-height: 16px;
+            --md-sys-typescale-label-small-tracking: 0.5px;
+            
+            /* Material Design 3 Spacing */
+            --md-sys-spacing-0: 0px;
+            --md-sys-spacing-1: 4px;
+            --md-sys-spacing-2: 8px;
+            --md-sys-spacing-3: 12px;
+            --md-sys-spacing-4: 16px;
+            --md-sys-spacing-5: 20px;
+            --md-sys-spacing-6: 24px;
+            --md-sys-spacing-7: 28px;
+            --md-sys-spacing-8: 32px;
+            --md-sys-spacing-9: 36px;
+            --md-sys-spacing-10: 40px;
+            --md-sys-spacing-11: 44px;
+            --md-sys-spacing-12: 48px;
+            --md-sys-spacing-13: 52px;
+            --md-sys-spacing-14: 56px;
+            --md-sys-spacing-15: 60px;
+            --md-sys-spacing-16: 64px;
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
             margin: 0;
             padding: 0;
-            background-color: var(--mdc-theme-background);
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
         }
 
         .app-bar {
-            background-color: var(--mdc-theme-primary);
-            color: var(--mdc-theme-on-primary);
-            padding: 16px 24px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface);
+            padding: var(--md-sys-spacing-4) var(--md-sys-spacing-6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: var(--md-sys-spacing-4);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
         }
 
         .app-bar h1 {
             margin: 0;
-            font-size: 24px;
-            font-weight: 500;
+            font-family: var(--md-sys-typescale-headline-small-font);
+            font-size: var(--md-sys-typescale-headline-small-size);
+            font-weight: var(--md-sys-typescale-headline-small-weight);
+            line-height: var(--md-sys-typescale-headline-small-line-height);
+            letter-spacing: var(--md-sys-typescale-headline-small-tracking);
             flex: 1;
         }
 
@@ -62,70 +222,285 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
-        .nav-links {
+        .nav-tabs {
             display: flex;
-            gap: 16px;
+            gap: 0;
+            margin: 0 var(--md-sys-spacing-6);
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: 12px;
+            padding: var(--md-sys-spacing-1);
         }
 
-        .nav-links a {
-            color: var(--mdc-theme-on-primary, white);
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: background 0.2s ease;
+        .nav-tab {
+            background: none;
+            border: none;
+            color: var(--md-sys-color-on-surface-variant);
+            padding: var(--md-sys-spacing-3) var(--md-sys-spacing-6);
+            cursor: pointer;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            line-height: var(--md-sys-typescale-label-large-line-height);
+            letter-spacing: var(--md-sys-typescale-label-large-tracking);
+            border-radius: 8px;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            position: relative;
+            min-height: 44px; /* M3 minimum touch target */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .nav-tab:hover {
+            color: var(--md-sys-color-on-surface);
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .nav-tab.active {
+            color: var(--md-sys-color-on-primary-container);
+            background: var(--md-sys-color-primary-container);
+        }
+
+        .nav-actions {
+            margin-left: auto;
+        }
+
+        .nav-actions .mdc-button {
+            --mdc-theme-primary: #ffffff;
+            --mdc-theme-on-primary: #1976d2;
         }
 
         .main-content {
-            padding: 24px;
+            padding: var(--md-sys-spacing-6);
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: var(--mdc-theme-surface);
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--mdc-theme-primary);
-            margin: 0;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #666;
-            margin: 4px 0 0 0;
-        }
 
         .search-section {
-            background: var(--mdc-theme-surface);
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: 12px;
+            padding: var(--md-sys-spacing-6);
+            margin-bottom: var(--md-sys-spacing-6);
+            border: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .search-section h2 {
+            font-family: var(--md-sys-typescale-title-large-font);
+            font-size: var(--md-sys-typescale-title-large-size);
+            font-weight: var(--md-sys-typescale-title-large-weight);
+            line-height: var(--md-sys-typescale-title-large-line-height);
+            letter-spacing: var(--md-sys-typescale-title-large-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0 0 var(--md-sys-spacing-4) 0;
         }
 
         .search-row {
             display: flex;
-            gap: 16px;
+            gap: var(--md-sys-spacing-4);
             align-items: center;
             flex-wrap: wrap;
+        }
+
+        .search-filters {
+            display: flex;
+            gap: var(--md-sys-spacing-3);
+            margin-top: var(--md-sys-spacing-4);
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            background: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 16px;
+            padding: var(--md-sys-spacing-2) var(--md-sys-spacing-4);
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: var(--md-sys-typescale-label-medium-weight);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .filter-chip:hover {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .filter-chip.active {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .search-results-info {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            color: var(--md-sys-color-on-surface-variant);
+            margin-top: var(--md-sys-spacing-3);
+        }
+
+        /* Material Design 3 Search Component */
+        .mdc-search {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--md-sys-color-surface-container-highest);
+            border-radius: 28px;
+            border: 1px solid var(--md-sys-color-outline);
+            min-height: 56px;
+            padding: 0 var(--md-sys-spacing-4);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .mdc-search:hover {
+            border-color: var(--md-sys-color-on-surface);
+        }
+
+        .mdc-search:focus-within {
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 1px var(--md-sys-color-primary);
+        }
+
+        .mdc-search__icon {
+            color: var(--md-sys-color-on-surface-variant);
+            margin-right: var(--md-sys-spacing-3);
+            font-size: 24px;
+        }
+
+        .mdc-search__input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
+            color: var(--md-sys-color-on-surface);
+            padding: var(--md-sys-spacing-4) 0;
+        }
+
+        .mdc-search__input::placeholder {
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .mdc-search__trailing-icon {
+            color: var(--md-sys-color-on-surface-variant);
+            margin-left: var(--md-sys-spacing-3);
+            cursor: pointer;
+            padding: var(--md-sys-spacing-2);
+            border-radius: 50%;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .mdc-search__trailing-icon:hover {
+            background: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .mdc-search__trailing-icon:active {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        /* Search suggestions dropdown */
+        .mdc-search__suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--md-sys-color-surface-container-lowest);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-top: none;
+            border-radius: 0 0 28px 28px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .mdc-search__suggestions.show {
+            display: block;
+        }
+
+        .mdc-search__suggestion {
+            padding: var(--md-sys-spacing-4);
+            cursor: pointer;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .mdc-search__suggestion:last-child {
+            border-bottom: none;
+        }
+
+        .mdc-search__suggestion:hover {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .mdc-search__suggestion-text {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .mdc-search__suggestion-subtext {
+            font-family: var(--md-sys-typescale-body-small-font);
+            font-size: var(--md-sys-typescale-body-small-size);
+            font-weight: var(--md-sys-typescale-body-small-weight);
+            line-height: var(--md-sys-typescale-body-small-line-height);
+            letter-spacing: var(--md-sys-typescale-body-small-tracking);
+            color: var(--md-sys-color-on-surface-variant);
+            margin-top: var(--md-sys-spacing-1);
+        }
+
+        /* Search highlighting */
+        .search-highlight {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            padding: 1px 2px;
+            border-radius: 2px;
+            font-weight: 500;
+        }
+
+        /* Empty search state */
+        .search-empty-state {
+            text-align: center;
+            padding: var(--md-sys-spacing-8);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .search-empty-state .material-icons {
+            font-size: 48px;
+            margin-bottom: var(--md-sys-spacing-4);
+            opacity: 0.5;
+        }
+
+        .search-empty-state h3 {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            line-height: var(--md-sys-typescale-title-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0 0 var(--md-sys-spacing-2) 0;
+        }
+
+        .search-empty-state p {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+            color: var(--md-sys-color-on-surface-variant);
+            margin: 0;
         }
 
         .mdc-text-field {
@@ -147,59 +522,991 @@
             color: var(--mdc-theme-on-surface);
         }
 
-        .document-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            transition: box-shadow 0.2s ease;
+        .mdc-list {
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: 12px;
+            border: 1px solid var(--md-sys-color-outline-variant);
+            overflow: hidden;
+            margin-bottom: var(--md-sys-spacing-4);
+        }
+
+        .mdc-list-item {
+            min-height: 88px; /* M3 three-line list height */
+            padding: 0;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+            cursor: pointer;
             display: flex;
-            flex-direction: row;
+            align-items: center;
+            position: relative;
+        }
+
+        .mdc-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .mdc-list-item:hover {
+            background-color: var(--md-sys-color-surface-container-high);
+        }
+
+        .mdc-list-item:focus {
+            background-color: var(--md-sys-color-surface-container-high);
+            outline: 2px solid var(--md-sys-color-primary);
+            outline-offset: -2px;
+        }
+
+        .mdc-list-item:active {
+            background-color: var(--md-sys-color-primary-container);
+        }
+
+        /* Ripple effect for list items */
+        .mdc-list-item {
+            position: relative;
             overflow: hidden;
         }
 
-        .document-thumbnail {
-            width: 120px;
-            height: 160px;
-            background: #f5f5f5;
+        .mdc-list-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--md-sys-color-primary);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            pointer-events: none;
+        }
+
+        .mdc-list-item:active::before {
+            opacity: 0.12;
+            transform: scale(1);
+        }
+
+        .mdc-list-item__graphic {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            background: var(--md-sys-color-surface-container);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-right: 1px solid #e0e0e0;
             flex-shrink: 0;
+            overflow: hidden;
+            margin: 16px 16px 16px 16px; /* M3: 16dp all around for consistent spacing */
+            position: relative;
         }
 
-        .document-thumbnail img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            border-radius: 4px;
+        .mdc-list-item__graphic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .document-thumbnail .no-image {
-            color: #999;
+        .mdc-list-item__graphic .no-image {
+            color: var(--md-sys-color-on-surface-variant);
             font-size: 12px;
             text-align: center;
-            padding: 8px;
+            padding: var(--md-sys-spacing-2);
         }
 
-        .document-content {
-            padding: 16px;
-            cursor: pointer;
+        .page-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 500;
+            border: 1px solid var(--md-sys-color-surface);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+        .mdc-list-item__text {
             flex: 1;
+            min-width: 0;
+            padding: 16px 16px 20px 0; /* M3: 16dp top, 16dp right, 20dp bottom, 0 left (16dp gap from graphic) */
+        }
+
+        .mdc-list-item__primary-text {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            line-height: var(--md-sys-typescale-title-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .mdc-list-item__secondary-text {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+            color: var(--md-sys-color-on-surface-variant);
+            margin: 4px 0 0 0; /* M3: 4dp spacing between primary and secondary */
+            padding: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .mdc-list-item__tertiary-text {
+            font-family: var(--md-sys-typescale-body-small-font);
+            font-size: var(--md-sys-typescale-body-small-size);
+            font-weight: var(--md-sys-typescale-body-small-weight);
+            line-height: var(--md-sys-typescale-body-small-line-height);
+            letter-spacing: var(--md-sys-typescale-body-small-tracking);
+            color: var(--md-sys-color-on-surface-variant);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: center;
+            margin: 4px 0 0 0; /* M3: 4dp spacing between secondary and tertiary */
+            padding: 0;
+        }
+
+        .person-chip {
+            background-color: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            line-height: var(--md-sys-typescale-label-large-line-height);
+            letter-spacing: var(--md-sys-typescale-label-large-tracking);
+            white-space: nowrap;
+            border: 1px solid var(--md-sys-color-outline);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 32px;
+            box-sizing: border-box;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            cursor: default;
+        }
+
+        .person-chip:hover {
+            background-color: var(--md-sys-color-surface-container-high);
+        }
+
+        /* Document modal people section */
+        .modal-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .modal-section-header h3 {
+            margin: 0;
+        }
+
+        .edit-people-btn {
+            min-width: auto;
+            height: 32px;
+            padding: 0 12px;
+        }
+
+        .document-people {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .person-chip {
+            position: relative;
+        }
+
+        .chip-remove-btn {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: var(--md-sys-color-error);
+            color: var(--md-sys-color-on-error);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            padding: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .chip-remove-btn:hover {
+            background-color: var(--md-sys-color-error-container);
+            color: var(--md-sys-color-on-error-container);
+            transform: scale(1.1);
+        }
+
+        .add-person-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        /* M3 Input Chip Styles */
+        .input-chip-container {
+            margin-top: 8px;
+        }
+
+        .mdc-chip-set--input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .mdc-chip--input {
+            background-color: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 8px;
+            min-height: 32px;
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .mdc-chip--input:hover {
+            background-color: var(--md-sys-color-surface-container-high);
+        }
+
+        .mdc-chip--input:focus-within {
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 1px var(--md-sys-color-primary);
+        }
+
+        .mdc-chip__ripple {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--md-sys-color-primary);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            pointer-events: none;
+        }
+
+        .mdc-chip--input:active .mdc-chip__ripple {
+            opacity: 0.12;
+            transform: scale(1);
+        }
+
+        .mdc-chip__text {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            min-width: 120px;
+        }
+
+        .input-chip-field {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            line-height: var(--md-sys-typescale-label-large-line-height);
+            letter-spacing: var(--md-sys-typescale-label-large-tracking);
+            color: var(--md-sys-color-on-surface);
+            width: 100%;
+            min-width: 80px;
+        }
+
+        .input-chip-field::placeholder {
+            color: var(--md-sys-color-on-surface-variant);
+            opacity: 0.6;
+        }
+
+        .mdc-chip__action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            margin-right: 4px;
+        }
+
+        .mdc-chip__action:hover {
+            background-color: var(--md-sys-color-on-surface);
+            opacity: 0.08;
+        }
+
+        .mdc-chip__action:focus {
+            outline: 2px solid var(--md-sys-color-primary);
+            outline-offset: 2px;
+        }
+
+        .mdc-chip__icon {
+            color: var(--md-sys-color-primary);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mdc-chip__icon .material-icons {
+            font-size: 18px;
+        }
+
+        .person-overflow {
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 12px;
+            font-weight: 500;
+            font-style: italic;
+            display: inline-flex;
+            align-items: center;
+            height: 24px;
+        }
+
+        .mdc-list-item__meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: var(--md-sys-spacing-1);
+            flex-shrink: 0;
+            padding: 16px 16px 20px 0; /* M3: 16dp top, 16dp right, 20dp bottom, 0 left */
+        }
+
+        .mdc-list-item__meta-text {
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: var(--md-sys-typescale-label-medium-weight);
+            line-height: var(--md-sys-typescale-label-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-label-medium-tracking);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        /* Reference list specific styles */
+        .reference-list .mdc-list-item__meta-text {
+            color: var(--md-sys-color-primary);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        /* Reference list follows M3 two-line list pattern */
+        .reference-list .mdc-list-item {
+            min-height: 72px; /* M3 two-line list height */
+        }
+
+        .reference-list .mdc-list-item__text {
+            padding: 16px 0 20px 16px; /* M3: 16dp top, 0 right, 20dp bottom, 16dp left */
+        }
+
+        .reference-list .mdc-list-item__meta {
+            padding: 16px 16px 20px 0; /* M3: 16dp top, 16dp right, 20dp bottom, 0 left */
+        }
+
+        /* Selection system styles */
+        .reference-list .mdc-list-item {
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .reference-list .mdc-list-item:hover {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .reference-list .mdc-list-item.selected {
+            background: var(--md-sys-color-primary-container);
+            border-left: 4px solid var(--md-sys-color-primary);
+        }
+
+        .reference-list .mdc-list-item .selection-checkbox {
+            position: absolute;
+            right: var(--md-sys-spacing-4);
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
+            z-index: 10;
+            width: 20px;
+            height: 20px;
+        }
+
+        .reference-list .mdc-list-item:hover .selection-checkbox {
+            opacity: 1;
+        }
+
+        .reference-list .mdc-list-item.selected .selection-checkbox {
+            opacity: 1;
+        }
+
+        .reference-list .mdc-list-item .selection-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--md-sys-color-primary);
+            cursor: pointer;
+        }
+
+        .reference-list .mdc-list-item .list-item-content {
+            margin-right: 0;
+            transition: margin-right 0.2s cubic-bezier(0.2, 0, 0, 1);
+            display: flex;
+            align-items: center;
+            flex: 1;
+            padding-right: 48px; /* Reserve space for checkbox (20px + 16dp + 12px buffer) */
+        }
+
+        .reference-list .mdc-list-item:hover .list-item-content,
+        .reference-list .mdc-list-item.selected .list-item-content {
+            margin-right: 0; /* No margin change needed since checkbox is on the right */
+        }
+
+        /* Floating toolbar */
+        .floating-toolbar {
+            position: fixed;
+            bottom: var(--md-sys-spacing-6);
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--md-sys-color-surface-container-lowest);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 16px;
+            padding: var(--md-sys-spacing-3);
+            box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-2);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .floating-toolbar.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .floating-toolbar__selection-count {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin-right: var(--md-sys-spacing-2);
+            white-space: nowrap;
+        }
+
+        .floating-toolbar__action {
+            background: none;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 8px;
+            padding: var(--md-sys-spacing-2) var(--md-sys-spacing-3);
+            color: var(--md-sys-color-on-surface);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-1);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            line-height: var(--md-sys-typescale-label-large-line-height);
+            letter-spacing: var(--md-sys-typescale-label-large-tracking);
+        }
+
+        .floating-toolbar__action:hover {
+            background: var(--md-sys-color-surface-container-high);
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .floating-toolbar__action.merge {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .floating-toolbar__action.merge:hover {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+
+        .floating-toolbar__action.delete {
+            background: var(--md-sys-color-error-container);
+            color: var(--md-sys-color-on-error-container);
+            border-color: var(--md-sys-color-error);
+        }
+
+        .floating-toolbar__action.delete:hover {
+            background: var(--md-sys-color-error);
+            color: var(--md-sys-color-on-error);
+        }
+
+        .floating-toolbar__action .material-icons {
+            font-size: 18px;
+        }
+
+        /* Merge modal styles */
+        .merge-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.32);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: var(--md-sys-spacing-4);
+        }
+
+        .merge-modal.show {
+            display: flex;
+        }
+
+        .merge-modal-content {
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: 28px;
+            padding: var(--md-sys-spacing-6);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 11px 15px -7px rgba(0,0,0,0.2), 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12);
+        }
+
+        .merge-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--md-sys-spacing-6);
+        }
+
+        .merge-modal-title {
+            font-family: var(--md-sys-typescale-headline-small-font);
+            font-size: var(--md-sys-typescale-headline-small-size);
+            font-weight: var(--md-sys-typescale-headline-small-weight);
+            line-height: var(--md-sys-typescale-headline-small-line-height);
+            letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+        }
+
+        .merge-modal-close {
+            background: none;
+            border: none;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+            padding: var(--md-sys-spacing-2);
+            border-radius: 50%;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .merge-modal-close:hover {
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .merge-selection {
+            display: flex;
+            flex-direction: column;
+            gap: var(--md-sys-spacing-4);
+            margin-bottom: var(--md-sys-spacing-6);
+        }
+
+        .merge-option {
+            display: flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-3);
+            padding: var(--md-sys-spacing-4);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .merge-option:hover {
+            background: var(--md-sys-color-surface-container-high);
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .merge-option.selected {
+            background: var(--md-sys-color-primary-container);
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .merge-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--md-sys-color-primary);
+        }
+
+        .merge-option-info {
+            flex: 1;
+        }
+
+        .merge-option-name {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            line-height: var(--md-sys-typescale-title-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0 0 var(--md-sys-spacing-1) 0;
+        }
+
+        .merge-option-meta {
+            font-family: var(--md-sys-typescale-body-small-font);
+            font-size: var(--md-sys-typescale-body-small-size);
+            font-weight: var(--md-sys-typescale-body-small-weight);
+            line-height: var(--md-sys-typescale-body-small-line-height);
+            letter-spacing: var(--md-sys-typescale-body-small-tracking);
+            color: var(--md-sys-color-on-surface-variant);
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .floating-toolbar {
+                bottom: var(--md-sys-spacing-4);
+                left: var(--md-sys-spacing-4);
+                right: var(--md-sys-spacing-4);
+                transform: translateY(100px);
+            }
+            
+            .floating-toolbar.show {
+                transform: translateY(0);
+            }
+            
+            .merge-modal-content {
+                margin: var(--md-sys-spacing-4);
+                padding: var(--md-sys-spacing-4);
+            }
+        }
+
+        /* Side Sheet Styles */
+        .side-sheet {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--md-sys-color-surface-container-lowest);
+            border-left: 1px solid var(--md-sys-color-outline-variant);
+            box-shadow: -4px 0 8px rgba(0,0,0,0.12);
+            z-index: 1000;
+            transition: right 0.3s cubic-bezier(0.2, 0, 0, 1);
             display: flex;
             flex-direction: column;
         }
 
-        .document-content:hover {
-            background: #f5f5f5;
+        .side-sheet.open {
+            right: 0;
         }
 
-        .document-actions {
-            padding: 12px 16px;
-            border-top: 1px solid #e0e0e0;
+        .side-sheet__header {
+            padding: var(--md-sys-spacing-6);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
             display: flex;
-            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--md-sys-color-surface-container);
+        }
+
+        .side-sheet__title {
+            font-family: var(--md-sys-typescale-title-large-font);
+            font-size: var(--md-sys-typescale-title-large-size);
+            font-weight: var(--md-sys-typescale-title-large-weight);
+            line-height: var(--md-sys-typescale-title-large-line-height);
+            letter-spacing: var(--md-sys-typescale-title-large-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+        }
+
+        .side-sheet__close {
+            background: none;
+            border: none;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+            padding: var(--md-sys-spacing-2);
+            border-radius: 50%;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .side-sheet__close:hover {
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .side-sheet__content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--md-sys-spacing-4);
+        }
+
+        .side-sheet__document-item {
+            padding: var(--md-sys-spacing-4);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            cursor: pointer;
+            transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .side-sheet__document-item:last-child {
+            border-bottom: none;
+        }
+
+        .side-sheet__document-item:hover {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .side-sheet__document-title {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            line-height: var(--md-sys-typescale-title-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0 0 var(--md-sys-spacing-1) 0;
+        }
+
+        .side-sheet__document-meta {
+            font-family: var(--md-sys-typescale-body-small-font);
+            font-size: var(--md-sys-typescale-body-small-size);
+            font-weight: var(--md-sys-typescale-body-small-weight);
+            line-height: var(--md-sys-typescale-body-small-line-height);
+            letter-spacing: var(--md-sys-typescale-body-small-tracking);
+            color: var(--md-sys-color-on-surface-variant);
+            margin: 0;
+        }
+
+        .side-sheet__empty {
+            text-align: center;
+            padding: var(--md-sys-spacing-8);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .side-sheet__empty .material-icons {
+            font-size: 48px;
+            margin-bottom: var(--md-sys-spacing-4);
+            opacity: 0.5;
+        }
+
+        /* Side sheet overlay */
+        .side-sheet-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.32);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .side-sheet-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 768px) {
+            .side-sheet {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: var(--md-sys-spacing-6);
+            right: var(--md-sys-spacing-6);
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border: none;
+            box-shadow: 0 3px 5px -1px rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.14), 0 1px 18px 0 rgba(0,0,0,0.12);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            z-index: 100;
+        }
+
+        .fab:hover {
+            box-shadow: 0 5px 5px -3px rgba(0,0,0,0.2), 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .fab:active {
+            transform: translateY(0);
+        }
+
+        .fab .material-icons {
+            font-size: 24px;
+        }
+
+        /* Add Reference Modal */
+        .add-reference-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.32);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: var(--md-sys-spacing-4);
+        }
+
+        .add-reference-modal.show {
+            display: flex;
+        }
+
+        .add-reference-modal-content {
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: 28px;
+            padding: var(--md-sys-spacing-6);
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 11px 15px -7px rgba(0,0,0,0.2), 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12);
+        }
+
+        .add-reference-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--md-sys-spacing-6);
+        }
+
+        .add-reference-title {
+            font-family: var(--md-sys-typescale-headline-small-font);
+            font-size: var(--md-sys-typescale-headline-small-size);
+            font-weight: var(--md-sys-typescale-headline-small-weight);
+            line-height: var(--md-sys-typescale-headline-small-line-height);
+            letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+        }
+
+        .add-reference-close {
+            background: none;
+            border: none;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+            padding: var(--md-sys-spacing-2);
+            border-radius: 50%;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .add-reference-close:hover {
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .add-reference-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--md-sys-spacing-4);
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: var(--md-sys-spacing-2);
+        }
+
+        .form-label {
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            line-height: var(--md-sys-typescale-label-large-line-height);
+            letter-spacing: var(--md-sys-typescale-label-large-tracking);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .form-input {
+            padding: var(--md-sys-spacing-4);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 4px;
+            background: var(--md-sys-color-surface-container-highest);
+            color: var(--md-sys-color-on-surface);
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
+            transition: border-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 1px var(--md-sys-color-primary);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--md-sys-spacing-3);
             justify-content: flex-end;
+            margin-top: var(--md-sys-spacing-4);
+        }
+
+        .form-help-text {
+            font-family: var(--md-sys-typescale-body-small-font);
+            font-size: var(--md-sys-typescale-body-small-size);
+            font-weight: var(--md-sys-typescale-body-small-weight);
+            line-height: var(--md-sys-typescale-body-small-line-height);
+            letter-spacing: var(--md-sys-typescale-body-small-tracking);
+            color: var(--md-sys-color-on-surface-variant);
+            margin-top: var(--md-sys-spacing-1);
+        }
+
+        @media (max-width: 768px) {
+            .fab {
+                bottom: var(--md-sys-spacing-4);
+                right: var(--md-sys-spacing-4);
+            }
+            
+            .add-reference-modal-content {
+                margin: var(--md-sys-spacing-4);
+                padding: var(--md-sys-spacing-4);
+            }
         }
 
         .edit-btn {
@@ -251,14 +1558,7 @@
             gap: 8px;
         }
 
-        .person-chip {
-            background: #e3f2fd;
-            color: var(--mdc-theme-primary);
-            padding: 4px 8px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 500;
-        }
+        /* Duplicate person-chip style removed - using main one below */
 
         .loading {
             text-align: center;
@@ -295,7 +1595,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            z-index: 1000;
+            z-index: 2000; /* Increased z-index to ensure it's above other elements */
         }
 
         .modal-content {
@@ -310,6 +1610,7 @@
             max-height: 80vh;
             overflow-y: auto;
             width: 90%;
+            box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
         }
 
         .modal-header {
@@ -524,6 +1825,15 @@
             border-color: var(--mdc-theme-primary);
         }
 
+        .people-section {
+            background: var(--mdc-theme-surface);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+
+
 
         .modal-section {
             margin-bottom: 24px;
@@ -550,7 +1860,7 @@
 
         @media (max-width: 768px) {
             .main-content {
-                padding: 16px;
+                padding: var(--md-sys-spacing-4);
             }
             
             .search-row {
@@ -558,20 +1868,112 @@
                 align-items: stretch;
             }
             
-            .document-meta {
-                flex-direction: column;
-                gap: 4px;
+            .mdc-list-item {
+                min-height: 72px; /* Keep two-line height on mobile */
             }
             
-            .document-card {
-                flex-direction: column;
+            .mdc-list-item__graphic {
+                width: 48px;
+                height: 48px;
+                margin: 12px 0 12px 12px; /* Reduced padding for mobile */
             }
             
-            .document-thumbnail {
-                width: 100%;
-                height: 120px;
-                border-right: none;
-                border-bottom: 1px solid #e0e0e0;
+            .mdc-list-item__text {
+                padding: 12px 12px 16px 0; /* Reduced padding for mobile */
+            }
+            
+            .mdc-list-item__meta {
+                padding: 12px 12px 16px 0; /* Reduced padding for mobile */
+            }
+        }
+
+        /* M3 Snackbar Styles */
+        .mdc-snackbar {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            z-index: 1000;
+            pointer-events: none;
+            visibility: hidden;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), visibility 0.3s;
+        }
+
+        .mdc-snackbar.mdc-snackbar--open {
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .mdc-snackbar__surface {
+            background-color: var(--md-sys-color-inverse-surface);
+            color: var(--md-sys-color-on-inverse-surface);
+            border-radius: 4px;
+            box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            min-height: 48px;
+            max-width: 672px;
+            margin: 0 auto;
+        }
+
+        .mdc-snackbar__label {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+            color: var(--md-sys-color-on-inverse-surface);
+            flex: 1;
+            margin-right: 8px;
+        }
+
+        .mdc-snackbar__actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mdc-snackbar__action {
+            color: var(--md-sys-color-inverse-primary);
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            line-height: var(--md-sys-typescale-label-large-line-height);
+            letter-spacing: var(--md-sys-typescale-label-large-tracking);
+            text-transform: uppercase;
+            padding: 0;
+            min-width: auto;
+            height: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .mdc-snackbar__action:hover {
+            opacity: 0.8;
+        }
+
+        .mdc-snackbar__action:focus {
+            outline: 2px solid var(--md-sys-color-inverse-primary);
+            outline-offset: 2px;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .mdc-snackbar {
+                bottom: 8px;
+                left: 8px;
+                right: 8px;
+            }
+            
+            .mdc-snackbar__surface {
+                padding: 12px 16px;
+                min-height: 44px;
             }
         }
     </style>
@@ -579,75 +1981,212 @@
 <body>
     <!-- App Bar -->
     <div class="app-bar">
-        <button class="back-button" onclick="window.location.href='/'">
-            <span class="material-icons">arrow_back</span>
-        </button>
-        <h1>OCR Document Browser</h1>
-        <div class="nav-links">
-            <a href="/people-page">People</a>
-            <a href="/stats-page">Statistics</a>
+        <h1>OCR Translation Pipeline</h1>
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('documents')">Documents</button>
+            <button class="nav-tab" onclick="switchTab('references')">References</button>
+        </div>
+        <div class="nav-actions">
+            <button class="mdc-button mdc-button--raised" onclick="showUploadModal()">
+                <span class="mdc-button__ripple"></span>
+                <span class="mdc-button__label">Upload Document</span>
+            </button>
         </div>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Statistics -->
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card">
-                <div class="stat-number" id="totalDocuments">-</div>
-                <div class="stat-label">Documents</div>
+        <!-- Documents Tab Content -->
+        <div id="documents-tab" class="tab-content active">
+            <!-- Search Section -->
+            <div class="search-section">
+                <h2>Search Documents</h2>
+                <div class="search-row">
+                    <div class="mdc-search" id="documentSearch">
+                        <span class="material-icons mdc-search__icon">search</span>
+                        <input type="text" class="mdc-search__input" id="searchInput" placeholder="Search documents..." autocomplete="off">
+                        <span class="material-icons mdc-search__trailing-icon" id="clearSearchIcon" style="display: none;">close</span>
+                        <div class="mdc-search__suggestions" id="searchSuggestions"></div>
+                    </div>
+                    <button class="mdc-button mdc-button--outlined" id="clearBtn">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Clear</span>
+                    </button>
+                </div>
+                <div class="search-filters">
+                    <div class="filter-chip active" data-filter="all">All</div>
+                    <div class="filter-chip" data-filter="title">Title</div>
+                    <div class="filter-chip" data-filter="content">Content</div>
+                    <div class="filter-chip" data-filter="people">People</div>
+                    <div class="filter-chip" data-filter="language">Language</div>
+                </div>
+                <div class="search-results-info" id="searchResultsInfo" style="display: none;"></div>
             </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalPeople">-</div>
-                <div class="stat-label">People</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalLanguages">-</div>
-                <div class="stat-label">Languages</div>
-            </div>
-        </div>
 
-        <!-- Search Section -->
-        <div class="search-section">
-            <h2 class="section-title">Search Documents</h2>
-            <div class="search-row">
-                <div class="mdc-text-field mdc-text-field--outlined">
-                    <input type="text" class="mdc-text-field__input" id="searchInput" placeholder="Search documents...">
-                    <div class="mdc-notched-outline">
-                        <div class="mdc-notched-outline__leading"></div>
-                        <div class="mdc-notched-outline__notch">
-                            <label class="mdc-floating-label">Search</label>
-                        </div>
-                        <div class="mdc-notched-outline__trailing"></div>
+            <!-- Documents Section -->
+            <div class="documents-section">
+                <h2 class="section-title">Documents</h2>
+                <div id="documentsContainer">
+                    <div class="loading">
+                        <p>Loading documents...</p>
                     </div>
                 </div>
-                <button class="mdc-button mdc-button--raised" id="searchBtn">
-                    <span class="mdc-button__ripple"></span>
-                    <span class="mdc-button__label">Search</span>
-                </button>
-                <button class="mdc-button mdc-button--outlined" id="clearBtn">
-                    <span class="mdc-button__ripple"></span>
-                    <span class="mdc-button__label">Clear</span>
-                </button>
             </div>
         </div>
 
-        <!-- Documents Section -->
-        <div class="documents-section">
-            <h2 class="section-title">Documents</h2>
-            <div id="documentsContainer">
-                <div class="loading">
-                    <p>Loading documents...</p>
+        <!-- References Tab Content -->
+        <div id="references-tab" class="tab-content">
+            <!-- Search Section for People -->
+            <div class="search-section">
+                <h2>Search People</h2>
+                <div class="search-row">
+                    <div class="mdc-search" id="peopleSearch">
+                        <span class="material-icons mdc-search__icon">search</span>
+                        <input type="text" class="mdc-search__input" id="peopleSearchInput" placeholder="Search people..." autocomplete="off">
+                        <span class="material-icons mdc-search__trailing-icon" id="clearPeopleSearchIcon" style="display: none;">close</span>
+                        <div class="mdc-search__suggestions" id="peopleSearchSuggestions"></div>
+                    </div>
+                    <button class="mdc-button mdc-button--outlined" id="peopleClearBtn">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Clear</span>
+                    </button>
+                </div>
+                <div class="search-filters">
+                    <div class="filter-chip active" data-people-filter="all">All</div>
+                    <div class="filter-chip" data-people-filter="name">Name</div>
+                    <div class="filter-chip" data-people-filter="aliases">Aliases</div>
+                    <div class="filter-chip" data-people-filter="context">Context</div>
+                </div>
+                <div class="search-results-info" id="peopleSearchResultsInfo" style="display: none;"></div>
+            </div>
+
+            <!-- People Section -->
+            <div class="people-section">
+                <h2 class="section-title">People References</h2>
+                <div id="peopleContainer">
+                    <div class="loading">
+                        <p>Loading people...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Floating Action Button -->
-    <button class="mdc-fab" id="uploadFab" onclick="window.location.href='/'">
-        <span class="mdc-fab__ripple"></span>
-        <span class="mdc-fab__icon">+</span>
+    <button class="fab" id="addReferenceFab" onclick="openAddReferenceModal()" aria-label="Add new reference">
+        <span class="material-icons">add</span>
     </button>
+
+    <!-- Floating Toolbar for Selection Actions -->
+    <div class="floating-toolbar" id="floatingToolbar">
+        <div class="floating-toolbar__selection-count" id="selectionCount">0 selected</div>
+        <button class="floating-toolbar__action merge" onclick="openMergeModal()" id="mergeButton">
+            <span class="material-icons">merge</span>
+            <span>Merge</span>
+        </button>
+        <button class="floating-toolbar__action delete" onclick="deleteSelectedReferences()" id="deleteButton">
+            <span class="material-icons">delete</span>
+            <span>Delete</span>
+        </button>
+    </div>
+
+    <!-- Merge Modal -->
+    <div class="merge-modal" id="mergeModal">
+        <div class="merge-modal-content">
+            <div class="merge-modal-header">
+                <h2 class="merge-modal-title">Merge References</h2>
+                <button class="merge-modal-close" onclick="closeMergeModal()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="merge-selection" id="mergeSelection">
+                <!-- Merge options will be populated here -->
+            </div>
+            <div class="form-actions">
+                <button type="button" class="mdc-button mdc-button--outlined" onclick="closeMergeModal()">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">Cancel</span>
+                </button>
+                <button type="button" class="mdc-button mdc-button--raised" onclick="performMerge()" id="mergeSubmitButton">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">Merge References</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Reference Modal -->
+    <div class="add-reference-modal" id="addReferenceModal">
+        <div class="add-reference-modal-content">
+            <div class="add-reference-header">
+                <h2 class="add-reference-title">Add Reference</h2>
+                <button class="add-reference-close" onclick="closeAddReferenceModal()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <form class="add-reference-form" id="addReferenceForm">
+                <div class="form-field">
+                    <label class="form-label" for="referenceName">Name *</label>
+                    <input type="text" class="form-input" id="referenceName" name="name" required placeholder="Enter person's name">
+                    <div class="form-help-text">The primary name for this reference</div>
+                </div>
+                <div class="form-field">
+                    <label class="form-label" for="referenceAliases">Aliases</label>
+                    <input type="text" class="form-input" id="referenceAliases" name="aliases" placeholder="Enter aliases separated by commas">
+                    <div class="form-help-text">Alternative names or nicknames (optional)</div>
+                </div>
+                <div class="form-field">
+                    <label class="form-label" for="referenceContext">Context</label>
+                    <textarea class="form-input form-textarea" id="referenceContext" name="context" placeholder="Enter additional context about this person"></textarea>
+                    <div class="form-help-text">Additional information about this person (optional)</div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="mdc-button mdc-button--outlined" onclick="closeAddReferenceModal()">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Cancel</span>
+                    </button>
+                    <button type="submit" class="mdc-button mdc-button--raised" id="addReferenceSubmit">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Add Reference</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Side Sheet for Person Documents -->
+    <div class="side-sheet-overlay" id="sideSheetOverlay"></div>
+    <div class="side-sheet" id="personSideSheet">
+        <div class="side-sheet__header">
+            <h2 class="side-sheet__title" id="sideSheetTitle">Documents</h2>
+            <button class="side-sheet__close" id="sideSheetClose">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="side-sheet__content" id="sideSheetContent">
+            <div class="side-sheet__empty">
+                <span class="material-icons">description</span>
+                <h3>No documents found</h3>
+                <p>This person is not mentioned in any documents.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Upload Document</h2>
+                <button class="mdc-button mdc-button--outlined" onclick="closeUploadModal()">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">Close</span>
+                </button>
+            </div>
+            <div id="uploadContent">
+                <!-- Upload form will be loaded here -->
+            </div>
+        </div>
+    </div>
 
     <!-- Document Detail Modal -->
     <div class="modal" id="documentModal">
@@ -675,6 +2214,19 @@
         </div>
     </div>
 
+    <!-- M3 Snackbar -->
+    <div class="mdc-snackbar" id="snackbar">
+        <div class="mdc-snackbar__surface" role="status" aria-live="polite">
+            <div class="mdc-snackbar__label" id="snackbarLabel"></div>
+            <div class="mdc-snackbar__actions" id="snackbarActions">
+                <button class="mdc-button mdc-snackbar__action" id="snackbarAction">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">View</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Material Components JavaScript -->
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     
@@ -682,26 +2234,18 @@
         // Initialize Material Components
         mdc.autoInit();
 
+        // Initialize snackbar
+        document.addEventListener('DOMContentLoaded', function() {
+            snackbar = new mdc.snackbar.MDCSnackbar(document.getElementById('snackbar'));
+        });
+
         // Global variables
         let allDocuments = [];
         let filteredDocuments = [];
+        let selectedPeople = new Set();
+        let allPeople = [];
+        let snackbar = null;
 
-        // Load statistics
-        async function loadStats() {
-            try {
-                const response = await fetch('/stats');
-                const data = await response.json();
-                
-                if (data.success) {
-                    const stats = data.statistics;
-                    document.getElementById('totalDocuments').textContent = stats.total_documents;
-                    document.getElementById('totalPeople').textContent = stats.total_people;
-                    document.getElementById('totalLanguages').textContent = Object.keys(stats.languages).length;
-                }
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            }
-        }
 
         // Load documents
         async function loadDocuments() {
@@ -726,50 +2270,68 @@
             const container = document.getElementById('documentsContainer');
             
             if (filteredDocuments.length === 0) {
+                const query = document.getElementById('searchInput').value.trim();
                 container.innerHTML = `
-                    <div class="empty-state">
-                        <p>No documents found</p>
+                    <div class="search-empty-state">
+                        <span class="material-icons">search_off</span>
+                        <h3>${query ? 'No documents found' : 'No documents available'}</h3>
+                        <p>${query ? `No documents match "${query}"` : 'Upload some documents to get started'}</p>
                     </div>
                 `;
                 return;
             }
             
-
-            container.innerHTML = filteredDocuments.map(doc => `
-                <div class="document-card">
-                    <div class="document-thumbnail">
-                        ${doc.page_count > 0 ? 
-                            `<img src="/documents/${doc.id}/images/1?t=${Date.now()}" 
-                                  alt="Document thumbnail" 
-                                  style="display: block; max-width: 100%; max-height: 100%; object-fit: contain;"
-                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                             <div class="no-image" style="display: none;">No image available</div>` :
-                            `<div class="no-image">No image available</div>`
-                        }
-                    </div>
-                    <div class="document-content" onclick="showDocument('${doc.id}')">
-                        <div class="document-header">
-                            <h3 class="document-title">${escapeHtml(doc.title)}</h3>
-                            <span class="document-date">${formatDate(doc.date_processed)}</span>
+            container.innerHTML = `
+                <div class="mdc-list">
+                    ${filteredDocuments.map(doc => `
+                        <div class="mdc-list-item" onclick="showDocument('${doc.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); showDocument('${doc.id}');}" tabindex="0" role="button" aria-label="View document ${escapeHtml(doc.title)}">
+                            <div class="mdc-list-item__graphic">
+                                ${doc.page_count > 0 ? 
+                                    `<img src="/documents/${doc.id}/images/1?t=${Date.now()}" 
+                                          alt="Document thumbnail" 
+                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                     <div class="no-image" style="display: none;">📄</div>` :
+                                    `<div class="no-image">📄</div>`
+                                }
+                                <div class="page-badge">${doc.page_count}</div>
+                            </div>
+                            <div class="mdc-list-item__text">
+                                <div class="mdc-list-item__primary-text">${escapeHtml(doc.title)}</div>
+                                <div class="mdc-list-item__secondary-text">
+                                    ${escapeHtml(doc.summary).substring(0, 100)}${doc.summary.length > 100 ? '...' : ''}
+                                </div>
+                                ${(doc.people && doc.people.length > 0) ? `
+                                <div class="mdc-list-item__tertiary-text">
+                                    ${renderPeopleList(doc.people)}
+                                </div>
+                                ` : ''}
+                            </div>
                         </div>
-                        <div class="document-meta">
-                            <span><strong>Language:</strong> ${doc.source_language} → ${doc.target_language}</span>
-                            <span><strong>People:</strong> ${doc.people_count}</span>
-                        </div>
-                        <div class="document-summary">${escapeHtml(doc.summary)}</div>
-                    </div>
-                    <div class="document-actions">
-                        <button class="mdc-button mdc-button--outlined edit-btn" onclick="event.stopPropagation(); editDocument('${doc.id}')">
-                            <span class="mdc-button__ripple"></span>
-                            <span class="mdc-button__label">Edit</span>
-                        </button>
-                        <button class="mdc-button mdc-button--outlined delete-btn" onclick="event.stopPropagation(); deleteDocument('${doc.id}')">
-                            <span class="mdc-button__ripple"></span>
-                            <span class="mdc-button__label">Delete</span>
-                        </button>
-                    </div>
+                    `).join('')}
                 </div>
-            `).join('');
+            `;
+        }
+
+        // Render people list with overflow pattern using M3 chips
+        function renderPeopleList(people) {
+            if (!people || people.length === 0) {
+                return ''; // Don't show anything if no people
+            }
+            
+            const maxVisible = 3;
+            const visiblePeople = people.slice(0, maxVisible);
+            const remainingCount = people.length - maxVisible;
+            
+            let html = visiblePeople.map(person => {
+                const name = typeof person === 'string' ? person : (person.name || person.original_name || 'Unknown');
+                return `<span class="person-chip">${escapeHtml(name)}</span>`;
+            }).join('');
+            
+            if (remainingCount > 0) {
+                html += `<span class="person-overflow">+${remainingCount} more</span>`;
+            }
+            
+            return html;
         }
 
         // Show document details
@@ -797,11 +2359,37 @@
                             <div class="modal-text">${escapeHtml(doc.translated_text)}</div>
                         </div>
                         <div class="modal-section">
-                            <h3>People Mentioned</h3>
-                            <div class="document-people">
+                            <div class="modal-section-header">
+                                <h3>People Mentioned</h3>
+                                <button class="mdc-button mdc-button--outlined edit-people-btn" onclick="toggleEditMode()">
+                                    <span class="mdc-button__ripple"></span>
+                                    <span class="mdc-button__label">Edit</span>
+                                </button>
+                            </div>
+                            <div class="document-people" id="documentPeople">
                                 ${doc.people.map(person => `
-                                    <span class="person-chip">${escapeHtml(person.original_name)}</span>
+                                    <span class="person-chip" data-person-name="${escapeHtml(person.original_name)}">
+                                        ${escapeHtml(person.original_name)}
+                                        <button class="chip-remove-btn" onclick="removePersonFromDocument('${escapeHtml(person.original_name)}')" style="display: none;">
+                                            <span class="material-icons">close</span>
+                                        </button>
+                                    </span>
                                 `).join('')}
+                            </div>
+                            <div class="add-person-section" id="addPersonSection" style="display: none;">
+                                <div class="mdc-chip-set mdc-chip-set--input" role="grid">
+                                    <div class="mdc-chip mdc-chip--input" role="row">
+                                        <div class="mdc-chip__ripple"></div>
+                                        <span class="mdc-chip__text">
+                                            <input type="text" id="newPersonName" placeholder="Add person..." class="input-chip-field" onkeydown="handleInputChipKeydown(event)" onblur="handleInputChipBlur()">
+                                        </span>
+                                        <button class="mdc-chip__action mdc-chip__action--primary" onclick="addPersonToDocument()" tabindex="-1">
+                                            <span class="mdc-chip__icon mdc-chip__icon--primary">
+                                                <span class="material-icons">add</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -820,27 +2408,150 @@
             document.getElementById('documentModal').style.display = 'none';
         }
 
-        // Search documents
+        // Enhanced search functionality
+        let currentSearchFilter = 'all';
+        let currentPeopleSearchFilter = 'all';
+
+        // Search documents with filters
         function searchDocuments() {
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             
             if (query === '') {
                 filteredDocuments = [...allDocuments];
             } else {
-                filteredDocuments = allDocuments.filter(doc => 
-                    doc.title.toLowerCase().includes(query) ||
-                    doc.summary.toLowerCase().includes(query)
-                );
+                filteredDocuments = allDocuments.filter(doc => {
+                    switch (currentSearchFilter) {
+                        case 'title':
+                            return doc.title.toLowerCase().includes(query);
+                        case 'content':
+                            return doc.summary.toLowerCase().includes(query);
+                        case 'people':
+                            return doc.people && doc.people.some(person => 
+                                person.toLowerCase().includes(query)
+                            );
+                        case 'language':
+                            return doc.source_language.toLowerCase().includes(query) ||
+                                   doc.target_language.toLowerCase().includes(query);
+                        default: // 'all'
+                            return doc.title.toLowerCase().includes(query) ||
+                                   doc.summary.toLowerCase().includes(query) ||
+                                   doc.source_language.toLowerCase().includes(query) ||
+                                   doc.target_language.toLowerCase().includes(query) ||
+                                   (doc.people && doc.people.some(person => 
+                                       person.toLowerCase().includes(query)
+                                   ));
+                    }
+                });
             }
             
+            updateSearchResultsInfo();
             renderDocuments();
+        }
+
+        // Search people with filters
+        function searchPeople() {
+            const query = document.getElementById('peopleSearchInput').value.toLowerCase().trim();
+            
+            if (query === '') {
+                renderPeople(allPeople);
+            } else {
+                const filteredPeople = allPeople.filter(person => {
+                    switch (currentPeopleSearchFilter) {
+                        case 'name':
+                            return person.name.toLowerCase().includes(query);
+                        case 'aliases':
+                            return person.aliases && person.aliases.some(alias => 
+                                alias.toLowerCase().includes(query)
+                            );
+                        case 'context':
+                            return person.context && person.context.toLowerCase().includes(query);
+                        default: // 'all'
+                            return person.name.toLowerCase().includes(query) ||
+                                   (person.aliases && person.aliases.some(alias => 
+                                       alias.toLowerCase().includes(query)
+                                   )) ||
+                                   (person.context && person.context.toLowerCase().includes(query));
+                    }
+                });
+                
+                updatePeopleSearchResultsInfo(filteredPeople.length);
+                renderPeople(filteredPeople);
+            }
+        }
+
+        // Update search results info
+        function updateSearchResultsInfo() {
+            const info = document.getElementById('searchResultsInfo');
+            const query = document.getElementById('searchInput').value.trim();
+            
+            if (query === '') {
+                info.style.display = 'none';
+            } else {
+                info.textContent = `Found ${filteredDocuments.length} document${filteredDocuments.length !== 1 ? 's' : ''} matching "${query}"`;
+                info.style.display = 'block';
+            }
+        }
+
+        // Update people search results info
+        function updatePeopleSearchResultsInfo(count) {
+            const info = document.getElementById('peopleSearchResultsInfo');
+            const query = document.getElementById('peopleSearchInput').value.trim();
+            
+            if (query === '') {
+                info.style.display = 'none';
+            } else {
+                info.textContent = `Found ${count} person${count !== 1 ? 's' : ''} matching "${query}"`;
+                info.style.display = 'block';
+            }
         }
 
         // Clear search
         function clearSearch() {
             document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchIcon').style.display = 'none';
+            document.getElementById('searchSuggestions').classList.remove('show');
             filteredDocuments = [...allDocuments];
+            updateSearchResultsInfo();
             renderDocuments();
+        }
+
+        // Clear people search
+        function clearPeopleSearch() {
+            document.getElementById('peopleSearchInput').value = '';
+            document.getElementById('clearPeopleSearchIcon').style.display = 'none';
+            document.getElementById('peopleSearchSuggestions').classList.remove('show');
+            updatePeopleSearchResultsInfo(allPeople.length);
+            renderPeople(allPeople);
+        }
+
+        // Handle search input changes
+        function handleSearchInput() {
+            const input = document.getElementById('searchInput');
+            const clearIcon = document.getElementById('clearSearchIcon');
+            
+            if (input.value.length > 0) {
+                clearIcon.style.display = 'block';
+                searchDocuments();
+            } else {
+                clearIcon.style.display = 'none';
+                document.getElementById('searchSuggestions').classList.remove('show');
+                clearSearch();
+            }
+        }
+
+        // Handle people search input changes
+        function handlePeopleSearchInput() {
+            const input = document.getElementById('peopleSearchInput');
+            const clearIcon = document.getElementById('clearPeopleSearchIcon');
+            
+            if (input.value.length > 0) {
+                clearIcon.style.display = 'block';
+                searchPeople();
+            } else {
+                clearIcon.style.display = 'none';
+                document.getElementById('peopleSearchSuggestions').classList.remove('show');
+                clearPeopleSearch();
+            }
         }
 
         // Utility functions
@@ -1130,12 +2841,45 @@
         }
 
         // Event listeners
-        document.getElementById('searchBtn').addEventListener('click', searchDocuments);
+        // Document search event listeners
         document.getElementById('clearBtn').addEventListener('click', clearSearch);
+        document.getElementById('searchInput').addEventListener('input', handleSearchInput);
         document.getElementById('searchInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
+                e.preventDefault();
                 searchDocuments();
             }
+        });
+        document.getElementById('clearSearchIcon').addEventListener('click', clearSearch);
+
+        // People search event listeners
+        document.getElementById('peopleClearBtn').addEventListener('click', clearPeopleSearch);
+        document.getElementById('peopleSearchInput').addEventListener('input', handlePeopleSearchInput);
+        document.getElementById('peopleSearchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchPeople();
+            }
+        });
+        document.getElementById('clearPeopleSearchIcon').addEventListener('click', clearPeopleSearch);
+
+        // Filter chip event listeners
+        document.querySelectorAll('[data-filter]').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('[data-filter]').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentSearchFilter = chip.dataset.filter;
+                searchDocuments();
+            });
+        });
+
+        document.querySelectorAll('[data-people-filter]').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('[data-people-filter]').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentPeopleSearchFilter = chip.dataset.peopleFilter;
+                searchPeople();
+            });
         });
 
         // Tab switching functionality
@@ -1230,10 +2974,958 @@
             }
         });
 
+        // Close upload modal when clicking outside
+        document.getElementById('uploadModal').addEventListener('click', (e) => {
+            if (e.target.id === 'uploadModal') {
+                closeUploadModal();
+            }
+        });
+
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Remove active class from all tabs and buttons
+            document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and button
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Load content for the active tab
+            if (tabName === 'references') {
+                loadPeople();
+            }
+        }
+
+        // Upload modal functions
+        async function showUploadModal() {
+            const modal = document.getElementById('uploadModal');
+            const uploadContent = document.getElementById('uploadContent');
+            
+            console.log('Opening upload modal...');
+            
+            // Load the upload form content
+            try {
+                const response = await fetch('/upload-form');
+                const html = await response.text();
+                uploadContent.innerHTML = html;
+                
+                // Initialize upload form functionality
+                initializeUploadForm();
+                
+                // Reinitialize Material Components for the uploaded content
+                mdc.autoInit();
+                console.log('Upload form loaded successfully');
+            } catch (error) {
+                console.error('Error loading upload form:', error);
+                uploadContent.innerHTML = '<div class="error">Error loading upload form: ' + error.message + '</div>';
+            }
+            
+            modal.style.display = 'block';
+            console.log('Modal display set to block');
+        }
+
+        function closeUploadModal() {
+            console.log('Closing upload modal...');
+            document.getElementById('uploadModal').style.display = 'none';
+            console.log('Modal display set to none');
+        }
+
+        // Initialize upload form functionality
+        function initializeUploadForm() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const progress = document.getElementById('progress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const status = document.getElementById('status');
+            const result = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+
+            if (!uploadArea || !fileInput) {
+                console.error('Upload form elements not found');
+                return;
+            }
+
+            console.log('Initializing upload form...');
+
+            // Click to upload
+            uploadArea.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Upload area clicked, opening file browser...');
+                fileInput.click();
+            });
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                console.log('Files dropped:', files.length);
+                if (files.length > 0) {
+                    handleFiles(Array.from(files));
+                }
+            });
+
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                console.log('File input changed:', e.target.files.length);
+                if (e.target.files.length > 0) {
+                    handleFiles(Array.from(e.target.files));
+                }
+            });
+
+            function handleFiles(files) {
+                console.log('Handling files:', files.length);
+                
+                // Validate all files first
+                const validFiles = [];
+                const errors = [];
+                
+                files.forEach(file => {
+                    if (!file.type.includes('pdf')) {
+                        errors.push(`${file.name}: Not a PDF file`);
+                        return;
+                    }
+                    
+                    if (file.size > 200 * 1024 * 1024) {
+                        errors.push(`${file.name}: File size must be less than 200MB`);
+                        return;
+                    }
+                    
+                    validFiles.push(file);
+                });
+                
+                if (errors.length > 0) {
+                    showStatus('Validation errors:\n' + errors.join('\n'), 'error');
+                    return;
+                }
+                
+                if (validFiles.length === 0) {
+                    showStatus('No valid files to upload.', 'error');
+                    return;
+                }
+                
+                // Show file list
+                showFileList(validFiles);
+                
+                // Start batch upload
+                uploadFiles(validFiles);
+            }
+
+            function showFileList(files) {
+                const fileList = document.getElementById('fileList');
+                const fileItems = document.getElementById('fileItems');
+                
+                fileItems.innerHTML = files.map((file, index) => `
+                    <div class="file-item" id="file-${index}">
+                        <div class="file-info">
+                            <span class="material-icons file-icon">description</span>
+                            <span class="file-name">${escapeHtml(file.name)}</span>
+                            <span class="file-size">${formatFileSize(file.size)}</span>
+                        </div>
+                        <div class="file-status">
+                            <div class="file-progress">
+                                <div class="file-progress-fill" id="progress-${index}"></div>
+                            </div>
+                            <span class="material-icons status-icon uploading" id="status-${index}">upload</span>
+                        </div>
+                    </div>
+                `).join('');
+                
+                fileList.style.display = 'block';
+            }
+
+            function updateFileStatus(index, status, progress = 0) {
+                const statusIcon = document.getElementById(`status-${index}`);
+                const progressFill = document.getElementById(`progress-${index}`);
+                
+                if (statusIcon) {
+                    statusIcon.className = `material-icons status-icon ${status}`;
+                    statusIcon.textContent = status === 'success' ? 'check_circle' : 
+                                           status === 'error' ? 'error' : 'upload';
+                }
+                
+                if (progressFill) {
+                    progressFill.style.width = `${progress}%`;
+                }
+            }
+
+            function uploadFiles(files) {
+                console.log('Starting batch upload of', files.length, 'files');
+                
+                progress.style.display = 'block';
+                result.style.display = 'none';
+                status.innerHTML = '';
+                
+                let completedFiles = 0;
+                let successfulUploads = 0;
+                let failedUploads = 0;
+                const results = [];
+                
+                // Upload files sequentially to avoid overwhelming the server
+                async function uploadNext(index) {
+                    if (index >= files.length) {
+                        // All uploads completed
+                        progressFill.style.width = '100%';
+                        progressText.textContent = 'Complete!';
+                        
+                        // Close upload modal immediately
+                        closeUploadModal();
+                        
+                        // Show snackbar with results
+                        const message = successfulUploads > 0 
+                            ? `Successfully uploaded ${successfulUploads} document${successfulUploads > 1 ? 's' : ''}`
+                            : 'Upload failed';
+                        
+                        const actionText = successfulUploads > 0 ? 'View Documents' : null;
+                        const actionCallback = successfulUploads > 0 ? () => {
+                            // Switch to documents tab and refresh
+                            document.querySelector('.nav-tab[data-tab="documents"]').click();
+                            loadDocuments();
+                        } : null;
+                        
+                        showSnackbar(message, actionText, actionCallback);
+                        
+                        // Refresh document list to show new documents
+                        if (successfulUploads > 0) {
+                            loadDocuments();
+                        }
+                        
+                        return;
+                    }
+                    
+                    const file = files[index];
+                    console.log(`Uploading file ${index + 1}/${files.length}:`, file.name);
+                    
+                    // Update progress text
+                    progressText.textContent = `Uploading ${index + 1} of ${files.length}: ${file.name}`;
+                    
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    
+                    try {
+                        const response = await fetch('/upload', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            updateFileStatus(index, 'success', 100);
+                            successfulUploads++;
+                            results.push({ file: file.name, success: true, data: data });
+                        } else {
+                            updateFileStatus(index, 'error', 100);
+                            failedUploads++;
+                            results.push({ file: file.name, success: false, error: data.error });
+                        }
+                    } catch (error) {
+                        console.error('Upload error for', file.name, ':', error);
+                        updateFileStatus(index, 'error', 100);
+                        failedUploads++;
+                        results.push({ file: file.name, success: false, error: error.message });
+                    }
+                    
+                    completedFiles++;
+                    const overallProgress = (completedFiles / files.length) * 100;
+                    progressFill.style.width = `${overallProgress}%`;
+                    
+                    // Upload next file
+                    setTimeout(() => uploadNext(index + 1), 500); // Small delay between uploads
+                }
+                
+                // Start uploading
+                uploadNext(0);
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            function showStatus(message, type) {
+                status.innerHTML = message;
+                status.className = 'status ' + type;
+            }
+        }
+
+        // Load people for references tab
+        async function loadPeople() {
+            try {
+                const response = await fetch('/people/detailed');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allPeople = data.people;
+                    renderPeople(allPeople);
+                } else {
+                    showPeopleError('Failed to load people: ' + data.error);
+                }
+            } catch (error) {
+                showPeopleError('Error loading people: ' + error.message);
+            }
+        }
+
+        // Render people in references tab
+        function renderPeople(people) {
+            const container = document.getElementById('peopleContainer');
+            
+            if (people.length === 0) {
+                const query = document.getElementById('peopleSearchInput').value.trim();
+                container.innerHTML = `
+                    <div class="search-empty-state">
+                        <span class="material-icons">person_search</span>
+                        <h3>${query ? 'No people found' : 'No people available'}</h3>
+                        <p>${query ? `No people match "${query}"` : 'No people have been mentioned in documents yet'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="mdc-list reference-list">
+                    ${people.map(person => `
+                        <div class="mdc-list-item" data-person-name="${escapeHtml(person.name)}" onclick="handlePersonItemClick(event, '${person.name}')" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); handlePersonItemClick(event, '${person.name}');}" tabindex="0" role="button" aria-label="View documents for ${escapeHtml(person.name)}">
+                            <div class="list-item-content">
+                                <div class="mdc-list-item__text">
+                                    <div class="mdc-list-item__primary-text">${escapeHtml(person.name)}</div>
+                                </div>
+                                <div class="mdc-list-item__meta">
+                                    <div class="mdc-list-item__meta-text">${person.document_count}</div>
+                                </div>
+                            </div>
+                            <div class="selection-checkbox">
+                                <input type="checkbox" onchange="togglePersonSelection('${person.name}', this.checked)" onclick="event.stopPropagation();">
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function showPeopleError(message) {
+            const container = document.getElementById('peopleContainer');
+            container.innerHTML = `
+                <div class="error">
+                    ${escapeHtml(message)}
+                </div>
+            `;
+        }
+
+        // Side sheet functionality
+        function openPersonSideSheet(personName) {
+            const sideSheet = document.getElementById('personSideSheet');
+            const overlay = document.getElementById('sideSheetOverlay');
+            const title = document.getElementById('sideSheetTitle');
+            const content = document.getElementById('sideSheetContent');
+            
+            title.textContent = `Documents mentioning ${personName}`;
+            
+            // Show loading state
+            content.innerHTML = `
+                <div class="side-sheet__empty">
+                    <span class="material-icons">hourglass_empty</span>
+                    <h3>Loading documents...</h3>
+                    <p>Finding documents that mention ${personName}</p>
+                </div>
+            `;
+            
+            // Open side sheet
+            sideSheet.classList.add('open');
+            overlay.classList.add('show');
+            
+            // Load documents for this person
+            loadPersonDocuments(personName);
+        }
+
+        function closePersonSideSheet() {
+            const sideSheet = document.getElementById('personSideSheet');
+            const overlay = document.getElementById('sideSheetOverlay');
+            
+            sideSheet.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+
+        async function loadPersonDocuments(personName) {
+            try {
+                console.log('Loading documents for person:', personName);
+                
+                // Try using the API endpoint first
+                const response = await fetch(`/people/${encodeURIComponent(personName)}/documents`);
+                const data = await response.json();
+                
+                const content = document.getElementById('sideSheetContent');
+                
+                if (data.success && data.documents && data.documents.length > 0) {
+                    console.log('Found documents via API:', data.documents.length);
+                    content.innerHTML = data.documents.map(doc => `
+                        <div class="side-sheet__document-item" onclick="showDocument('${doc.id}'); closePersonSideSheet();">
+                            <div class="side-sheet__document-title">${escapeHtml(doc.title)}</div>
+                            <div class="side-sheet__document-meta">
+                                ${doc.source_language} → ${doc.target_language} • ${formatDate(doc.date_processed)}
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    // Fallback to local filtering if API doesn't work
+                    console.log('API returned no documents, trying local filtering...');
+                    console.log('Total documents available:', allDocuments.length);
+                    
+                    // Debug: Log the structure of a few documents
+                    if (allDocuments.length > 0) {
+                        console.log('Sample document structure:', allDocuments[0]);
+                        console.log('Sample document people field:', allDocuments[0].people);
+                    }
+                    
+                    // Find documents that mention this person
+                    const documentsWithPerson = allDocuments.filter(doc => {
+                        if (!doc.people) {
+                            console.log('Document has no people field:', doc.id);
+                            return false;
+                        }
+                        
+                        const hasPerson = doc.people.some(person => {
+                            // Handle both string and object formats
+                            let personNameToCheck = '';
+                            if (typeof person === 'string') {
+                                personNameToCheck = person;
+                            } else if (person && typeof person === 'object') {
+                                personNameToCheck = person.name || person.normalized_name || person.original_name || '';
+                            }
+                            
+                            const matches = personNameToCheck.toLowerCase() === personName.toLowerCase();
+                            if (matches) {
+                                console.log('Found matching person in document:', doc.id, 'person:', personNameToCheck);
+                            }
+                            return matches;
+                        });
+                        
+                        return hasPerson;
+                    });
+                    
+                    console.log('Documents with person (local filter):', documentsWithPerson.length);
+                    
+                    if (documentsWithPerson.length === 0) {
+                        content.innerHTML = `
+                            <div class="side-sheet__empty">
+                                <span class="material-icons">description</span>
+                                <h3>No documents found</h3>
+                                <p>${personName} is not mentioned in any documents.</p>
+                                <p style="font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 8px;">
+                                    Debug: Found ${allDocuments.length} total documents, but none mention "${personName}"
+                                </p>
+                            </div>
+                        `;
+                    } else {
+                        content.innerHTML = documentsWithPerson.map(doc => `
+                            <div class="side-sheet__document-item" onclick="showDocument('${doc.id}'); closePersonSideSheet();">
+                                <div class="side-sheet__document-title">${escapeHtml(doc.title)}</div>
+                                <div class="side-sheet__document-meta">
+                                    ${doc.source_language} → ${doc.target_language} • ${formatDate(doc.date_processed)}
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading person documents:', error);
+                const content = document.getElementById('sideSheetContent');
+                content.innerHTML = `
+                    <div class="side-sheet__empty">
+                        <span class="material-icons">error</span>
+                        <h3>Error loading documents</h3>
+                        <p>Failed to load documents for ${personName}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Selection system functions
+        function handlePersonItemClick(event, personName) {
+            // If clicking on checkbox, let the checkbox handle it
+            if (event.target.type === 'checkbox') {
+                return;
+            }
+            
+            // Otherwise, open the side sheet
+            openPersonSideSheet(personName);
+        }
+
+        function togglePersonSelection(personName, isSelected) {
+            if (isSelected) {
+                selectedPeople.add(personName);
+            } else {
+                selectedPeople.delete(personName);
+            }
+            
+            updateSelectionUI();
+        }
+
+        function updateSelectionUI() {
+            const count = selectedPeople.size;
+            const toolbar = document.getElementById('floatingToolbar');
+            const selectionCount = document.getElementById('selectionCount');
+            const mergeButton = document.getElementById('mergeButton');
+            const deleteButton = document.getElementById('deleteButton');
+            
+            // Update selection count
+            selectionCount.textContent = `${count} selected`;
+            
+            // Show/hide toolbar
+            if (count > 0) {
+                toolbar.classList.add('show');
+            } else {
+                toolbar.classList.remove('show');
+            }
+            
+            // Enable/disable merge button (requires at least 2 selections)
+            mergeButton.disabled = count < 2;
+            mergeButton.style.opacity = count < 2 ? '0.5' : '1';
+            
+            // Update list item selection states
+            document.querySelectorAll('.reference-list .mdc-list-item').forEach(item => {
+                const personName = item.dataset.personName;
+                if (selectedPeople.has(personName)) {
+                    item.classList.add('selected');
+                    item.querySelector('.selection-checkbox input').checked = true;
+                } else {
+                    item.classList.remove('selected');
+                    item.querySelector('.selection-checkbox input').checked = false;
+                }
+            });
+        }
+
+        function clearSelection() {
+            selectedPeople.clear();
+            updateSelectionUI();
+        }
+
+        // Merge functionality
+        function openMergeModal() {
+            if (selectedPeople.size < 2) {
+                showSnackbar('Please select at least 2 references to merge');
+                return;
+            }
+            
+            const modal = document.getElementById('mergeModal');
+            const selectionContainer = document.getElementById('mergeSelection');
+            
+            // Populate merge options
+            selectionContainer.innerHTML = Array.from(selectedPeople).map(personName => {
+                const person = allPeople.find(p => p.name === personName);
+                return `
+                    <div class="merge-option" onclick="selectMergeTarget('${personName}')">
+                        <input type="radio" name="mergeTarget" value="${personName}" id="merge_${personName}">
+                        <div class="merge-option-info">
+                            <div class="merge-option-name">${escapeHtml(personName)}</div>
+                            <div class="merge-option-meta">
+                                ${person ? `${person.document_count} documents` : '0 documents'} • 
+                                ${person && person.aliases ? `${person.aliases.length} aliases` : '0 aliases'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            modal.classList.add('show');
+        }
+
+        function selectMergeTarget(personName) {
+            // Update radio button
+            document.querySelector(`input[name="mergeTarget"][value="${personName}"]`).checked = true;
+            
+            // Update visual selection
+            document.querySelectorAll('.merge-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`input[name="mergeTarget"][value="${personName}"]`).closest('.merge-option').classList.add('selected');
+        }
+
+        function closeMergeModal() {
+            const modal = document.getElementById('mergeModal');
+            modal.classList.remove('show');
+        }
+
+        async function performMerge() {
+            const selectedTarget = document.querySelector('input[name="mergeTarget"]:checked');
+            if (!selectedTarget) {
+                showSnackbar('Please select a target reference to merge into');
+                return;
+            }
+            
+            const targetName = selectedTarget.value;
+            const sourcesToMerge = Array.from(selectedPeople).filter(name => name !== targetName);
+            
+            if (sourcesToMerge.length === 0) {
+                showSnackbar('No references to merge');
+                return;
+            }
+            
+            const submitButton = document.getElementById('mergeSubmitButton');
+            submitButton.disabled = true;
+            submitButton.querySelector('.mdc-button__label').textContent = 'Merging...';
+            
+            try {
+                // Perform merge for each source
+                for (const sourceName of sourcesToMerge) {
+                    const response = await fetch(`/people/${encodeURIComponent(sourceName)}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: targetName,
+                            merge: true
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (!data.success) {
+                        throw new Error(data.error || `Failed to merge ${sourceName}`);
+                    }
+                }
+                
+                // Close modal and refresh
+                closeMergeModal();
+                clearSelection();
+                await loadPeople();
+                
+                showSnackbar(`Successfully merged ${sourcesToMerge.length} references into ${targetName}`);
+                
+            } catch (error) {
+                console.error('Error merging references:', error);
+                showSnackbar('Error merging references: ' + error.message);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.querySelector('.mdc-button__label').textContent = 'Merge References';
+            }
+        }
+
+        // Delete functionality
+        async function deleteSelectedReferences() {
+            if (selectedPeople.size === 0) {
+                showSnackbar('No references selected');
+                return;
+            }
+            
+            const count = selectedPeople.size;
+            const confirmMessage = `Are you sure you want to delete ${count} reference${count > 1 ? 's' : ''}? This action cannot be undone.`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            const deleteButton = document.getElementById('deleteButton');
+            deleteButton.disabled = true;
+            deleteButton.querySelector('span:last-child').textContent = 'Deleting...';
+            
+            try {
+                // Delete each selected person
+                for (const personName of selectedPeople) {
+                    const response = await fetch(`/people/${encodeURIComponent(personName)}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    const data = await response.json();
+                    if (!data.success) {
+                        throw new Error(data.error || `Failed to delete ${personName}`);
+                    }
+                }
+                
+                // Clear selection and refresh
+                clearSelection();
+                await loadPeople();
+                
+                showSnackbar(`Successfully deleted ${count} reference${count > 1 ? 's' : ''}`);
+                
+            } catch (error) {
+                console.error('Error deleting references:', error);
+                showSnackbar('Error deleting references: ' + error.message);
+            } finally {
+                deleteButton.disabled = false;
+                deleteButton.querySelector('span:last-child').textContent = 'Delete';
+            }
+        }
+
+        // Add Reference Modal Functions
+        function openAddReferenceModal() {
+            const modal = document.getElementById('addReferenceModal');
+            modal.classList.add('show');
+            document.getElementById('referenceName').focus();
+        }
+
+        function closeAddReferenceModal() {
+            const modal = document.getElementById('addReferenceModal');
+            modal.classList.remove('show');
+            document.getElementById('addReferenceForm').reset();
+        }
+
+        async function addReference(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('addReferenceForm');
+            const formData = new FormData(form);
+            const submitButton = document.getElementById('addReferenceSubmit');
+            
+            // Get form values
+            const name = formData.get('name').trim();
+            const aliasesText = formData.get('aliases').trim();
+            const context = formData.get('context').trim();
+            
+            // Validate required fields
+            if (!name) {
+                alert('Please enter a name for the reference.');
+                return;
+            }
+            
+            // Parse aliases
+            const aliases = aliasesText ? aliasesText.split(',').map(alias => alias.trim()).filter(alias => alias) : [];
+            
+            // Disable submit button
+            submitButton.disabled = true;
+            submitButton.querySelector('.mdc-button__label').textContent = 'Adding...';
+            
+            try {
+                const response = await fetch('/people', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        aliases: aliases,
+                        context: context
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Close modal and refresh people list
+                    closeAddReferenceModal();
+                    await loadPeople();
+                    
+                    // Show success message
+                    showSnackbar('Reference added successfully!');
+                } else {
+                    throw new Error(data.error || 'Failed to add reference');
+                }
+            } catch (error) {
+                console.error('Error adding reference:', error);
+                showSnackbar('Error adding reference: ' + error.message);
+            } finally {
+                // Re-enable submit button
+                submitButton.disabled = false;
+                submitButton.querySelector('.mdc-button__label').textContent = 'Add Reference';
+            }
+        }
+
+        // Notification system
+        // Old notification system removed - now using M3 snackbars
+
+        // M3 Snackbar functions
+        function showSnackbar(message, actionText = null, actionCallback = null) {
+            if (!snackbar) {
+                console.error('Snackbar not initialized');
+                return;
+            }
+
+            const snackbarLabel = document.getElementById('snackbarLabel');
+            const snackbarActions = document.getElementById('snackbarActions');
+            const snackbarAction = document.getElementById('snackbarAction');
+
+            snackbarLabel.textContent = message;
+
+            if (actionText && actionCallback) {
+                snackbarAction.textContent = actionText;
+                snackbarAction.onclick = actionCallback;
+                snackbarActions.style.display = 'flex';
+            } else {
+                snackbarActions.style.display = 'none';
+            }
+
+            snackbar.open();
+        }
+
+        function closeSnackbar() {
+            if (snackbar) {
+                snackbar.close();
+            }
+        }
+
+        // Document editor functions
+        let isEditMode = false;
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const editBtn = document.querySelector('.edit-people-btn .mdc-button__label');
+            const addSection = document.getElementById('addPersonSection');
+            const removeBtns = document.querySelectorAll('.chip-remove-btn');
+            
+            if (isEditMode) {
+                editBtn.textContent = 'Cancel';
+                addSection.style.display = 'block';
+                removeBtns.forEach(btn => btn.style.display = 'flex');
+            } else {
+                editBtn.textContent = 'Edit';
+                addSection.style.display = 'none';
+                removeBtns.forEach(btn => btn.style.display = 'none');
+                // Clear the input
+                document.getElementById('newPersonName').value = '';
+            }
+        }
+
+        async function addPersonToDocument() {
+            const personName = document.getElementById('newPersonName').value.trim();
+            if (!personName) {
+                showSnackbar('Please enter a person name');
+                return;
+            }
+
+            if (!currentDocumentId) {
+                showSnackbar('No document selected');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/documents/${currentDocumentId}/people`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ person_name: personName })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Add the chip to the UI
+                    const peopleContainer = document.getElementById('documentPeople');
+                    const newChip = document.createElement('span');
+                    newChip.className = 'person-chip';
+                    newChip.setAttribute('data-person-name', personName);
+                    newChip.innerHTML = `
+                        ${escapeHtml(personName)}
+                        <button class="chip-remove-btn" onclick="removePersonFromDocument('${escapeHtml(personName)}')" style="display: ${isEditMode ? 'flex' : 'none'};">
+                            <span class="material-icons">close</span>
+                        </button>
+                    `;
+                    peopleContainer.appendChild(newChip);
+
+                    // Clear the input
+                    document.getElementById('newPersonName').value = '';
+                    
+                    showSnackbar(`Added ${personName} to document`);
+                } else {
+                    showSnackbar('Error adding person: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error adding person to document:', error);
+                showSnackbar('Error adding person: ' + error.message);
+            }
+        }
+
+        async function removePersonFromDocument(personName) {
+            if (!currentDocumentId) {
+                showSnackbar('No document selected');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/documents/${currentDocumentId}/people`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ person_name: personName })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Remove the chip from the UI
+                    const chip = document.querySelector(`[data-person-name="${escapeHtml(personName)}"]`);
+                    if (chip) {
+                        chip.remove();
+                    }
+                    
+                    showSnackbar(`Removed ${personName} from document`);
+                } else {
+                    showSnackbar('Error removing person: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error removing person from document:', error);
+                showSnackbar('Error removing person: ' + error.message);
+            }
+        }
+
+        function handleInputChipKeydown(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addPersonToDocument();
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                document.getElementById('newPersonName').value = '';
+                document.getElementById('newPersonName').blur();
+            }
+        }
+
+        function handleInputChipBlur() {
+            // Optional: Add validation or auto-submit on blur
+            // For now, we'll keep the input value for user convenience
+        }
+
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
-            loadStats();
             loadDocuments();
+            
+            // Side sheet event listeners
+            document.getElementById('sideSheetClose').addEventListener('click', closePersonSideSheet);
+            document.getElementById('sideSheetOverlay').addEventListener('click', closePersonSideSheet);
+            
+            // Close side sheet on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closePersonSideSheet();
+                    closeAddReferenceModal();
+                }
+            });
+            
+            // Add reference form submission
+            document.getElementById('addReferenceForm').addEventListener('submit', addReference);
+            
+            // Close add reference modal on overlay click
+            document.getElementById('addReferenceModal').addEventListener('click', (e) => {
+                if (e.target.id === 'addReferenceModal') {
+                    closeAddReferenceModal();
+                }
+            });
+            
+            // Close merge modal on overlay click
+            document.getElementById('mergeModal').addEventListener('click', (e) => {
+                if (e.target.id === 'mergeModal') {
+                    closeMergeModal();
+                }
+            });
         });
     </script>
 </body>

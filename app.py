@@ -92,13 +92,18 @@ def run_translation_script(text_file_path):
 
 @app.route('/')
 def index():
-    """Serve the main web interface."""
-    return render_template('index.html')
+    """Serve the main application page (Documents tab)."""
+    return render_template('browse.html')
+
+@app.route('/upload-form')
+def upload_form():
+    """Serve the upload form for modal loading."""
+    return render_template('upload_modal.html')
 
 
 @app.route('/browse')
 def browse():
-    """Serve the document browser interface."""
+    """Serve the main application interface."""
     return render_template('browse.html')
 
 
@@ -418,21 +423,67 @@ def get_document(doc_id):
         }), 500
 
 
-@app.route('/people')
-def list_people():
-    """List all people mentioned in documents."""
-    try:
-        people = local_storage.get_people()
-        return jsonify({
-            'success': True,
-            'people': people,
-            'total': len(people)
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
+@app.route('/people', methods=['GET', 'POST'])
+def handle_people():
+    """List all people mentioned in documents or add a new person."""
+    if request.method == 'GET':
+        try:
+            people = local_storage.get_people()
+            return jsonify({
+                'success': True,
+                'people': people,
+                'total': len(people)
+            })
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
+    
+    elif request.method == 'POST':
+        """Add a new person reference."""
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify({
+                    'success': False,
+                    'error': 'No data provided'
+                }), 400
+            
+            name = data.get('name', '').strip()
+            aliases = data.get('aliases', [])
+            context = data.get('context', '').strip()
+            
+            if not name:
+                return jsonify({
+                    'success': False,
+                    'error': 'Name is required'
+                }), 400
+            
+            # Add the person to the database
+            success = local_storage.add_person(name, aliases, context)
+            
+            if success:
+                return jsonify({
+                    'success': True,
+                    'message': 'Person added successfully',
+                    'person': {
+                        'name': name,
+                        'aliases': aliases,
+                        'context': context
+                    }
+                })
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': 'Failed to add person (may already exist)'
+                }), 400
+                
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
 
 
 @app.route('/people/detailed')
@@ -472,7 +523,7 @@ def get_person_documents(person_name):
 
 @app.route('/people/<person_name>', methods=['PUT'])
 def update_person(person_name):
-    """Update a person's name and context."""
+    """Update a person's name and context, or merge with another person."""
     try:
         data = request.get_json()
         if not data:
@@ -481,6 +532,30 @@ def update_person(person_name):
                 'error': 'No data provided'
             }), 400
         
+        # Check if this is a merge operation
+        is_merge = data.get('merge', False)
+        if is_merge:
+            target_name = data.get('name')
+            if not target_name:
+                return jsonify({
+                    'success': False,
+                    'error': 'Target name is required for merge'
+                }), 400
+            
+            success = local_storage.merge_person(person_name, target_name)
+            
+            if success:
+                return jsonify({
+                    'success': True,
+                    'message': f'Person {person_name} merged into {target_name}'
+                })
+            else:
+                return jsonify({
+                    'success': False,
+                    'error': 'Merge failed - person not found or merge operation failed'
+                }), 404
+        
+        # Regular update operation
         new_name = data.get('name', person_name)
         new_context = data.get('context')
         
@@ -502,6 +577,80 @@ def update_person(person_name):
                 'success': False,
                 'error': 'Person not found or update failed'
             }), 404
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/documents/<doc_id>/people', methods=['POST'])
+def add_person_to_document(doc_id):
+    """Add a person reference to a document."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'No data provided'
+            }), 400
+        
+        person_name = data.get('person_name', '').strip()
+        if not person_name:
+            return jsonify({
+                'success': False,
+                'error': 'Person name is required'
+            }), 400
+        
+        success = local_storage.add_person_to_document(doc_id, person_name)
+        
+        if success:
+            return jsonify({
+                'success': True,
+                'message': f'Person {person_name} added to document'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to add person to document'
+            }), 400
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/documents/<doc_id>/people', methods=['DELETE'])
+def remove_person_from_document(doc_id):
+    """Remove a person reference from a document."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'No data provided'
+            }), 400
+        
+        person_name = data.get('person_name', '').strip()
+        if not person_name:
+            return jsonify({
+                'success': False,
+                'error': 'Person name is required'
+            }), 400
+        
+        success = local_storage.remove_person_from_document(doc_id, person_name)
+        
+        if success:
+            return jsonify({
+                'success': True,
+                'message': f'Person {person_name} removed from document'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to remove person from document'
+            }), 400
             
     except Exception as e:
         return jsonify({

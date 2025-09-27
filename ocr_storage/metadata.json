@@ -1,34 +1,176 @@
 {
   "documents": {
-    "doc_20250925_113023": {
+    "doc_20250925_132345": {
+      "title": "Test Document with Images",
+      "date_processed": "2025-09-25T13:23:45",
+      "source_language": "en",
+      "target_language": "en",
+      "file_size": 0,
+      "people_count": 0,
+      "summary": "A test document with images for testing the image viewer functionality.",
+      "page_count": 2
+    },
+    "doc_20250925_145858": {
       "title": "01-05-1938_ger_letter-002 - 2025-09-25",
-      "date_processed": "2025-09-25T11:30:23.001966",
-      "source_language": "de",
+      "date_processed": "2025-09-25T14:59:29.859316",
+      "source_language": "unknown",
       "target_language": "en",
       "file_size": 54985766,
       "people_count": 0,
-      "summary": "WHO: The sender of the text is Bob, addressing the recipient as \"Haci lady.\" The recipient is not ex..."
+      "summary": "This appears to be a personal letter involving National Bank, His Zob. discusses family matters, bus...",
+      "page_count": 2
+    },
+    "doc_20250925_165151": {
+      "title": "01-27-2003_eng_letter-001 - 2025-09-25",
+      "date_processed": "2025-09-25T16:52:03.129192",
+      "source_language": "en",
+      "target_language": "en",
+      "file_size": 196279,
+      "people_count": 0,
+      "summary": "WHO: The sender of the document is identified as \"Grandma\" and the recipient is named Gabe. The send...",
+      "page_count": 2
+    },
+    "doc_20250926_164736": {
+      "title": "003-1941-07-20-fre - 2025-09-26",
+      "date_processed": "2025-09-26T16:48:30.328142",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 534312,
+      "people_count": 3,
+      "summary": "This appears to be a personal letter involving On Jalmelle, Jon Zob, Zweigenthal Agele. discusses bu...",
+      "page_count": 4
+    },
+    "doc_20250926_173049": {
+      "title": "004-1940-fre - 2025-09-26",
+      "date_processed": "2025-09-26T17:31:23.516701",
+      "source_language": "fr",
+      "target_language": "en",
+      "file_size": 319709,
+      "people_count": 0,
+      "summary": "WHO: The text is written by Eduoard Maurel to Madam Ruberk in Neidenthal.\nNATURE: This document appe...",
+      "page_count": 4
+    },
+    "doc_20250926_173124": {
+      "title": "005-XXX-fre - 2025-09-26",
+      "date_processed": "2025-09-26T17:31:57.890318",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 286325,
+      "people_count": 3,
+      "summary": "This appears to be a personal letter involving Gene Markle, In Paris, Poste Restante. discusses fami...",
+      "page_count": 2
+    },
+    "doc_20250926_173158": {
+      "title": "006-1940-05-08-fre - 2025-09-26",
+      "date_processed": "2025-09-26T17:32:16.135115",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 136397,
+      "people_count": 1,
+      "summary": "This appears to be a personal letter involving His Rol. discusses business/financial matters, health...",
+      "page_count": 2
     }
   },
   "people": {
-    "national bank": {
+    "dear gabe": {
       "aliases": [
-        "National Bank"
+        "Dear Gabe"
       ],
-      "first_mentioned": "2025-09-25T11:30:23.001966",
+      "first_mentioned": "2025-09-25T16:52:03.129192",
       "documents": [
-        "doc_20250925_113023"
+        "doc_20250925_165151"
       ]
     },
-    "his zob": {
+    "elizabeth zentall": {
       "aliases": [
-        "His Zob"
+        "Elizabeth Zentall",
+        "Betty"
       ],
-      "first_mentioned": "2025-09-25T11:30:23.001966",
+      "first_mentioned": "2025-09-26T14:04:13.787081",
+      "documents": [],
+      "context": ""
+    },
+    "on jalmelle": {
+      "aliases": [
+        "On Jalmelle"
+      ],
+      "first_mentioned": "2025-09-26T16:48:30.328142",
       "documents": [
-        "doc_20250925_113023"
+        "doc_20250926_164736"
+      ]
+    },
+    "jon zob": {
+      "aliases": [
+        "Jon Zob"
+      ],
+      "first_mentioned": "2025-09-26T16:48:30.328142",
+      "documents": [
+        "doc_20250926_164736"
+      ]
+    },
+    "zweigenthal agele": {
+      "aliases": [
+        "Zweigenthal Agele"
+      ],
+      "first_mentioned": "2025-09-26T16:48:30.328142",
+      "documents": [
+        "doc_20250926_164736"
+      ]
+    },
+    "because because": {
+      "aliases": [
+        "Because Because"
+      ],
+      "first_mentioned": "2025-09-26T17:31:23.516701",
+      "documents": [
+        "doc_20250926_173049"
+      ]
+    },
+    "madam ruberk": {
+      "aliases": [
+        "Madam Ruberk"
+      ],
+      "first_mentioned": "2025-09-26T17:31:23.516701",
+      "documents": [
+        "doc_20250926_173049"
+      ]
+    },
+    "gene markle": {
+      "aliases": [
+        "Gene Markle"
+      ],
+      "first_mentioned": "2025-09-26T17:31:57.890318",
+      "documents": [
+        "doc_20250926_173124"
+      ]
+    },
+    "in paris": {
+      "aliases": [
+        "In Paris"
+      ],
+      "first_mentioned": "2025-09-26T17:31:57.890318",
+      "documents": [
+        "doc_20250926_173124"
+      ]
+    },
+    "poste restante": {
+      "aliases": [
+        "Poste Restante"
+      ],
+      "first_mentioned": "2025-09-26T17:31:57.890318",
+      "documents": [
+        "doc_20250926_173124"
+      ]
+    },
+    "his rol": {
+      "aliases": [
+        "His Rol"
+      ],
+      "first_mentioned": "2025-09-26T17:32:16.135115",
+      "documents": [
+        "doc_20250926_173158"
       ]
     }
   },
-  "last_updated": "2025-09-25T12:37:30.243171"
+  "last_updated": "2025-09-26T17:37:35.491859"
 }
