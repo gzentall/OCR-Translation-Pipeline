@@ -3171,32 +3171,32 @@
             <div class="sort-chip" id="sortChip" data-sort="date_added" data-direction="desc">
                 <i class="material-icons sort-icon">sort</i>
                 <span class="sort-text">Date Added</span>
-                <i class="material-icons sort-arrow">keyboard_arrow_down</i>
+                <i class="material-icons sort-arrow">arrow_downward</i>
             </div>
             <div class="sort-dropdown" id="sortDropdown" style="display: none;">
                 <div class="sort-option" data-sort="name" data-direction="asc">
                     <span class="sort-option-text">Name</span>
-                    <i class="material-icons sort-option-icon">keyboard_arrow_up</i>
+                    <i class="material-icons sort-option-icon">arrow_upward</i>
                 </div>
                 <div class="sort-option" data-sort="name" data-direction="desc">
                     <span class="sort-option-text">Name</span>
-                    <i class="material-icons sort-option-icon">keyboard_arrow_down</i>
+                    <i class="material-icons sort-option-icon">arrow_downward</i>
                 </div>
                 <div class="sort-option" data-sort="date" data-direction="asc">
                     <span class="sort-option-text">Authored</span>
-                    <i class="material-icons sort-option-icon">keyboard_arrow_up</i>
+                    <i class="material-icons sort-option-icon">arrow_upward</i>
                 </div>
                 <div class="sort-option" data-sort="date" data-direction="desc">
                     <span class="sort-option-text">Authored</span>
-                    <i class="material-icons sort-option-icon">keyboard_arrow_down</i>
+                    <i class="material-icons sort-option-icon">arrow_downward</i>
                 </div>
                 <div class="sort-option" data-sort="date_added" data-direction="asc">
                     <span class="sort-option-text">Added</span>
-                    <i class="material-icons sort-option-icon">keyboard_arrow_up</i>
+                    <i class="material-icons sort-option-icon">arrow_upward</i>
                 </div>
                 <div class="sort-option" data-sort="date_added" data-direction="desc">
                     <span class="sort-option-text">Added</span>
-                    <i class="material-icons sort-option-icon">keyboard_arrow_down</i>
+                    <i class="material-icons sort-option-icon">arrow_downward</i>
                 </div>
             </div>
         </div>
@@ -3599,7 +3599,7 @@
             function updateSortChip() {
                 const sortChip = document.getElementById('sortChip');
                 const sortText = sortChip.querySelector('.sort-text');
-                const sortIcon = sortChip.querySelector('.sort-icon');
+                const sortArrow = sortChip.querySelector('.sort-arrow');
                 
                 // Update chip data attributes
                 sortChip.dataset.sort = currentSort.field;
@@ -3610,16 +3610,16 @@
                     case 'name':
                         sortText.textContent = 'Name';
                         break;
-                    case 'date_authored':
-                        sortText.textContent = 'Date Authored';
+                    case 'date':
+                        sortText.textContent = 'Authored';
                         break;
                     case 'date_added':
-                        sortText.textContent = 'Date Added';
+                        sortText.textContent = 'Added';
                         break;
                 }
                 
-                // Update icon
-                sortIcon.textContent = currentSort.direction === 'asc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
+                // Update arrow icon
+                sortArrow.textContent = currentSort.direction === 'asc' ? 'arrow_upward' : 'arrow_downward';
             }
 
         // Apply current sorting to filtered documents
