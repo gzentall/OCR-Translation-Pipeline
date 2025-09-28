@@ -415,8 +415,17 @@
                 
                 .filter-chip {
                     font-size: 11px;
-                    padding: 3px 6px;
-                    height: 22px;
+                    height: 28px;
+                    min-width: 60px;
+                }
+                
+                .filter-chip-text {
+                    padding: 0 12px;
+                }
+                
+                .filter-chip-icon {
+                    padding: 0 6px 0 0;
+                    font-size: 16px;
                 }
                 
                 .sort-chip {
@@ -431,8 +440,8 @@
             background: var(--md-sys-color-surface-container);
             color: var(--md-sys-color-on-surface);
             border: 1px solid var(--md-sys-color-outline);
-            border-radius: 16px;
-            padding: 6px 12px;
+            border-radius: 8px;
+            padding: 0;
             font-family: var(--md-sys-typescale-label-medium-font);
             font-size: var(--md-sys-typescale-label-medium-size);
             font-weight: var(--md-sys-typescale-label-medium-weight);
@@ -440,7 +449,6 @@
             transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
             position: relative;
             overflow: hidden;
             white-space: nowrap;
@@ -464,11 +472,19 @@
             font-size: inherit;
             font-weight: inherit;
             color: inherit;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            height: 100%;
         }
 
         .filter-chip-icon {
             font-size: 18px;
             color: inherit;
+            padding: 0 8px 0 0;
+            display: flex;
+            align-items: center;
+            height: 100%;
         }
 
         /* Filter Dropdowns */
