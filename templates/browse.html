@@ -5377,7 +5377,6 @@
                 const response = await fetch('/people/sorted');
                 const data = await response.json();
                 
-                let allPeople = [];
                 if (data.success && data.people) {
                     allPeople = data.people;
                     console.log(`Fetched ${allPeople.length} frequency-sorted people for ${menuType} menu`);
@@ -6853,7 +6852,6 @@
         }
 
         // Global variables for autocomplete
-        let allPeople = [];
         let selectedAutocompleteIndex = -1;
 
         // Initialize autocomplete functionality
