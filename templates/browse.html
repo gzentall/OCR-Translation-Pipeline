@@ -1808,11 +1808,11 @@
         }
 
         .tab-panel {
-            display: none !important;
+            display: none;
         }
 
         .tab-panel.active {
-            display: block !important;
+            display: block;
         }
 
         /* People Section in Tab */
@@ -3477,13 +3477,16 @@
                 const modal = document.getElementById('documentModal');
                 if (modal) {
                     const allPanels = modal.querySelectorAll('.tab-panel');
+                    console.log('Found', allPanels.length, 'tab panels:', Array.from(allPanels).map(p => p.id));
                     allPanels.forEach(panel => {
                         if (panel.id === 'summary-tab') {
                             panel.style.display = 'block';
                             panel.classList.add('active');
+                            console.log('Set summary-tab as active');
                         } else {
                             panel.style.display = 'none';
                             panel.classList.remove('active');
+                            console.log('Hid panel:', panel.id);
                         }
                     });
                     console.log('Initialized tab visibility - only summary tab should be visible');
@@ -3855,13 +3858,16 @@
                     const modal = document.getElementById('documentModal');
                     if (modal) {
                         const allPanels = modal.querySelectorAll('.tab-panel');
+                        console.log('Found', allPanels.length, 'tab panels:', Array.from(allPanels).map(p => p.id));
                         allPanels.forEach(panel => {
                             if (panel.id === 'summary-tab') {
                                 panel.style.display = 'block';
                                 panel.classList.add('active');
+                                console.log('Set summary-tab as active');
                             } else {
                                 panel.style.display = 'none';
                                 panel.classList.remove('active');
+                                console.log('Hid panel:', panel.id);
                             }
                         });
                         console.log('Initialized tab visibility - only summary tab should be visible');
@@ -3981,11 +3987,11 @@
                 }
                 
                 .tab-panel {
-                    display: none !important;
+                    display: none;
                 }
                 
                 .tab-panel.active {
-                    display: block !important;
+                    display: block;
                 }
                 
                 /* M3 Carousel Styles */
@@ -4247,11 +4253,11 @@
                 
                 /* Force tab panel visibility rules */
                 .mdc-dialog .tab-panel {
-                    display: none !important;
+                    display: none;
                 }
                 
                 .mdc-dialog .tab-panel.active {
-                    display: block !important;
+                    display: block;
                 }
                 
                 /* Full-width textarea for Translation and Original tabs */
