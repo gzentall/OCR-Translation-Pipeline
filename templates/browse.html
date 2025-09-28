@@ -3595,6 +3595,11 @@
                 console.log('Debug - doc.date:', doc.date);
                 console.log('Debug - final date value:', safeDoc.date || extractDateFromFilename(safeDoc.filename));
                 
+                console.log('=== GENERATING MODAL CONTENT ===');
+                console.log('Document summary:', doc.summary);
+                console.log('SafeDoc summary:', safeDoc.summary);
+                console.log('Frequency sorted people count:', frequencySortedPeople.length);
+                
                 modalContent.innerHTML = `
                     <div class="edit-form">
                         <!-- M3 Tabs Container at Top -->
@@ -3793,7 +3798,7 @@
                 
                 console.log('Modal content set, checking for elements...');
                 console.log('Modal content HTML length:', modalContent.innerHTML.length);
-                console.log('Summary tab exists:', !!document.getElementById('summary-tab'));
+                console.log('Summary tab exists after setting:', !!document.getElementById('summary-tab'));
                 console.log('Date field exists:', !!document.getElementById('editDocumentDate'));
                 console.log('Sender select exists:', !!document.getElementById('senderSelect'));
                 console.log('Tab content container exists:', !!document.querySelector('.tab-content'));
