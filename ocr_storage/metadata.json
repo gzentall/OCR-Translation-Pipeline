@@ -167,7 +167,9 @@
       "first_mentioned": "2025-09-26T19:35:16.298198",
       "documents": [
         "doc_20250926_173049",
-        "doc_20250926_164736"
+        "doc_20250926_164736",
+        "doc_20250927_104916",
+        "doc_20250925_165151"
       ],
       "context": ""
     },
@@ -266,15 +268,6 @@
     "mme pelisuir": {
       "aliases": [
         "Mme Pelisuir"
-      ],
-      "first_mentioned": "2025-09-27T10:49:56.847319",
-      "documents": [
-        "doc_20250927_104916"
-      ]
-    },
-    "that touring robert": {
-      "aliases": [
-        "That Touring Robert"
       ],
       "first_mentioned": "2025-09-27T10:49:56.847319",
       "documents": [
@@ -487,7 +480,17 @@
       "documents": [
         "doc_20250927_122524"
       ]
+    },
+    "betty": {
+      "aliases": [
+        "betty"
+      ],
+      "first_mentioned": "2025-09-28T08:13:06.813994",
+      "documents": [
+        "doc_20250925_165151"
+      ],
+      "context": ""
     }
   },
-  "last_updated": "2025-09-27T17:45:14.228546"
+  "last_updated": "2025-09-28T08:14:11.587007"
 }
