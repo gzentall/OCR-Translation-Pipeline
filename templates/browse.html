@@ -391,6 +391,9 @@
             display: flex;
             gap: 6px;
             flex-shrink: 0;
+        }
+
+        .filter-chip-wrapper {
             position: relative;
         }
 
@@ -433,7 +436,7 @@
         }
 
         .filter-chip {
-            background: var(--md-sys-color-surface);
+            background: var(--md-sys-color-surface-container);
             color: var(--md-sys-color-on-surface);
             border: 1px solid var(--md-sys-color-outline);
             border-radius: 8px;
@@ -458,9 +461,14 @@
         }
 
         .filter-chip.active {
-            background: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-            border-color: var(--md-sys-color-primary-container);
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            border-color: var(--md-sys-color-secondary-container);
+        }
+
+        .filter-chip:focus {
+            outline: 2px solid var(--md-sys-color-primary);
+            outline-offset: 2px;
         }
 
         .filter-chip-text {
@@ -472,11 +480,6 @@
             display: flex;
             align-items: center;
             height: 100%;
-        }
-
-        /* Filter Dropdowns */
-        .filter-dropdowns {
-            position: relative;
         }
 
         .filter-dropdown {
@@ -3035,83 +3038,85 @@
                     </div>
         
         <div class="filter-chips-container">
-                    <div class="filter-chip" id="senderFilter" data-filter="sender">
-                        <span class="filter-chip-text">Sender</span>
-                    </div>
-                    <div class="filter-chip" id="recipientFilter" data-filter="recipient">
-                        <span class="filter-chip-text">Recipient</span>
-                    </div>
-                    <div class="filter-chip" id="dateFilter" data-filter="date">
-                        <span class="filter-chip-text">Date</span>
-                    </div>
-                </div>
-                
-                <!-- Filter Dropdowns -->
-                <div class="filter-dropdowns">
-                    <!-- Sender Filter Dropdown -->
-                    <div class="filter-dropdown" id="senderDropdown" style="display: none;">
-                        <div class="filter-dropdown-header">
-                            <span class="filter-dropdown-title">Filter by Sender</span>
-                            <button class="filter-clear-btn" onclick="clearSenderFilter()">
-                                <i class="material-icons">clear</i>
-                    </button>
-                </div>
-                        <div class="filter-dropdown-content">
-                            <input type="text" id="senderSearchInput" class="filter-search-input" placeholder="Search senders...">
-                            <div class="filter-options" id="senderOptions"></div>
-                </div>
-            </div>
-                    
-                    <!-- Recipient Filter Dropdown -->
-                    <div class="filter-dropdown" id="recipientDropdown" style="display: none;">
-                        <div class="filter-dropdown-header">
-                            <span class="filter-dropdown-title">Filter by Recipient</span>
-                            <button class="filter-clear-btn" onclick="clearRecipientFilter()">
-                                <i class="material-icons">clear</i>
-                            </button>
+                    <div class="filter-chip-wrapper">
+                        <div class="filter-chip" id="senderFilter" data-filter="sender">
+                            <span class="filter-chip-text">Sender</span>
                         </div>
-                        <div class="filter-dropdown-content">
-                            <input type="text" id="recipientSearchInput" class="filter-search-input" placeholder="Search recipients...">
-                            <div class="filter-options" id="recipientOptions"></div>
+                        <!-- Sender Filter Dropdown -->
+                        <div class="filter-dropdown" id="senderDropdown" style="display: none;">
+                            <div class="filter-dropdown-header">
+                                <span class="filter-dropdown-title">Filter by Sender</span>
+                                <button class="filter-clear-btn" onclick="clearSenderFilter()">
+                                    <i class="material-icons">clear</i>
+                                </button>
+                            </div>
+                            <div class="filter-dropdown-content">
+                                <input type="text" id="senderSearchInput" class="filter-search-input" placeholder="Search senders...">
+                                <div class="filter-options" id="senderOptions"></div>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Date Filter Dropdown -->
-                    <div class="filter-dropdown" id="dateDropdown" style="display: none;">
-                        <div class="filter-dropdown-header">
-                            <span class="filter-dropdown-title">Filter by Date Range</span>
-                            <button class="filter-clear-btn" onclick="clearDateFilter()">
-                                <i class="material-icons">clear</i>
-                            </button>
+                    <div class="filter-chip-wrapper">
+                        <div class="filter-chip" id="recipientFilter" data-filter="recipient">
+                            <span class="filter-chip-text">Recipient</span>
                         </div>
-                        <div class="filter-dropdown-content">
-                            <div class="date-range-picker">
-                                <div class="date-field">
-                                    <label for="startDate">From</label>
-                                    <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
-                                        <input type="date" id="startDate" class="mdc-text-field__input">
-                                        <div class="mdc-notched-outline">
-                                            <div class="mdc-notched-outline__leading"></div>
-                                            <div class="mdc-notched-outline__notch">
-                                                <label class="mdc-floating-label">Start Date</label>
-                                            </div>
-                                            <div class="mdc-notched-outline__trailing">
-                                                <i class="material-icons mdc-text-field__icon">calendar_today</i>
+                        <!-- Recipient Filter Dropdown -->
+                        <div class="filter-dropdown" id="recipientDropdown" style="display: none;">
+                            <div class="filter-dropdown-header">
+                                <span class="filter-dropdown-title">Filter by Recipient</span>
+                                <button class="filter-clear-btn" onclick="clearRecipientFilter()">
+                                    <i class="material-icons">clear</i>
+                                </button>
+                            </div>
+                            <div class="filter-dropdown-content">
+                                <input type="text" id="recipientSearchInput" class="filter-search-input" placeholder="Search recipients...">
+                                <div class="filter-options" id="recipientOptions"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-chip-wrapper">
+                        <div class="filter-chip" id="dateFilter" data-filter="date">
+                            <span class="filter-chip-text">Date</span>
+                        </div>
+                        <!-- Date Filter Dropdown -->
+                        <div class="filter-dropdown" id="dateDropdown" style="display: none;">
+                            <div class="filter-dropdown-header">
+                                <span class="filter-dropdown-title">Filter by Date Range</span>
+                                <button class="filter-clear-btn" onclick="clearDateFilter()">
+                                    <i class="material-icons">clear</i>
+                                </button>
+                            </div>
+                            <div class="filter-dropdown-content">
+                                <div class="date-range-picker">
+                                    <div class="date-field">
+                                        <label for="startDate">From</label>
+                                        <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                                            <input type="date" id="startDate" class="mdc-text-field__input">
+                                            <div class="mdc-notched-outline">
+                                                <div class="mdc-notched-outline__leading"></div>
+                                                <div class="mdc-notched-outline__notch">
+                                                    <label class="mdc-floating-label">Start Date</label>
+                                                </div>
+                                                <div class="mdc-notched-outline__trailing">
+                                                    <i class="material-icons mdc-text-field__icon">calendar_today</i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="date-field">
-                                    <label for="endDate">To</label>
-                                    <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
-                                        <input type="date" id="endDate" class="mdc-text-field__input">
-                                        <div class="mdc-notched-outline">
-                                            <div class="mdc-notched-outline__leading"></div>
-                                            <div class="mdc-notched-outline__notch">
-                                                <label class="mdc-floating-label">End Date</label>
-                                            </div>
-                                            <div class="mdc-notched-outline__trailing">
-                                                <i class="material-icons mdc-text-field__icon">calendar_today</i>
+                                    <div class="date-field">
+                                        <label for="endDate">To</label>
+                                        <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                                            <input type="date" id="endDate" class="mdc-text-field__input">
+                                            <div class="mdc-notched-outline">
+                                                <div class="mdc-notched-outline__leading"></div>
+                                                <div class="mdc-notched-outline__notch">
+                                                    <label class="mdc-floating-label">End Date</label>
+                                                </div>
+                                                <div class="mdc-notched-outline__trailing">
+                                                    <i class="material-icons mdc-text-field__icon">calendar_today</i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -5837,16 +5842,7 @@
             const chip = document.getElementById(`${filterType}Filter`);
             
             if (dropdown && chip) {
-                // Position dropdown relative to the chip
-                const chipRect = chip.getBoundingClientRect();
-                const containerRect = chip.closest('.filter-chips-container').getBoundingClientRect();
-                
                 dropdown.style.display = 'block';
-                dropdown.style.position = 'absolute';
-                dropdown.style.left = (chipRect.left - containerRect.left) + 'px';
-                dropdown.style.top = '100%';
-                dropdown.style.marginTop = '8px';
-                
                 chip.classList.add('active');
                 
                 // Initialize dropdown content
