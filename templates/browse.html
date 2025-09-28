@@ -3465,22 +3465,24 @@
             mdc.autoInit();
             
             // Set up tab switching
-            console.log('About to call setupTabSwitching() from first location');
             setupTabSwitching();
             
             // Initialize tab visibility - ensure only summary tab is visible
             setTimeout(() => {
-                const allPanels = document.querySelectorAll('.tab-panel');
-                allPanels.forEach(panel => {
-                    if (panel.id === 'summary-tab') {
-                        panel.style.display = 'block';
-                        panel.classList.add('active');
-                    } else {
-                        panel.style.display = 'none';
-                        panel.classList.remove('active');
-                    }
-                });
-                console.log('Initialized tab visibility - only summary tab should be visible');
+                const modal = document.getElementById('documentModal');
+                if (modal) {
+                    const allPanels = modal.querySelectorAll('.tab-panel');
+                    allPanels.forEach(panel => {
+                        if (panel.id === 'summary-tab') {
+                            panel.style.display = 'block';
+                            panel.classList.add('active');
+                        } else {
+                            panel.style.display = 'none';
+                            panel.classList.remove('active');
+                        }
+                    });
+                    console.log('Initialized tab visibility - only summary tab should be visible');
+                }
             }, 100);
             
             // Set up menu interactions
@@ -3563,7 +3565,7 @@
                                 <div class="mdc-tab-scroller">
                                     <div class="mdc-tab-scroller__scroll-area">
                                         <div class="mdc-tab-scroller__scroll-content">
-                                            <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0" data-tab="summary" onclick="switchToTab('summary')">
+                                            <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0" data-tab="summary">
                                                 <span class="mdc-tab__content">
                                                     <span class="mdc-tab__text-label">Summary</span>
                                                 </span>
@@ -3572,7 +3574,7 @@
                                                 </span>
                                                 <span class="mdc-tab__ripple"></span>
                                             </button>
-                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="translation" onclick="switchToTab('translation')">
+                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="translation">
                                                 <span class="mdc-tab__content">
                                                     <span class="mdc-tab__text-label">Translation</span>
                                                 </span>
@@ -3581,7 +3583,7 @@
                                                 </span>
                                                 <span class="mdc-tab__ripple"></span>
                                             </button>
-                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="original" onclick="switchToTab('original')">
+                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="original">
                                                 <span class="mdc-tab__content">
                                                     <span class="mdc-tab__text-label">Original</span>
                                                 </span>
@@ -3590,7 +3592,7 @@
                                                 </span>
                                                 <span class="mdc-tab__ripple"></span>
                                             </button>
-                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="image" onclick="switchToTab('image')">
+                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="image">
                                                 <span class="mdc-tab__content">
                                                     <span class="mdc-tab__text-label">Image</span>
                                                 </span>
@@ -3841,22 +3843,24 @@
                 }
                 
                 // Set up tab switching
-                console.log('About to call setupTabSwitching()');
                 setupTabSwitching();
                 
                 // Initialize tab visibility - ensure only summary tab is visible
                 setTimeout(() => {
-                    const allPanels = document.querySelectorAll('.tab-panel');
-                    allPanels.forEach(panel => {
-                        if (panel.id === 'summary-tab') {
-                            panel.style.display = 'block';
-                            panel.classList.add('active');
-                        } else {
-                            panel.style.display = 'none';
-                            panel.classList.remove('active');
-                        }
-                    });
-                    console.log('Initialized tab visibility - only summary tab should be visible');
+                    const modal = document.getElementById('documentModal');
+                    if (modal) {
+                        const allPanels = modal.querySelectorAll('.tab-panel');
+                        allPanels.forEach(panel => {
+                            if (panel.id === 'summary-tab') {
+                                panel.style.display = 'block';
+                                panel.classList.add('active');
+                            } else {
+                                panel.style.display = 'none';
+                                panel.classList.remove('active');
+                            }
+                        });
+                        console.log('Initialized tab visibility - only summary tab should be visible');
+                    }
                 }, 100);
                 
                 // Set up M3 tab functionality
@@ -4632,58 +4636,23 @@
             `).join('');
         }
 
-        // Simple tab switching function for onclick handlers
-        function switchToTab(tabName) {
-            console.log('switchToTab called with:', tabName);
-            
-            // Hide all panels
-            const allPanels = document.querySelectorAll('.tab-panel');
-            allPanels.forEach(panel => {
-                panel.style.display = 'none';
-                panel.classList.remove('active');
-            });
-            
-            // Show target panel
-            const targetPanel = document.getElementById(`${tabName}-tab`);
-            if (targetPanel) {
-                targetPanel.style.display = 'block';
-                targetPanel.classList.add('active');
-                console.log('Switched to panel:', targetPanel.id);
-            } else {
-                console.error('Panel not found:', `${tabName}-tab`);
-            }
-            
-            // Update tab states
-            const allTabs = document.querySelectorAll('.mdc-tab[data-tab]');
-            allTabs.forEach(tab => {
-                tab.classList.remove('mdc-tab--active');
-                tab.setAttribute('aria-selected', 'false');
-                tab.setAttribute('tabindex', '-1');
-            });
-            
-            const targetTab = document.querySelector(`[data-tab="${tabName}"]`);
-            if (targetTab) {
-                targetTab.classList.add('mdc-tab--active');
-                targetTab.setAttribute('aria-selected', 'true');
-                targetTab.setAttribute('tabindex', '0');
-                console.log('Updated tab state for:', tabName);
-            }
-        }
-
         // Set up tab switching for M3 tabs
         function setupTabSwitching() {
-            console.log('=== setupTabSwitching() called ===');
-            const tabs = document.querySelectorAll('.mdc-tab[data-tab]');
-            const panels = document.querySelectorAll('.tab-panel');
+            // Only target tabs within the modal dialog
+            const modal = document.getElementById('documentModal');
+            if (!modal) {
+                console.error('Modal not found for tab setup');
+                return;
+            }
             
-            console.log('Setting up tab switching - found', tabs.length, 'tabs and', panels.length, 'panels');
-            console.log('Tabs found:', Array.from(tabs).map(t => t.dataset.tab));
-            console.log('Panels found:', Array.from(panels).map(p => p.id));
+            const tabs = modal.querySelectorAll('.mdc-tab[data-tab]');
+            const panels = modal.querySelectorAll('.tab-panel');
+            
+            console.log('Setting up tab switching - found', tabs.length, 'tabs and', panels.length, 'panels in modal');
             
             tabs.forEach(tab => {
                 console.log('Adding click listener to tab:', tab.dataset.tab);
-                tab.addEventListener('click', (e) => {
-                    console.log('TAB CLICKED!', tab.dataset.tab, e);
+                tab.addEventListener('click', () => {
                     const targetTab = tab.dataset.tab;
                     
                     // Update tab states
@@ -4791,7 +4760,7 @@
                     
                     // Try to show snackbar, but don't let it prevent modal closing
                     try {
-                    showSnackbar('Document updated successfully!');
+                        showSnackbar('Document updated successfully!');
                     } catch (snackbarError) {
                         console.warn('Snackbar failed, but save was successful:', snackbarError);
                         // Fallback to alert if snackbar fails
