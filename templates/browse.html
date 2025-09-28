@@ -325,16 +325,19 @@
             /* Compact Search, Sort, Filter Bar */
             .compact-search-filter-bar {
             background: var(--md-sys-color-surface-container-lowest);
-                border-radius: 8px;
-                padding: 8px 12px;
-                margin-bottom: var(--md-sys-spacing-4);
-            border: 1px solid var(--md-sys-color-outline-variant);
-            display: flex;
-            align-items: center;
-                gap: 12px;
+                border-radius: 0;
+                padding: 12px 24px;
+                margin: 0;
+                border: none;
+                border-bottom: 1px solid var(--md-sys-color-outline-variant);
+                display: flex;
+                align-items: center;
+                gap: 16px;
                 flex-wrap: nowrap;
-                min-height: 40px;
-        }
+                min-height: 48px;
+                width: 100%;
+                box-sizing: border-box;
+            }
 
             .search-input-container {
                 flex: 1;
@@ -2869,7 +2872,7 @@
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('documents')">
                 <span class="material-icons">description</span>
-                <span class="nav-tab-label">Documents</span>
+                <span class="nav-tab-label" id="documentsTabLabel">Documents</span>
             </button>
             <button class="nav-tab" onclick="switchTab('references')">
                 <span class="material-icons">people</span>
@@ -2884,47 +2887,48 @@
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Documents Tab Content -->
-        <div id="documents-tab" class="tab-content active">
-            <!-- Compact Search, Sort, Filter Bar -->
-            <div class="compact-search-filter-bar">
-                <div class="search-input-container">
-                    <span class="material-icons search-icon">search</span>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search documents..." autocomplete="off">
-                    <span class="material-icons clear-icon" id="clearSearchIcon" style="display: none;">close</span>
+    <!-- Compact Search, Sort, Filter Bar -->
+    <div class="compact-search-filter-bar">
+        <div class="search-input-container">
+            <span class="material-icons search-icon">search</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search documents..." autocomplete="off">
+            <span class="material-icons clear-icon" id="clearSearchIcon" style="display: none;">close</span>
                     </div>
-                
-                <div class="filter-chips-container">
+        
+        <div class="filter-chips-container">
                     <div class="filter-chip active" data-filter="all">All</div>
                     <div class="filter-chip" data-filter="title">Title</div>
                     <div class="filter-chip" data-filter="content">Content</div>
                     <div class="filter-chip" data-filter="people">People</div>
                     <div class="filter-chip" data-filter="language">Language</div>
                 </div>
-                
-                <div class="sort-container">
-                    <div class="sort-chip" id="sortChip" data-sort="date_added" data-direction="desc">
-                        <span class="sort-text">Date Added</span>
-                        <i class="material-icons sort-icon">keyboard_arrow_down</i>
-                    </div>
-                    <div class="sort-dropdown" id="sortDropdown" style="display: none;">
-                        <div class="sort-option" data-sort="name" data-direction="asc">
-                            <span class="sort-option-text">Name</span>
-                            <i class="material-icons sort-option-icon">keyboard_arrow_up</i>
-                        </div>
-                        <div class="sort-option" data-sort="date_authored" data-direction="desc">
-                            <span class="sort-option-text">Date Authored</span>
-                            <i class="material-icons sort-option-icon">keyboard_arrow_down</i>
-                        </div>
-                        <div class="sort-option" data-sort="date_added" data-direction="desc">
-                            <span class="sort-option-text">Date Added</span>
-                            <i class="material-icons sort-option-icon">keyboard_arrow_down</i>
-                        </div>
-                    </div>
+        
+        <div class="sort-container">
+            <div class="sort-chip" id="sortChip" data-sort="date_added" data-direction="desc">
+                <span class="sort-text">Date Added</span>
+                <i class="material-icons sort-icon">keyboard_arrow_down</i>
+            </div>
+            <div class="sort-dropdown" id="sortDropdown" style="display: none;">
+                <div class="sort-option" data-sort="name" data-direction="asc">
+                    <span class="sort-option-text">Name</span>
+                    <i class="material-icons sort-option-icon">keyboard_arrow_up</i>
+                </div>
+                <div class="sort-option" data-sort="date_authored" data-direction="desc">
+                    <span class="sort-option-text">Date Authored</span>
+                    <i class="material-icons sort-option-icon">keyboard_arrow_down</i>
+                </div>
+                <div class="sort-option" data-sort="date_added" data-direction="desc">
+                    <span class="sort-option-text">Date Added</span>
+                    <i class="material-icons sort-option-icon">keyboard_arrow_down</i>
                 </div>
             </div>
+        </div>
+            </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Documents Tab Content -->
+        <div id="documents-tab" class="tab-content active">
             
             <div class="search-results-info" id="searchResultsInfo" style="display: none;"></div>
 
@@ -3178,6 +3182,9 @@
                     filteredDocuments = [...allDocuments];
                     console.log('Documents loaded:', allDocuments.length);
                     
+                    // Update tab label with count
+                    updateDocumentsTabLabel();
+                    
                     // Apply initial sorting
                     applySorting();
                 } else {
@@ -3337,6 +3344,15 @@
         function applySorting() {
             filteredDocuments = sortDocuments(filteredDocuments, currentSort.field, currentSort.direction);
             renderDocuments();
+        }
+
+        // Update tab label with document count
+        function updateDocumentsTabLabel() {
+            const tabLabel = document.getElementById('documentsTabLabel');
+            if (tabLabel && allDocuments) {
+                const count = allDocuments.length;
+                tabLabel.textContent = `${count} document${count !== 1 ? 's' : ''}`;
+            }
         }
 
         // Render people list with overflow pattern using M3 chips
@@ -6168,7 +6184,7 @@
                         
                         // Auto-refresh document list if successful
                         if (successfulUploads > 0) {
-                            loadDocuments();
+                            await loadDocuments();
                         }
                         
                         // Close side sheet after 2 second delay
