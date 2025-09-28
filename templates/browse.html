@@ -431,30 +431,157 @@
             background: var(--md-sys-color-surface-container);
             color: var(--md-sys-color-on-surface);
             border: 1px solid var(--md-sys-color-outline);
-            border-radius: 12px;
-            padding: 4px 8px;
-            font-family: var(--md-sys-typescale-label-small-font);
-            font-size: 12px;
-            font-weight: var(--md-sys-typescale-label-small-weight);
+            border-radius: 16px;
+            padding: 6px 12px;
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: var(--md-sys-typescale-label-medium-weight);
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             position: relative;
             overflow: hidden;
             white-space: nowrap;
-            height: 24px;
+            height: 32px;
+            min-width: 80px;
         }
 
         .filter-chip:hover {
             background: var(--md-sys-color-surface-container-high);
+            border-color: var(--md-sys-color-outline);
         }
 
         .filter-chip.active {
-            background: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            border-color: var(--md-sys-color-secondary-container);
+        }
+
+        .filter-chip-text {
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+        }
+
+        .filter-chip-icon {
+            font-size: 18px;
+            color: inherit;
+        }
+
+        /* Filter Dropdowns */
+        .filter-dropdowns {
+            position: relative;
+        }
+
+        .filter-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--md-sys-color-surface-container-lowest);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            min-width: 280px;
+            margin-top: 8px;
+        }
+
+        .filter-dropdown-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .filter-dropdown-title {
+            font-family: var(--md-sys-typescale-title-small-font);
+            font-size: var(--md-sys-typescale-title-small-size);
+            font-weight: var(--md-sys-typescale-title-small-weight);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .filter-clear-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            color: var(--md-sys-color-on-surface-variant);
+            transition: background-color 0.2s ease;
+        }
+
+        .filter-clear-btn:hover {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .filter-dropdown-content {
+            padding: 16px;
+        }
+
+        .filter-search-input {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            outline: none;
+            transition: border-color 0.2s ease;
+            margin-bottom: 12px;
+        }
+
+        .filter-search-input:focus {
             border-color: var(--md-sys-color-primary);
+        }
+
+        .filter-options {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .filter-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .filter-option:hover {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .filter-option.selected {
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+        }
+
+        /* Date Range Picker */
+        .date-range-picker {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .date-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .date-field label {
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: var(--md-sys-typescale-label-medium-weight);
+            color: var(--md-sys-color-on-surface);
         }
 
         .search-results-info {
@@ -2905,11 +3032,93 @@
                     </div>
         
         <div class="filter-chips-container">
-                    <div class="filter-chip active" data-filter="all">All</div>
-                    <div class="filter-chip" data-filter="title">Title</div>
-                    <div class="filter-chip" data-filter="content">Content</div>
-                    <div class="filter-chip" data-filter="people">People</div>
-                    <div class="filter-chip" data-filter="language">Language</div>
+                    <div class="filter-chip" id="senderFilter" data-filter="sender">
+                        <span class="filter-chip-text">Sender</span>
+                        <i class="material-icons filter-chip-icon">person</i>
+                    </div>
+                    <div class="filter-chip" id="recipientFilter" data-filter="recipient">
+                        <span class="filter-chip-text">Recipient</span>
+                        <i class="material-icons filter-chip-icon">person_outline</i>
+                    </div>
+                    <div class="filter-chip" id="dateFilter" data-filter="date">
+                        <span class="filter-chip-text">Date</span>
+                        <i class="material-icons filter-chip-icon">date_range</i>
+                    </div>
+                </div>
+                
+                <!-- Filter Dropdowns -->
+                <div class="filter-dropdowns">
+                    <!-- Sender Filter Dropdown -->
+                    <div class="filter-dropdown" id="senderDropdown" style="display: none;">
+                        <div class="filter-dropdown-header">
+                            <span class="filter-dropdown-title">Filter by Sender</span>
+                            <button class="filter-clear-btn" onclick="clearSenderFilter()">
+                                <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                        <div class="filter-dropdown-content">
+                            <input type="text" id="senderSearchInput" class="filter-search-input" placeholder="Search senders...">
+                            <div class="filter-options" id="senderOptions"></div>
+                </div>
+            </div>
+                    
+                    <!-- Recipient Filter Dropdown -->
+                    <div class="filter-dropdown" id="recipientDropdown" style="display: none;">
+                        <div class="filter-dropdown-header">
+                            <span class="filter-dropdown-title">Filter by Recipient</span>
+                            <button class="filter-clear-btn" onclick="clearRecipientFilter()">
+                                <i class="material-icons">clear</i>
+                            </button>
+                        </div>
+                        <div class="filter-dropdown-content">
+                            <input type="text" id="recipientSearchInput" class="filter-search-input" placeholder="Search recipients...">
+                            <div class="filter-options" id="recipientOptions"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Date Filter Dropdown -->
+                    <div class="filter-dropdown" id="dateDropdown" style="display: none;">
+                        <div class="filter-dropdown-header">
+                            <span class="filter-dropdown-title">Filter by Date Range</span>
+                            <button class="filter-clear-btn" onclick="clearDateFilter()">
+                                <i class="material-icons">clear</i>
+                            </button>
+                        </div>
+                        <div class="filter-dropdown-content">
+                            <div class="date-range-picker">
+                                <div class="date-field">
+                                    <label for="startDate">From</label>
+                                    <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                                        <input type="date" id="startDate" class="mdc-text-field__input">
+                                        <div class="mdc-notched-outline">
+                                            <div class="mdc-notched-outline__leading"></div>
+                                            <div class="mdc-notched-outline__notch">
+                                                <label class="mdc-floating-label">Start Date</label>
+                                            </div>
+                                            <div class="mdc-notched-outline__trailing">
+                                                <i class="material-icons mdc-text-field__icon">calendar_today</i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="date-field">
+                                    <label for="endDate">To</label>
+                                    <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                                        <input type="date" id="endDate" class="mdc-text-field__input">
+                                        <div class="mdc-notched-outline">
+                                            <div class="mdc-notched-outline__leading"></div>
+                                            <div class="mdc-notched-outline__notch">
+                                                <label class="mdc-floating-label">End Date</label>
+                                            </div>
+                                            <div class="mdc-notched-outline__trailing">
+                                                <i class="material-icons mdc-text-field__icon">calendar_today</i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
         
         <div class="sort-container">
@@ -3439,40 +3648,8 @@
 
         // Search documents with filters
         function searchDocuments() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            
-            if (query === '') {
-                filteredDocuments = [...allDocuments];
-            } else {
-                filteredDocuments = allDocuments.filter(doc => {
-                    switch (currentSearchFilter) {
-                        case 'title':
-                            return doc.title.toLowerCase().includes(query);
-                        case 'content':
-                            return doc.summary.toLowerCase().includes(query);
-                        case 'people':
-                            return doc.people && doc.people.some(person => 
-                                person.toLowerCase().includes(query)
-                            );
-                        case 'language':
-                            return doc.source_language.toLowerCase().includes(query) ||
-                                   doc.target_language.toLowerCase().includes(query);
-                        default: // 'all'
-                            return doc.title.toLowerCase().includes(query) ||
-                                   doc.summary.toLowerCase().includes(query) ||
-                                   doc.source_language.toLowerCase().includes(query) ||
-                                   doc.target_language.toLowerCase().includes(query) ||
-                                   (doc.people && doc.people.some(person => 
-                                       person.toLowerCase().includes(query)
-                                   ));
-                    }
-                });
-            }
-            
-            updateSearchResultsInfo();
-            
-            // Apply current sorting to filtered results
-            applySorting();
+            // Use the new applyFilters function which handles both search and filters
+            applyFilters();
         }
 
         // Search people with filters
@@ -5646,14 +5823,222 @@
         });
         document.getElementById('clearPeopleSearchIcon').addEventListener('click', clearPeopleSearch);
 
+        // Filter state variables
+        let activeFilters = {
+            sender: null,
+            recipient: null,
+            dateRange: { start: null, end: null }
+        };
+
+        // Filter functionality
+        function toggleFilterDropdown(filterType) {
+            hideAllFilterDropdowns();
+            const dropdown = document.getElementById(`${filterType}Dropdown`);
+            const chip = document.getElementById(`${filterType}Filter`);
+            
+            if (dropdown && chip) {
+                dropdown.style.display = 'block';
+                chip.classList.add('active');
+                
+                // Initialize dropdown content
+                if (filterType === 'sender' || filterType === 'recipient') {
+                    initializePersonFilter(filterType);
+                } else if (filterType === 'date') {
+                    initializeDateFilter();
+                }
+            }
+        }
+
+        function hideAllFilterDropdowns() {
+            document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+                dropdown.style.display = 'none';
+            });
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+        }
+
+        function initializePersonFilter(filterType) {
+            const searchInput = document.getElementById(`${filterType}SearchInput`);
+            const optionsContainer = document.getElementById(`${filterType}Options`);
+            
+            if (searchInput && optionsContainer) {
+                // Load all people for this filter
+                loadPeopleForFilter(filterType, optionsContainer);
+                
+                // Add search functionality
+                searchInput.addEventListener('input', (e) => {
+                    filterPeopleOptions(filterType, e.target.value, optionsContainer);
+                });
+            }
+        }
+
+        function initializeDateFilter() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            
+            if (startDateInput && endDateInput) {
+                // Add change listeners
+                startDateInput.addEventListener('change', applyDateFilter);
+                endDateInput.addEventListener('change', applyDateFilter);
+            }
+        }
+
+        async function loadPeopleForFilter(filterType, container) {
+            try {
+                const response = await fetch('/people/sorted');
+                const data = await response.json();
+                
+                if (data.success && data.people) {
+                    const people = data.people.map(p => p.original_name);
+                    renderPeopleOptions(people, container, filterType);
+                }
+            } catch (error) {
+                console.error('Error loading people for filter:', error);
+            }
+        }
+
+        function renderPeopleOptions(people, container, filterType) {
+            container.innerHTML = people.map(person => `
+                <div class="filter-option" data-person="${escapeHtml(person)}" onclick="selectPersonFilter('${filterType}', '${escapeHtml(person)}')">
+                    ${escapeHtml(person)}
+                </div>
+            `).join('');
+        }
+
+        function filterPeopleOptions(filterType, query, container) {
+            const options = container.querySelectorAll('.filter-option');
+            options.forEach(option => {
+                const personName = option.dataset.person.toLowerCase();
+                const matches = personName.includes(query.toLowerCase());
+                option.style.display = matches ? 'block' : 'none';
+            });
+        }
+
+        function selectPersonFilter(filterType, personName) {
+            activeFilters[filterType] = personName;
+            updateFilterChip(filterType, personName);
+            hideAllFilterDropdowns();
+            applyFilters();
+        }
+
+        function updateFilterChip(filterType, value) {
+            const chip = document.getElementById(`${filterType}Filter`);
+            if (chip && value) {
+                chip.classList.add('active');
+                const textElement = chip.querySelector('.filter-chip-text');
+                if (textElement) {
+                    textElement.textContent = value.length > 15 ? value.substring(0, 15) + '...' : value;
+                }
+            }
+        }
+
+        function applyDateFilter() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            activeFilters.dateRange = { start: startDate, end: endDate };
+            
+            if (startDate || endDate) {
+                updateFilterChip('date', `${startDate || '...'} - ${endDate || '...'}`);
+            }
+            
+            hideAllFilterDropdowns();
+            applyFilters();
+        }
+
+        function clearSenderFilter() {
+            activeFilters.sender = null;
+            document.getElementById('senderFilter').classList.remove('active');
+            document.getElementById('senderFilter').querySelector('.filter-chip-text').textContent = 'Sender';
+            applyFilters();
+        }
+
+        function clearRecipientFilter() {
+            activeFilters.recipient = null;
+            document.getElementById('recipientFilter').classList.remove('active');
+            document.getElementById('recipientFilter').querySelector('.filter-chip-text').textContent = 'Recipient';
+            applyFilters();
+        }
+
+        function clearDateFilter() {
+            activeFilters.dateRange = { start: null, end: null };
+            document.getElementById('dateFilter').classList.remove('active');
+            document.getElementById('dateFilter').querySelector('.filter-chip-text').textContent = 'Date';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            applyFilters();
+        }
+
+        function applyFilters() {
+            // Filter documents based on active filters
+            let filtered = [...allDocuments];
+            
+            // Apply sender filter
+            if (activeFilters.sender) {
+                filtered = filtered.filter(doc => 
+                    doc.sender && doc.sender.toLowerCase().includes(activeFilters.sender.toLowerCase())
+                );
+            }
+            
+            // Apply recipient filter
+            if (activeFilters.recipient) {
+                filtered = filtered.filter(doc => 
+                    doc.recipient && doc.recipient.toLowerCase().includes(activeFilters.recipient.toLowerCase())
+                );
+            }
+            
+            // Apply date range filter
+            if (activeFilters.dateRange.start || activeFilters.dateRange.end) {
+                filtered = filtered.filter(doc => {
+                    if (!doc.date) return false;
+                    
+                    const docDate = new Date(doc.date);
+                    const startDate = activeFilters.dateRange.start ? new Date(activeFilters.dateRange.start) : null;
+                    const endDate = activeFilters.dateRange.end ? new Date(activeFilters.dateRange.end) : null;
+                    
+                    if (startDate && docDate < startDate) return false;
+                    if (endDate && docDate > endDate) return false;
+                    
+                    return true;
+                });
+            }
+            
+            // Apply search filter
+            const searchQuery = document.getElementById('searchInput').value.trim();
+            if (searchQuery) {
+                filtered = filtered.filter(doc => {
+                    const searchLower = searchQuery.toLowerCase();
+                    return (
+                        (doc.title && doc.title.toLowerCase().includes(searchLower)) ||
+                        (doc.summary && doc.summary.toLowerCase().includes(searchLower)) ||
+                        (doc.translated_text && doc.translated_text.toLowerCase().includes(searchLower)) ||
+                        (doc.original_text && doc.original_text.toLowerCase().includes(searchLower)) ||
+                        (doc.people && doc.people.some(person => 
+                            (typeof person === 'string' ? person : person.original_name).toLowerCase().includes(searchLower)
+                        ))
+                    );
+                });
+            }
+            
+            filteredDocuments = filtered;
+            renderDocuments();
+        }
+
         // Filter chip event listeners
         document.querySelectorAll('[data-filter]').forEach(chip => {
-            chip.addEventListener('click', () => {
-                document.querySelectorAll('[data-filter]').forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                currentSearchFilter = chip.dataset.filter;
-                searchDocuments();
+            chip.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const filterType = chip.dataset.filter;
+                toggleFilterDropdown(filterType);
             });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.filter-chip') && !e.target.closest('.filter-dropdown')) {
+                hideAllFilterDropdowns();
+            }
         });
 
         document.querySelectorAll('[data-people-filter]').forEach(chip => {
@@ -7035,7 +7420,7 @@
                     // Insert before the input wrapper
                     const inputWrapper = peopleContainer.querySelector('.reference-input-wrapper');
                     peopleContainer.insertBefore(newChip, inputWrapper);
-                    
+
                     // Clear the input
                     document.getElementById('referenceInput').value = '';
                     hideAutocomplete();
