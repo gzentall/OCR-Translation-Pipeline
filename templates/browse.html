@@ -322,45 +322,126 @@
         }
 
 
-        /* Search, Sort, Filter Bar */
-        .search-sort-filter-bar {
+            /* Compact Search, Sort, Filter Bar */
+            .compact-search-filter-bar {
             background: var(--md-sys-color-surface-container-lowest);
-            border-radius: 12px;
-            padding: var(--md-sys-spacing-4);
-            margin-bottom: var(--md-sys-spacing-6);
+                border-radius: 8px;
+                padding: 8px 12px;
+                margin-bottom: var(--md-sys-spacing-4);
             border: 1px solid var(--md-sys-color-outline-variant);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: nowrap;
+                min-height: 40px;
+            }
+
+            .search-input-container {
+                flex: 1;
+                min-width: 200px;
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
+
+            .search-input {
+                width: 100%;
+                height: 32px;
+                padding: 0 32px 0 32px;
+                border: 1px solid var(--md-sys-color-outline);
+                border-radius: 16px;
+                font-size: 14px;
+                background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+                outline: none;
+                transition: border-color 0.2s ease;
+            }
+
+            .search-input:focus {
+                border-color: var(--md-sys-color-primary);
+            }
+
+            .search-icon {
+                position: absolute;
+                left: 8px;
+                font-size: 18px;
+                color: var(--md-sys-color-on-surface-variant);
+                pointer-events: none;
+            }
+
+            .clear-icon {
+                position: absolute;
+                right: 8px;
+                font-size: 18px;
+                color: var(--md-sys-color-on-surface-variant);
+                cursor: pointer;
+                padding: 2px;
+                border-radius: 50%;
+                transition: background-color 0.2s ease;
+            }
+
+            .clear-icon:hover {
+                background: var(--md-sys-color-surface-container-high);
+            }
+
+            .filter-chips-container {
             display: flex;
-            align-items: center;
-            gap: var(--md-sys-spacing-4);
+                gap: 6px;
+                flex-shrink: 0;
+            }
+
+            .sort-container {
+                position: relative;
+                flex-shrink: 0;
+            }
+
+            /* Responsive adjustments for smaller screens */
+            @media (max-width: 768px) {
+                .compact-search-filter-bar {
             flex-wrap: wrap;
-        }
-
-        .search-container {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .filter-container {
-            display: flex;
-            gap: var(--md-sys-spacing-2);
-            flex-wrap: wrap;
-        }
-
-        .sort-container {
-            position: relative;
+                    gap: 8px;
+                }
+                
+                .search-input-container {
+                    min-width: 150px;
+                }
+                
+                .filter-chips-container {
+                    gap: 4px;
+                }
+                
+                .filter-chip {
+                    font-size: 11px;
+                    padding: 3px 6px;
+                    height: 22px;
+                }
+                
+                .sort-chip {
+                    min-width: 70px;
+                    height: 22px;
+                    font-size: 11px;
+                    padding: 3px 6px;
+                }
         }
 
         .filter-chip {
             background: var(--md-sys-color-surface-container);
             color: var(--md-sys-color-on-surface);
             border: 1px solid var(--md-sys-color-outline);
-            border-radius: 16px;
-            padding: var(--md-sys-spacing-2) var(--md-sys-spacing-4);
-            font-family: var(--md-sys-typescale-label-medium-font);
-            font-size: var(--md-sys-typescale-label-medium-size);
-            font-weight: var(--md-sys-typescale-label-medium-weight);
+            border-radius: 12px;
+            padding: 4px 8px;
+            font-family: var(--md-sys-typescale-label-small-font);
+            font-size: 12px;
+            font-weight: var(--md-sys-typescale-label-small-weight);
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            height: 24px;
         }
 
         .filter-chip:hover {
@@ -444,25 +525,26 @@
             margin-left: var(--md-sys-spacing-1);
         }
 
-        /* Sort Chip and Dropdown */
-        .sort-chip {
-            background: var(--md-sys-color-secondary-container);
-            color: var(--md-sys-color-on-secondary-container);
-            border: 1px solid var(--md-sys-color-secondary-container);
-            border-radius: 16px;
-            padding: var(--md-sys-spacing-2) var(--md-sys-spacing-4);
-            font-family: var(--md-sys-typescale-label-medium-font);
-            font-size: var(--md-sys-typescale-label-medium-size);
-            font-weight: var(--md-sys-typescale-label-medium-weight);
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-            display: inline-flex;
-            align-items: center;
-            gap: var(--md-sys-spacing-2);
-            position: relative;
-            overflow: hidden;
-            min-width: 120px;
-        }
+            /* Sort Chip and Dropdown */
+            .sort-chip {
+                background: var(--md-sys-color-secondary-container);
+                color: var(--md-sys-color-on-secondary-container);
+                border: 1px solid var(--md-sys-color-secondary-container);
+                border-radius: 12px;
+                padding: 4px 8px;
+                font-family: var(--md-sys-typescale-label-small-font);
+                font-size: 12px;
+                font-weight: var(--md-sys-typescale-label-small-weight);
+                cursor: pointer;
+                transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                position: relative;
+                overflow: hidden;
+                min-width: 80px;
+                height: 24px;
+            }
 
         .sort-chip:hover {
             background: var(--md-sys-color-secondary-container);
@@ -485,22 +567,18 @@
             opacity: 0.08;
         }
 
-        .sort-chip .mdc-chip__text {
-            font-family: inherit;
-            font-size: inherit;
-            font-weight: inherit;
-            color: inherit;
-        }
+            .sort-text {
+                font-family: inherit;
+                font-size: inherit;
+                font-weight: inherit;
+                color: inherit;
+            }
 
-        .sort-chip .mdc-chip__icon {
-            font-size: 18px;
-            color: inherit;
-            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
-        }
-
-        .sort-chip .mdc-chip__icon--trailing {
-            margin-left: var(--md-sys-spacing-1);
-        }
+            .sort-icon {
+                font-size: 14px;
+                color: inherit;
+                transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+            }
 
         .sort-dropdown {
             position: absolute;
@@ -2810,18 +2888,15 @@
     <div class="main-content">
         <!-- Documents Tab Content -->
         <div id="documents-tab" class="tab-content active">
-            <!-- Search, Sort, Filter Bar -->
-            <div class="search-sort-filter-bar">
-                <div class="search-container">
-                    <div class="mdc-search" id="documentSearch">
-                        <span class="material-icons mdc-search__icon">search</span>
-                        <input type="text" class="mdc-search__input" id="searchInput" placeholder="Search documents..." autocomplete="off">
-                        <span class="material-icons mdc-search__trailing-icon" id="clearSearchIcon" style="display: none;">close</span>
-                        <div class="mdc-search__suggestions" id="searchSuggestions"></div>
+            <!-- Compact Search, Sort, Filter Bar -->
+            <div class="compact-search-filter-bar">
+                <div class="search-input-container">
+                    <span class="material-icons search-icon">search</span>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search documents..." autocomplete="off">
+                    <span class="material-icons clear-icon" id="clearSearchIcon" style="display: none;">close</span>
                     </div>
-                </div>
                 
-                <div class="filter-container">
+                <div class="filter-chips-container">
                     <div class="filter-chip active" data-filter="all">All</div>
                     <div class="filter-chip" data-filter="title">Title</div>
                     <div class="filter-chip" data-filter="content">Content</div>
@@ -2831,9 +2906,8 @@
                 
                 <div class="sort-container">
                     <div class="sort-chip" id="sortChip" data-sort="date_added" data-direction="desc">
-                        <div class="mdc-chip__ripple"></div>
-                        <span class="mdc-chip__text">Date Added</span>
-                        <i class="material-icons mdc-chip__icon mdc-chip__icon--trailing">keyboard_arrow_down</i>
+                        <span class="sort-text">Date Added</span>
+                        <i class="material-icons sort-icon">keyboard_arrow_down</i>
                     </div>
                     <div class="sort-dropdown" id="sortDropdown" style="display: none;">
                         <div class="sort-option" data-sort="name" data-direction="asc">
@@ -3232,32 +3306,32 @@
             applySorting();
         }
 
-        // Update sort chip visual state
-        function updateSortChip() {
-            const sortChip = document.getElementById('sortChip');
-            const sortText = sortChip.querySelector('.mdc-chip__text');
-            const sortIcon = sortChip.querySelector('.mdc-chip__icon');
-            
-            // Update chip data attributes
-            sortChip.dataset.sort = currentSort.field;
-            sortChip.dataset.direction = currentSort.direction;
-            
-            // Update display text
-            switch (currentSort.field) {
-                case 'name':
-                    sortText.textContent = 'Name';
-                    break;
-                case 'date_authored':
-                    sortText.textContent = 'Date Authored';
-                    break;
-                case 'date_added':
-                    sortText.textContent = 'Date Added';
-                    break;
+            // Update sort chip visual state
+            function updateSortChip() {
+                const sortChip = document.getElementById('sortChip');
+                const sortText = sortChip.querySelector('.sort-text');
+                const sortIcon = sortChip.querySelector('.sort-icon');
+                
+                // Update chip data attributes
+                sortChip.dataset.sort = currentSort.field;
+                sortChip.dataset.direction = currentSort.direction;
+                
+                // Update display text
+                switch (currentSort.field) {
+                    case 'name':
+                        sortText.textContent = 'Name';
+                        break;
+                    case 'date_authored':
+                        sortText.textContent = 'Date Authored';
+                        break;
+                    case 'date_added':
+                        sortText.textContent = 'Date Added';
+                        break;
+                }
+                
+                // Update icon
+                sortIcon.textContent = currentSort.direction === 'asc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
             }
-            
-            // Update icon
-            sortIcon.textContent = currentSort.direction === 'asc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
-        }
 
         // Apply current sorting to filtered documents
         function applySorting() {
