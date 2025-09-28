@@ -4304,42 +4304,34 @@
                                     </div>
                                 </div>
                                 
-                                <!-- References Section (Full-width with Input Chips) -->
-                                <div class="form-row full-width">
-                                    <div class="references-section">
-                                        <label class="section-label">References</label>
-                                        <div id="documentReferences" class="references-chips">
-                                            ${(safeDoc.people || []).map(person => {
-                                                const personName = typeof person === 'string' ? person : person.original_name;
-                                                return `
-                                                    <div class="mdc-chip mdc-chip--input" data-person-name="${escapeHtml(personName)}">
-                                                        <div class="mdc-chip__ripple"></div>
-                                                        <span class="mdc-chip__text">${escapeHtml(personName)}</span>
-                                                        <button class="mdc-chip__action mdc-chip__action--remove" onclick="removePersonFromDocument('${escapeHtml(personName)}')">
-                                                            <span class="material-icons">close</span>
-                                                        </button>
+                                        <!-- References Section (Full-width with Autocomplete Input) -->
+                                        <div class="form-row full-width">
+                                            <div class="references-section">
+                                                <label class="section-label">References</label>
+                                                <div class="references-input-container">
+                                                    <div id="documentReferences" class="references-chips">
+                                                        ${(safeDoc.people || []).map(person => {
+                                                            const personName = typeof person === 'string' ? person : person.original_name;
+                                                            return `
+                                                                <div class="mdc-chip mdc-chip--input" data-person-name="${escapeHtml(personName)}">
+                                                                    <div class="mdc-chip__ripple"></div>
+                                                                    <span class="mdc-chip__text">${escapeHtml(personName)}</span>
+                                                                    <button class="mdc-chip__action mdc-chip__action--remove" onclick="removePersonFromDocument('${escapeHtml(personName)}')">
+                                                                        <span class="material-icons">close</span>
+                                                                    </button>
+                                                                </div>
+                                                            `;
+                                                        }).join('')}
+                                                        <div class="reference-input-wrapper">
+                                                            <input type="text" id="referenceInput" class="reference-input" placeholder="Type to add references..." autocomplete="off">
+                                                        </div>
                                                     </div>
-                                                `;
-                                            }).join('')}
-                                        </div>
-                                        <div class="add-reference-section">
-                                            <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
-                                                <input type="text" id="addReferenceInput" class="mdc-text-field__input" placeholder="Add reference">
-                                                <div class="mdc-notched-outline">
-                                                    <div class="mdc-notched-outline__leading"></div>
-                                                    <div class="mdc-notched-outline__notch">
-                                                        <label class="mdc-floating-label">Add Reference</label>
+                                                    <div id="referenceAutocomplete" class="reference-autocomplete" style="display: none;">
+                                                        <div class="autocomplete-list" id="autocompleteList"></div>
                                                     </div>
-                                                    <div class="mdc-notched-outline__trailing"></div>
                                                 </div>
                                             </div>
-                                            <button class="mdc-button mdc-button--raised" onclick="addPersonToDocument()">
-                                                <span class="mdc-button__ripple"></span>
-                                                <span class="mdc-button__label">Add</span>
-                                            </button>
                                         </div>
-                                    </div>
-                                </div>
                             </div>
                             
                             <!-- Translation Tab -->
@@ -4492,6 +4484,9 @@
                 
                 // Set up tab switching
                 setupTabSwitching();
+                
+                // Initialize autocomplete functionality
+                initializeReferenceAutocomplete();
                 
                 // Initialize tab visibility - ensure only summary tab is visible
                 setTimeout(() => {
@@ -4682,12 +4677,82 @@
                     width: 100%;
                 }
                 
+                .references-input-container {
+                    position: relative;
+                    margin: 16px 0;
+                }
+
                 .references-chips {
                     display: flex;
                     flex-wrap: wrap;
                     gap: 4px;
-                    margin: 16px 0;
                     align-items: center;
+                    min-height: 40px;
+                    padding: 8px;
+                    border: 1px solid var(--md-sys-color-outline);
+                    border-radius: 8px;
+                    background: var(--md-sys-color-surface);
+                    max-height: 120px;
+                    overflow-y: auto;
+                }
+
+                .reference-input-wrapper {
+                    display: inline-flex;
+                    align-items: center;
+                    min-width: 200px;
+                }
+
+                .reference-input {
+                    border: none;
+                    outline: none;
+                    background: transparent;
+                    font-family: var(--md-sys-typescale-label-medium-font);
+                    font-size: var(--md-sys-typescale-label-medium-size);
+                    color: var(--md-sys-color-on-surface);
+                    padding: 4px 8px;
+                    min-width: 200px;
+                    flex: 1;
+                }
+
+                .reference-input::placeholder {
+                    color: var(--md-sys-color-on-surface-variant);
+                }
+
+                .reference-autocomplete {
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    background: var(--md-sys-color-surface-container-lowest);
+                    border: 1px solid var(--md-sys-color-outline-variant);
+                    border-radius: 8px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    z-index: 1000;
+                    max-height: 200px;
+                    overflow-y: auto;
+                }
+
+                .autocomplete-list {
+                    padding: 4px 0;
+                }
+
+                .autocomplete-item {
+                    padding: 8px 16px;
+                    cursor: pointer;
+                    font-family: var(--md-sys-typescale-body-medium-font);
+                    font-size: var(--md-sys-typescale-body-medium-size);
+                    color: var(--md-sys-color-on-surface);
+                    transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+                }
+
+                .autocomplete-item:hover,
+                .autocomplete-item.selected {
+                    background: var(--md-sys-color-surface-container-high);
+                }
+
+                .autocomplete-item .highlight {
+                    font-weight: 600;
+                    color: var(--md-sys-color-primary);
                 }
                 
                 .mdc-chip {
@@ -6787,10 +6852,155 @@
             }
         }
 
-        async function addPersonToDocument() {
-            const personName = document.getElementById('addReferenceInput').value.trim();
-            if (!personName) {
-                showSnackbar('Please enter a person name');
+        // Global variables for autocomplete
+        let allPeople = [];
+        let selectedAutocompleteIndex = -1;
+
+        // Initialize autocomplete functionality
+        function initializeReferenceAutocomplete() {
+            const referenceInput = document.getElementById('referenceInput');
+            const autocomplete = document.getElementById('referenceAutocomplete');
+            
+            if (!referenceInput) return;
+
+            // Load all people for autocomplete
+            loadAllPeople();
+
+            // Input event handler
+            referenceInput.addEventListener('input', handleReferenceInput);
+            
+            // Key event handlers
+            referenceInput.addEventListener('keydown', handleReferenceKeydown);
+            
+            // Click outside to close autocomplete
+            document.addEventListener('click', (e) => {
+                if (!referenceInput.contains(e.target) && !autocomplete.contains(e.target)) {
+                    hideAutocomplete();
+                }
+            });
+        }
+
+        // Load all people for autocomplete
+        async function loadAllPeople() {
+            try {
+                const response = await fetch('/people/sorted');
+                const data = await response.json();
+                if (data.success) {
+                    allPeople = data.people.map(p => p.original_name);
+                }
+            } catch (error) {
+                console.error('Error loading people:', error);
+            }
+        }
+
+        // Handle input changes
+        function handleReferenceInput(e) {
+            const query = e.target.value.trim();
+            if (query.length > 0) {
+                showAutocomplete(query);
+            } else {
+                hideAutocomplete();
+            }
+        }
+
+        // Handle keyboard navigation
+        function handleReferenceKeydown(e) {
+            const autocomplete = document.getElementById('referenceAutocomplete');
+            const items = autocomplete.querySelectorAll('.autocomplete-item');
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedAutocompleteIndex = Math.min(selectedAutocompleteIndex + 1, items.length - 1);
+                updateAutocompleteSelection();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedAutocompleteIndex = Math.max(selectedAutocompleteIndex - 1, -1);
+                updateAutocompleteSelection();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (selectedAutocompleteIndex >= 0 && items[selectedAutocompleteIndex]) {
+                    selectAutocompleteItem(items[selectedAutocompleteIndex]);
+                } else {
+                    addCurrentInputAsReference();
+                }
+            } else if (e.key === 'Escape') {
+                hideAutocomplete();
+            } else if (e.key === 'Backspace' && e.target.value === '') {
+                // Remove last chip if input is empty
+                const chips = document.querySelectorAll('#documentReferences .mdc-chip--input');
+                if (chips.length > 0) {
+                    const lastChip = chips[chips.length - 1];
+                    const personName = lastChip.getAttribute('data-person-name');
+                    removePersonFromDocument(personName);
+                }
+            }
+        }
+
+        // Show autocomplete dropdown
+        function showAutocomplete(query) {
+            const autocomplete = document.getElementById('referenceAutocomplete');
+            const list = document.getElementById('autocompleteList');
+            
+            // Filter people based on query
+            const filtered = allPeople.filter(person => 
+                person.toLowerCase().includes(query.toLowerCase()) &&
+                !isPersonAlreadyAdded(person)
+            );
+            
+            if (filtered.length === 0) {
+                hideAutocomplete();
+                return;
+            }
+            
+            // Create autocomplete items
+            list.innerHTML = filtered.map(person => {
+                const highlighted = highlightMatch(person, query);
+                return `<div class="autocomplete-item" data-person="${escapeHtml(person)}">${highlighted}</div>`;
+            }).join('');
+            
+            // Add click handlers
+            list.querySelectorAll('.autocomplete-item').forEach(item => {
+                item.addEventListener('click', () => selectAutocompleteItem(item));
+            });
+            
+            autocomplete.style.display = 'block';
+            selectedAutocompleteIndex = -1;
+        }
+
+        // Hide autocomplete dropdown
+        function hideAutocomplete() {
+            const autocomplete = document.getElementById('referenceAutocomplete');
+            autocomplete.style.display = 'none';
+            selectedAutocompleteIndex = -1;
+        }
+
+        // Update autocomplete selection
+        function updateAutocompleteSelection() {
+            const items = document.querySelectorAll('.autocomplete-item');
+            items.forEach((item, index) => {
+                item.classList.toggle('selected', index === selectedAutocompleteIndex);
+            });
+        }
+
+        // Select an autocomplete item
+        function selectAutocompleteItem(item) {
+            const personName = item.getAttribute('data-person');
+            addReferenceToDocument(personName);
+            hideAutocomplete();
+        }
+
+        // Add current input as reference
+        async function addCurrentInputAsReference() {
+            const input = document.getElementById('referenceInput');
+            const personName = input.value.trim();
+            if (personName) {
+                await addReferenceToDocument(personName);
+            }
+        }
+
+        // Add reference to document
+        async function addReferenceToDocument(personName) {
+            if (!personName || isPersonAlreadyAdded(personName)) {
                 return;
             }
 
@@ -6823,10 +7033,14 @@
                             <span class="material-icons">close</span>
                         </button>
                     `;
-                    peopleContainer.appendChild(newChip);
-
+                    
+                    // Insert before the input wrapper
+                    const inputWrapper = peopleContainer.querySelector('.reference-input-wrapper');
+                    peopleContainer.insertBefore(newChip, inputWrapper);
+                    
                     // Clear the input
-                    document.getElementById('newPersonName').value = '';
+                    document.getElementById('referenceInput').value = '';
+                    hideAutocomplete();
                     
                     // Refresh menu options to include the new person
                     await refreshMenuOptions('sender');
@@ -6837,9 +7051,28 @@
                     showSnackbar('Error adding person: ' + (data.error || 'Unknown error'));
                 }
             } catch (error) {
-                console.error('Error adding person to document:', error);
+                console.error('Error adding person:', error);
                 showSnackbar('Error adding person: ' + error.message);
             }
+        }
+
+        // Check if person is already added
+        function isPersonAlreadyAdded(personName) {
+            const existingChips = document.querySelectorAll('#documentReferences .mdc-chip--input[data-person-name]');
+            return Array.from(existingChips).some(chip => 
+                chip.getAttribute('data-person-name') === personName
+            );
+        }
+
+        // Highlight matching text
+        function highlightMatch(text, query) {
+            const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // Escape regex special characters
+        function escapeRegex(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
         async function removePersonFromDocument(personName) {
