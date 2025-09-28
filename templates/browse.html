@@ -2046,6 +2046,44 @@
         .mdc-text-field {
             position: relative;
         }
+        
+        /* Claude's fix: High specificity CSS to override MDC tab panel hiding */
+        .mdc-modal .tab-panel#summary-tab.active {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            height: auto !important;
+            max-height: none !important;
+            transform: translateX(0) !important;
+            position: relative !important;
+        }
+
+        /* Ensure child elements are also visible */
+        .mdc-modal .tab-panel#summary-tab.active > * {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        /* Fix potential MDC tab panel hiding */
+        .mdc-modal .mdc-tab-panel {
+            display: none;
+        }
+
+        .mdc-modal .mdc-tab-panel.active,
+        .mdc-modal .tab-panel.active {
+            display: block !important;
+        }
+        
+        /* Ensure modal content container has proper height */
+        .modal-content {
+            min-height: 400px;
+            height: auto;
+        }
+
+        .tab-content {
+            min-height: 300px;
+            height: auto;
+        }
 
         /* Position the button in the trailing area with M3 spacing */
         .mdc-notched-outline__trailing {
@@ -3466,10 +3504,49 @@
             
             modal.classList.add('mdc-dialog--open');
             
-            // Initialize M3 components
+            // Initialize M3 components with proper timing
             console.log('Initializing M3 components...');
             mdc.autoInit();
             console.log('M3 components initialized');
+            
+            // Wait for DOM to settle, then setup tabs with forced visibility
+            setTimeout(() => {
+                // Set up tab switching
+                setupTabSwitching();
+                
+                // Force the summary tab to be visible with higher specificity (Claude's fix)
+                setTimeout(() => {
+                    const summaryPanel = document.getElementById('summary-tab');
+                    if (summaryPanel) {
+                        console.log('Applying Claude\'s high-specificity fix to summary panel');
+                        summaryPanel.style.cssText = `
+                            display: block !important;
+                            visibility: visible !important;
+                            opacity: 1 !important;
+                            height: auto !important;
+                            max-height: none !important;
+                            min-height: 200px !important;
+                            overflow: visible !important;
+                            transform: none !important;
+                            clip: auto !important;
+                            clip-path: none !important;
+                        `;
+                        
+                        // Also ensure the tab content container has proper height
+                        const tabContent = summaryPanel.closest('.tab-content');
+                        if (tabContent) {
+                            tabContent.style.minHeight = '300px';
+                        }
+                        
+                        // Force a repaint
+                        summaryPanel.offsetHeight;
+                        console.log('Applied high-specificity CSS fix');
+                        
+                        // Call Claude's advanced debugging
+                        setTimeout(debugModalContent, 100);
+                    }
+                }, 50);
+            }, 10);
             
             // Check if components are properly initialized
             setTimeout(() => {
@@ -3480,9 +3557,6 @@
                     console.log(`Text field ${index}:`, field.className, field.style.display, field.style.visibility);
                 });
             }, 200);
-            
-            // Set up tab switching
-            setupTabSwitching();
             
             // Initialize tab visibility - ensure only summary tab is visible
             setTimeout(() => {
@@ -3513,6 +3587,36 @@
                                 child.style.opacity = '1';
                                 child.style.display = child.tagName === 'INPUT' || child.tagName === 'SELECT' || child.tagName === 'TEXTAREA' ? 'block' : '';
                             });
+                            
+                            // Add comprehensive debugging after a delay
+                            setTimeout(() => {
+                                const computedStyle = window.getComputedStyle(panel);
+                                console.log('Summary panel computed styles:', {
+                                    display: computedStyle.display,
+                                    visibility: computedStyle.visibility,
+                                    opacity: computedStyle.opacity,
+                                    height: computedStyle.height,
+                                    maxHeight: computedStyle.maxHeight,
+                                    overflow: computedStyle.overflow,
+                                    position: computedStyle.position,
+                                    transform: computedStyle.transform,
+                                    clipPath: computedStyle.clipPath
+                                });
+                                
+                                // Check first child element too
+                                const firstChild = panel.firstElementChild;
+                                if (firstChild) {
+                                    const childStyle = window.getComputedStyle(firstChild);
+                                    console.log('First child computed styles:', {
+                                        display: childStyle.display,
+                                        height: childStyle.height,
+                                        position: childStyle.position
+                                    });
+                                }
+                                
+                                // Check bounds
+                                console.log('Summary panel bounds:', panel.getBoundingClientRect());
+                            }, 100);
                         } else {
                             panel.style.display = 'none';
                             panel.classList.remove('active');
@@ -3921,6 +4025,36 @@
                                     child.style.opacity = '1';
                                     child.style.display = child.tagName === 'INPUT' || child.tagName === 'SELECT' || child.tagName === 'TEXTAREA' ? 'block' : '';
                                 });
+                                
+                                // Add comprehensive debugging after a delay
+                                setTimeout(() => {
+                                    const computedStyle = window.getComputedStyle(panel);
+                                    console.log('Summary panel computed styles (second init):', {
+                                        display: computedStyle.display,
+                                        visibility: computedStyle.visibility,
+                                        opacity: computedStyle.opacity,
+                                        height: computedStyle.height,
+                                        maxHeight: computedStyle.maxHeight,
+                                        overflow: computedStyle.overflow,
+                                        position: computedStyle.position,
+                                        transform: computedStyle.transform,
+                                        clipPath: computedStyle.clipPath
+                                    });
+                                    
+                                    // Check first child element too
+                                    const firstChild = panel.firstElementChild;
+                                    if (firstChild) {
+                                        const childStyle = window.getComputedStyle(firstChild);
+                                        console.log('First child computed styles (second init):', {
+                                            display: childStyle.display,
+                                            height: childStyle.height,
+                                            position: childStyle.position
+                                        });
+                                    }
+                                    
+                                    // Check bounds
+                                    console.log('Summary panel bounds (second init):', panel.getBoundingClientRect());
+                                }, 100);
                             } else {
                                 panel.style.display = 'none';
                                 panel.classList.remove('active');
@@ -4705,6 +4839,27 @@
         }
 
         // Set up tab switching for M3 tabs
+        // Claude's advanced debugging function
+        function debugModalContent() {
+            const modal = document.querySelector('.modal');
+            const summaryTab = document.getElementById('summary-tab');
+            
+            console.log('Modal visibility chain:');
+            let element = summaryTab;
+            while (element && element !== document.body) {
+                const style = window.getComputedStyle(element);
+                console.log(`${element.tagName}#${element.id || 'no-id'}.${element.className}:`, {
+                    display: style.display,
+                    visibility: style.visibility,
+                    opacity: style.opacity,
+                    height: style.height,
+                    overflow: style.overflow,
+                    position: style.position
+                });
+                element = element.parentElement;
+            }
+        }
+
         function setupTabSwitching() {
             // Only target tabs within the modal dialog
             const modal = document.getElementById('documentModal');
