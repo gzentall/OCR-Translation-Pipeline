@@ -5464,7 +5464,7 @@
 
         // Event listeners
         // Document search event listeners
-        document.getElementById('clearBtn').addEventListener('click', clearSearch);
+        // Note: clearBtn was removed in the redesign, using clearSearchIcon instead
         document.getElementById('searchInput').addEventListener('input', handleSearchInput);
         document.getElementById('searchInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
