@@ -3561,6 +3561,54 @@
                         
                         // Call Claude's advanced debugging
                         setTimeout(debugModalContent, 100);
+                        
+                        // RADICAL FIX: Add content directly to modal body, bypassing tabs
+                        setTimeout(() => {
+                            console.log('Attempting radical fix - adding content directly to modal body');
+                            const modalBody = modal.querySelector('.mdc-dialog__content');
+                            if (modalBody) {
+                                // Create a test div with bright styling
+                                const testDiv = document.createElement('div');
+                                testDiv.style.cssText = `
+                                    position: fixed !important;
+                                    top: 200px !important;
+                                    left: 200px !important;
+                                    width: 300px !important;
+                                    height: 200px !important;
+                                    background: lime !important;
+                                    color: black !important;
+                                    z-index: 9999 !important;
+                                    border: 5px solid red !important;
+                                    padding: 20px !important;
+                                    font-size: 16px !important;
+                                    font-weight: bold !important;
+                                `;
+                                testDiv.innerHTML = `
+                                    <h3>RADICAL FIX TEST</h3>
+                                    <p>This should be visible if the modal can display content at all.</p>
+                                    <p>If you see this, the issue is with the tab system.</p>
+                                `;
+                                document.body.appendChild(testDiv);
+                                console.log('Added radical test element to body');
+                                
+                                // Also try adding to modal body
+                                const modalTestDiv = document.createElement('div');
+                                modalTestDiv.style.cssText = `
+                                    background: yellow !important;
+                                    color: black !important;
+                                    padding: 20px !important;
+                                    margin: 20px !important;
+                                    border: 3px solid blue !important;
+                                    font-weight: bold !important;
+                                `;
+                                modalTestDiv.innerHTML = `
+                                    <h3>MODAL BODY TEST</h3>
+                                    <p>This is added directly to modal body.</p>
+                                `;
+                                modalBody.appendChild(modalTestDiv);
+                                console.log('Added test element to modal body');
+                            }
+                        }, 200);
                     }
                 }, 50);
             }, 10);
@@ -3825,7 +3873,37 @@
                         
                         <!-- Tab Content -->
                         <div class="tab-content">
-                            <!-- Summary Tab -->
+                            <!-- Summary Tab - SIMPLIFIED VERSION FOR TESTING -->
+                            <div id="summary-tab" class="tab-panel active" style="background: lightblue; padding: 20px; min-height: 300px;">
+                                <h2 style="color: red; font-weight: bold;">TESTING: Summary Tab Content</h2>
+                                <p style="color: black; font-size: 16px;">This is a simplified version to test if content can be displayed at all.</p>
+                                <div style="background: white; padding: 10px; border: 2px solid black; margin: 10px 0;">
+                                    <h3>Document Summary</h3>
+                                    <p>${escapeHtml(doc.summary || 'No summary available')}</p>
+                                </div>
+                                <div style="background: white; padding: 10px; border: 2px solid black; margin: 10px 0;">
+                                    <h3>Document Date</h3>
+                                    <input type="date" value="${safeDoc.date || extractDateFromFilename(safeDoc.filename)}" style="padding: 5px; font-size: 14px;">
+                                </div>
+                                <div style="background: white; padding: 10px; border: 2px solid black; margin: 10px 0;">
+                                    <h3>Sender & Recipient</h3>
+                                    <select style="padding: 5px; margin: 5px; font-size: 14px;">
+                                        <option>Select Sender</option>
+                                        ${frequencySortedPeople.slice(0, 5).map(person => `<option>${escapeHtml(person.original_name)}</option>`).join('')}
+                                    </select>
+                                    <select style="padding: 5px; margin: 5px; font-size: 14px;">
+                                        <option>Select Recipient</option>
+                                        ${frequencySortedPeople.slice(0, 5).map(person => `<option>${escapeHtml(person.original_name)}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div style="background: white; padding: 10px; border: 2px solid black; margin: 10px 0;">
+                                    <h3>References</h3>
+                                    <p>References will go here</p>
+                                </div>
+                            </div>
+                            
+                            <!-- ORIGINAL Summary Tab (commented out for testing) -->
+                            <!--
                             <div id="summary-tab" class="tab-panel active">
                                 <!-- Document Summary -->
                                 <div class="form-row">
@@ -3913,6 +3991,7 @@
                                     </div>
                                 </div>
                             </div>
+                            -->
                             
                             <!-- Translation Tab -->
                             <div id="translation-tab" class="tab-panel">
