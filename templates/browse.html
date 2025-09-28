@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zentall Documents</title>
+    <title>Postmark</title>
     
     <!-- Material Design Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -200,6 +200,21 @@
             min-height: 48px;
         }
 
+        .app-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: absolute;
+            left: var(--md-sys-spacing-6);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .app-logo {
+            font-size: 28px;
+            color: var(--md-sys-color-primary);
+        }
+
         .app-bar h1 {
             margin: 0;
             font-family: var(--md-sys-typescale-headline-small-font);
@@ -207,10 +222,6 @@
             font-weight: var(--md-sys-typescale-headline-small-weight);
             line-height: var(--md-sys-typescale-headline-small-line-height);
             letter-spacing: var(--md-sys-typescale-headline-small-tracking);
-            position: absolute;
-            left: var(--md-sys-spacing-6);
-            top: 50%;
-            transform: translateY(-50%);
         }
 
         .back-button {
@@ -3048,7 +3059,10 @@
 <body>
     <!-- App Bar -->
     <div class="app-bar">
-        <h1>Zentall Documents</h1>
+        <div class="app-title">
+            <i class="material-icons app-logo">local_post_office</i>
+            <h1>Postmark</h1>
+        </div>
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('documents')">
                 <span class="material-icons">description</span>
