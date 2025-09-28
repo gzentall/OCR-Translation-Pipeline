@@ -503,6 +503,32 @@ def get_people_detailed():
         }), 500
 
 
+@app.route('/people/sorted')
+def get_people_sorted():
+    """Get all people sorted by frequency (document count) for dropdown menus."""
+    try:
+        people = local_storage.get_people_with_documents()
+        # Return simplified format for dropdown menus
+        sorted_people = []
+        for person in people:
+            sorted_people.append({
+                'original_name': person['name'],
+                'normalized_name': person['name'],  # For compatibility
+                'document_count': person['document_count']
+            })
+        
+        return jsonify({
+            'success': True,
+            'people': sorted_people,
+            'total': len(sorted_people)
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
 @app.route('/people/<person_name>/documents')
 def get_person_documents(person_name):
     """Get all documents that mention a specific person."""
