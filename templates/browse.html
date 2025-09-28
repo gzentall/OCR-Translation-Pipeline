@@ -3467,7 +3467,19 @@
             modal.classList.add('mdc-dialog--open');
             
             // Initialize M3 components
+            console.log('Initializing M3 components...');
             mdc.autoInit();
+            console.log('M3 components initialized');
+            
+            // Check if components are properly initialized
+            setTimeout(() => {
+                const textFields = document.querySelectorAll('.mdc-text-field');
+                const selects = document.querySelectorAll('.mdc-select');
+                console.log('Found', textFields.length, 'text fields and', selects.length, 'selects');
+                textFields.forEach((field, index) => {
+                    console.log(`Text field ${index}:`, field.className, field.style.display, field.style.visibility);
+                });
+            }, 200);
             
             // Set up tab switching
             setupTabSwitching();
@@ -3490,6 +3502,17 @@
                             panel.style.opacity = '1';
                             panel.style.height = 'auto';
                             panel.style.minHeight = '200px';
+                            panel.style.overflow = 'visible';
+                            panel.style.position = 'relative';
+                            panel.style.zIndex = '1000';
+                            
+                            // Force all child elements to be visible
+                            const allChildren = panel.querySelectorAll('*');
+                            allChildren.forEach(child => {
+                                child.style.visibility = 'visible';
+                                child.style.opacity = '1';
+                                child.style.display = child.tagName === 'INPUT' || child.tagName === 'SELECT' || child.tagName === 'TEXTAREA' ? 'block' : '';
+                            });
                         } else {
                             panel.style.display = 'none';
                             panel.classList.remove('active');
@@ -3829,7 +3852,9 @@
                 modal.classList.add('mdc-dialog--open');
                 
                 // Initialize M3 components for other fields
+                console.log('Initializing M3 components for other fields...');
                 mdc.autoInit();
+                console.log('M3 components for other fields initialized');
                 
                 // Initialize M3 date picker specifically
                 const dateFieldForPicker = document.getElementById('editDocumentDate');
@@ -3880,6 +3905,17 @@
                                 panel.style.opacity = '1';
                                 panel.style.height = 'auto';
                                 panel.style.minHeight = '200px';
+                                panel.style.overflow = 'visible';
+                                panel.style.position = 'relative';
+                                panel.style.zIndex = '1000';
+                                
+                                // Force all child elements to be visible
+                                const allChildren = panel.querySelectorAll('*');
+                                allChildren.forEach(child => {
+                                    child.style.visibility = 'visible';
+                                    child.style.opacity = '1';
+                                    child.style.display = child.tagName === 'INPUT' || child.tagName === 'SELECT' || child.tagName === 'TEXTAREA' ? 'block' : '';
+                                });
                             } else {
                                 panel.style.display = 'none';
                                 panel.classList.remove('active');
