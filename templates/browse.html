@@ -2046,7 +2046,7 @@
         .mdc-text-field {
             position: relative;
         }
-        
+
         /* Claude's fix: High specificity CSS to override MDC tab panel hiding */
         .mdc-modal .tab-panel#summary-tab.active {
             display: block !important;
@@ -2085,7 +2085,7 @@
             min-width: 500px !important;
             height: auto !important;
             min-height: 400px !important;
-            display: block !important;
+            /* Remove display: block !important to allow JavaScript to control visibility */
             visibility: visible !important;
             opacity: 1 !important;
             padding: 0 !important;
@@ -2101,6 +2101,13 @@
             min-height: 300px !important;
             padding: 20px !important;
             box-sizing: border-box !important;
+            /* Default to hidden, JavaScript will show active tab */
+            display: none !important;
+        }
+        
+        /* Active tab panel should be visible */
+        .tab-panel.active {
+            display: block !important;
         }
         
         /* Ensure edit form has proper dimensions */
@@ -2339,7 +2346,7 @@
             margin-top: 16px;
             display: none;
         }
-        
+
         .tab-content.active {
             display: block;
         }
@@ -3535,9 +3542,9 @@
             
             // Wait for DOM to settle, then setup tabs with forced visibility
             setTimeout(() => {
-                // Set up tab switching
-                setupTabSwitching();
-                
+            // Set up tab switching
+            setupTabSwitching();
+            
                 // Force the summary tab to be visible with higher specificity (Claude's fix)
                 setTimeout(() => {
                     const summaryPanel = document.getElementById('summary-tab');
@@ -3570,7 +3577,7 @@
                         setTimeout(debugModalContent, 100);
                         
                         // Test if Summary tab now works with same structure as Translation tab
-                        setTimeout(() => {
+            setTimeout(() => {
                             console.log('Testing if Summary tab works with Translation tab structure');
                             const summaryTab = document.getElementById('summary-tab');
                             const translationTab = document.getElementById('translation-tab');
@@ -3597,7 +3604,7 @@
                                     width: translationStyle.width
                                 });
                             }
-                        }, 200);
+            }, 200);
                     }
                 }, 50);
             }, 10);
@@ -5152,7 +5159,7 @@
                     
                     // Try to show snackbar, but don't let it prevent modal closing
                     try {
-                        showSnackbar('Document updated successfully!');
+                    showSnackbar('Document updated successfully!');
                     } catch (snackbarError) {
                         console.warn('Snackbar failed, but save was successful:', snackbarError);
                         // Fallback to alert if snackbar fails
