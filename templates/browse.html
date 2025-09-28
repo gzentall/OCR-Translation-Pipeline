@@ -1808,11 +1808,11 @@
         }
 
         .tab-panel {
-            display: none;
+            display: none !important;
         }
 
         .tab-panel.active {
-            display: block;
+            display: block !important;
         }
 
         /* People Section in Tab */
@@ -2949,7 +2949,32 @@
 
         // Close modal
         function closeModal() {
-            document.getElementById('documentModal').classList.remove('mdc-dialog--open');
+            console.log('closeModal() called');
+            const modal = document.getElementById('documentModal');
+            if (modal) {
+                console.log('Modal found, removing mdc-dialog--open class');
+                modal.classList.remove('mdc-dialog--open');
+                console.log('Modal classes after removal:', modal.className);
+                
+                // Also try to close any MDC dialog instance if it exists
+                if (modal.mdcDialog) {
+                    console.log('MDC dialog instance found, closing it');
+                    modal.mdcDialog.close();
+                }
+                
+                // Force hide the modal with additional methods
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                
+                // Reset after a brief delay to allow for animations
+                setTimeout(() => {
+                    modal.style.display = '';
+                    modal.removeAttribute('aria-hidden');
+                }, 300);
+                
+            } else {
+                console.error('Modal element not found!');
+            }
         }
 
         // Enhanced search functionality
@@ -3442,6 +3467,21 @@
             // Set up tab switching
             setupTabSwitching();
             
+            // Initialize tab visibility - ensure only summary tab is visible
+            setTimeout(() => {
+                const allPanels = document.querySelectorAll('.tab-panel');
+                allPanels.forEach(panel => {
+                    if (panel.id === 'summary-tab') {
+                        panel.style.display = 'block';
+                        panel.classList.add('active');
+                    } else {
+                        panel.style.display = 'none';
+                        panel.classList.remove('active');
+                    }
+                });
+                console.log('Initialized tab visibility - only summary tab should be visible');
+            }, 100);
+            
             // Set up menu interactions
             setupMenuInteractions();
             
@@ -3802,6 +3842,21 @@
                 // Set up tab switching
                 setupTabSwitching();
                 
+                // Initialize tab visibility - ensure only summary tab is visible
+                setTimeout(() => {
+                    const allPanels = document.querySelectorAll('.tab-panel');
+                    allPanels.forEach(panel => {
+                        if (panel.id === 'summary-tab') {
+                            panel.style.display = 'block';
+                            panel.classList.add('active');
+                        } else {
+                            panel.style.display = 'none';
+                            panel.classList.remove('active');
+                        }
+                    });
+                    console.log('Initialized tab visibility - only summary tab should be visible');
+                }, 100);
+                
                 // Set up M3 tab functionality
                 setupM3Tabs();
                 
@@ -3915,11 +3970,11 @@
                 }
                 
                 .tab-panel {
-                    display: none;
+                    display: none !important;
                 }
                 
                 .tab-panel.active {
-                    display: block;
+                    display: block !important;
                 }
                 
                 /* M3 Carousel Styles */
@@ -4179,10 +4234,13 @@
                     background-color: var(--mdc-theme-primary, #6750a4);
                 }
                 
-                /* Ensure tab content is visible */
-                .tab-panel.active {
+                /* Force tab panel visibility rules */
+                .mdc-dialog .tab-panel {
+                    display: none !important;
+                }
+                
+                .mdc-dialog .tab-panel.active {
                     display: block !important;
-                    visibility: visible !important;
                 }
                 
                 /* Full-width textarea for Translation and Original tabs */
@@ -4577,7 +4635,10 @@
             const tabs = document.querySelectorAll('.mdc-tab[data-tab]');
             const panels = document.querySelectorAll('.tab-panel');
             
+            console.log('Setting up tab switching - found', tabs.length, 'tabs and', panels.length, 'panels');
+            
             tabs.forEach(tab => {
+                console.log('Adding click listener to tab:', tab.dataset.tab);
                 tab.addEventListener('click', () => {
                     const targetTab = tab.dataset.tab;
                     
@@ -4601,19 +4662,26 @@
                     }
                     
                     // Update panel visibility
+                    console.log('Switching to tab:', targetTab);
                     panels.forEach(panel => {
                         panel.classList.remove('active');
+                        panel.style.display = 'none'; // Force hide with inline style
+                        console.log('Removed active from panel:', panel.id);
                     });
                     
                     const targetPanel = document.getElementById(`${targetTab}-tab`);
                     if (targetPanel) {
                         targetPanel.classList.add('active');
+                        targetPanel.style.display = 'block'; // Force show with inline style
+                        console.log('Added active to panel:', targetPanel.id);
+                    } else {
+                        console.error('Target panel not found:', `${targetTab}-tab`);
                     }
                     
                     // Initialize carousel when image tab is clicked
                     if (targetTab === 'image' && window.currentDocumentId) {
                         // Get the current document data to initialize carousel
-                        const currentDoc = documents.find(d => d.id === window.currentDocumentId);
+                        const currentDoc = allDocuments.find(d => d.id === window.currentDocumentId);
                         if (currentDoc) {
                             initializeCarousel(currentDoc.id, currentDoc.page_count || 1);
                         }
@@ -4633,6 +4701,12 @@
             const originalText = document.getElementById('editOriginalText').value.trim();
             const translatedText = document.getElementById('editTranslatedText').value.trim();
             
+            // Get the current document to preserve its summary
+            console.log('allDocuments available:', !!allDocuments, 'length:', allDocuments ? allDocuments.length : 0);
+            const currentDoc = allDocuments.find(d => d.id === currentDocumentId);
+            console.log('currentDoc found:', !!currentDoc, 'summary:', currentDoc ? currentDoc.summary : 'none');
+            const summary = currentDoc ? (currentDoc.summary || 'No summary available') : 'No summary available';
+            
             if (!title) {
                 showSnackbar('Please enter a title for the document.');
                 return;
@@ -4651,7 +4725,8 @@
                     sender: sender === 'Select Sender' ? '' : sender,
                     recipient: recipient === 'Select Recipient' ? '' : recipient,
                     original_text: originalText,
-                    translated_text: translatedText
+                    translated_text: translatedText,
+                    summary: summary
                 };
                 
                 const response = await fetch(`/documents/${currentDocumentId}`, {
@@ -4663,12 +4738,23 @@
                 });
                 
                 const data = await response.json();
+                console.log('Save response:', data);
                 
                 if (data.success) {
+                    console.log('Save successful, closing modal...');
                     closeModal();
                     loadDocuments(); // Refresh the document list
-                    showSnackbar('Document updated successfully!');
+                    
+                    // Try to show snackbar, but don't let it prevent modal closing
+                    try {
+                        showSnackbar('Document updated successfully!');
+                    } catch (snackbarError) {
+                        console.warn('Snackbar failed, but save was successful:', snackbarError);
+                        // Fallback to alert if snackbar fails
+                        alert('Document updated successfully!');
+                    }
                 } else {
+                    console.log('Save failed:', data.error);
                     throw new Error(data.error || 'Failed to update document');
                 }
             } catch (error) {
