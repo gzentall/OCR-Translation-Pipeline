@@ -322,36 +322,32 @@
         }
 
 
-        .search-section {
+        /* Search, Sort, Filter Bar */
+        .search-sort-filter-bar {
             background: var(--md-sys-color-surface-container-lowest);
             border-radius: 12px;
-            padding: var(--md-sys-spacing-6);
+            padding: var(--md-sys-spacing-4);
             margin-bottom: var(--md-sys-spacing-6);
             border: 1px solid var(--md-sys-color-outline-variant);
-        }
-
-        .search-section h2 {
-            font-family: var(--md-sys-typescale-title-large-font);
-            font-size: var(--md-sys-typescale-title-large-size);
-            font-weight: var(--md-sys-typescale-title-large-weight);
-            line-height: var(--md-sys-typescale-title-large-line-height);
-            letter-spacing: var(--md-sys-typescale-title-large-tracking);
-            color: var(--md-sys-color-on-surface);
-            margin: 0 0 var(--md-sys-spacing-4) 0;
-        }
-
-        .search-row {
             display: flex;
-            gap: var(--md-sys-spacing-4);
             align-items: center;
+            gap: var(--md-sys-spacing-4);
             flex-wrap: wrap;
         }
 
-        .search-filters {
+        .search-container {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-container {
             display: flex;
-            gap: var(--md-sys-spacing-3);
-            margin-top: var(--md-sys-spacing-4);
+            gap: var(--md-sys-spacing-2);
             flex-wrap: wrap;
+        }
+
+        .sort-container {
+            position: relative;
         }
 
         .filter-chip {
@@ -384,30 +380,6 @@
             margin-top: var(--md-sys-spacing-3);
         }
 
-        /* Sort Section Styles */
-        .sort-section {
-            background: var(--md-sys-color-surface-container-lowest);
-            border-radius: 12px;
-            padding: var(--md-sys-spacing-6);
-            margin-bottom: var(--md-sys-spacing-6);
-            border: 1px solid var(--md-sys-color-outline-variant);
-        }
-
-        .sort-section h3 {
-            font-family: var(--md-sys-typescale-title-medium-font);
-            font-size: var(--md-sys-typescale-title-medium-size);
-            font-weight: var(--md-sys-typescale-title-medium-weight);
-            line-height: var(--md-sys-typescale-title-medium-line-height);
-            letter-spacing: var(--md-sys-typescale-title-medium-tracking);
-            color: var(--md-sys-color-on-surface);
-            margin: 0 0 var(--md-sys-spacing-4) 0;
-        }
-
-        .sort-chips {
-            display: flex;
-            gap: var(--md-sys-spacing-3);
-            flex-wrap: wrap;
-        }
 
         /* M3 Filter Chip Styles */
         .mdc-chip--filter {
@@ -470,6 +442,106 @@
 
         .mdc-chip--filter .mdc-chip__icon--trailing {
             margin-left: var(--md-sys-spacing-1);
+        }
+
+        /* Sort Chip and Dropdown */
+        .sort-chip {
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            border: 1px solid var(--md-sys-color-secondary-container);
+            border-radius: 16px;
+            padding: var(--md-sys-spacing-2) var(--md-sys-spacing-4);
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: var(--md-sys-typescale-label-medium-weight);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-2);
+            position: relative;
+            overflow: hidden;
+            min-width: 120px;
+        }
+
+        .sort-chip:hover {
+            background: var(--md-sys-color-secondary-container);
+            opacity: 0.8;
+        }
+
+        .sort-chip .mdc-chip__ripple {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 16px;
+            background: var(--md-sys-color-on-secondary-container);
+            opacity: 0;
+            transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .sort-chip:hover .mdc-chip__ripple {
+            opacity: 0.08;
+        }
+
+        .sort-chip .mdc-chip__text {
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+        }
+
+        .sort-chip .mdc-chip__icon {
+            font-size: 18px;
+            color: inherit;
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .sort-chip .mdc-chip__icon--trailing {
+            margin-left: var(--md-sys-spacing-1);
+        }
+
+        .sort-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--md-sys-color-surface-container-lowest);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            min-width: 180px;
+            margin-top: var(--md-sys-spacing-1);
+        }
+
+        .sort-option {
+            padding: var(--md-sys-spacing-3) var(--md-sys-spacing-4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .sort-option:last-child {
+            border-bottom: none;
+        }
+
+        .sort-option:hover {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .sort-option-text {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .sort-option-icon {
+            font-size: 16px;
+            color: var(--md-sys-color-on-surface-variant);
         }
 
         /* Material Design 3 Search Component */
@@ -2738,52 +2810,49 @@
     <div class="main-content">
         <!-- Documents Tab Content -->
         <div id="documents-tab" class="tab-content active">
-            <!-- Search Section -->
-            <div class="search-section">
-                <h2>Search Documents</h2>
-                <div class="search-row">
+            <!-- Search, Sort, Filter Bar -->
+            <div class="search-sort-filter-bar">
+                <div class="search-container">
                     <div class="mdc-search" id="documentSearch">
                         <span class="material-icons mdc-search__icon">search</span>
                         <input type="text" class="mdc-search__input" id="searchInput" placeholder="Search documents..." autocomplete="off">
                         <span class="material-icons mdc-search__trailing-icon" id="clearSearchIcon" style="display: none;">close</span>
                         <div class="mdc-search__suggestions" id="searchSuggestions"></div>
                     </div>
-                    <button class="mdc-button mdc-button--outlined" id="clearBtn">
-                        <span class="mdc-button__ripple"></span>
-                        <span class="mdc-button__label">Clear</span>
-                    </button>
                 </div>
-                <div class="search-filters">
+                
+                <div class="filter-container">
                     <div class="filter-chip active" data-filter="all">All</div>
                     <div class="filter-chip" data-filter="title">Title</div>
                     <div class="filter-chip" data-filter="content">Content</div>
                     <div class="filter-chip" data-filter="people">People</div>
                     <div class="filter-chip" data-filter="language">Language</div>
                 </div>
-                <div class="search-results-info" id="searchResultsInfo" style="display: none;"></div>
-            </div>
-
-            <!-- Sort Section -->
-            <div class="sort-section">
-                <h3>Sort by</h3>
-                <div class="sort-chips">
-                    <div class="mdc-chip mdc-chip--filter" data-sort="name" data-direction="asc">
-                        <div class="mdc-chip__ripple"></div>
-                        <span class="mdc-chip__text">Name</span>
-                        <i class="material-icons mdc-chip__icon mdc-chip__icon--trailing">keyboard_arrow_up</i>
-                    </div>
-                    <div class="mdc-chip mdc-chip--filter" data-sort="date_authored" data-direction="desc">
-                        <div class="mdc-chip__ripple"></div>
-                        <span class="mdc-chip__text">Date Authored</span>
-                        <i class="material-icons mdc-chip__icon mdc-chip__icon--trailing">keyboard_arrow_down</i>
-                    </div>
-                    <div class="mdc-chip mdc-chip--filter" data-sort="date_added" data-direction="desc">
+                
+                <div class="sort-container">
+                    <div class="sort-chip" id="sortChip" data-sort="date_added" data-direction="desc">
                         <div class="mdc-chip__ripple"></div>
                         <span class="mdc-chip__text">Date Added</span>
                         <i class="material-icons mdc-chip__icon mdc-chip__icon--trailing">keyboard_arrow_down</i>
                     </div>
+                    <div class="sort-dropdown" id="sortDropdown" style="display: none;">
+                        <div class="sort-option" data-sort="name" data-direction="asc">
+                            <span class="sort-option-text">Name</span>
+                            <i class="material-icons sort-option-icon">keyboard_arrow_up</i>
+                        </div>
+                        <div class="sort-option" data-sort="date_authored" data-direction="desc">
+                            <span class="sort-option-text">Date Authored</span>
+                            <i class="material-icons sort-option-icon">keyboard_arrow_down</i>
+                        </div>
+                        <div class="sort-option" data-sort="date_added" data-direction="desc">
+                            <span class="sort-option-text">Date Added</span>
+                            <i class="material-icons sort-option-icon">keyboard_arrow_down</i>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
+            <div class="search-results-info" id="searchResultsInfo" style="display: none;"></div>
 
             <!-- Documents Section -->
             <div class="documents-section">
@@ -3132,63 +3201,62 @@
             });
         }
 
-        // Handle sort chip click
-        function handleSortChipClick(chip) {
-            const sortField = chip.dataset.sort;
-            const currentDirection = chip.dataset.direction;
+        // Handle sort chip click (toggle dropdown)
+        function handleSortChipClick() {
+            const dropdown = document.getElementById('sortDropdown');
+            const isVisible = dropdown.style.display !== 'none';
             
-            // Toggle direction if same field, otherwise set to default
-            let newDirection;
-            if (currentSort.field === sortField) {
-                newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+            if (isVisible) {
+                dropdown.style.display = 'none';
             } else {
-                // Set default direction for each field
-                switch (sortField) {
-                    case 'name':
-                        newDirection = 'asc';
-                        break;
-                    case 'date_authored':
-                    case 'date_added':
-                        newDirection = 'desc';
-                        break;
-                    default:
-                        newDirection = 'asc';
-                }
+                dropdown.style.display = 'block';
             }
+        }
+
+        // Handle sort option click
+        function handleSortOptionClick(option) {
+            const sortField = option.dataset.sort;
+            const sortDirection = option.dataset.direction;
             
             // Update sort state
             currentSort.field = sortField;
-            currentSort.direction = newDirection;
+            currentSort.direction = sortDirection;
             
-            // Update chip states
-            updateSortChips();
+            // Update sort chip display
+            updateSortChip();
+            
+            // Hide dropdown
+            document.getElementById('sortDropdown').style.display = 'none';
             
             // Apply sorting
             applySorting();
         }
 
-        // Update sort chip visual states
-        function updateSortChips() {
-            const chips = document.querySelectorAll('.sort-chips .mdc-chip--filter');
-            chips.forEach(chip => {
-                const chipField = chip.dataset.sort;
-                const chipDirection = chip.dataset.direction;
-                
-                // Remove selected state from all chips
-                chip.classList.remove('selected');
-                
-                // Add selected state to current sort chip
-                if (chipField === currentSort.field) {
-                    chip.classList.add('selected');
-                    chip.dataset.direction = currentSort.direction;
-                    
-                    // Update icon
-                    const icon = chip.querySelector('.mdc-chip__icon');
-                    if (icon) {
-                        icon.textContent = currentSort.direction === 'asc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
-                    }
-                }
-            });
+        // Update sort chip visual state
+        function updateSortChip() {
+            const sortChip = document.getElementById('sortChip');
+            const sortText = sortChip.querySelector('.mdc-chip__text');
+            const sortIcon = sortChip.querySelector('.mdc-chip__icon');
+            
+            // Update chip data attributes
+            sortChip.dataset.sort = currentSort.field;
+            sortChip.dataset.direction = currentSort.direction;
+            
+            // Update display text
+            switch (currentSort.field) {
+                case 'name':
+                    sortText.textContent = 'Name';
+                    break;
+                case 'date_authored':
+                    sortText.textContent = 'Date Authored';
+                    break;
+                case 'date_added':
+                    sortText.textContent = 'Date Added';
+                    break;
+            }
+            
+            // Update icon
+            sortIcon.textContent = currentSort.direction === 'asc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
         }
 
         // Apply current sorting to filtered documents
@@ -6731,15 +6799,29 @@
             // For now, we'll keep the input value for user convenience
         }
 
-        // Initialize sort chips
+        // Initialize sort functionality
         function initializeSortChips() {
-            const sortChips = document.querySelectorAll('.sort-chips .mdc-chip--filter');
-            sortChips.forEach(chip => {
-                chip.addEventListener('click', () => handleSortChipClick(chip));
+            const sortChip = document.getElementById('sortChip');
+            const sortOptions = document.querySelectorAll('.sort-option');
+            
+            // Add click listener to sort chip
+            sortChip.addEventListener('click', handleSortChipClick);
+            
+            // Add click listeners to sort options
+            sortOptions.forEach(option => {
+                option.addEventListener('click', () => handleSortOptionClick(option));
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                const sortContainer = document.querySelector('.sort-container');
+                if (!sortContainer.contains(e.target)) {
+                    document.getElementById('sortDropdown').style.display = 'none';
+                }
             });
             
             // Set initial state
-            updateSortChips();
+            updateSortChip();
         }
 
         // Initialize the page
