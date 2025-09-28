@@ -3170,33 +3170,27 @@
         <div class="sort-container">
             <div class="sort-chip" id="sortChip" data-sort="date_added" data-direction="desc">
                 <i class="material-icons sort-icon">sort</i>
-                <span class="sort-text">Date Added</span>
-                <i class="material-icons sort-arrow">arrow_downward</i>
+                <span class="sort-text">Added (d)</span>
+                <i class="material-icons sort-arrow">keyboard_arrow_down</i>
             </div>
             <div class="sort-dropdown" id="sortDropdown" style="display: none;">
                 <div class="sort-option" data-sort="name" data-direction="asc">
-                    <span class="sort-option-text">Name</span>
-                    <i class="material-icons sort-option-icon">arrow_upward</i>
+                    <span class="sort-option-text">Name (a)</span>
                 </div>
                 <div class="sort-option" data-sort="name" data-direction="desc">
-                    <span class="sort-option-text">Name</span>
-                    <i class="material-icons sort-option-icon">arrow_downward</i>
+                    <span class="sort-option-text">Name (d)</span>
                 </div>
                 <div class="sort-option" data-sort="date" data-direction="asc">
-                    <span class="sort-option-text">Authored</span>
-                    <i class="material-icons sort-option-icon">arrow_upward</i>
+                    <span class="sort-option-text">Authored (a)</span>
                 </div>
                 <div class="sort-option" data-sort="date" data-direction="desc">
-                    <span class="sort-option-text">Authored</span>
-                    <i class="material-icons sort-option-icon">arrow_downward</i>
+                    <span class="sort-option-text">Authored (d)</span>
                 </div>
                 <div class="sort-option" data-sort="date_added" data-direction="asc">
-                    <span class="sort-option-text">Added</span>
-                    <i class="material-icons sort-option-icon">arrow_upward</i>
+                    <span class="sort-option-text">Added (a)</span>
                 </div>
                 <div class="sort-option" data-sort="date_added" data-direction="desc">
-                    <span class="sort-option-text">Added</span>
-                    <i class="material-icons sort-option-icon">arrow_downward</i>
+                    <span class="sort-option-text">Added (d)</span>
                 </div>
             </div>
         </div>
@@ -3599,27 +3593,24 @@
             function updateSortChip() {
                 const sortChip = document.getElementById('sortChip');
                 const sortText = sortChip.querySelector('.sort-text');
-                const sortArrow = sortChip.querySelector('.sort-arrow');
                 
                 // Update chip data attributes
                 sortChip.dataset.sort = currentSort.field;
                 sortChip.dataset.direction = currentSort.direction;
                 
-                // Update display text
+                // Update display text with direction indicator
+                const directionText = currentSort.direction === 'asc' ? '(a)' : '(d)';
                 switch (currentSort.field) {
                     case 'name':
-                        sortText.textContent = 'Name';
+                        sortText.textContent = `Name ${directionText}`;
                         break;
                     case 'date':
-                        sortText.textContent = 'Authored';
+                        sortText.textContent = `Authored ${directionText}`;
                         break;
                     case 'date_added':
-                        sortText.textContent = 'Added';
+                        sortText.textContent = `Added ${directionText}`;
                         break;
                 }
-                
-                // Update arrow icon
-                sortArrow.textContent = currentSort.direction === 'asc' ? 'arrow_upward' : 'arrow_downward';
             }
 
         // Apply current sorting to filtered documents
