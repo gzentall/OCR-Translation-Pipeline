@@ -384,6 +384,94 @@
             margin-top: var(--md-sys-spacing-3);
         }
 
+        /* Sort Section Styles */
+        .sort-section {
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: 12px;
+            padding: var(--md-sys-spacing-6);
+            margin-bottom: var(--md-sys-spacing-6);
+            border: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .sort-section h3 {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            line-height: var(--md-sys-typescale-title-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+            color: var(--md-sys-color-on-surface);
+            margin: 0 0 var(--md-sys-spacing-4) 0;
+        }
+
+        .sort-chips {
+            display: flex;
+            gap: var(--md-sys-spacing-3);
+            flex-wrap: wrap;
+        }
+
+        /* M3 Filter Chip Styles */
+        .mdc-chip--filter {
+            background: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 16px;
+            padding: var(--md-sys-spacing-2) var(--md-sys-spacing-4);
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: var(--md-sys-typescale-label-medium-weight);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mdc-chip--filter:hover {
+            background: var(--md-sys-color-surface-container-high);
+            border-color: var(--md-sys-color-outline);
+        }
+
+        .mdc-chip--filter.selected {
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            border-color: var(--md-sys-color-secondary-container);
+        }
+
+        .mdc-chip--filter .mdc-chip__ripple {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 16px;
+            background: var(--md-sys-color-on-surface);
+            opacity: 0;
+            transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .mdc-chip--filter:hover .mdc-chip__ripple {
+            opacity: 0.08;
+        }
+
+        .mdc-chip--filter .mdc-chip__text {
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+        }
+
+        .mdc-chip--filter .mdc-chip__icon {
+            font-size: 18px;
+            color: inherit;
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .mdc-chip--filter .mdc-chip__icon--trailing {
+            margin-left: var(--md-sys-spacing-1);
+        }
+
         /* Material Design 3 Search Component */
         .mdc-search {
             position: relative;
@@ -2675,6 +2763,28 @@
                 <div class="search-results-info" id="searchResultsInfo" style="display: none;"></div>
             </div>
 
+            <!-- Sort Section -->
+            <div class="sort-section">
+                <h3>Sort by</h3>
+                <div class="sort-chips">
+                    <div class="mdc-chip mdc-chip--filter" data-sort="name" data-direction="asc">
+                        <div class="mdc-chip__ripple"></div>
+                        <span class="mdc-chip__text">Name</span>
+                        <i class="material-icons mdc-chip__icon mdc-chip__icon--trailing">keyboard_arrow_up</i>
+                    </div>
+                    <div class="mdc-chip mdc-chip--filter" data-sort="date_authored" data-direction="desc">
+                        <div class="mdc-chip__ripple"></div>
+                        <span class="mdc-chip__text">Date Authored</span>
+                        <i class="material-icons mdc-chip__icon mdc-chip__icon--trailing">keyboard_arrow_down</i>
+                    </div>
+                    <div class="mdc-chip mdc-chip--filter" data-sort="date_added" data-direction="desc">
+                        <div class="mdc-chip__ripple"></div>
+                        <span class="mdc-chip__text">Date Added</span>
+                        <i class="material-icons mdc-chip__icon mdc-chip__icon--trailing">keyboard_arrow_down</i>
+                    </div>
+                </div>
+            </div>
+
             <!-- Documents Section -->
             <div class="documents-section">
                 <h2 class="section-title">Documents</h2>
@@ -2903,6 +3013,12 @@
         let selectedPeople = new Set();
         let allPeople = [];
         let snackbar = null;
+        
+        // Sort state
+        let currentSort = {
+            field: 'date_added',
+            direction: 'desc'
+        };
 
 
         // Load documents
@@ -2918,7 +3034,9 @@
                     allDocuments = data.documents;
                     filteredDocuments = [...allDocuments];
                     console.log('Documents loaded:', allDocuments.length);
-                    renderDocuments();
+                    
+                    // Apply initial sorting
+                    applySorting();
                 } else {
                     console.error('Failed to load documents:', data.error);
                     showError('Failed to load documents: ' + data.error);
@@ -2976,6 +3094,107 @@
                     `).join('')}
                 </div>
             `;
+        }
+
+        // Sort documents
+        function sortDocuments(documents, sortField, sortDirection) {
+            return [...documents].sort((a, b) => {
+                let aValue, bValue;
+                
+                switch (sortField) {
+                    case 'name':
+                        aValue = (a.title || a.id || '').toLowerCase();
+                        bValue = (b.title || b.id || '').toLowerCase();
+                        break;
+                    case 'date_authored':
+                        // Extract date from filename or use document date
+                        aValue = extractDateFromFilename(a.filename) || a.date || '';
+                        bValue = extractDateFromFilename(b.filename) || b.date || '';
+                        break;
+                    case 'date_added':
+                        // Use the document ID timestamp or creation date
+                        aValue = a.id || a.created_at || '';
+                        bValue = b.id || b.created_at || '';
+                        break;
+                    default:
+                        return 0;
+                }
+                
+                // Handle empty values
+                if (!aValue && !bValue) return 0;
+                if (!aValue) return sortDirection === 'asc' ? 1 : -1;
+                if (!bValue) return sortDirection === 'asc' ? -1 : 1;
+                
+                // Compare values
+                if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+                if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        // Handle sort chip click
+        function handleSortChipClick(chip) {
+            const sortField = chip.dataset.sort;
+            const currentDirection = chip.dataset.direction;
+            
+            // Toggle direction if same field, otherwise set to default
+            let newDirection;
+            if (currentSort.field === sortField) {
+                newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                // Set default direction for each field
+                switch (sortField) {
+                    case 'name':
+                        newDirection = 'asc';
+                        break;
+                    case 'date_authored':
+                    case 'date_added':
+                        newDirection = 'desc';
+                        break;
+                    default:
+                        newDirection = 'asc';
+                }
+            }
+            
+            // Update sort state
+            currentSort.field = sortField;
+            currentSort.direction = newDirection;
+            
+            // Update chip states
+            updateSortChips();
+            
+            // Apply sorting
+            applySorting();
+        }
+
+        // Update sort chip visual states
+        function updateSortChips() {
+            const chips = document.querySelectorAll('.sort-chips .mdc-chip--filter');
+            chips.forEach(chip => {
+                const chipField = chip.dataset.sort;
+                const chipDirection = chip.dataset.direction;
+                
+                // Remove selected state from all chips
+                chip.classList.remove('selected');
+                
+                // Add selected state to current sort chip
+                if (chipField === currentSort.field) {
+                    chip.classList.add('selected');
+                    chip.dataset.direction = currentSort.direction;
+                    
+                    // Update icon
+                    const icon = chip.querySelector('.mdc-chip__icon');
+                    if (icon) {
+                        icon.textContent = currentSort.direction === 'asc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
+                    }
+                }
+            });
+        }
+
+        // Apply current sorting to filtered documents
+        function applySorting() {
+            filteredDocuments = sortDocuments(filteredDocuments, currentSort.field, currentSort.direction);
+            renderDocuments();
         }
 
         // Render people list with overflow pattern using M3 chips
@@ -3088,7 +3307,9 @@
             }
             
             updateSearchResultsInfo();
-            renderDocuments();
+            
+            // Apply current sorting to filtered results
+            applySorting();
         }
 
         // Search people with filters
@@ -6510,10 +6731,24 @@
             // For now, we'll keep the input value for user convenience
         }
 
+        // Initialize sort chips
+        function initializeSortChips() {
+            const sortChips = document.querySelectorAll('.sort-chips .mdc-chip--filter');
+            sortChips.forEach(chip => {
+                chip.addEventListener('click', () => handleSortChipClick(chip));
+            });
+            
+            // Set initial state
+            updateSortChips();
+        }
+
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM Content Loaded - starting initialization');
             loadDocuments();
+            
+            // Initialize sort chips
+            initializeSortChips();
             
             // Side sheet event listeners
             document.getElementById('sideSheetClose').addEventListener('click', closePersonSideSheet);
