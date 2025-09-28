@@ -3222,8 +3222,8 @@
             return text.replace(/[&<>"']/g, m => map[m]);
         }
 
-        // OLD FUNCTION - REMOVED
-        async function showEditModal_OLD(doc) {
+        // OLD FUNCTION - DISABLED TO PREVENT CONFLICTS
+        async function showEditModal_OLD_DISABLED(doc) {
             console.log('=== Starting showEditModal ===');
             
             const modal = document.getElementById('documentModal');
@@ -3680,7 +3680,7 @@
                                         </div>
                                         <div class="add-reference-section">
                                             <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
-                                                <input type="text" id="newPersonName" class="mdc-text-field__input" placeholder="Add reference">
+                                                <input type="text" id="addReferenceInput" class="mdc-text-field__input" placeholder="Add reference">
                                                 <div class="mdc-notched-outline">
                                                     <div class="mdc-notched-outline__leading"></div>
                                                     <div class="mdc-notched-outline__notch">
@@ -5996,12 +5996,12 @@
                 addSection.style.display = 'none';
                 removeBtns.forEach(btn => btn.style.display = 'none');
                 // Clear the input
-                document.getElementById('newPersonName').value = '';
+                document.getElementById('addReferenceInput').value = '';
             }
         }
 
         async function addPersonToDocument() {
-            const personName = document.getElementById('newPersonName').value.trim();
+            const personName = document.getElementById('addReferenceInput').value.trim();
             if (!personName) {
                 showSnackbar('Please enter a person name');
                 return;
