@@ -1066,13 +1066,15 @@
             background-color: var(--md-sys-color-surface-container);
             color: var(--md-sys-color-on-surface);
             border: 1px solid var(--md-sys-color-outline);
-            border-radius: 8px;
-            min-height: 32px;
+            border-radius: 16px;
+            height: 32px;
             display: inline-flex;
             align-items: center;
             position: relative;
             overflow: hidden;
             transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            padding: 0;
+            min-width: 88px;
         }
 
         .mdc-chip--input:hover {
@@ -1105,8 +1107,14 @@
         .mdc-chip__text {
             display: flex;
             align-items: center;
-            padding: 6px 8px;
-            min-width: 120px;
+            padding: 0 16px;
+            font-family: var(--md-sys-typescale-label-medium-font);
+            font-size: var(--md-sys-typescale-label-medium-size);
+            font-weight: var(--md-sys-typescale-label-medium-weight);
+            line-height: var(--md-sys-typescale-label-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-label-medium-tracking);
+            color: inherit;
+            white-space: nowrap;
         }
 
         .input-chip-field {
@@ -4677,22 +4685,14 @@
                     display: flex;
                     flex-wrap: wrap;
                     gap: 8px;
-                    margin: 12px 0;
+                    margin: 16px 0;
+                    align-items: center;
                 }
                 
                 .mdc-chip {
                     margin: 4px;
                 }
                 
-                .mdc-chip--input {
-                    padding-left: 12px;
-                    padding-right: 8px;
-                    gap: 8px;
-                }
-                
-                .mdc-chip--input .mdc-chip__text {
-                    padding-right: 8px;
-                }
                 
                 .mdc-chip--input .mdc-chip__action--remove {
                     display: flex !important;
@@ -4704,16 +4704,20 @@
                     background: none;
                     border: none;
                     cursor: pointer;
-                    color: rgba(0, 0, 0, 0.6);
-                    margin-left: 0;
+                    color: var(--md-sys-color-on-surface);
+                    margin: 0 8px 0 8px;
+                    padding: 0;
+                    transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
                 }
                 
                 .mdc-chip--input .mdc-chip__action--remove:hover {
-                    background-color: rgba(0, 0, 0, 0.1);
+                    background-color: var(--md-sys-color-on-surface);
+                    opacity: 0.08;
                 }
                 
                 .mdc-chip--input .mdc-chip__action--remove .material-icons {
                     font-size: 18px;
+                    color: inherit;
                 }
                 
                 .tab-content {
