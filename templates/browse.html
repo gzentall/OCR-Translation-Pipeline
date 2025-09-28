@@ -322,35 +322,19 @@
         }
 
 
-            /* Documents Header */
-            .documents-header {
-                margin-bottom: var(--md-sys-spacing-4);
-            }
-
-            .documents-title {
-                font-family: var(--md-sys-typescale-headline-small-font);
-                font-size: var(--md-sys-typescale-headline-small-size);
-                font-weight: var(--md-sys-typescale-headline-small-weight);
-                line-height: var(--md-sys-typescale-headline-small-line-height);
-                letter-spacing: var(--md-sys-typescale-headline-small-tracking);
-            color: var(--md-sys-color-on-surface);
-                margin: 0;
-                padding: 0;
-            }
-
             /* Compact Search, Sort, Filter Bar */
             .compact-search-filter-bar {
-                background: var(--md-sys-color-surface-container-lowest);
+            background: var(--md-sys-color-surface-container-lowest);
                 border-radius: 8px;
                 padding: 8px 12px;
                 margin-bottom: var(--md-sys-spacing-4);
-                border: 1px solid var(--md-sys-color-outline-variant);
-                display: flex;
-                align-items: center;
+            border: 1px solid var(--md-sys-color-outline-variant);
+            display: flex;
+            align-items: center;
                 gap: 12px;
                 flex-wrap: nowrap;
                 min-height: 40px;
-            }
+        }
 
             .search-input-container {
                 flex: 1;
@@ -2904,18 +2888,13 @@
     <div class="main-content">
         <!-- Documents Tab Content -->
         <div id="documents-tab" class="tab-content active">
-            <!-- Documents Section Header -->
-            <div class="documents-header">
-                <h2 class="documents-title">Documents</h2>
-                    </div>
-            
             <!-- Compact Search, Sort, Filter Bar -->
             <div class="compact-search-filter-bar">
                 <div class="search-input-container">
                     <span class="material-icons search-icon">search</span>
                     <input type="text" class="search-input" id="searchInput" placeholder="Search documents..." autocomplete="off">
                     <span class="material-icons clear-icon" id="clearSearchIcon" style="display: none;">close</span>
-                </div>
+                    </div>
                 
                 <div class="filter-chips-container">
                     <div class="filter-chip active" data-filter="all">All</div>
