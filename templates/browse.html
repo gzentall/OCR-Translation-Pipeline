@@ -3485,6 +3485,11 @@
                             console.log('Set summary-tab as active');
                             console.log('Summary tab content:', panel.innerHTML.substring(0, 200) + '...');
                             console.log('Summary tab children:', panel.children.length);
+                            // Force visibility for debugging
+                            panel.style.visibility = 'visible';
+                            panel.style.opacity = '1';
+                            panel.style.height = 'auto';
+                            panel.style.minHeight = '200px';
                         } else {
                             panel.style.display = 'none';
                             panel.classList.remove('active');
@@ -3870,6 +3875,11 @@
                                 console.log('Set summary-tab as active');
                                 console.log('Summary tab content:', panel.innerHTML.substring(0, 200) + '...');
                                 console.log('Summary tab children:', panel.children.length);
+                                // Force visibility for debugging
+                                panel.style.visibility = 'visible';
+                                panel.style.opacity = '1';
+                                panel.style.height = 'auto';
+                                panel.style.minHeight = '200px';
                             } else {
                                 panel.style.display = 'none';
                                 panel.classList.remove('active');
