@@ -3483,6 +3483,8 @@
                             panel.style.display = 'block';
                             panel.classList.add('active');
                             console.log('Set summary-tab as active');
+                            console.log('Summary tab content:', panel.innerHTML.substring(0, 200) + '...');
+                            console.log('Summary tab children:', panel.children.length);
                         } else {
                             panel.style.display = 'none';
                             panel.classList.remove('active');
@@ -3767,6 +3769,8 @@
                 console.log('Date field exists:', !!document.getElementById('editDocumentDate'));
                 console.log('Sender select exists:', !!document.getElementById('senderSelect'));
                 console.log('Tab content container exists:', !!document.querySelector('.tab-content'));
+                console.log('Document summary:', doc.summary);
+                console.log('SafeDoc summary:', safeDoc.summary);
                 
                 // Check date field value and set it explicitly
                 const dateField = document.getElementById('editDocumentDate');
@@ -3864,6 +3868,8 @@
                                 panel.style.display = 'block';
                                 panel.classList.add('active');
                                 console.log('Set summary-tab as active');
+                                console.log('Summary tab content:', panel.innerHTML.substring(0, 200) + '...');
+                                console.log('Summary tab children:', panel.children.length);
                             } else {
                                 panel.style.display = 'none';
                                 panel.classList.remove('active');
