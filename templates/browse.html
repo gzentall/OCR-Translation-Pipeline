@@ -427,6 +427,11 @@
                     padding: 0 12px;
                 }
                 
+                .filter-chip-checkmark {
+                    font-size: 16px;
+                    margin-left: 6px;
+                }
+                
                 .sort-chip {
                     min-width: 70px;
                     height: 22px;
@@ -436,7 +441,7 @@
         }
 
         .filter-chip {
-            background: var(--md-sys-color-surface-container);
+            background: var(--md-sys-color-surface);
             color: var(--md-sys-color-on-surface);
             border: 1px solid var(--md-sys-color-outline);
             border-radius: 8px;
@@ -448,6 +453,7 @@
             transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             position: relative;
             overflow: hidden;
             white-space: nowrap;
@@ -479,7 +485,20 @@
             padding: 0 16px;
             display: flex;
             align-items: center;
+            justify-content: center;
             height: 100%;
+            flex: 1;
+        }
+
+        .filter-chip-checkmark {
+            display: none;
+            font-size: 18px;
+            color: inherit;
+            margin-left: 8px;
+        }
+
+        .filter-chip.active .filter-chip-checkmark {
+            display: inline-block;
         }
 
         .filter-dropdown {
@@ -3041,6 +3060,7 @@
                     <div class="filter-chip-wrapper">
                         <div class="filter-chip" id="senderFilter" data-filter="sender">
                             <span class="filter-chip-text">Sender</span>
+                            <i class="material-icons filter-chip-checkmark">check</i>
                         </div>
                         <!-- Sender Filter Dropdown -->
                         <div class="filter-dropdown" id="senderDropdown" style="display: none;">
@@ -3060,6 +3080,7 @@
                     <div class="filter-chip-wrapper">
                         <div class="filter-chip" id="recipientFilter" data-filter="recipient">
                             <span class="filter-chip-text">Recipient</span>
+                            <i class="material-icons filter-chip-checkmark">check</i>
                         </div>
                         <!-- Recipient Filter Dropdown -->
                         <div class="filter-dropdown" id="recipientDropdown" style="display: none;">
@@ -3079,6 +3100,7 @@
                     <div class="filter-chip-wrapper">
                         <div class="filter-chip" id="dateFilter" data-filter="date">
                             <span class="filter-chip-text">Date</span>
+                            <i class="material-icons filter-chip-checkmark">check</i>
                         </div>
                         <!-- Date Filter Dropdown -->
                         <div class="filter-dropdown" id="dateDropdown" style="display: none;">
