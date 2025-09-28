@@ -2083,6 +2083,23 @@
         .tab-content {
             min-height: 300px;
             height: auto;
+            width: 100%;
+            display: block;
+        }
+        
+        /* Force explicit dimensions for tab panels */
+        .tab-panel {
+            width: 100% !important;
+            min-width: 400px !important;
+            min-height: 300px !important;
+            padding: 20px !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Ensure edit form has proper dimensions */
+        .edit-form {
+            width: 100% !important;
+            min-height: 500px !important;
         }
 
         /* Position the button in the trailing area with M3 spacing */
@@ -3616,6 +3633,58 @@
                                 
                                 // Check bounds
                                 console.log('Summary panel bounds:', panel.getBoundingClientRect());
+                                
+                                // Check parent containers for layout issues
+                                const tabContent = panel.closest('.tab-content');
+                                const editForm = panel.closest('.edit-form');
+                                const modalContent = panel.closest('.modal-content');
+                                
+                                console.log('Parent container bounds:');
+                                if (tabContent) console.log('Tab content bounds:', tabContent.getBoundingClientRect());
+                                if (editForm) console.log('Edit form bounds:', editForm.getBoundingClientRect());
+                                if (modalContent) console.log('Modal content bounds:', modalContent.getBoundingClientRect());
+                                
+                                // Force explicit dimensions if element has zero size
+                                const bounds = panel.getBoundingClientRect();
+                                if (bounds.width === 0 || bounds.height === 0) {
+                                    console.log('Element has zero dimensions - forcing explicit size');
+                                    panel.style.width = '100%';
+                                    panel.style.minWidth = '400px';
+                                    panel.style.height = 'auto';
+                                    panel.style.minHeight = '300px';
+                                    panel.style.padding = '20px';
+                                    panel.style.boxSizing = 'border-box';
+                                    
+                                    // Also ensure parent containers have proper dimensions
+                                    if (tabContent) {
+                                        tabContent.style.width = '100%';
+                                        tabContent.style.minHeight = '400px';
+                                    }
+                                    if (editForm) {
+                                        editForm.style.width = '100%';
+                                        editForm.style.minHeight = '500px';
+                                    }
+                                    
+                                    console.log('Applied explicit dimensions fix');
+                                    
+                                    // Add a temporary visible element to force layout
+                                    const tempDiv = document.createElement('div');
+                                    tempDiv.style.cssText = `
+                                        width: 100%;
+                                        height: 50px;
+                                        background: red;
+                                        color: white;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        margin-bottom: 10px;
+                                        font-weight: bold;
+                                    `;
+                                    tempDiv.textContent = 'DEBUG: Summary tab is visible';
+                                    panel.insertBefore(tempDiv, panel.firstChild);
+                                    
+                                    console.log('Added temporary debug element');
+                                }
                             }, 100);
                         } else {
                             panel.style.display = 'none';
@@ -4054,6 +4123,58 @@
                                     
                                     // Check bounds
                                     console.log('Summary panel bounds (second init):', panel.getBoundingClientRect());
+                                    
+                                    // Check parent containers for layout issues
+                                    const tabContent = panel.closest('.tab-content');
+                                    const editForm = panel.closest('.edit-form');
+                                    const modalContent = panel.closest('.modal-content');
+                                    
+                                    console.log('Parent container bounds (second init):');
+                                    if (tabContent) console.log('Tab content bounds:', tabContent.getBoundingClientRect());
+                                    if (editForm) console.log('Edit form bounds:', editForm.getBoundingClientRect());
+                                    if (modalContent) console.log('Modal content bounds:', modalContent.getBoundingClientRect());
+                                    
+                                    // Force explicit dimensions if element has zero size
+                                    const bounds = panel.getBoundingClientRect();
+                                    if (bounds.width === 0 || bounds.height === 0) {
+                                        console.log('Element has zero dimensions (second init) - forcing explicit size');
+                                        panel.style.width = '100%';
+                                        panel.style.minWidth = '400px';
+                                        panel.style.height = 'auto';
+                                        panel.style.minHeight = '300px';
+                                        panel.style.padding = '20px';
+                                        panel.style.boxSizing = 'border-box';
+                                        
+                                        // Also ensure parent containers have proper dimensions
+                                        if (tabContent) {
+                                            tabContent.style.width = '100%';
+                                            tabContent.style.minHeight = '400px';
+                                        }
+                                        if (editForm) {
+                                            editForm.style.width = '100%';
+                                            editForm.style.minHeight = '500px';
+                                        }
+                                        
+                                        console.log('Applied explicit dimensions fix (second init)');
+                                        
+                                        // Add a temporary visible element to force layout
+                                        const tempDiv = document.createElement('div');
+                                        tempDiv.style.cssText = `
+                                            width: 100%;
+                                            height: 50px;
+                                            background: red;
+                                            color: white;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            margin-bottom: 10px;
+                                            font-weight: bold;
+                                        `;
+                                        tempDiv.textContent = 'DEBUG: Summary tab is visible (second init)';
+                                        panel.insertBefore(tempDiv, panel.firstChild);
+                                        
+                                        console.log('Added temporary debug element (second init)');
+                                    }
                                 }, 100);
                             } else {
                                 panel.style.display = 'none';
