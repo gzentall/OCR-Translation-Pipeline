@@ -1066,7 +1066,7 @@
             background-color: var(--md-sys-color-surface-container);
             color: var(--md-sys-color-on-surface);
             border: 1px solid var(--md-sys-color-outline);
-            border-radius: 16px;
+            border-radius: 8px;
             height: 32px;
             display: inline-flex;
             align-items: center;
@@ -1115,6 +1115,7 @@
             letter-spacing: var(--md-sys-typescale-label-medium-tracking);
             color: inherit;
             white-space: nowrap;
+            height: 100%;
         }
 
         .input-chip-field {
@@ -4705,9 +4706,10 @@
                     border: none;
                     cursor: pointer;
                     color: var(--md-sys-color-on-surface);
-                    margin: 0 8px 0 8px;
+                    margin: 0 8px 0 0;
                     padding: 0;
                     transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+                    flex-shrink: 0;
                 }
                 
                 .mdc-chip--input .mdc-chip__action--remove:hover {
@@ -4718,6 +4720,11 @@
                 .mdc-chip--input .mdc-chip__action--remove .material-icons {
                     font-size: 18px;
                     color: inherit;
+                    width: 18px;
+                    height: 18px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
                 
                 .tab-content {
