@@ -38,7 +38,8 @@
       "file_size": 534312,
       "people_count": 0,
       "summary": "This appears to be a personal letter involving On Jalmelle, Jon Zob, Zweigenthal Agele. discusses bu...",
-      "page_count": 4
+      "page_count": 4,
+      "status": "Editing"
     },
     "doc_20250926_173049": {
       "title": "004-1940-fre - 2025-09-26",
@@ -48,7 +49,8 @@
       "file_size": 319709,
       "people_count": 2,
       "summary": "WHO: The text is written by Eduoard Maurel to Madam Ruberk in Neidenthal.\nNATURE: This document appe...",
-      "page_count": 4
+      "page_count": 4,
+      "status": "Editing"
     },
     "doc_20250926_173124": {
       "title": "005-XXX-fre - 2025-09-26",
@@ -68,7 +70,8 @@
       "file_size": 136397,
       "people_count": 1,
       "summary": "This appears to be a personal letter involving His Rol. discusses business/financial matters, health...",
-      "page_count": 2
+      "page_count": 2,
+      "status": "Editing"
     },
     "doc_20250927_100809": {
       "title": "049-1940-05-16-fre - 2025-09-27",
@@ -78,7 +81,8 @@
       "file_size": 315860,
       "people_count": 5,
       "summary": "This appears to be a personal letter involving Military Postal, Robert Lweisenthal, Vel Rota. discus...",
-      "page_count": 3
+      "page_count": 3,
+      "status": "Editing"
     },
     "doc_20250927_102706": {
       "title": "054-1940-09-18-fre - 2025-09-27",
@@ -88,7 +92,8 @@
       "file_size": 155104,
       "people_count": 3,
       "summary": "This appears to be a personal letter involving Police Station, Inveigenthal Robert, Rue Republique. ...",
-      "page_count": 1
+      "page_count": 1,
+      "status": "Editing"
     },
     "doc_20250927_104916": {
       "title": "051-1940-09-22-fre - 2025-09-27",
@@ -98,7 +103,8 @@
       "file_size": 277464,
       "people_count": 3,
       "summary": "This appears to be a personal letter involving Mme Pelisuir. discusses family matters, health concer...",
-      "page_count": 3
+      "page_count": 3,
+      "status": "Editing"
     },
     "doc_20250927_105223": {
       "title": "047-1940-05-22-fre - 2025-09-27",
@@ -108,7 +114,8 @@
       "file_size": 292485,
       "people_count": 8,
       "summary": "This appears to be a personal letter involving Bubi Bubi, Deza Here, Le Vaguemestre. discusses busin...",
-      "page_count": 3
+      "page_count": 3,
+      "status": "Editing"
     },
     "doc_20250927_111247": {
       "title": "053-xxx-ger - 2025-09-27",
@@ -169,7 +176,9 @@
         "doc_20250926_173049",
         "doc_20250926_164736",
         "doc_20250927_104916",
-        "doc_20250925_165151"
+        "doc_20250925_165151",
+        "doc_20250927_122524",
+        "doc_20250927_105223"
       ],
       "context": ""
     },
@@ -492,5 +501,5 @@
       "context": ""
     }
   },
-  "last_updated": "2025-09-28T08:14:11.587007"
+  "last_updated": "2025-09-29T15:46:55.248070"
 }
