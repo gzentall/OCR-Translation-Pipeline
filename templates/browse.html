@@ -3718,13 +3718,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Debug buttons - hardcoded for testing -->
-            <div style="position: fixed; top: 10px; right: 10px; z-index: 9999; display: flex; flex-direction: column; gap: 5px;">
-                <button onclick="manualAuth()" style="background: red; color: white; padding: 10px; border: none; border-radius: 5px;">Test Auth</button>
-                <button onclick="localStorage.clear(); location.reload();" style="background: blue; color: white; padding: 10px; border: none; border-radius: 5px;">Logout</button>
-                <button onclick="toggleProfileMenu()" style="background: green; color: white; padding: 10px; border: none; border-radius: 5px;">Test Profile</button>
-            </div>
         </div>
     </div>
 
@@ -7613,14 +7606,9 @@
 
         // Profile menu functions
         function toggleProfileMenu() {
-            console.log('toggleProfileMenu called');
             const dropdown = document.getElementById('profileDropdown');
             const avatarButton = document.querySelector('.avatar-button');
             const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
-            
-            console.log('Dropdown element:', dropdown);
-            console.log('Avatar button:', avatarButton);
-            console.log('Is hidden:', isHidden);
 
             if (isHidden) {
                 // Make floating and position relative to avatar
@@ -7678,92 +7666,18 @@
             return true;
         }
         
-        // Manual authentication for testing
-        function manualAuth() {
-            console.log('Setting manual authentication...');
-            localStorage.setItem('authenticated', 'true');
-            localStorage.setItem('userEmail', 'test@example.com');
-            console.log('Manual authentication set:', localStorage.getItem('authenticated'));
-            console.log('User email set:', localStorage.getItem('userEmail'));
-            
-            // Force reload the page
-            setTimeout(() => {
-                location.reload();
-            }, 100);
-        }
-        
-        // Add test buttons to page
-        function addTestButton() {
-            // Test Auth button
-            const testButton = document.createElement('button');
-            testButton.textContent = 'Test Auth';
-            testButton.style.position = 'fixed';
-            testButton.style.top = '10px';
-            testButton.style.right = '10px';
-            testButton.style.zIndex = '9999';
-            testButton.style.background = 'red';
-            testButton.style.color = 'white';
-            testButton.style.padding = '10px';
-            testButton.style.border = 'none';
-            testButton.style.borderRadius = '5px';
-            testButton.style.marginRight = '10px';
-            testButton.onclick = manualAuth;
-            document.body.appendChild(testButton);
-            
-            // Logout button
-            const logoutButton = document.createElement('button');
-            logoutButton.textContent = 'Logout';
-            logoutButton.style.position = 'fixed';
-            logoutButton.style.top = '10px';
-            logoutButton.style.right = '120px';
-            logoutButton.style.zIndex = '9999';
-            logoutButton.style.background = 'blue';
-            logoutButton.style.color = 'white';
-            logoutButton.style.padding = '10px';
-            logoutButton.style.border = 'none';
-            logoutButton.style.borderRadius = '5px';
-            logoutButton.onclick = function() {
-                localStorage.clear();
-                location.reload();
-            };
-            document.body.appendChild(logoutButton);
-            
-            // Test Profile Menu button
-            const profileTestButton = document.createElement('button');
-            profileTestButton.textContent = 'Test Profile';
-            profileTestButton.style.position = 'fixed';
-            profileTestButton.style.top = '50px';
-            profileTestButton.style.right = '10px';
-            profileTestButton.style.zIndex = '9999';
-            profileTestButton.style.background = 'green';
-            profileTestButton.style.color = 'white';
-            profileTestButton.style.padding = '10px';
-            profileTestButton.style.border = 'none';
-            profileTestButton.style.borderRadius = '5px';
-            profileTestButton.onclick = function() {
-                console.log('Testing profile menu...');
-                toggleProfileMenu();
-            };
-            document.body.appendChild(profileTestButton);
-        }
         
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Add test button for debugging
-            addTestButton();
-            
             // Only check authentication if not already on login page
             if (!window.location.pathname.includes('/login')) {
                 // Check if user is authenticated before running the check
                 const isAuthenticated = localStorage.getItem('authenticated') === 'true';
-                console.log('Authentication check:', isAuthenticated);
                 
                 if (!isAuthenticated) {
-                    console.log('User not authenticated, redirecting to login...');
-                    // Direct redirect to login instead of calling checkAuthentication
+                    // Direct redirect to login
                     window.location.href = '/login';
                 } else {
-                    console.log('User is authenticated, initializing user info...');
                     // Initialize user info and profile menu
                     initializeUserInfo();
                 }
@@ -7772,10 +7686,6 @@
 
         // Initialize user info on page load
         function initializeUserInfo() {
-            // Debug localStorage
-            console.log('localStorage authenticated:', localStorage.getItem('authenticated'));
-            console.log('localStorage userEmail:', localStorage.getItem('userEmail'));
-            
             // Get user info from localStorage or page data
             const userEmail = localStorage.getItem('userEmail') || 'User';
             const userInfo = window.userInfo || {
@@ -7786,16 +7696,10 @@
             const initials = getUserInitials(userInfo);
             const roleDisplay = getRoleDisplayName(userInfo.role || 'USER');
             
-            console.log('Initializing user info:', userInfo);
-            console.log('User initials:', initials);
-            
             // Update avatar
             const userAvatar = document.getElementById('userAvatar');
             if (userAvatar) {
                 userAvatar.textContent = initials;
-                console.log('Avatar updated with initials:', initials);
-            } else {
-                console.log('Avatar element not found');
             }
             document.getElementById('profileAvatar').textContent = initials;
             
