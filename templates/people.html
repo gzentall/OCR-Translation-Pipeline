@@ -408,6 +408,136 @@
             justify-content: flex-end;
             margin-top: 16px;
         }
+
+        /* M3 Dialog Styles */
+        .mdc-dialog {
+            z-index: 2000;
+        }
+
+        .mdc-dialog__surface {
+            max-width: 800px;
+            width: 90vw;
+            max-height: 90vh;
+        }
+
+        .mdc-dialog__content {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* M3 Tab Styles */
+        .mdc-tab-bar-container {
+            margin-bottom: 24px;
+        }
+
+        .tab-content {
+            min-height: 400px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Form Row Spacing */
+        .form-row {
+            margin-bottom: 16px;
+        }
+
+        /* Document Cards */
+        .documents-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .document-card {
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .document-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .document-status {
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-new {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .status-editing {
+            background: var(--md-sys-color-tertiary-container);
+            color: var(--md-sys-color-on-tertiary-container);
+        }
+
+        .status-final {
+            background: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+        }
+
+        .document-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .document-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .document-meta .material-icons {
+            font-size: 16px;
+        }
+
+        .document-summary {
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface);
+            line-height: 1.4;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .empty-state .material-icons {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -430,22 +560,37 @@
         </div>
     </div>
 
-    <!-- Person Detail Modal -->
-    <div class="modal" id="personModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="personModalTitle">Person Details</h2>
-                <div class="modal-actions">
-                    <button class="mdc-button mdc-button--outlined" onclick="closePersonModal()">
+    <!-- Person Detail Modal - M3 Full-Screen Dialog -->
+    <div class="mdc-dialog" id="personModal" role="dialog" aria-modal="true" aria-labelledby="personDialogTitle">
+        <div class="mdc-dialog__container">
+            <div class="mdc-dialog__surface">
+                <!-- Dialog Header -->
+                <div class="mdc-dialog__header">
+                    <h2 class="mdc-dialog__title" id="personDialogTitle">Person Details</h2>
+                    <button class="mdc-icon-button mdc-dialog__close" onclick="closePersonModal()" aria-label="Close dialog">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+                
+                <!-- Dialog Content -->
+                <div class="mdc-dialog__content" id="personModalContent">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                
+                <!-- Dialog Actions -->
+                <div class="mdc-dialog__actions">
+                    <button class="mdc-button mdc-button--outlined mdc-dialog__button" id="personModalCancelBtn" onclick="closePersonModal()">
                         <span class="mdc-button__ripple"></span>
                         <span class="mdc-button__label">Close</span>
                     </button>
+                    <button class="mdc-button mdc-button--raised mdc-dialog__button" id="personModalSaveBtn" onclick="savePersonEdit()" style="display: none;">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Save Changes</span>
+                    </button>
                 </div>
             </div>
-            <div id="personModalContent">
-                <!-- Content will be populated by JavaScript -->
-            </div>
         </div>
+        <div class="mdc-dialog__scrim"></div>
     </div>
 
     <script>
@@ -542,38 +687,159 @@
                     const person = allPeople.find(p => p.name === personName);
                     const documents = data.documents;
                     
-                    document.getElementById('personModalTitle').textContent = personName;
+                    document.getElementById('personDialogTitle').textContent = personName;
                     document.getElementById('personModalContent').innerHTML = `
-                        <div class="person-detail-section">
-                            <h3>Person Information</h3>
-                            <p><strong>Name:</strong> ${escapeHtml(personName)}</p>
-                            ${person.aliases && person.aliases.length > 0 ? `
-                                <p><strong>Aliases:</strong> ${person.aliases.map(alias => escapeHtml(alias)).join(', ')}</p>
-                            ` : ''}
-                            ${person.context ? `
-                                <p><strong>Context:</strong> ${escapeHtml(person.context)}</p>
-                            ` : ''}
-                            <p><strong>First Mentioned:</strong> ${formatDate(person.first_mentioned)}</p>
-                            <p><strong>Total Documents:</strong> ${documents.length}</p>
+                        <!-- M3 Tabs Container -->
+                        <div class="mdc-tab-bar-container">
+                            <div class="mdc-tab-bar" role="tablist">
+                                <div class="mdc-tab-scroller">
+                                    <div class="mdc-tab-scroller__scroll-area">
+                                        <div class="mdc-tab-scroller__scroll-content">
+                                            <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0" data-tab="person-info">
+                                                <span class="mdc-tab__content">
+                                                    <span class="mdc-tab__text-label">Person Info</span>
+                                                </span>
+                                                <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                </span>
+                                                <span class="mdc-tab__ripple"></span>
+                                            </button>
+                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="documents">
+                                                <span class="mdc-tab__content">
+                                                    <span class="mdc-tab__text-label">Documents</span>
+                                                </span>
+                                                <span class="mdc-tab-indicator">
+                                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                </span>
+                                                <span class="mdc-tab__ripple"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="person-detail-section">
-                            <h3>Documents Mentioning This Person</h3>
-                            ${documents.map(doc => `
-                                <div class="document-detail">
-                                    <h4>${escapeHtml(doc.title)}</h4>
-                                    <div class="document-meta">
-                                        <span>Date: ${formatDate(doc.date_processed)}</span>
-                                        <span>Language: ${doc.source_language}</span>
-                                        <span>People: ${doc.people_mentioned.length}</span>
+                        <!-- Tab Content -->
+                        <div class="tab-content">
+                            <!-- Person Info Tab -->
+                            <div id="person-info-tab" class="tab-panel active">
+                                <div class="form-row">
+                                    <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--disabled">
+                                        <input type="text" class="mdc-text-field__input" value="${escapeHtml(personName)}" readonly>
+                                        <div class="mdc-notched-outline">
+                                            <div class="mdc-notched-outline__leading"></div>
+                                            <div class="mdc-notched-outline__notch">
+                                                <label class="mdc-floating-label">Name</label>
+                                            </div>
+                                            <div class="mdc-notched-outline__trailing"></div>
+                                        </div>
                                     </div>
-                                    <div class="document-summary">${escapeHtml(doc.summary)}</div>
                                 </div>
-                            `).join('')}
+                                
+                                ${person.aliases && person.aliases.length > 0 ? `
+                                    <div class="form-row">
+                                        <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--disabled">
+                                            <input type="text" class="mdc-text-field__input" value="${person.aliases.map(alias => escapeHtml(alias)).join(', ')}" readonly>
+                                            <div class="mdc-notched-outline">
+                                                <div class="mdc-notched-outline__leading"></div>
+                                                <div class="mdc-notched-outline__notch">
+                                                    <label class="mdc-floating-label">Aliases</label>
+                                                </div>
+                                                <div class="mdc-notched-outline__trailing"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                                
+                                <div class="form-row">
+                                    <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--disabled">
+                                        <input type="text" class="mdc-text-field__input" value="${formatDate(person.first_mentioned)}" readonly>
+                                        <div class="mdc-notched-outline">
+                                            <div class="mdc-notched-outline__leading"></div>
+                                            <div class="mdc-notched-outline__notch">
+                                                <label class="mdc-floating-label">First Mentioned</label>
+                                            </div>
+                                            <div class="mdc-notched-outline__trailing"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--disabled">
+                                        <input type="text" class="mdc-text-field__input" value="${documents.length} documents" readonly>
+                                        <div class="mdc-notched-outline">
+                                            <div class="mdc-notched-outline__leading"></div>
+                                            <div class="mdc-notched-outline__notch">
+                                                <label class="mdc-floating-label">Total Documents</label>
+                                            </div>
+                                            <div class="mdc-notched-outline__trailing"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                ${person.context ? `
+                                    <div class="form-row">
+                                        <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea mdc-text-field--disabled">
+                                            <textarea class="mdc-text-field__input" rows="3" readonly>${escapeHtml(person.context)}</textarea>
+                                            <div class="mdc-notched-outline">
+                                                <div class="mdc-notched-outline__leading"></div>
+                                                <div class="mdc-notched-outline__notch">
+                                                    <label class="mdc-floating-label">Context</label>
+                                                </div>
+                                                <div class="mdc-notched-outline__trailing"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <!-- Documents Tab -->
+                            <div id="documents-tab" class="tab-panel">
+                                <div class="documents-list">
+                                    ${documents.length > 0 ? documents.map(doc => `
+                                        <div class="document-card">
+                                            <div class="document-header">
+                                                <h4 class="document-title">${escapeHtml(doc.title)}</h4>
+                                                <span class="document-status status-${doc.status.toLowerCase()}">${escapeHtml(doc.status)}</span>
+                                            </div>
+                                            <div class="document-meta">
+                                                <span class="document-date">
+                                                    <span class="material-icons">event</span>
+                                                    ${formatDate(doc.date_processed)}
+                                                </span>
+                                                <span class="document-language">
+                                                    <span class="material-icons">language</span>
+                                                    ${escapeHtml(doc.source_language)}
+                                                </span>
+                                                <span class="document-people">
+                                                    <span class="material-icons">people</span>
+                                                    ${doc.people_mentioned.length} people
+                                                </span>
+                                            </div>
+                                            ${doc.summary ? `
+                                                <div class="document-summary">${escapeHtml(doc.summary)}</div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('') : `
+                                        <div class="empty-state">
+                                            <span class="material-icons">description</span>
+                                            <p>No documents found for this person.</p>
+                                        </div>
+                                    `}
+                                </div>
+                            </div>
                         </div>
                     `;
                     
-                    document.getElementById('personModal').style.display = 'block';
+                    // Show the dialog using MDC
+                    const dialog = document.getElementById('personModal');
+                    dialog.classList.add('mdc-dialog--open');
+                    
+                    // Initialize M3 components
+                    mdc.autoInit();
+                    
+                    // Setup tab switching
+                    setupPersonModalTabs();
                 } else {
                     alert('Error loading person details: ' + data.error);
                 }
@@ -584,7 +850,41 @@
 
         // Close person modal
         function closePersonModal() {
-            document.getElementById('personModal').style.display = 'none';
+            const dialog = document.getElementById('personModal');
+            dialog.classList.remove('mdc-dialog--open');
+        }
+        
+        // Setup tab switching for person modal
+        function setupPersonModalTabs() {
+            const tabs = document.querySelectorAll('#personModal .mdc-tab');
+            const panels = document.querySelectorAll('#personModal .tab-panel');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.dataset.tab;
+                    
+                    // Update tab states
+                    tabs.forEach(t => {
+                        t.classList.remove('mdc-tab--active');
+                        t.setAttribute('aria-selected', 'false');
+                        t.setAttribute('tabindex', '-1');
+                    });
+                    
+                    tab.classList.add('mdc-tab--active');
+                    tab.setAttribute('aria-selected', 'true');
+                    tab.setAttribute('tabindex', '0');
+                    
+                    // Update panel visibility
+                    panels.forEach(panel => {
+                        panel.classList.remove('active');
+                    });
+                    
+                    const targetPanel = document.getElementById(`${targetTab}-tab`);
+                    if (targetPanel) {
+                        targetPanel.classList.add('active');
+                    }
+                });
+            });
         }
 
         // Edit person
@@ -595,37 +895,55 @@
                 return;
             }
 
-            document.getElementById('personModalTitle').textContent = 'Edit Person';
+            document.getElementById('personDialogTitle').textContent = 'Edit Person';
             document.getElementById('personModalContent').innerHTML = `
                 <div class="edit-form">
-                    <div class="form-group">
-                        <label for="editPersonName">Name:</label>
-                        <input type="text" id="editPersonName" value="${escapeHtml(personName)}" class="form-input">
+                    <div class="form-row">
+                        <div class="mdc-text-field mdc-text-field--outlined">
+                            <input type="text" id="editPersonName" class="mdc-text-field__input" value="${escapeHtml(personName)}">
+                            <div class="mdc-notched-outline">
+                                <div class="mdc-notched-outline__leading"></div>
+                                <div class="mdc-notched-outline__notch">
+                                    <label class="mdc-floating-label">Name</label>
+                                </div>
+                                <div class="mdc-notched-outline__trailing"></div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="editPersonContext">Context:</label>
-                        <textarea id="editPersonContext" class="form-textarea" placeholder="Enter context about this person (e.g., role, relationship, etc.)">${escapeHtml(person.context || '')}</textarea>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button class="mdc-button mdc-button--raised" onclick="savePersonEdit('${escapeHtml(personName)}')">
-                            <span class="mdc-button__ripple"></span>
-                            <span class="mdc-button__label">Save Changes</span>
-                        </button>
-                        <button class="mdc-button mdc-button--outlined" onclick="closePersonModal()">
-                            <span class="mdc-button__ripple"></span>
-                            <span class="mdc-button__label">Cancel</span>
-                        </button>
+                    <div class="form-row">
+                        <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--textarea">
+                            <textarea id="editPersonContext" class="mdc-text-field__input" rows="3" placeholder="Enter context about this person (e.g., role, relationship, etc.)">${escapeHtml(person.context || '')}</textarea>
+                            <div class="mdc-notched-outline">
+                                <div class="mdc-notched-outline__leading"></div>
+                                <div class="mdc-notched-outline__notch">
+                                    <label class="mdc-floating-label">Context</label>
+                                </div>
+                                <div class="mdc-notched-outline__trailing"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
             
-            document.getElementById('personModal').style.display = 'block';
+            // Show save button and hide cancel button
+            document.getElementById('personModalSaveBtn').style.display = 'inline-flex';
+            document.getElementById('personModalCancelBtn').textContent = 'Cancel';
+            
+            // Store the old name for the save function
+            document.getElementById('personModalSaveBtn').setAttribute('data-old-name', personName);
+            
+            // Show the dialog using MDC
+            const dialog = document.getElementById('personModal');
+            dialog.classList.add('mdc-dialog--open');
+            
+            // Initialize M3 components
+            mdc.autoInit();
         }
 
         // Save person edit
-        async function savePersonEdit(oldName) {
+        async function savePersonEdit() {
+            const oldName = document.getElementById('personModalSaveBtn').getAttribute('data-old-name');
             const newName = document.getElementById('editPersonName').value.trim();
             const newContext = document.getElementById('editPersonContext').value.trim();
 
@@ -705,9 +1023,9 @@
             `;
         }
 
-        // Close modal when clicking outside
+        // Close modal when clicking outside or on scrim
         document.getElementById('personModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('personModal')) {
+            if (e.target === document.getElementById('personModal') || e.target.classList.contains('mdc-dialog__scrim')) {
                 closePersonModal();
             }
         });
