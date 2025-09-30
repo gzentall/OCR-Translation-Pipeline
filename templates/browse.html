@@ -513,10 +513,11 @@
 
         /* Floating variant to escape parent overflow/z-index clipping */
         .profile-dropdown.profile-dropdown--floating {
-            position: fixed;
+            position: fixed !important;
             left: 0;
             top: 0;
             z-index: 1000 !important; /* Dropdown level - above content but below modals */
+            display: block !important;
         }
 
         .profile-header {
@@ -7621,12 +7622,19 @@
                 dropdown.style.display = 'block';
 
                 const rect = avatarButton.getBoundingClientRect();
-                const ddRect = dropdown.getBoundingClientRect();
                 const margin = 8;
-                const left = Math.max(8, Math.min(window.innerWidth - ddRect.width - 8, rect.right - ddRect.width));
-                const top = Math.min(window.innerHeight - ddRect.height - 8, rect.bottom + margin);
+                const dropdownWidth = 200; // min-width from CSS
+                const dropdownHeight = 120; // estimated height
+                
+                // Position dropdown below and to the right of avatar
+                const left = Math.max(8, Math.min(window.innerWidth - dropdownWidth - 8, rect.right - dropdownWidth));
+                const top = Math.min(window.innerHeight - dropdownHeight - 8, rect.bottom + margin);
+                
                 dropdown.style.left = `${left}px`;
-                dropdown.style.top = `${top + window.scrollY}px`;
+                dropdown.style.top = `${top}px`;
+                dropdown.style.width = `${dropdownWidth}px`;
+
+                console.log('Positioned dropdown at:', left, top);
 
                 // Close dropdown when clicking outside
                 setTimeout(() => {
@@ -7634,6 +7642,7 @@
                 }, 0);
             } else {
                 dropdown.style.display = 'none';
+                dropdown.classList.remove('profile-dropdown--floating');
                 document.removeEventListener('click', closeProfileMenuOnOutsideClick);
             }
         }
