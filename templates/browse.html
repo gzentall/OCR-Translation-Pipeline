@@ -4090,9 +4090,12 @@
 
         // Handle sort chip click (toggle dropdown)
         function handleSortChipClick() {
+            console.log('handleSortChipClick called');
             const dropdown = document.getElementById('sortDropdown');
             const sortChip = document.querySelector('.sort-chip');
             const isVisible = dropdown.style.display !== 'none';
+            
+            console.log('Found dropdown:', !!dropdown, 'Found chip:', !!sortChip, 'Is visible:', isVisible);
             
             if (isVisible) {
                 // Hide dropdown
@@ -6480,13 +6483,17 @@
 
         // Filter functionality
         function toggleFilterDropdown(filterType) {
+            console.log('toggleFilterDropdown called for:', filterType);
             hideAllFilterDropdowns();
             const dropdown = document.getElementById(`${filterType}Dropdown`);
             const chip = document.getElementById(`${filterType}Filter`);
             
+            console.log('Found dropdown:', !!dropdown, 'Found chip:', !!chip);
+            
             if (dropdown && chip) {
                 // Portal the dropdown to root for proper layering
                 createPortal(dropdown, 'portal-root');
+                console.log('Portaled dropdown to portal-root');
                 
                 // Position the dropdown using DropdownPositioner
                 const positioner = new DropdownPositioner(chip, dropdown, {
@@ -6494,6 +6501,7 @@
                     offset: 4
                 });
                 positioner.position();
+                console.log('Positioned dropdown');
                 
                 // Store positioner reference for cleanup
                 dropdown._positioner = positioner;
