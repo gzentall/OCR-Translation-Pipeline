@@ -3282,6 +3282,7 @@
             <span class="material-icons search-icon">search</span>
             <input type="text" class="search-input" id="searchInput" placeholder="Search documents..." autocomplete="off">
             <span class="material-icons clear-icon" id="clearSearchIcon" style="display: none;">close</span>
+            <div class="mdc-search__suggestions" id="documentSearchSuggestions"></div>
                     </div>
         
         <div class="filter-chips-container">
@@ -3707,9 +3708,12 @@
             update() {
                 const triggerRect = this.trigger.getBoundingClientRect();
                 const dropdownRect = this.dropdown.getBoundingClientRect();
+                const vv = window.visualViewport || null;
                 const viewport = {
-                    width: window.innerWidth,
-                    height: window.innerHeight
+                    width: vv ? vv.width : window.innerWidth,
+                    height: vv ? vv.height : window.innerHeight,
+                    offsetTop: vv ? vv.offsetTop : 0,
+                    offsetLeft: vv ? vv.offsetLeft : 0
                 };
                 
                 let { top, left, placement } = this.calculatePosition(
@@ -3729,8 +3733,8 @@
                 // Apply styles
                 Object.assign(this.dropdown.style, {
                     position: 'fixed',
-                    top: `${adjusted.top}px`,
-                    left: `${adjusted.left}px`,
+                    top: `${adjusted.top + viewport.offsetTop}px`,
+                    left: `${adjusted.left + viewport.offsetLeft}px`,
                     zIndex: '1000',
                     // Prevent subpixel rendering issues
                     transform: 'translate3d(0, 0, 0)',
@@ -4314,7 +4318,11 @@
         function clearSearch() {
             document.getElementById('searchInput').value = '';
             document.getElementById('clearSearchIcon').style.display = 'none';
-            document.getElementById('searchSuggestions').classList.remove('show');
+            const docSug = document.getElementById('documentSearchSuggestions');
+            if (docSug) {
+                docSug.classList.remove('show');
+                removeFromPortal(docSug);
+            }
             filteredDocuments = [...allDocuments];
             updateSearchResultsInfo();
             renderDocuments();
@@ -4337,9 +4345,29 @@
             if (input.value.length > 0) {
                 clearIcon.style.display = 'block';
                 searchDocuments();
+                // Position and show suggestions if available
+                const suggestions = document.getElementById('documentSearchSuggestions');
+                if (suggestions) {
+                    createPortal(suggestions, 'portal-root');
+                    const positioner = new DropdownPositioner(input, suggestions, {
+                        placement: 'bottom-start',
+                        offset: 4
+                    });
+                    positioner.position();
+                    suggestions._positioner = positioner;
+                    suggestions.classList.add('show');
+                }
             } else {
                 clearIcon.style.display = 'none';
-                document.getElementById('searchSuggestions').classList.remove('show');
+                const suggestions = document.getElementById('documentSearchSuggestions');
+                if (suggestions) {
+                    suggestions.classList.remove('show');
+                    if (suggestions._positioner) {
+                        suggestions._positioner.cleanup();
+                        suggestions._positioner = null;
+                    }
+                    removeFromPortal(suggestions);
+                }
                 clearSearch();
             }
         }
@@ -4352,9 +4380,28 @@
             if (input.value.length > 0) {
                 clearIcon.style.display = 'block';
                 searchPeople();
+                const suggestions = document.getElementById('peopleSearchSuggestions');
+                if (suggestions) {
+                    createPortal(suggestions, 'portal-root');
+                    const positioner = new DropdownPositioner(input, suggestions, {
+                        placement: 'bottom-start',
+                        offset: 4
+                    });
+                    positioner.position();
+                    suggestions._positioner = positioner;
+                    suggestions.classList.add('show');
+                }
             } else {
                 clearIcon.style.display = 'none';
-                document.getElementById('peopleSearchSuggestions').classList.remove('show');
+                const suggestions = document.getElementById('peopleSearchSuggestions');
+                if (suggestions) {
+                    suggestions.classList.remove('show');
+                    if (suggestions._positioner) {
+                        suggestions._positioner.cleanup();
+                        suggestions._positioner = null;
+                    }
+                    removeFromPortal(suggestions);
+                }
                 clearPeopleSearch();
             }
         }
