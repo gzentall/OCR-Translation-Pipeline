@@ -7666,16 +7666,36 @@
             return true;
         }
         
+        // Manual authentication for testing
+        function manualAuth() {
+            localStorage.setItem('authenticated', 'true');
+            localStorage.setItem('userEmail', 'test@example.com');
+            console.log('Manual authentication set');
+            location.reload();
+        }
+        
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Only check authentication if not already on login page
             if (!window.location.pathname.includes('/login')) {
-                checkAuthentication();
+                // Check if user is authenticated before running the check
+                const isAuthenticated = localStorage.getItem('authenticated') === 'true';
+                if (!isAuthenticated) {
+                    console.log('User not authenticated, redirecting to login...');
+                    checkAuthentication();
+                } else {
+                    console.log('User is authenticated, initializing user info...');
+                    initializeUserInfo();
+                }
             }
         });
 
         // Initialize user info on page load
         function initializeUserInfo() {
+            // Debug localStorage
+            console.log('localStorage authenticated:', localStorage.getItem('authenticated'));
+            console.log('localStorage userEmail:', localStorage.getItem('userEmail'));
+            
             // Get user info from localStorage or page data
             const userEmail = localStorage.getItem('userEmail') || 'User';
             const userInfo = window.userInfo || {
