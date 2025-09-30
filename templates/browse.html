@@ -701,16 +701,22 @@
         }
 
         .filter-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
+            /* Will be set to fixed via JS for proper layering */
+            position: fixed;
             background: var(--md-sys-color-surface-container-lowest);
             border: 1px solid var(--md-sys-color-outline-variant);
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             z-index: 1000; /* Dropdown level */
             min-width: 280px;
-            margin-top: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            
+            /* Prevent creating stacking context */
+            transform: none;
+            filter: none;
+            will-change: auto;
+            contain: none;
         }
 
         .filter-dropdown-header {
@@ -942,16 +948,22 @@
             }
 
         .sort-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
+            /* Will be set to fixed via JS for proper layering */
+            position: fixed;
             background: var(--md-sys-color-surface-container-lowest);
             border: 1px solid var(--md-sys-color-outline-variant);
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             z-index: 1000; /* Dropdown level */
             min-width: 180px;
-            margin-top: var(--md-sys-spacing-1);
+            max-height: 200px;
+            overflow-y: auto;
+            
+            /* Prevent creating stacking context */
+            transform: none;
+            filter: none;
+            will-change: auto;
+            contain: none;
         }
 
         .sort-option {
@@ -1052,10 +1064,8 @@
 
         /* Search suggestions dropdown */
         .mdc-search__suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
+            /* Will be set to fixed via JS for proper layering */
+            position: fixed;
             background: var(--md-sys-color-surface-container-lowest);
             border: 1px solid var(--md-sys-color-outline-variant);
             border-top: none;
@@ -1064,6 +1074,12 @@
             z-index: 1000; /* Dropdown level */
             max-height: 300px;
             overflow-y: auto;
+            
+            /* Prevent creating stacking context */
+            transform: none;
+            filter: none;
+            will-change: auto;
+            contain: none;
             display: none;
         }
 
@@ -4071,11 +4087,36 @@
         // Handle sort chip click (toggle dropdown)
         function handleSortChipClick() {
             const dropdown = document.getElementById('sortDropdown');
+            const sortChip = document.querySelector('.sort-chip');
             const isVisible = dropdown.style.display !== 'none';
             
             if (isVisible) {
+                // Hide dropdown
                 dropdown.style.display = 'none';
+                
+                // Clean up positioner if it exists
+                if (dropdown._positioner) {
+                    dropdown._positioner.cleanup();
+                    dropdown._positioner = null;
+                }
+                
+                // Remove from portal
+                removeFromPortal(dropdown);
             } else {
+                // Show dropdown
+                // Portal the dropdown to root for proper layering
+                createPortal(dropdown, 'portal-root');
+                
+                // Position the dropdown using DropdownPositioner
+                const positioner = new DropdownPositioner(sortChip, dropdown, {
+                    placement: 'bottom-end',
+                    offset: 4
+                });
+                positioner.position();
+                
+                // Store positioner reference for cleanup
+                dropdown._positioner = positioner;
+                
                 dropdown.style.display = 'block';
             }
         }
@@ -6397,6 +6438,19 @@
             const chip = document.getElementById(`${filterType}Filter`);
             
             if (dropdown && chip) {
+                // Portal the dropdown to root for proper layering
+                createPortal(dropdown, 'portal-root');
+                
+                // Position the dropdown using DropdownPositioner
+                const positioner = new DropdownPositioner(chip, dropdown, {
+                    placement: 'bottom-start',
+                    offset: 4
+                });
+                positioner.position();
+                
+                // Store positioner reference for cleanup
+                dropdown._positioner = positioner;
+                
                 dropdown.style.display = 'block';
                 chip.classList.add('active');
                 
@@ -6412,6 +6466,15 @@
         function hideAllFilterDropdowns() {
             document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
                 dropdown.style.display = 'none';
+                
+                // Clean up positioner if it exists
+                if (dropdown._positioner) {
+                    dropdown._positioner.cleanup();
+                    dropdown._positioner = null;
+                }
+                
+                // Remove from portal
+                removeFromPortal(dropdown);
             });
             document.querySelectorAll('.filter-chip').forEach(chip => {
                 chip.classList.remove('active');
