@@ -7674,15 +7674,36 @@
             location.reload();
         }
         
+        // Add test button to page
+        function addTestButton() {
+            const testButton = document.createElement('button');
+            testButton.textContent = 'Test Auth';
+            testButton.style.position = 'fixed';
+            testButton.style.top = '10px';
+            testButton.style.right = '10px';
+            testButton.style.zIndex = '9999';
+            testButton.style.background = 'red';
+            testButton.style.color = 'white';
+            testButton.style.padding = '10px';
+            testButton.style.border = 'none';
+            testButton.style.borderRadius = '5px';
+            testButton.onclick = manualAuth;
+            document.body.appendChild(testButton);
+        }
+        
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Add test button for debugging
+            addTestButton();
+            
             // Only check authentication if not already on login page
             if (!window.location.pathname.includes('/login')) {
                 // Check if user is authenticated before running the check
                 const isAuthenticated = localStorage.getItem('authenticated') === 'true';
                 if (!isAuthenticated) {
                     console.log('User not authenticated, redirecting to login...');
-                    checkAuthentication();
+                    // Direct redirect to login instead of calling checkAuthentication
+                    window.location.href = '/login';
                 } else {
                     console.log('User is authenticated, initializing user info...');
                     initializeUserInfo();
