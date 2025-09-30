@@ -225,12 +225,11 @@
          * - Document any necessary stacking context creators with comments
          */
         
-        /* Portal root - no stacking context creation */
+        /* Portal root - do NOT create a stacking context */
         #portal-root {
-            position: relative;
-            z-index: 0; /* Base level - no stacking context */
-            /* Avoid creating stacking contexts */
-            /* No transform, filter, perspective, or opacity < 1 */
+            position: static; /* avoid creating a containing stacking context */
+            /* z-index must remain 'auto' to keep children in the root stacking context */
+            /* No transform, filter, perspective, opacity < 1, isolation, contain, etc. */
         }
         
         /* Base content: z-index 1-9 */
@@ -254,7 +253,7 @@
         .profile-dropdown {
             /* Will be set to fixed via JS */
             position: fixed;
-            z-index: 1000; /* Dropdown level */
+            z-index: 3000; /* Raise above chips and lists; still below modals */
             
             /* Prevent creating stacking context */
             transform: none;
