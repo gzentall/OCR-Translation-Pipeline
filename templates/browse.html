@@ -187,6 +187,130 @@
             color: var(--md-sys-color-on-background);
         }
 
+        /* 
+         * Z-INDEX SYSTEM - Systematic Hierarchy Implementation
+         * 
+         * This system follows a strict hierarchy to prevent z-index conflicts:
+         * 
+         * BASE CONTENT (1-9):
+         * - Main content: z-index 1
+         * - Navigation tabs: z-index 2  
+         * - App bar: z-index 3
+         * 
+         * DROPDOWNS & POPOVERS (1000-1999):
+         * - Menus: z-index 1000
+         * - Side sheets: z-index 1100-1200
+         * - Floating toolbars: z-index 1300
+         * - Overlays: z-index 1400-1500
+         * 
+         * MODALS & DIALOGS (2000-2999):
+         * - Main dialogs: z-index 2000
+         * - Special modals: z-index 2100-2200
+         * - Dialog scrims: z-index 2500
+         * 
+         * TOOLTIPS (3000-3999):
+         * - Tooltips: z-index 3000
+         * 
+         * TOAST NOTIFICATIONS (4000-4999):
+         * - Snackbars: z-index 4000
+         * 
+         * CRITICAL OVERLAYS (5000+):
+         * - Loading screens: z-index 5000
+         * - Critical errors: z-index 6000
+         * 
+         * STACKING CONTEXT RULES:
+         * - Portal root (#portal-root) has no stacking context creators
+         * - Avoid transform, filter, perspective, opacity < 1 on containers
+         * - Use portals for dropdowns to escape parent stacking contexts
+         * - Document any necessary stacking context creators with comments
+         */
+        
+        /* Portal root - no stacking context creation */
+        #portal-root {
+            position: relative;
+            z-index: 0; /* Base level - no stacking context */
+            /* Avoid creating stacking contexts */
+            /* No transform, filter, perspective, or opacity < 1 */
+        }
+        
+        /* Base content: z-index 1-9 */
+        .main-content {
+            z-index: 1; /* Main content at base level */
+        }
+        
+        .nav-tabs {
+            z-index: 2; /* Tab level */ /* Tabs above content */
+        }
+        
+        .app-bar {
+            z-index: 3; /* App bar above tabs */
+        }
+        
+        /* Dropdowns and popovers: z-index 1000-1999 */
+        .mdc-menu {
+            z-index: 1000; /* Dropdown level */ /* Dropdown menus */
+        }
+        
+        .profile-dropdown {
+            z-index: 1000; /* Dropdown level */ /* Profile dropdown */
+        }
+        
+        .mdc-drawer {
+            z-index: 1100; /* Side sheets */
+        }
+        
+        .side-sheet {
+            z-index: 1200; /* Custom side sheets */
+        }
+        
+        .floating-toolbar {
+            z-index: 1300; /* Floating action toolbar */
+        }
+        
+        .side-sheet-overlay {
+            z-index: 1400; /* Side sheet overlays */
+        }
+        
+        .mdc-drawer-scrim {
+            z-index: 1500; /* Drawer scrims */
+        }
+        
+        /* Modals and dialogs: z-index 2000-2999 */
+        .mdc-dialog {
+            z-index: 2000; /* Modal level */ /* Main dialogs */
+        }
+        
+        .merge-modal {
+            z-index: 2100; /* Merge modal */
+        }
+        
+        .add-reference-modal {
+            z-index: 2200; /* Add reference modal */
+        }
+        
+        .mdc-dialog__scrim {
+            z-index: 2500; /* Dialog scrims */
+        }
+        
+        /* Tooltips: z-index 3000-3999 */
+        .mdc-tooltip {
+            z-index: 3000; /* Tooltips */
+        }
+        
+        /* Toast notifications: z-index 4000-4999 */
+        .mdc-snackbar {
+            z-index: 4000; /* Snackbars/toasts */
+        }
+        
+        /* Critical overlays: z-index 5000+ */
+        .loading-overlay {
+            z-index: 5000; /* Loading screens */
+        }
+        
+        .critical-error {
+            z-index: 6000; /* Critical error overlays */
+        }
+
         .app-bar {
             background-color: #ffffff;
             color: var(--md-sys-color-on-surface);
@@ -532,7 +656,7 @@
             border: 1px solid var(--md-sys-color-outline-variant);
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 1000; /* Dropdown level */
             min-width: 280px;
             margin-top: 8px;
         }
@@ -773,7 +897,7 @@
             border: 1px solid var(--md-sys-color-outline-variant);
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 1000; /* Dropdown level */
             min-width: 180px;
             margin-top: var(--md-sys-spacing-1);
         }
@@ -885,7 +1009,7 @@
             border-top: none;
             border-radius: 0 0 28px 28px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-            z-index: 1000;
+            z-index: 1000; /* Dropdown level */
             max-height: 300px;
             overflow-y: auto;
             display: none;
@@ -1095,7 +1219,7 @@
             font-weight: 500;
             border: 1px solid var(--md-sys-color-surface);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            z-index: 2;
+            z-index: 2; /* Tab level */
         }
 
         .mdc-list-item__text {
@@ -1425,7 +1549,7 @@
             transform: translateY(-50%);
             opacity: 0;
             transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
-            z-index: 10;
+            z-index: 2; /* Tab level */
             width: 20px;
             height: 20px;
         }
@@ -1473,7 +1597,7 @@
             display: flex;
             align-items: center;
             gap: var(--md-sys-spacing-2);
-            z-index: 1000;
+            z-index: 1000; /* Dropdown level */
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
@@ -1553,7 +1677,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.32);
-            z-index: 2000;
+            z-index: 2000; /* Modal level */
             display: none;
             align-items: center;
             justify-content: center;
@@ -1693,7 +1817,7 @@
             background: var(--md-sys-color-surface-container-lowest);
             border-left: 1px solid var(--md-sys-color-outline-variant);
             box-shadow: -4px 0 8px rgba(0,0,0,0.12);
-            z-index: 1000;
+            z-index: 1000; /* Dropdown level */
             transition: right 0.3s cubic-bezier(0.2, 0, 0, 1);
             display: flex;
             flex-direction: column;
@@ -1798,7 +1922,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.32);
-            z-index: 999;
+            z-index: 1400; /* Side sheet overlay level */
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
@@ -1857,7 +1981,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.32);
-            z-index: 2000;
+            z-index: 2000; /* Modal level */
             display: none;
             align-items: center;
             justify-content: center;
@@ -2071,7 +2195,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 2000;
+            z-index: 2000; /* Modal level */
             display: none;
             align-items: center;
             justify-content: center;
@@ -3056,8 +3180,11 @@
         }
     </style>
 </head>
-<body>
-    <!-- App Bar -->
+       <body>
+           <!-- Portal Root for Overlays -->
+           <div id="portal-root"></div>
+           
+           <!-- App Bar -->
     <div class="app-bar">
         <div class="app-title">
             <i class="material-icons app-logo">local_post_office</i>
@@ -3433,10 +3560,59 @@
     <script>
         // Initialize Material Components
         mdc.autoInit();
+        
+        // Portal system for proper z-index management
+        function createPortal(element, targetId = 'portal-root') {
+            const target = document.getElementById(targetId);
+            if (target && element) {
+                target.appendChild(element);
+                return element;
+            }
+            return null;
+        }
+        
+        function removeFromPortal(element) {
+            if (element && element.parentNode) {
+                element.parentNode.removeChild(element);
+            }
+        }
+        
+        // Z-index debugging and testing
+        function testZIndexOrder() {
+            console.log('=== Z-INDEX HIERARCHY TEST ===');
+            const elements = [
+                { selector: '.main-content', expected: 1, name: 'Main Content' },
+                { selector: '.nav-tabs', expected: 2, name: 'Navigation Tabs' },
+                { selector: '.app-bar', expected: 3, name: 'App Bar' },
+                { selector: '.profile-dropdown', expected: 1000, name: 'Profile Dropdown' },
+                { selector: '.mdc-drawer', expected: 1100, name: 'Side Sheets' },
+                { selector: '.side-sheet', expected: 1200, name: 'Custom Side Sheets' },
+                { selector: '.floating-toolbar', expected: 1300, name: 'Floating Toolbar' },
+                { selector: '.mdc-dialog', expected: 2000, name: 'Modals/Dialogs' },
+                { selector: '.mdc-snackbar', expected: 4000, name: 'Snackbars' }
+            ];
+            
+            elements.forEach(({ selector, expected, name }) => {
+                const element = document.querySelector(selector);
+                if (element) {
+                    const computed = window.getComputedStyle(element);
+                    const actual = parseInt(computed.zIndex) || 0;
+                    const status = actual === expected ? '✅' : '❌';
+                    console.log(`${status} ${name}: expected ${expected}, got ${actual}`);
+                } else {
+                    console.log(`⚠️  ${name}: element not found (${selector})`);
+                }
+            });
+        }
 
         // Initialize snackbar
         document.addEventListener('DOMContentLoaded', function() {
             snackbar = new mdc.snackbar.MDCSnackbar(document.getElementById('snackbar'));
+            
+            // Test z-index hierarchy on page load
+            setTimeout(() => {
+                testZIndexOrder();
+            }, 1000);
         });
 
         // Global variables
@@ -4968,7 +5144,7 @@
                     border: 1px solid var(--md-sys-color-outline-variant);
                     border-radius: 8px;
                     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                    z-index: 1000;
+                    z-index: 1000; /* Dropdown level */
                     max-height: 200px;
                     overflow-y: auto;
                 }
@@ -5144,7 +5320,7 @@
                     right: 20px;
                     top: 50%;
                     transform: translateY(-50%);
-                    z-index: 10;
+                    z-index: 2; /* Tab level */
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -5198,7 +5374,7 @@
                     width: 20px;
                     height: 20px;
                     cursor: grab;
-                    z-index: 2;
+                    z-index: 2; /* Tab level */
                 }
                 
                 .zoom-slider__thumb:active {
