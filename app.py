@@ -14,7 +14,7 @@ import html
 import sys
 from pathlib import Path
 from datetime import datetime
-from flask import Flask, request, jsonify, render_template, send_file
+from flask import Flask, request, jsonify, render_template, send_file, redirect
 from werkzeug.utils import secure_filename
 import uuid
 
@@ -117,6 +117,18 @@ def stats_page():
 def people_page():
     """Serve the people management page."""
     return render_template('people.html')
+
+@app.route('/logout')
+def logout():
+    """Logout user and redirect to login page."""
+    # Clear any session data
+    # In a real app, you'd clear the session here
+    return redirect('/login')
+
+@app.route('/login')
+def login():
+    """Serve the login page."""
+    return render_template('login.html')
 
 
 @app.route('/documents/<doc_id>/images/<int:page_num>')

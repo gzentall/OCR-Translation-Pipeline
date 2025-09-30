@@ -9,64 +9,14 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Material Design CSS -->
     <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
-    <!-- Google Fonts - Material Design 3 Type Scale -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Flex:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Design Tokens -->
+    <link rel="stylesheet" href="/static/css/tokens.css">
     
     <style>
-        :root {
-            /* Material Design 3 Color System */
-            --md-sys-color-primary: #6750a4;
-            --md-sys-color-on-primary: #ffffff;
-            --md-sys-color-primary-container: #eaddff;
-            --md-sys-color-on-primary-container: #21005d;
-            
-            --md-sys-color-secondary: #625b71;
-            --md-sys-color-on-secondary: #ffffff;
-            --md-sys-color-secondary-container: #e8def8;
-            --md-sys-color-on-secondary-container: #1d192b;
-            
-            --md-sys-color-tertiary: #7d5260;
-            --md-sys-color-on-tertiary: #ffffff;
-            --md-sys-color-tertiary-container: #ffd8e4;
-            --md-sys-color-on-tertiary-container: #31111d;
-            
-            --md-sys-color-error: #ba1a1a;
-            --md-sys-color-on-error: #ffffff;
-            --md-sys-color-error-container: #ffdad6;
-            --md-sys-color-on-error-container: #410002;
-            
-            --md-sys-color-surface: #fffbfe;
-            --md-sys-color-on-surface: #1c1b1f;
-            --md-sys-color-surface-variant: #e7e0ec;
-            --md-sys-color-on-surface-variant: #49454f;
-            
-            --md-sys-color-outline: #79747e;
-            --md-sys-color-outline-variant: #cac4d0;
-            
-            --md-sys-color-background: #fffbfe;
-            --md-sys-color-on-background: #1c1b1f;
-            
-            --md-sys-color-surface-container-lowest: #ffffff;
-            --md-sys-color-surface-container-low: #f7f2fa;
-            --md-sys-color-surface-container: #f3edf7;
-            --md-sys-color-surface-container-high: #ece6f0;
-            --md-sys-color-surface-container-highest: #e6e0e9;
-            
-            /* Legacy support for existing components */
-            --mdc-theme-primary: var(--md-sys-color-primary);
-            --mdc-theme-secondary: var(--md-sys-color-secondary);
-            --mdc-theme-surface: var(--md-sys-color-surface);
-            --mdc-theme-background: var(--md-sys-color-background);
-            --mdc-theme-on-primary: var(--md-sys-color-on-primary);
-            --mdc-theme-on-secondary: var(--md-sys-color-on-secondary);
-            --mdc-theme-on-surface: var(--md-sys-color-on-surface);
-            --mdc-theme-on-background: var(--md-sys-color-on-background);
-        }
-
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--md-sys-color-background);
-            color: var(--md-sys-color-on-background);
+            font-family: var(--md-sys-typescale-body-large-font);
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -74,148 +24,151 @@
             align-items: center;
             justify-content: center;
         }
-
+        
         .login-container {
-            background-color: var(--md-sys-color-surface);
-            border-radius: 28px;
+            background: var(--md-sys-color-surface-container);
+            border-radius: 16px;
             padding: 48px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-            width: 100%;
-            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 400px;
+            max-width: 500px;
         }
-
+        
         .login-header {
             text-align: center;
             margin-bottom: 32px;
         }
-
-        .login-title {
-            font-size: 28px;
-            font-weight: 400;
-            color: var(--md-sys-color-on-surface);
-            margin: 0 0 8px 0;
+        
+        .login-logo {
+            font-size: 48px;
+            color: var(--md-sys-color-primary);
+            margin-bottom: 16px;
         }
-
+        
+        .login-title {
+            font-family: var(--md-sys-typescale-headline-medium-font);
+            font-size: var(--md-sys-typescale-headline-medium-size);
+            font-weight: var(--md-sys-typescale-headline-medium-weight);
+            margin: 0 0 8px 0;
+            color: var(--md-sys-color-on-surface);
+        }
+        
         .login-subtitle {
-            font-size: 14px;
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
             color: var(--md-sys-color-on-surface-variant);
             margin: 0;
         }
-
+        
         .form-group {
             margin-bottom: 24px;
         }
-
+        
         .mdc-text-field {
             width: 100%;
         }
-
-        .login-button {
+        
+        .login-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 32px;
+        }
+        
+        .mdc-button {
             width: 100%;
-            margin-top: 16px;
         }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: 4px;
-            margin-bottom: 16px;
-            font-size: 14px;
-        }
-
-        .alert-success {
-            background-color: var(--md-sys-color-primary-container);
+        
+        .demo-note {
+            background: var(--md-sys-color-primary-container);
             color: var(--md-sys-color-on-primary-container);
-        }
-
-        .alert-error {
-            background-color: var(--md-sys-color-error-container);
-            color: var(--md-sys-color-on-error-container);
-        }
-
-        .alert-info {
-            background-color: var(--md-sys-color-secondary-container);
-            color: var(--md-sys-color-on-secondary-container);
-        }
-
-        /* Fix Material Design input field overlap */
-        .mdc-text-field__input {
-            padding: 16px 16px 16px 16px !important;
-            font-size: 16px !important;
-            line-height: 1.5 !important;
-        }
-
-        .mdc-text-field--outlined .mdc-notched-outline__leading,
-        .mdc-text-field--outlined .mdc-notched-outline__notch,
-        .mdc-text-field--outlined .mdc-notched-outline__trailing {
-            border-width: 1px !important;
-        }
-
-        .mdc-floating-label {
-            font-size: 16px !important;
-            line-height: 1.5 !important;
-        }
-
-        .mdc-text-field--outlined .mdc-floating-label--float-above {
-            transform: translateY(-106%) scale(0.75) !important;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 24px;
+            font-size: 14px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-header">
-            <h1 class="login-title">Postmark</h1>
-            <p class="login-subtitle">OCR Document Processing System</p>
+            <div class="login-logo">
+                <span class="material-icons">local_post_office</span>
+            </div>
+            <h1 class="login-title">Welcome to Postmark</h1>
+            <p class="login-subtitle">Sign in to access your documents</p>
         </div>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <div class="mdc-text-field mdc-text-field--outlined">
+                    <input type="email" id="email" class="mdc-text-field__input" required>
+                    <div class="mdc-notched-outline">
+                        <div class="mdc-notched-outline__leading"></div>
+                        <div class="mdc-notched-outline__notch">
+                            <label class="mdc-floating-label">Email</label>
+                        </div>
+                        <div class="mdc-notched-outline__trailing"></div>
                     </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <form method="POST">
-            <div class="form-group">
-                <label class="mdc-text-field mdc-text-field--outlined">
-                    <span class="mdc-notched-outline">
-                        <span class="mdc-notched-outline__leading"></span>
-                        <span class="mdc-notched-outline__notch">
-                            <span class="mdc-floating-label">Username</span>
-                        </span>
-                        <span class="mdc-notched-outline__trailing"></span>
-                    </span>
-                    <input type="text" class="mdc-text-field__input" name="username" required>
-                </label>
+                </div>
             </div>
-
+            
             <div class="form-group">
-                <label class="mdc-text-field mdc-text-field--outlined">
-                    <span class="mdc-notched-outline">
-                        <span class="mdc-notched-outline__leading"></span>
-                        <span class="mdc-notched-outline__notch">
-                            <span class="mdc-floating-label">Password</span>
-                        </span>
-                        <span class="mdc-notched-outline__trailing"></span>
-                    </span>
-                    <input type="password" class="mdc-text-field__input" name="password" required>
-                </label>
+                <div class="mdc-text-field mdc-text-field--outlined">
+                    <input type="password" id="password" class="mdc-text-field__input" required>
+                    <div class="mdc-notched-outline">
+                        <div class="mdc-notched-outline__leading"></div>
+                        <div class="mdc-notched-outline__notch">
+                            <label class="mdc-floating-label">Password</label>
+                        </div>
+                        <div class="mdc-notched-outline__trailing"></div>
+                    </div>
+                </div>
             </div>
-
-            <button type="submit" class="mdc-button mdc-button--raised login-button">
-                <span class="mdc-button__ripple"></span>
-                <span class="mdc-button__label">Sign In</span>
-            </button>
+            
+            <div class="login-actions">
+                <button type="submit" class="mdc-button mdc-button--raised">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">Sign In</span>
+                </button>
+            </div>
         </form>
+        
+        <div class="demo-note">
+            <strong>Demo Mode:</strong> Use any email and password to sign in
+        </div>
     </div>
-
-    <!-- Material Design Components JavaScript -->
+    
+    <!-- Material Design JavaScript -->
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    
     <script>
-        // Initialize Material Design Components
+        // Initialize Material Components
         mdc.autoInit();
+        
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                // In a real app, you'd validate credentials with the server
+                // For demo purposes, we'll just set a flag and redirect
+                localStorage.setItem('authenticated', 'true');
+                localStorage.setItem('userEmail', email);
+                
+                // Redirect to main app
+                window.location.href = '/';
+            } else {
+                alert('Please enter both email and password');
+            }
+        });
+        
+        // Auto-focus email field
+        document.getElementById('email').focus();
     </script>
 </body>
 </html>

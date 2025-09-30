@@ -7644,13 +7644,45 @@
         }
 
         function logout() {
+            // Clear any local storage or session data
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Redirect to logout endpoint
             window.location.href = '/logout';
         }
+        
+        // Auto-logout function for unauthenticated users
+        function checkAuthentication() {
+            // Check if user is authenticated
+            // In a real app, you'd check a token or session
+            const isAuthenticated = localStorage.getItem('authenticated') === 'true';
+            
+            if (!isAuthenticated) {
+                // Auto-logout and redirect to login
+                logout();
+                return false;
+            }
+            return true;
+        }
+        
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Only check authentication if not already on login page
+            if (!window.location.pathname.includes('/login')) {
+                checkAuthentication();
+            }
+        });
 
         // Initialize user info on page load
         function initializeUserInfo() {
-            // Get user info from the page (passed from Flask)
-            const userInfo = window.userInfo || {};
+            // Get user info from localStorage or page data
+            const userEmail = localStorage.getItem('userEmail') || 'User';
+            const userInfo = window.userInfo || {
+                email: userEmail,
+                name: userEmail.split('@')[0] || 'User',
+                role: 'Admin'
+            };
             const initials = getUserInitials(userInfo);
             const roleDisplay = getRoleDisplayName(userInfo.role || 'USER');
             
