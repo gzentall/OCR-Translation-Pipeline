@@ -130,6 +130,33 @@ def login():
     """Serve the login page."""
     return render_template('login.html')
 
+@app.route('/api/users')
+def get_users():
+    """Get list of users."""
+    try:
+        # For now, return a simple list of users
+        users = [
+            {
+                "id": 1,
+                "username": "admin",
+                "email": "admin@example.com",
+                "role": "ADMIN",
+                "status": "ACTIVE",
+                "created_at": "2025-01-01T00:00:00Z"
+            },
+            {
+                "id": 2,
+                "username": "user1",
+                "email": "user1@example.com", 
+                "role": "USER",
+                "status": "ACTIVE",
+                "created_at": "2025-01-02T00:00:00Z"
+            }
+        ]
+        return jsonify({"users": users, "success": True})
+    except Exception as e:
+        return jsonify({"error": str(e), "success": False}), 500
+
 
 @app.route('/documents/<doc_id>/images/<int:page_num>')
 def get_document_image(doc_id, page_num):

@@ -7606,9 +7606,14 @@
 
         // Profile menu functions
         function toggleProfileMenu() {
+            console.log('toggleProfileMenu called');
             const dropdown = document.getElementById('profileDropdown');
             const avatarButton = document.querySelector('.avatar-button');
             const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
+            
+            console.log('Dropdown found:', !!dropdown);
+            console.log('Avatar button found:', !!avatarButton);
+            console.log('Is hidden:', isHidden);
 
             if (isHidden) {
                 // Make floating and position relative to avatar
