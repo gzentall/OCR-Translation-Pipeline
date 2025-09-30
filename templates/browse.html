@@ -7606,9 +7606,14 @@
 
         // Profile menu functions
         function toggleProfileMenu() {
+            console.log('toggleProfileMenu called');
             const dropdown = document.getElementById('profileDropdown');
             const avatarButton = document.querySelector('.avatar-button');
             const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
+            
+            console.log('Dropdown element:', dropdown);
+            console.log('Avatar button:', avatarButton);
+            console.log('Is hidden:', isHidden);
 
             if (isHidden) {
                 // Make floating and position relative to avatar
@@ -7715,6 +7720,24 @@
                 location.reload();
             };
             document.body.appendChild(logoutButton);
+            
+            // Test Profile Menu button
+            const profileTestButton = document.createElement('button');
+            profileTestButton.textContent = 'Test Profile';
+            profileTestButton.style.position = 'fixed';
+            profileTestButton.style.top = '50px';
+            profileTestButton.style.right = '10px';
+            profileTestButton.style.zIndex = '9999';
+            profileTestButton.style.background = 'green';
+            profileTestButton.style.color = 'white';
+            profileTestButton.style.padding = '10px';
+            profileTestButton.style.border = 'none';
+            profileTestButton.style.borderRadius = '5px';
+            profileTestButton.onclick = function() {
+                console.log('Testing profile menu...');
+                toggleProfileMenu();
+            };
+            document.body.appendChild(profileTestButton);
         }
         
         // Check authentication on page load
