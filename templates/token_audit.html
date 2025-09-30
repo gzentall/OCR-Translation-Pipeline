@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Token Audit - Postmark</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: var(--md-sys-typography-display-large-fontFamily);
+            background: var(--md-sys-roles-surface);
+            color: var(--md-sys-roles-on-surface);
+            margin: 0;
+            padding: var(--md-sys-spacing-xl);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: var(--md-sys-typography-headline-medium-size);
+            font-weight: var(--md-sys-typography-headline-medium-weight);
+            line-height: var(--md-sys-typography-headline-medium-lineHeight);
+            margin-bottom: var(--md-sys-spacing-xl);
+        }
+        
+        .section {
+            margin-bottom: var(--md-sys-spacing-xxl);
+        }
+        
+        .section h2 {
+            font-size: var(--md-sys-typography-title-medium-size);
+            font-weight: var(--md-sys-typography-title-medium-weight);
+            margin-bottom: var(--md-sys-spacing-lg);
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--md-sys-spacing-md);
+        }
+        
+        .color-swatch {
+            border-radius: var(--md-sys-shape-radius-sm);
+            padding: var(--md-sys-spacing-md);
+            box-shadow: var(--md-sys-elevation-level1);
+        }
+        
+        .color-swatch .color-box {
+            width: 100%;
+            height: 60px;
+            border-radius: var(--md-sys-shape-radius-xs);
+            margin-bottom: var(--md-sys-spacing-sm);
+            border: 1px solid var(--md-sys-roles-outline-variant);
+        }
+        
+        .color-swatch .color-name {
+            font-size: var(--md-sys-typography-label-medium-size);
+            font-weight: var(--md-sys-typography-label-medium-weight);
+            margin-bottom: 4px;
+        }
+        
+        .color-swatch .color-value {
+            font-size: var(--md-sys-typography-body-medium-size);
+            font-family: monospace;
+            color: var(--md-sys-roles-on-surface-variant);
+        }
+        
+        .typography-sample {
+            margin-bottom: var(--md-sys-spacing-lg);
+            padding: var(--md-sys-spacing-md);
+            border-radius: var(--md-sys-shape-radius-sm);
+            background: var(--md-sys-roles-surface-variant);
+        }
+        
+        .typography-sample .label {
+            font-size: var(--md-sys-typography-label-medium-size);
+            color: var(--md-sys-roles-on-surface-variant);
+            margin-bottom: var(--md-sys-spacing-xs);
+        }
+        
+        .spacing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: var(--md-sys-spacing-md);
+        }
+        
+        .spacing-sample {
+            text-align: center;
+        }
+        
+        .spacing-sample .spacing-box {
+            background: var(--md-sys-roles-primary);
+            margin: 0 auto var(--md-sys-spacing-sm);
+        }
+        
+        .spacing-sample .spacing-label {
+            font-size: var(--md-sys-typography-label-medium-size);
+            color: var(--md-sys-roles-on-surface-variant);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Design Token Audit</h1>
+        
+        <div class="section">
+            <h2>Color Roles</h2>
+            <div class="color-grid">
+                <div class="color-swatch">
+                    <div class="color-box" style="background: var(--md-sys-roles-primary);"></div>
+                    <div class="color-name">Primary</div>
+                    <div class="color-value">var(--md-sys-roles-primary)</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background: var(--md-sys-roles-on-primary); color: var(--md-sys-roles-primary);"></div>
+                    <div class="color-name">On Primary</div>
+                    <div class="color-value">var(--md-sys-roles-on-primary)</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background: var(--md-sys-roles-primary-container);"></div>
+                    <div class="color-name">Primary Container</div>
+                    <div class="color-value">var(--md-sys-roles-primary-container)</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background: var(--md-sys-roles-surface);"></div>
+                    <div class="color-name">Surface</div>
+                    <div class="color-value">var(--md-sys-roles-surface)</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background: var(--md-sys-roles-on-surface);"></div>
+                    <div class="color-name">On Surface</div>
+                    <div class="color-value">var(--md-sys-roles-on-surface)</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background: var(--md-sys-roles-error);"></div>
+                    <div class="color-name">Error</div>
+                    <div class="color-value">var(--md-sys-roles-error)</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Typography Scale</h2>
+            <div class="typography-sample">
+                <div class="label">Display Large</div>
+                <div style="font-size: var(--md-sys-typography-display-large-size); font-weight: var(--md-sys-typography-display-large-weight); line-height: var(--md-sys-typography-display-large-lineHeight);">The quick brown fox jumps over the lazy dog</div>
+            </div>
+            <div class="typography-sample">
+                <div class="label">Headline Medium</div>
+                <div style="font-size: var(--md-sys-typography-headline-medium-size); font-weight: var(--md-sys-typography-headline-medium-weight); line-height: var(--md-sys-typography-headline-medium-lineHeight);">The quick brown fox jumps over the lazy dog</div>
+            </div>
+            <div class="typography-sample">
+                <div class="label">Title Medium</div>
+                <div style="font-size: var(--md-sys-typography-title-medium-size); font-weight: var(--md-sys-typography-title-medium-weight); line-height: var(--md-sys-typography-title-medium-lineHeight);">The quick brown fox jumps over the lazy dog</div>
+            </div>
+            <div class="typography-sample">
+                <div class="label">Body Medium</div>
+                <div style="font-size: var(--md-sys-typography-body-medium-size); font-weight: var(--md-sys-typography-body-medium-weight); line-height: var(--md-sys-typography-body-medium-lineHeight);">The quick brown fox jumps over the lazy dog</div>
+            </div>
+            <div class="typography-sample">
+                <div class="label">Label Medium</div>
+                <div style="font-size: var(--md-sys-typography-label-medium-size); font-weight: var(--md-sys-typography-label-medium-weight); line-height: var(--md-sys-typography-label-medium-lineHeight);">The quick brown fox jumps over the lazy dog</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Spacing Scale</h2>
+            <div class="spacing-grid">
+                <div class="spacing-sample">
+                    <div class="spacing-box" style="width: var(--md-sys-spacing-xs); height: var(--md-sys-spacing-xs);"></div>
+                    <div class="spacing-label">XS (4px)</div>
+                </div>
+                <div class="spacing-sample">
+                    <div class="spacing-box" style="width: var(--md-sys-spacing-sm); height: var(--md-sys-spacing-sm);"></div>
+                    <div class="spacing-label">SM (8px)</div>
+                </div>
+                <div class="spacing-sample">
+                    <div class="spacing-box" style="width: var(--md-sys-spacing-md); height: var(--md-sys-spacing-md);"></div>
+                    <div class="spacing-label">MD (12px)</div>
+                </div>
+                <div class="spacing-sample">
+                    <div class="spacing-box" style="width: var(--md-sys-spacing-lg); height: var(--md-sys-spacing-lg);"></div>
+                    <div class="spacing-label">LG (16px)</div>
+                </div>
+                <div class="spacing-sample">
+                    <div class="spacing-box" style="width: var(--md-sys-spacing-xl); height: var(--md-sys-spacing-xl);"></div>
+                    <div class="spacing-label">XL (24px)</div>
+                </div>
+                <div class="spacing-sample">
+                    <div class="spacing-box" style="width: var(--md-sys-spacing-xxl); height: var(--md-sys-spacing-xxl);"></div>
+                    <div class="spacing-label">XXL (32px)</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Shape & Elevation</h2>
+            <div style="display: flex; gap: var(--md-sys-spacing-lg); flex-wrap: wrap;">
+                <div style="width: 100px; height: 100px; background: var(--md-sys-roles-surface-variant); border-radius: var(--md-sys-shape-radius-xs); box-shadow: var(--md-sys-elevation-level1); display: flex; align-items: center; justify-content: center; font-size: var(--md-sys-typography-label-medium-size);">XS</div>
+                <div style="width: 100px; height: 100px; background: var(--md-sys-roles-surface-variant); border-radius: var(--md-sys-shape-radius-sm); box-shadow: var(--md-sys-elevation-level2); display: flex; align-items: center; justify-content: center; font-size: var(--md-sys-typography-label-medium-size);">SM</div>
+                <div style="width: 100px; height: 100px; background: var(--md-sys-roles-surface-variant); border-radius: var(--md-sys-shape-radius-md); box-shadow: var(--md-sys-elevation-level3); display: flex; align-items: center; justify-content: center; font-size: var(--md-sys-typography-label-medium-size);">MD</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

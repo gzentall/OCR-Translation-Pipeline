@@ -272,6 +272,11 @@ def logout():
     flash('You have been logged out', 'info')
     return redirect(url_for('login'))
 
+@app.route('/token-audit')
+def token_audit():
+    """Design token audit page."""
+    return render_template('token_audit.html')
+
 @app.route('/activate')
 def activate_user():
     """User activation page."""

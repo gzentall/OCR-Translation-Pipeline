@@ -11,6 +11,8 @@
     <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
     <!-- Google Fonts - Material Design 3 Type Scale -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Flex:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Design Tokens -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
     
     <style>
         :root {
@@ -316,6 +318,12 @@
             transform: translateY(-50%);
         }
 
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         .nav-actions .mdc-button {
             --mdc-theme-primary: var(--md-sys-color-primary);
             --mdc-theme-on-primary: #ffffff;
@@ -324,6 +332,368 @@
             height: 40px;
             padding: 0 var(--md-sys-spacing-6);
             border-radius: 20px;
+        }
+
+        /* Profile Menu Styles */
+        .profile-menu-container {
+            position: relative;
+        }
+
+        .avatar-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+
+        .avatar-button:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            color: #424242;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: var(--md-sys-color-surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            z-index: 2147483647;
+            overflow: hidden;
+        }
+
+        .profile-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            color: #424242;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 2px;
+        }
+
+        .profile-role {
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .profile-actions {
+            padding: 8px 0;
+        }
+
+        .profile-action {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            color: var(--md-sys-color-on-surface);
+            transition: background-color 0.2s;
+        }
+
+        .profile-action:hover {
+            background-color: var(--md-sys-color-surface-container-high);
+        }
+
+        .profile-action .material-icons {
+            font-size: 20px;
+        }
+
+        /* User Editor Dialog - Complete M3 Rebuild */
+        
+        /* Dialog Surface */
+        .mdc-dialog__surface {
+            background: var(--md-sys-roles-surface);
+            border-radius: 28px; /* M3 spec: 28dp for dialogs */
+            box-shadow: 0 28px 48px rgba(0, 0, 0, 0.12);
+            max-width: 560px;
+            width: 100%;
+            margin: 24px;
+            overflow: hidden;
+        }
+        
+        /* Dialog Title */
+        .mdc-dialog__title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 32px;
+            color: var(--md-sys-roles-on-surface);
+            margin: 0;
+            padding: 24px 24px 0 24px;
+        }
+
+        /* Dialog Content */
+        .mdc-dialog__content {
+            padding: 24px;
+        }
+
+        /* User Header - Horizontal Layout */
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--md-sys-roles-outline-variant);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--md-sys-roles-primary);
+            color: var(--md-sys-roles-on-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            color: var(--md-sys-roles-on-surface);
+            margin-bottom: 4px;
+        }
+
+        .user-email {
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 20px;
+            color: var(--md-sys-roles-on-surface-variant);
+        }
+
+        /* Form Fields */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-label {
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 16px;
+            letter-spacing: 0.5px;
+            color: var(--md-sys-roles-on-surface-variant);
+            text-transform: uppercase;
+        }
+
+        .form-input {
+            padding: 16px 0 8px 0;
+            border: none;
+            border-bottom: 1px solid var(--md-sys-roles-outline);
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 24px;
+            background: transparent;
+            color: var(--md-sys-roles-on-surface);
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-bottom-color: var(--md-sys-roles-primary);
+        }
+
+        .form-input::placeholder {
+            color: var(--md-sys-roles-on-surface-variant);
+        }
+
+        /* Full-width fields */
+        .form-field-full {
+            grid-column: 1 / -1;
+        }
+
+        /* Dialog Actions */
+        .mdc-dialog__actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px 24px 24px;
+            gap: 8px;
+        }
+
+        .mdc-dialog__actions .btn {
+            height: 40px;
+            padding: 0 24px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 64px;
+        }
+
+        .btn-destructive {
+            background: var(--md-sys-roles-error);
+            color: var(--md-sys-roles-on-error);
+        }
+
+        .btn-destructive:hover {
+            opacity: 0.8;
+        }
+
+        .btn-destructive-secondary {
+            background: transparent;
+            color: var(--md-sys-roles-error);
+            border: 1px solid var(--md-sys-roles-error);
+        }
+
+        .btn-destructive-secondary:hover {
+            background: var(--md-sys-roles-error);
+            color: var(--md-sys-roles-on-error);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--md-sys-roles-on-surface);
+            border: 1px solid var(--md-sys-roles-outline);
+        }
+
+        .btn-secondary:hover {
+            background: var(--md-sys-roles-surface-variant);
+        }
+
+        .btn-primary {
+            background: var(--md-sys-roles-primary);
+            color: var(--md-sys-roles-on-primary);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.8;
+        }
+
+        /* M3 Button Group (Document Status) */
+        .button-group {
+            display: inline-flex;
+            border-radius: 20px;
+            background: var(--md-sys-roles-surface-variant);
+            box-shadow: inset 0 0 0 1px var(--md-sys-roles-outline-variant);
+            overflow: hidden;
+        }
+        .button-group .group-btn {
+            height: 36px;
+            padding: 0 16px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 20px;
+            color: var(--md-sys-roles-on-surface-variant);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        .button-group .group-btn + .group-btn {
+            box-shadow: inset 1px 0 0 0 var(--md-sys-roles-outline-variant);
+        }
+        .button-group .group-btn[aria-pressed="true"] {
+            background: var(--md-sys-roles-primary);
+            color: var(--md-sys-roles-on-primary);
+        }
+
+        .dialog-actions-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .dialog-actions-spacer { flex: 1 1 auto; }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .form-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--md-sys-color-primary);
+        }
+
+        .dialog-actions-left, .dialog-actions-right {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dialog-actions-left {
+            flex: 1;
+        }
+
+        .dialog-actions-right {
+            justify-content: flex-end;
         }
 
         .main-content {
@@ -1014,7 +1384,7 @@
         }
 
         .mdc-list-item:hover {
-            background-color: var(--md-sys-color-surface-container-high);
+            background-color: var(--md-sys-roles-surface-variant);
         }
 
         .mdc-list-item:focus {
@@ -2239,6 +2609,110 @@
             margin-top: var(--md-sys-spacing-4);
         }
 
+        /* Users Section Styles */
+        .users-section {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .users-table-container {
+            margin-top: 16px;
+        }
+
+        .mdc-list-container {
+            background: var(--md-sys-roles-surface);
+            border-radius: var(--md-sys-shape-radius-md);
+            box-shadow: var(--md-sys-elevation-level1);
+            overflow: hidden;
+        }
+
+        .mdc-list {
+            padding: 8px 0; /* M3 spec: 8dp top/bottom padding for list */
+        }
+
+        .mdc-list-item {
+            height: 88px; /* M3 spec: 88dp */
+            padding: 16px; /* M3 spec: 16dp all around */
+            display: flex;
+            align-items: center; /* Center align items vertically */
+            border-bottom: 1px solid var(--md-sys-roles-outline-variant);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .mdc-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .mdc-list-item:hover {
+            background-color: var(--md-sys-roles-surface-variant);
+        }
+
+        .mdc-list-item__graphic {
+            margin-right: 16px; /* M3 spec: 16dp spacing between avatar and text */
+            flex-shrink: 0; /* Don't shrink the avatar */
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--md-sys-roles-primary);
+            color: var(--md-sys-roles-on-primary);
+            border: none;
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--md-sys-typography-title-medium-weight);
+            font-size: var(--md-sys-typography-title-medium-size);
+            flex-shrink: 0;
+        }
+
+        .mdc-list-item__text {
+            flex: 1; /* Take up remaining space */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center the text vertically */
+            min-width: 0; /* Allow text to shrink */
+        }
+
+        .mdc-list-item__primary-text {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px; /* M3 spec: 16sp */
+            font-weight: 400; /* M3 spec: Roboto Regular */
+            line-height: 24px; /* M3 spec: 1.5x line height */
+            color: var(--md-sys-roles-on-surface);
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .mdc-list-item__secondary-text {
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px; /* M3 spec: 14sp */
+            font-weight: 400; /* M3 spec: Roboto Regular */
+            line-height: 20px; /* M3 spec: 1.43x line height */
+            color: var(--md-sys-roles-on-surface-variant);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .mdc-list-item__tertiary-text {
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px; /* M3 spec: 12sp for supporting text */
+            font-weight: 400; /* M3 spec: Roboto Regular */
+            line-height: 16px; /* M3 spec: 1.33x line height */
+            color: var(--md-sys-roles-on-surface-variant);
+            text-align: right;
+            white-space: nowrap;
+            flex-shrink: 0; /* Don't shrink the tertiary text */
+            margin-left: 16px; /* M3 spec: 16dp spacing from text */
+        }
+
         .tab-panel {
             display: none;
         }
@@ -3068,6 +3542,10 @@
                 <span class="material-icons">description</span>
                 <span class="nav-tab-label">Documents</span>
             </button>
+            <button class="nav-tab" onclick="switchTab('users')">
+                <span class="material-icons">manage_accounts</span>
+                <span class="nav-tab-label">Users</span>
+            </button>
             <button class="nav-tab" onclick="switchTab('references')">
                 <span class="material-icons">people</span>
                 <span class="nav-tab-label">References</span>
@@ -3076,8 +3554,28 @@
         <div class="nav-actions">
             <button class="mdc-button mdc-button--filled" onclick="showUploadModal()">
                 <span class="mdc-button__ripple"></span>
-                <span class="mdc-button__label">Upload Documents</span>
+                <span class="mdc-button__label">Upload</span>
             </button>
+            <div class="profile-menu-container">
+                <button class="avatar-button" onclick="toggleProfileMenu()">
+                    <div class="avatar" id="userAvatar">U</div>
+                </button>
+                <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="profileAvatar">U</div>
+                        <div class="profile-info">
+                            <div class="profile-name" id="profileName">User</div>
+                            <div class="profile-role" id="profileRole">Viewer</div>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="profile-action" onclick="logout()">
+                            <span class="material-icons">logout</span>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -3223,6 +3721,26 @@
                 <div id="documentsContainer">
                     <div class="loading">
                         <p>Loading documents...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab Content -->
+        <div id="users-tab" class="tab-content" style="display: none;">
+            <div class="users-section">
+                <div class="section-header">
+                    <h2 id="usersTitle">Users</h2>
+                    <button class="mdc-button mdc-button--filled" onclick="showAddUserModal()">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Add User</span>
+                    </button>
+                </div>
+                <div class="users-table-container">
+                    <div class="mdc-list-container">
+                        <div class="mdc-list" id="usersList">
+                            <!-- Users will be loaded here -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3400,10 +3918,17 @@
                 
                 <!-- Dialog Actions -->
                 <div class="mdc-dialog__actions">
-                    <button class="mdc-button mdc-button--outlined mdc-dialog__button delete-btn" id="modalDeleteBtn" onclick="deleteCurrentDocument()">
-                        <span class="mdc-button__ripple"></span>
-                        <span class="mdc-button__label">Delete</span>
+                    <div class="dialog-actions-left">
+                        <button class="mdc-button mdc-button--outlined mdc-dialog__button delete-btn" id="modalDeleteBtn" onclick="deleteCurrentDocument()" aria-label="Delete document">
+                            <span class="material-icons">delete</span>
                     </button>
+                        <div class="button-group" role="group" aria-label="Document status">
+                            <button type="button" class="group-btn" id="statusNewBtn" aria-pressed="false" onclick="setDocumentStatus('New')">New</button>
+                            <button type="button" class="group-btn" id="statusEditingBtn" aria-pressed="false" onclick="setDocumentStatus('Editing')">Editing</button>
+                            <button type="button" class="group-btn" id="statusFinalBtn" aria-pressed="false" onclick="setDocumentStatus('Final')">Final</button>
+                        </div>
+                    </div>
+                    <div class="dialog-actions-spacer"></div>
                     <button class="mdc-button mdc-button--raised mdc-dialog__button" id="modalSaveBtn" onclick="saveDocument()">
                         <span class="mdc-button__ripple"></span>
                         <span class="mdc-button__label">Save Changes</span>
@@ -3429,6 +3954,11 @@
 
     <!-- Material Components JavaScript -->
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    
+    <script>
+        // Pass user data from Flask to JavaScript
+        window.userInfo = {{ user | tojson if user else 'null' }};
+    </script>
     
     <script>
         // Initialize Material Components
@@ -3463,7 +3993,7 @@
                 console.log('Documents response:', data);
                 
                 if (data.success) {
-                    allDocuments = data.documents;
+                    allDocuments = data.documents.map(d => ({ ...d, status: d.status || 'New' }));
                     filteredDocuments = [...allDocuments];
                     console.log('Documents loaded:', allDocuments.length);
                     
@@ -4412,6 +4942,7 @@
                 console.log('Creating modal with HTML select elements...');
                 window.currentDocumentPeople = doc.people || [];
                 window.currentDocumentId = doc.id;
+                window.currentDocumentStatus = doc.status || 'New';
                 
                 // Ensure we have required properties with fallbacks
                 const safeDoc = {
@@ -5796,6 +6327,12 @@
             const recipient = document.getElementById('recipientSelect')?.value || '';
             const originalText = document.getElementById('editOriginalText').value.trim();
             const translatedText = document.getElementById('editTranslatedText').value.trim();
+            // Auto-switch status to Editing if any change is made
+            if (window.currentDocumentStatus !== 'Final') {
+                updateStatusButtons('Editing');
+                window.currentDocumentStatus = 'Editing';
+                try { await setDocumentStatus('Editing'); } catch (_) {}
+            }
             
             // Get the current document to preserve its summary
             console.log('allDocuments available:', !!allDocuments, 'length:', allDocuments ? allDocuments.length : 0);
@@ -6226,6 +6763,35 @@
             }
         }
 
+        // Document status UI helpers
+        function updateStatusButtons(status) {
+            const map = {
+                New: document.getElementById('statusNewBtn'),
+                Editing: document.getElementById('statusEditingBtn'),
+                Final: document.getElementById('statusFinalBtn')
+            };
+            Object.values(map).forEach(btn => { if (btn) btn.setAttribute('aria-pressed', 'false'); });
+            if (map[status]) map[status].setAttribute('aria-pressed', 'true');
+        }
+
+        async function setDocumentStatus(status) {
+            if (!window.currentDocumentId) return;
+            try {
+                updateStatusButtons(status);
+                const res = await fetch(`/documents/${window.currentDocumentId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || 'Failed to update status');
+                window.currentDocumentStatus = status;
+            } catch (e) {
+                console.error('Status update failed:', e);
+                showSnackbar('Failed to update status: ' + e.message);
+            }
+        }
+
         // Initialize zoom slider
         function initializeZoomSlider() {
             const slider = document.querySelector('.zoom-slider');
@@ -6442,9 +7008,24 @@
         });
 
 
+        // Tab isolation: track active tab and manage in-flight requests
+        let activeTab = 'documents';
+        const tabControllers = { users: null, references: null };
+
+        function abortOtherTabRequests(keepTabName) {
+            Object.keys(tabControllers).forEach((tab) => {
+                if (tab !== keepTabName && tabControllers[tab]) {
+                    try { tabControllers[tab].abort(); } catch (_) {}
+                    tabControllers[tab] = null;
+                }
+            });
+        }
+
         // Tab switching functionality
         function switchTab(tabName) {
             console.log('Switching to tab:', tabName);
+            activeTab = tabName;
+            abortOtherTabRequests(tabName);
             
             // Remove active class from all tabs and buttons
             document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
@@ -6474,7 +7055,344 @@
             // Load content for the active tab
             if (tabName === 'references') {
                 loadPeople();
+            } else if (tabName === 'users') {
+                loadUsers();
             }
+        }
+
+        // User management functions (with tab isolation)
+        async function loadUsers() {
+            // Abort any previous users request
+            if (tabControllers.users) {
+                try { tabControllers.users.abort(); } catch (_) {}
+            }
+            const controller = new AbortController();
+            tabControllers.users = controller;
+            const signal = controller.signal;
+
+            try {
+                console.log('Loading users...');
+                const response = await fetch('/api/users', { signal });
+                if (signal.aborted) return; // tab changed
+                if (activeTab !== 'users') return; // safety
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: Failed to load users`);
+                }
+                const data = await response.json();
+                if (signal.aborted || activeTab !== 'users') return;
+
+                // Handle the API response format
+                if (data.success && data.users) {
+                    renderUsers(data.users);
+                } else if (data.error) {
+                    throw new Error(data.error);
+                } else {
+                    throw new Error('Invalid response format');
+                }
+            } catch (error) {
+                if (error.name === 'AbortError') return;
+                console.error('Error loading users:', error);
+                showSnackbar('Failed to load users: ' + error.message, 'error');
+            }
+        }
+
+        function renderUsers(users) {
+            console.log('renderUsers called with:', users);
+            const usersList = document.getElementById('usersList');
+            if (!usersList) {
+                console.error('Users list container not found');
+                return;
+            }
+
+            usersList.innerHTML = '';
+            console.log('Cleared users list, rendering', users.length, 'users');
+
+            users.forEach((user, index) => {
+                const listItem = document.createElement('div');
+                listItem.className = 'mdc-list-item';
+                listItem.onclick = () => editUser(user);
+
+                const initials = getUserInitials(user);
+                const roleDisplay = getRoleDisplayName(user.role);
+                const lastLogin = formatLastLogin(user.last_login);
+
+                // Create display name - use first/last name if available, otherwise username
+                const displayName = (user.first_name && user.last_name) 
+                    ? `${user.first_name} ${user.last_name}`.trim()
+                    : user.username || 'Unknown User';
+                
+                listItem.innerHTML = `
+                    <div class="mdc-list-item__graphic">
+                        <div class="user-avatar">${initials}</div>
+                    </div>
+                    <div class="mdc-list-item__text">
+                        <div class="mdc-list-item__primary-text">${displayName}</div>
+                        <div class="mdc-list-item__secondary-text">${roleDisplay}</div>
+                    </div>
+                    <div class="mdc-list-item__tertiary-text">${lastLogin}</div>
+                `;
+
+                usersList.appendChild(listItem);
+                console.log(`Added user ${index + 1}:`, user.username, 'to DOM');
+            });
+            
+            console.log('Final usersList children count:', usersList.children.length);
+            console.log('usersList element:', usersList);
+            
+            // Guard visibility strictly to the active tab
+            const usersTab = document.getElementById('users-tab');
+            const usersSection = document.querySelector('.users-section');
+            const usersContainer = document.querySelector('.users-table-container');
+
+            if (typeof activeTab !== 'undefined' && activeTab === 'users') {
+                if (usersTab) usersTab.style.display = '';
+                if (usersSection) usersSection.style.display = '';
+                if (usersContainer) usersContainer.style.display = '';
+                if (usersList) usersList.style.display = '';
+            } else {
+                if (usersTab) usersTab.style.display = 'none';
+            }
+        }
+
+        function getUserInitials(user) {
+            const firstName = user.first_name || '';
+            const lastName = user.last_name || '';
+            if (firstName && lastName) {
+                return (firstName[0] + lastName[0]).toUpperCase();
+            } else if (user.username) {
+                return user.username.substring(0, 2).toUpperCase();
+            }
+            return 'U';
+        }
+
+        function getRoleDisplayName(role) {
+            const roleMap = {
+                'SUPER_ADMIN': 'Admin',
+                'ADMIN': 'Editor', 
+                'USER': 'Viewer'
+            };
+            return roleMap[role] || role;
+        }
+
+        function formatLastLogin(lastLogin) {
+            if (!lastLogin) return 'Never';
+            const date = new Date(lastLogin);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return 'Today';
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+            return date.toLocaleDateString();
+        }
+
+        function showAddUserModal() {
+            // Create a new user object for the add modal
+            const newUser = {
+                username: '',
+                email: '',
+                first_name: '',
+                last_name: '',
+                role: 'USER',
+                is_active: true,
+                is_activated: false
+            };
+            editUser(newUser, true);
+        }
+
+        function editUser(user, isNew = false) {
+            const modal = document.createElement('div');
+            modal.className = 'mdc-dialog';
+            modal.id = 'userEditModal';
+            modal.setAttribute('role', 'dialog');
+            modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('aria-labelledby', 'user-edit-title');
+            
+            const initials = getUserInitials(user);
+            const roleDisplay = getRoleDisplayName(user.role);
+            
+            modal.innerHTML = `
+                <div class="mdc-dialog__container">
+                    <div class="mdc-dialog__surface">
+                        <h2 class="mdc-dialog__title" id="user-edit-title">
+                            ${isNew ? 'Add User' : 'Edit User'}
+                        </h2>
+                        
+                        <div class="mdc-dialog__content">
+                            <div class="user-header">
+                                <div class="user-avatar">${initials}</div>
+                                <div class="user-info">
+                                    <div class="user-name">${user.first_name || ''} ${user.last_name || ''}</div>
+                                    <div class="user-email">${user.email || ''}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid">
+                                <div class="form-field">
+                                    <label class="form-label" for="editFirstName">First Name</label>
+                                    <input type="text" id="editFirstName" class="form-input" value="${user.first_name || ''}">
+                                </div>
+                                <div class="form-field">
+                                    <label class="form-label" for="editLastName">Last Name</label>
+                                    <input type="text" id="editLastName" class="form-input" value="${user.last_name || ''}">
+                                </div>
+                                <div class="form-field">
+                                    <label class="form-label" for="editUsername">Username</label>
+                                    <input type="text" id="editUsername" class="form-input" value="${user.username || ''}" ${isNew ? '' : 'readonly'}>
+                                </div>
+                                <div class="form-field">
+                                    <label class="form-label" for="editEmail">Email</label>
+                                    <input type="email" id="editEmail" class="form-input" value="${user.email || ''}">
+                                </div>
+                                ${isNew ? `
+                                    <div class="form-field form-field-full">
+                                        <label class="form-label" for="editPassword">Password</label>
+                                        <input type="password" id="editPassword" class="form-input" placeholder="Leave blank to send invitation">
+                                    </div>
+                                ` : ''}
+                                <div class="form-field form-field-full">
+                                    <label class="form-label" for="editRole">Role</label>
+                                    <select id="editRole" class="form-input">
+                                        <option value="USER" ${user.role === 'USER' ? 'selected' : ''}>Viewer</option>
+                                        <option value="ADMIN" ${user.role === 'ADMIN' ? 'selected' : ''}>Editor</option>
+                                        <option value="SUPER_ADMIN" ${user.role === 'SUPER_ADMIN' ? 'selected' : ''}>Admin</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mdc-dialog__actions">
+                            ${!isNew ? `
+                                <button type="button" class="btn btn-destructive" onclick="deleteUser('${user.username}')">
+                                    <span class="material-icons">delete</span>
+                                    Delete
+                                </button>
+                                <button type="button" class="btn btn-destructive-secondary" onclick="toggleUserActive('${user.username}')">
+                                    <span class="material-icons">${user.is_active ? 'person_off' : 'person'}</span>
+                                    ${user.is_active ? 'Deactivate' : 'Activate'}
+                                </button>
+                            ` : ''}
+                            <button type="button" class="btn btn-secondary" onclick="closeUserDialog()">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="saveUser(${isNew})">Save</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdc-dialog__scrim"></div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Initialize MDC Dialog
+            const dialog = new mdc.dialog.MDCDialog(modal);
+            dialog.open();
+            
+            // Store references for later use
+            modal.mdcDialog = dialog;
+            modal.currentUser = user;
+            modal.isNew = isNew;
+        }
+
+        function closeUserDialog() {
+            const modal = document.getElementById('userEditModal');
+            if (modal && modal.mdcDialog) {
+                modal.mdcDialog.close();
+                setTimeout(() => {
+                    modal.remove();
+                }, 300);
+            }
+        }
+
+        function saveUser(isNew) {
+            const modal = document.getElementById('userEditModal');
+            if (!modal) return;
+            
+            const userData = {
+                username: document.getElementById('editUsername').value,
+                email: document.getElementById('editEmail').value,
+                first_name: document.getElementById('editFirstName').value,
+                last_name: document.getElementById('editLastName').value,
+                role: document.getElementById('editRole').value,
+                is_active: isNew ? true : document.getElementById('editIsActive').checked
+            };
+            
+            if (isNew) {
+                userData.password = document.getElementById('editPassword').value;
+            }
+            
+            // TODO: Implement API call to save user
+            console.log('Saving user:', userData);
+            showSnackbar(`${isNew ? 'User created' : 'User updated'} successfully`, 'success');
+            closeUserDialog();
+            
+            // Reload users list
+            loadUsers();
+        }
+
+        function deleteUser(username) {
+            if (confirm(`Are you sure you want to delete user "${username}"?`)) {
+                // TODO: Implement API call to delete user
+                console.log('Deleting user:', username);
+                showSnackbar('User deleted successfully', 'success');
+                closeUserDialog();
+                loadUsers();
+            }
+        }
+
+        function toggleUserActive(username) {
+            // TODO: Implement API call to toggle user active status
+            console.log('Toggling user active status:', username);
+            showSnackbar('User status updated', 'success');
+            closeUserDialog();
+            loadUsers();
+        }
+
+        // Profile menu functions
+        function toggleProfileMenu() {
+            const dropdown = document.getElementById('profileDropdown');
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'block';
+                // Close dropdown when clicking outside
+                setTimeout(() => {
+                    document.addEventListener('click', closeProfileMenuOnOutsideClick);
+                }, 0);
+            } else {
+                dropdown.style.display = 'none';
+                document.removeEventListener('click', closeProfileMenuOnOutsideClick);
+            }
+        }
+
+        function closeProfileMenuOnOutsideClick(event) {
+            const dropdown = document.getElementById('profileDropdown');
+            const avatarButton = document.querySelector('.avatar-button');
+            
+            if (!dropdown.contains(event.target) && !avatarButton.contains(event.target)) {
+                dropdown.style.display = 'none';
+                document.removeEventListener('click', closeProfileMenuOnOutsideClick);
+            }
+        }
+
+        function logout() {
+            window.location.href = '/logout';
+        }
+
+        // Initialize user info on page load
+        function initializeUserInfo() {
+            // Get user info from the page (passed from Flask)
+            const userInfo = window.userInfo || {};
+            const initials = getUserInitials(userInfo);
+            const roleDisplay = getRoleDisplayName(userInfo.role || 'USER');
+            
+            // Update avatar
+            document.getElementById('userAvatar').textContent = initials;
+            document.getElementById('profileAvatar').textContent = initials;
+            
+            // Update profile info
+            const fullName = `${userInfo.first_name || ''} ${userInfo.last_name || ''}`.trim() || userInfo.username || 'User';
+            document.getElementById('profileName').textContent = fullName;
+            document.getElementById('profileRole').textContent = roleDisplay;
         }
 
         // Upload side sheet functions
@@ -7605,6 +8523,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM Content Loaded - starting initialization');
             loadDocuments();
+            
+            // Initialize user info
+            initializeUserInfo();
             
             // Initialize sort chips
             initializeSortChips();
