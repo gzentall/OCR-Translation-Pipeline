@@ -3718,12 +3718,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Temporary auth button for testing -->
-            <button onclick="localStorage.setItem('authenticated', 'true'); localStorage.setItem('userEmail', 'test@example.com'); location.reload();" 
-                    style="background: #6200ea; color: white; padding: 8px 12px; border: none; border-radius: 4px; margin-left: 10px; font-size: 12px;">
-                Login
-            </button>
         </div>
     </div>
 
@@ -7675,33 +7669,23 @@
         
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Only check authentication if not already on login page
-            if (!window.location.pathname.includes('/login')) {
-                // Check if user is authenticated before running the check
-                const isAuthenticated = localStorage.getItem('authenticated') === 'true';
-                
-                if (!isAuthenticated) {
-                    // Clear any existing auth data and redirect to login
-                    localStorage.clear();
-                    window.location.href = '/login';
-                } else {
-                    // Initialize user info and profile menu
-                    initializeUserInfo();
-                }
-            }
+            // Initialize user info regardless of auth state
+            initializeUserInfo();
         });
 
         // Initialize user info on page load
         function initializeUserInfo() {
             // Get user info from localStorage or page data
             const userEmail = localStorage.getItem('userEmail') || 'User';
+            const isAuthenticated = localStorage.getItem('authenticated') === 'true';
+            
             const userInfo = window.userInfo || {
                 email: userEmail,
                 name: userEmail.split('@')[0] || 'User',
-                role: 'Admin'
+                role: isAuthenticated ? 'Admin' : 'Guest'
             };
             const initials = getUserInitials(userInfo);
-            const roleDisplay = getRoleDisplayName(userInfo.role || 'USER');
+            const roleDisplay = getRoleDisplayName(userInfo.role || 'GUEST');
             
             // Update avatar
             const userAvatar = document.getElementById('userAvatar');
@@ -7711,7 +7695,7 @@
             document.getElementById('profileAvatar').textContent = initials;
             
             // Update profile info
-            const fullName = `${userInfo.first_name || ''} ${userInfo.last_name || ''}`.trim() || userInfo.username || 'User';
+            const fullName = `${userInfo.first_name || ''} ${userInfo.last_name || ''}`.trim() || userInfo.username || userInfo.name || 'User';
             document.getElementById('profileName').textContent = fullName;
             document.getElementById('profileRole').textContent = roleDisplay;
         }
