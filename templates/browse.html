@@ -189,6 +189,130 @@
             color: var(--md-sys-color-on-background);
         }
 
+        /* 
+         * Z-INDEX SYSTEM - Systematic Hierarchy Implementation
+         * 
+         * This system follows a strict hierarchy to prevent z-index conflicts:
+         * 
+         * BASE CONTENT (1-9):
+         * - Main content: z-index 1
+         * - Navigation tabs: z-index 2  
+         * - App bar: z-index 3
+         * 
+         * DROPDOWNS & POPOVERS (1000-1999):
+         * - Menus: z-index 1000
+         * - Side sheets: z-index 1100-1200
+         * - Floating toolbars: z-index 1300
+         * - Overlays: z-index 1400-1500
+         * 
+         * MODALS & DIALOGS (2000-2999):
+         * - Main dialogs: z-index 2000
+         * - Special modals: z-index 2100-2200
+         * - Dialog scrims: z-index 2500
+         * 
+         * TOOLTIPS (3000-3999):
+         * - Tooltips: z-index 3000
+         * 
+         * TOAST NOTIFICATIONS (4000-4999):
+         * - Snackbars: z-index 4000
+         * 
+         * CRITICAL OVERLAYS (5000+):
+         * - Loading screens: z-index 5000
+         * - Critical errors: z-index 6000
+         * 
+         * STACKING CONTEXT RULES:
+         * - Portal root (#portal-root) has no stacking context creators
+         * - Avoid transform, filter, perspective, opacity < 1 on containers
+         * - Use portals for dropdowns to escape parent stacking contexts
+         * - Document any necessary stacking context creators with comments
+         */
+        
+        /* Portal root - no stacking context creation */
+        #portal-root {
+            position: relative;
+            z-index: 0; /* Base level - no stacking context */
+            /* Avoid creating stacking contexts */
+            /* No transform, filter, perspective, or opacity < 1 */
+        }
+        
+        /* Base content: z-index 1-9 */
+        .main-content {
+            z-index: 1; /* Main content at base level */
+        }
+        
+        .nav-tabs {
+            z-index: 2; /* Tab level */ /* Tabs above content */
+        }
+        
+        .app-bar {
+            z-index: 3; /* App bar above tabs */
+        }
+        
+        /* Dropdowns and popovers: z-index 1000-1999 */
+        .mdc-menu {
+            z-index: 1000; /* Dropdown level */ /* Dropdown menus */
+        }
+        
+        .profile-dropdown {
+            z-index: 1000; /* Dropdown level */ /* Profile dropdown */
+        }
+        
+        .mdc-drawer {
+            z-index: 1100; /* Side sheets */
+        }
+        
+        .side-sheet {
+            z-index: 1200; /* Custom side sheets */
+        }
+        
+        .floating-toolbar {
+            z-index: 1300; /* Floating action toolbar */
+        }
+        
+        .side-sheet-overlay {
+            z-index: 1400; /* Side sheet overlays */
+        }
+        
+        .mdc-drawer-scrim {
+            z-index: 1500; /* Drawer scrims */
+        }
+        
+        /* Modals and dialogs: z-index 2000-2999 */
+        .mdc-dialog {
+            z-index: 2000; /* Modal level */ /* Main dialogs */
+        }
+        
+        .merge-modal {
+            z-index: 2100; /* Merge modal */
+        }
+        
+        .add-reference-modal {
+            z-index: 2200; /* Add reference modal */
+        }
+        
+        .mdc-dialog__scrim {
+            z-index: 2500; /* Dialog scrims */
+        }
+        
+        /* Tooltips: z-index 3000-3999 */
+        .mdc-tooltip {
+            z-index: 3000; /* Tooltips */
+        }
+        
+        /* Toast notifications: z-index 4000-4999 */
+        .mdc-snackbar {
+            z-index: 4000; /* Snackbars/toasts */
+        }
+        
+        /* Critical overlays: z-index 5000+ */
+        .loading-overlay {
+            z-index: 5000; /* Loading screens */
+        }
+        
+        .critical-error {
+            z-index: 6000; /* Critical error overlays */
+        }
+
         .app-bar {
             background-color: #ffffff;
             color: var(--md-sys-color-on-surface);
@@ -210,6 +334,8 @@
             left: var(--md-sys-spacing-6);
             top: 50%;
             transform: translateY(-50%);
+            /* Note: This transform creates a stacking context, but it's necessary for centering */
+            /* The profile dropdown is portaled to avoid this issue */
         }
 
         .app-logo {
@@ -316,6 +442,9 @@
             right: var(--md-sys-spacing-6);
             top: 50%;
             transform: translateY(-50%);
+            z-index: 3; /* App bar level - above content and tabs */
+            /* Note: This transform creates a stacking context, but it's necessary for centering */
+            /* The profile dropdown is portaled to avoid this issue */
         }
 
         .nav-actions {
@@ -337,6 +466,7 @@
         /* Profile Menu Styles */
         .profile-menu-container {
             position: relative;
+            z-index: 3; /* App bar level - above content and tabs */
         }
 
         .avatar-button {
@@ -376,8 +506,17 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             min-width: 200px;
-            z-index: 2147483647;
+            z-index: 1000; /* Dropdown level */ /* Dropdown level - above content but below modals */
             overflow: hidden;
+            display: none;
+        }
+
+        /* Floating variant to escape parent overflow/z-index clipping */
+        .profile-dropdown.profile-dropdown--floating {
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000 !important; /* Dropdown level - above content but below modals */
         }
 
         .profile-header {
@@ -902,7 +1041,7 @@
             border: 1px solid var(--md-sys-color-outline-variant);
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 1000; /* Dropdown level */
             min-width: 280px;
             margin-top: 8px;
         }
@@ -1143,7 +1282,7 @@
             border: 1px solid var(--md-sys-color-outline-variant);
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            z-index: 1000; /* Dropdown level */
             min-width: 180px;
             margin-top: var(--md-sys-spacing-1);
         }
@@ -1255,7 +1394,7 @@
             border-top: none;
             border-radius: 0 0 28px 28px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-            z-index: 1000;
+            z-index: 1000; /* Dropdown level */
             max-height: 300px;
             overflow-y: auto;
             display: none;
@@ -1465,7 +1604,7 @@
             font-weight: 500;
             border: 1px solid var(--md-sys-color-surface);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            z-index: 2;
+            z-index: 2; /* Tab level */
         }
 
         .mdc-list-item__text {
@@ -1795,7 +1934,7 @@
             transform: translateY(-50%);
             opacity: 0;
             transition: opacity 0.2s cubic-bezier(0.2, 0, 0, 1);
-            z-index: 10;
+            z-index: 2; /* Tab level */
             width: 20px;
             height: 20px;
         }
@@ -1843,7 +1982,7 @@
             display: flex;
             align-items: center;
             gap: var(--md-sys-spacing-2);
-            z-index: 1000;
+            z-index: 1000; /* Dropdown level */
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
@@ -1923,7 +2062,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.32);
-            z-index: 2000;
+            z-index: 2000; /* Modal level */
             display: none;
             align-items: center;
             justify-content: center;
@@ -2063,7 +2202,7 @@
             background: var(--md-sys-color-surface-container-lowest);
             border-left: 1px solid var(--md-sys-color-outline-variant);
             box-shadow: -4px 0 8px rgba(0,0,0,0.12);
-            z-index: 1000;
+            z-index: 1000; /* Dropdown level */
             transition: right 0.3s cubic-bezier(0.2, 0, 0, 1);
             display: flex;
             flex-direction: column;
@@ -2168,7 +2307,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.32);
-            z-index: 999;
+            z-index: 1400; /* Side sheet overlay level */
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
@@ -2203,7 +2342,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-            z-index: 100;
+            z-index: 1; /* Base content level */ /* Base content level */
         }
 
         .fab:hover {
@@ -2227,7 +2366,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.32);
-            z-index: 2000;
+            z-index: 2000; /* Modal level */
             display: none;
             align-items: center;
             justify-content: center;
@@ -2441,7 +2580,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 2000;
+            z-index: 2000; /* Modal level */
             display: none;
             align-items: center;
             justify-content: center;
@@ -2522,7 +2661,7 @@
             overflow-y: auto;
             background: var(--md-sys-color-surface-container-lowest);
             position: relative;
-            z-index: 1;
+            z-index: 1; /* Base content level */
         }
 
         .mdc-dialog__actions {
@@ -3436,7 +3575,7 @@
             bottom: 16px !important;
             left: 16px !important;
             right: 16px !important;
-            z-index: 99999 !important;
+            z-index: 4000 !important; /* Snackbar level */
             pointer-events: none;
             visibility: hidden;
             transform: translateY(100%);
@@ -3448,7 +3587,7 @@
             visibility: visible !important;
             transform: translateY(0) !important;
             pointer-events: auto !important;
-            z-index: 99999 !important;
+            z-index: 4000 !important; /* Snackbar level */
         }
 
         .mdc-snackbar__surface {
@@ -3465,7 +3604,7 @@
             max-width: 672px !important;
             margin: 0 auto !important;
             position: relative !important;
-            z-index: 100000 !important;
+            z-index: 4000 !important; /* Snackbar level */
             opacity: 1 !important;
             backdrop-filter: none !important;
         }
@@ -3530,8 +3669,11 @@
         }
     </style>
 </head>
-<body>
-    <!-- App Bar -->
+       <body>
+           <!-- Portal Root for Overlays -->
+           <div id="portal-root"></div>
+           
+           <!-- App Bar -->
     <div class="app-bar">
         <div class="app-title">
             <i class="material-icons app-logo">local_post_office</i>
@@ -3674,6 +3816,25 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-chip-wrapper">
+                        <div class="filter-chip" id="statusFilter" data-filter="status">
+                            <span class="filter-chip-text">Status</span>
+                            <i class="material-icons filter-chip-arrow">keyboard_arrow_down</i>
+                        </div>
+                        <!-- Status Filter Dropdown -->
+                        <div class="filter-dropdown" id="statusDropdown" style="display: none;">
+                            <div class="filter-dropdown-header">
+                                <span class="filter-dropdown-title">Filter by Status</span>
+                                <button class="filter-clear-btn" onclick="clearStatusFilter()">
+                                    <i class="material-icons">clear</i>
+                                </button>
+                            </div>
+                            <div class="filter-dropdown-content">
+                                <div class="filter-options" id="statusOptions"></div>
                             </div>
                         </div>
                     </div>
@@ -3961,12 +4122,61 @@
     </script>
     
     <script>
-        // Initialize Material Components
-        mdc.autoInit();
+               // Initialize Material Components
+               mdc.autoInit();
+               
+               // Portal system for proper z-index management
+               function createPortal(element, targetId = 'portal-root') {
+                   const target = document.getElementById(targetId);
+                   if (target && element) {
+                       target.appendChild(element);
+                       return element;
+                   }
+                   return null;
+               }
+               
+               function removeFromPortal(element) {
+                   if (element && element.parentNode) {
+                       element.parentNode.removeChild(element);
+                   }
+               }
+               
+               // Z-index debugging and testing
+               function testZIndexOrder() {
+                   console.log('=== Z-INDEX HIERARCHY TEST ===');
+                   const elements = [
+                       { selector: '.main-content', expected: 1, name: 'Main Content' },
+                       { selector: '.nav-tabs', expected: 2, name: 'Navigation Tabs' },
+                       { selector: '.app-bar', expected: 3, name: 'App Bar' },
+                       { selector: '.profile-dropdown', expected: 1000, name: 'Profile Dropdown' },
+                       { selector: '.mdc-drawer', expected: 1100, name: 'Side Sheets' },
+                       { selector: '.side-sheet', expected: 1200, name: 'Custom Side Sheets' },
+                       { selector: '.floating-toolbar', expected: 1300, name: 'Floating Toolbar' },
+                       { selector: '.mdc-dialog', expected: 2000, name: 'Modals/Dialogs' },
+                       { selector: '.mdc-snackbar', expected: 4000, name: 'Snackbars' }
+                   ];
+                   
+                   elements.forEach(({ selector, expected, name }) => {
+                       const element = document.querySelector(selector);
+                       if (element) {
+                           const computed = window.getComputedStyle(element);
+                           const actual = parseInt(computed.zIndex) || 0;
+                           const status = actual === expected ? '✅' : '❌';
+                           console.log(`${status} ${name}: expected ${expected}, got ${actual}`);
+                       } else {
+                           console.log(`⚠️  ${name}: element not found (${selector})`);
+                       }
+                   });
+               }
 
         // Initialize snackbar
         document.addEventListener('DOMContentLoaded', function() {
             snackbar = new mdc.snackbar.MDCSnackbar(document.getElementById('snackbar'));
+            
+            // Test z-index hierarchy on page load
+            setTimeout(() => {
+                testZIndexOrder();
+            }, 1000);
         });
 
         // Global variables
@@ -4944,6 +5154,9 @@
                 window.currentDocumentId = doc.id;
                 window.currentDocumentStatus = doc.status || 'New';
                 
+                // Update the status buttons to show the current document status
+                updateStatusButtons(window.currentDocumentStatus);
+                
                 // Ensure we have required properties with fallbacks
                 const safeDoc = {
                     title: doc.title || doc.id || 'Untitled Document',
@@ -5499,7 +5712,7 @@
                     border: 1px solid var(--md-sys-color-outline-variant);
                     border-radius: 8px;
                     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                    z-index: 1000;
+                    z-index: 1000; /* Dropdown level */
                     max-height: 200px;
                     overflow-y: auto;
                 }
@@ -5675,7 +5888,7 @@
                     right: 20px;
                     top: 50%;
                     transform: translateY(-50%);
-                    z-index: 10;
+                    z-index: 2; /* Tab level */
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -5729,7 +5942,7 @@
                     width: 20px;
                     height: 20px;
                     cursor: grab;
-                    z-index: 2;
+                    z-index: 2; /* Tab level */
                 }
                 
                 .zoom-slider__thumb:active {
@@ -6428,7 +6641,8 @@
         let activeFilters = {
             sender: null,
             recipient: null,
-            dateRange: { start: null, end: null }
+            dateRange: { start: null, end: null },
+            status: null
         };
 
         // Filter functionality
@@ -6446,6 +6660,8 @@
                     initializePersonFilter(filterType);
                 } else if (filterType === 'date') {
                     initializeDateFilter();
+                } else if (filterType === 'status') {
+                    initializeStatusFilter();
                 }
             }
         }
@@ -6548,6 +6764,40 @@
             applyFilters();
         }
 
+        function initializeStatusFilter() {
+            const container = document.getElementById('statusOptions');
+            if (!container) return;
+            const statuses = ['New', 'Editing', 'Final'];
+            container.innerHTML = statuses.map(s => `
+                <div class="filter-option" data-value="${s}">
+                    <span class="filter-option-text">${s}</span>
+                </div>
+            `).join('');
+            container.querySelectorAll('.filter-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    const value = opt.getAttribute('data-value');
+                    selectStatusFilter(value);
+                });
+            });
+        }
+
+        function selectStatusFilter(statusValue) {
+            activeFilters.status = statusValue;
+            updateFilterChip('status', statusValue);
+            hideAllFilterDropdowns();
+            applyFilters();
+        }
+
+        function clearStatusFilter() {
+            activeFilters.status = null;
+            const chip = document.getElementById('statusFilter');
+            if (chip) {
+                chip.classList.remove('active');
+                chip.querySelector('.filter-chip-text').textContent = 'Status';
+            }
+            applyFilters();
+        }
+
         function clearSenderFilter() {
             activeFilters.sender = null;
             document.getElementById('senderFilter').classList.remove('active');
@@ -6603,6 +6853,11 @@
                     
                     return true;
                 });
+            }
+
+            // Apply status filter
+            if (activeFilters.status) {
+                filtered = filtered.filter(doc => (doc.status || 'New') === activeFilters.status);
             }
             
             // Apply search filter
@@ -7352,8 +7607,22 @@
         // Profile menu functions
         function toggleProfileMenu() {
             const dropdown = document.getElementById('profileDropdown');
-            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+            const avatarButton = document.querySelector('.avatar-button');
+            const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
+
+            if (isHidden) {
+                // Make floating and position relative to avatar
+                dropdown.classList.add('profile-dropdown--floating');
                 dropdown.style.display = 'block';
+
+                const rect = avatarButton.getBoundingClientRect();
+                const ddRect = dropdown.getBoundingClientRect();
+                const margin = 8;
+                const left = Math.max(8, Math.min(window.innerWidth - ddRect.width - 8, rect.right - ddRect.width));
+                const top = Math.min(window.innerHeight - ddRect.height - 8, rect.bottom + margin);
+                dropdown.style.left = `${left}px`;
+                dropdown.style.top = `${top + window.scrollY}px`;
+
                 // Close dropdown when clicking outside
                 setTimeout(() => {
                     document.addEventListener('click', closeProfileMenuOnOutsideClick);
