@@ -252,7 +252,38 @@
         }
         
         .profile-dropdown {
-            z-index: 1000; /* Dropdown level */ /* Profile dropdown */
+            /* Will be set to fixed via JS */
+            position: fixed;
+            z-index: 1000; /* Dropdown level */
+            
+            /* Prevent creating stacking context */
+            transform: none;
+            filter: none;
+            
+            /* Ensure clean rendering */
+            will-change: auto;
+            contain: none;
+            
+            /* Hidden by default */
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            
+            /* Smooth appearance */
+            transition: opacity 150ms ease-out, visibility 150ms;
+            
+            /* Styling */
+            background: var(--md-sys-color-surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            overflow: hidden;
+        }
+        
+        .profile-dropdown.is-open {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
         }
         
         .mdc-drawer {
@@ -309,6 +340,27 @@
         
         .critical-error {
             z-index: 6000; /* Critical error overlays */
+        }
+        
+        /* Override MDC defaults to match our z-index scale */
+        .mdc-menu-surface,
+        .mdc-menu {
+            z-index: 1000 !important; /* Dropdowns tier */
+        }
+        
+        .mdc-dialog,
+        .mdc-dialog__scrim,
+        .mdc-dialog__container {
+            z-index: 2000 !important; /* Modals tier */
+        }
+        
+        .mdc-snackbar {
+            z-index: 4000 !important; /* Toasts tier */
+        }
+        
+        /* Prevent MDC from creating unnecessary stacking contexts */
+        .mdc-menu-surface {
+            will-change: unset !important;
         }
 
         .app-bar {
@@ -3604,6 +3656,245 @@
                 }
             });
         }
+        
+        // DropdownPositioner class for robust positioning (from Claude's recommendation)
+        class DropdownPositioner {
+            constructor(trigger, dropdown, options = {}) {
+                this.trigger = trigger;
+                this.dropdown = dropdown;
+                this.options = {
+                    placement: 'bottom-end', // bottom-start, bottom-end, top-start, top-end
+                    offset: 4, // pixels from trigger
+                    viewportPadding: 8, // minimum distance from viewport edges
+                    ...options
+                };
+                
+                this.isRTL = document.dir === 'rtl' || 
+                             getComputedStyle(document.documentElement).direction === 'rtl';
+                
+                this.boundUpdate = this.update.bind(this);
+                this.boundCleanup = this.cleanup.bind(this);
+            }
+            
+            position() {
+                // Initial positioning
+                this.update();
+                
+                // Update on scroll/resize
+                window.addEventListener('scroll', this.boundUpdate, { passive: true, capture: true });
+                window.addEventListener('resize', this.boundUpdate, { passive: true });
+                
+                // Cleanup when dropdown closes
+                this.dropdown.addEventListener('close', this.boundCleanup, { once: true });
+            }
+            
+            update() {
+                const triggerRect = this.trigger.getBoundingClientRect();
+                const dropdownRect = this.dropdown.getBoundingClientRect();
+                const viewport = {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                };
+                
+                let { top, left, placement } = this.calculatePosition(
+                    triggerRect, 
+                    dropdownRect, 
+                    viewport
+                );
+                
+                // Apply collision detection and flipping
+                const adjusted = this.handleCollisions(
+                    { top, left, placement },
+                    triggerRect,
+                    dropdownRect,
+                    viewport
+                );
+                
+                // Apply styles
+                Object.assign(this.dropdown.style, {
+                    position: 'fixed',
+                    top: `${adjusted.top}px`,
+                    left: `${adjusted.left}px`,
+                    zIndex: '1000',
+                    // Prevent subpixel rendering issues
+                    transform: 'translate3d(0, 0, 0)',
+                    // Ensure it's above everything in its z-index tier
+                    pointerEvents: 'auto'
+                });
+                
+                // Optional: add data attribute for placement-specific styling
+                this.dropdown.dataset.placement = adjusted.placement;
+            }
+            
+            calculatePosition(triggerRect, dropdownRect, viewport) {
+                const { placement, offset } = this.options;
+                const [verticalSide, horizontalAlign] = placement.split('-');
+                
+                let top, left;
+                
+                // Vertical positioning
+                if (verticalSide === 'bottom') {
+                    top = triggerRect.bottom + offset;
+                } else { // top
+                    top = triggerRect.top - dropdownRect.height - offset;
+                }
+                
+                // Horizontal positioning (with RTL support)
+                if (horizontalAlign === 'start') {
+                    left = this.isRTL ? triggerRect.right - dropdownRect.width : triggerRect.left;
+                } else { // end
+                    left = this.isRTL ? triggerRect.left : triggerRect.right - dropdownRect.width;
+                }
+                
+                return { top, left, placement };
+            }
+            
+            handleCollisions(position, triggerRect, dropdownRect, viewport) {
+                const { viewportPadding } = this.options;
+                let { top, left, placement } = position;
+                
+                // Vertical collision detection and flip
+                if (top + dropdownRect.height + viewportPadding > viewport.height) {
+                    // Flip to top
+                    top = triggerRect.top - dropdownRect.height - this.options.offset;
+                    placement = placement.replace('bottom', 'top');
+                } else if (top < viewportPadding) {
+                    // Flip to bottom
+                    top = triggerRect.bottom + this.options.offset;
+                    placement = placement.replace('top', 'bottom');
+                }
+                
+                // Horizontal collision detection (no flip, just nudge)
+                if (left + dropdownRect.width + viewportPadding > viewport.width) {
+                    left = viewport.width - dropdownRect.width - viewportPadding;
+                } else if (left < viewportPadding) {
+                    left = viewportPadding;
+                }
+                
+                // Ensure we stay within viewport bounds
+                top = Math.max(viewportPadding, Math.min(top, viewport.height - dropdownRect.height - viewportPadding));
+                left = Math.max(viewportPadding, Math.min(left, viewport.width - dropdownRect.width - viewportPadding));
+                
+                return { top, left, placement };
+            }
+            
+            cleanup() {
+                window.removeEventListener('scroll', this.boundUpdate, { capture: true });
+                window.removeEventListener('resize', this.boundUpdate);
+            }
+        }
+        
+        // Stacking context audit function (from Claude's recommendation)
+        function findStackingContexts(element) {
+            const contexts = [];
+            let current = element;
+            
+            while (current && current !== document.documentElement) {
+                const style = getComputedStyle(current);
+                const issues = [];
+                
+                // Check for stacking context creators
+                if (style.transform !== 'none') issues.push('transform');
+                if (style.filter !== 'none') issues.push('filter');
+                if (style.perspective !== 'none') issues.push('perspective');
+                if (style.willChange === 'transform' || style.willChange === 'opacity') issues.push('will-change');
+                if (parseFloat(style.opacity) < 1) issues.push('opacity');
+                if (style.isolation === 'isolate') issues.push('isolation');
+                if (style.mixBlendMode !== 'normal') issues.push('mix-blend-mode');
+                if (style.contain === 'layout' || style.contain === 'paint' || style.contain === 'strict') issues.push('contain');
+                if (style.clipPath !== 'none') issues.push('clip-path');
+                if (style.mask !== 'none') issues.push('mask');
+                if (style.position === 'fixed' || style.position === 'sticky') issues.push('position: ' + style.position);
+                
+                if (issues.length > 0) {
+                    contexts.push({
+                        element: current,
+                        tag: current.tagName,
+                        classes: current.className,
+                        issues: issues
+                    });
+                }
+                
+                current = current.parentElement;
+            }
+            
+            return contexts;
+        }
+
+        // ProfileDropdown manager class (from Claude's recommendation)
+        class ProfileDropdown {
+            constructor(trigger, dropdown) {
+                this.trigger = trigger;
+                this.dropdown = dropdown;
+                this.positioner = null;
+                this.isOpen = false;
+                
+                // Bind events
+                this.trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggle();
+                });
+                
+                // Close on outside click
+                document.addEventListener('click', (e) => {
+                    if (this.isOpen && !this.dropdown.contains(e.target)) {
+                        this.close();
+                    }
+                });
+                
+                // Close on escape
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.isOpen) {
+                        this.close();
+                    }
+                });
+            }
+            
+            toggle() {
+                this.isOpen ? this.close() : this.open();
+            }
+            
+            open() {
+                // Portal to root
+                createPortal(this.dropdown, 'portal-root');
+                
+                // Position
+                this.positioner = new DropdownPositioner(this.trigger, this.dropdown, {
+                    placement: 'bottom-end',
+                    offset: 8
+                });
+                this.positioner.position();
+                
+                // Show
+                this.dropdown.classList.add('is-open');
+                this.isOpen = true;
+                
+                // Focus management
+                const firstFocusable = this.dropdown.querySelector('button, a, [tabindex="0"]');
+                firstFocusable?.focus();
+            }
+            
+            close() {
+                this.dropdown.classList.remove('is-open');
+                this.isOpen = false;
+                
+                // Cleanup
+                if (this.positioner) {
+                    this.positioner.cleanup();
+                    this.positioner = null;
+                }
+                
+                // Return focus
+                this.trigger.focus();
+                
+                // Remove from portal after animation
+                setTimeout(() => {
+                    if (!this.isOpen) {
+                        removeFromPortal(this.dropdown);
+                    }
+                }, 200);
+            }
+        }
 
         // Initialize snackbar
         document.addEventListener('DOMContentLoaded', function() {
@@ -3612,7 +3903,36 @@
             // Test z-index hierarchy on page load
             setTimeout(() => {
                 testZIndexOrder();
+                
+                // Debug stacking contexts for common elements
+                console.log('=== STACKING CONTEXT AUDIT ===');
+                const elementsToCheck = [
+                    { selector: '.app-bar', name: 'App Bar' },
+                    { selector: '.nav-tabs', name: 'Navigation Tabs' },
+                    { selector: '.main-content', name: 'Main Content' },
+                    { selector: '.mdc-chip--filter', name: 'Filter Chips' }
+                ];
+                
+                elementsToCheck.forEach(({ selector, name }) => {
+                    const element = document.querySelector(selector);
+                    if (element) {
+                        console.log(`\n--- ${name} (${selector}) ---`);
+                        const contexts = findStackingContexts(element);
+                        if (contexts.length > 0) {
+                            console.table(contexts);
+                        } else {
+                            console.log('✅ No stacking context creators found');
+                        }
+                    }
+                });
             }, 1000);
+            
+            // Initialize profile dropdown if it exists
+            const profileBtn = document.querySelector('.profile-button, .avatar-button');
+            const profileMenu = document.querySelector('.profile-dropdown');
+            if (profileBtn && profileMenu) {
+                new ProfileDropdown(profileBtn, profileMenu);
+            }
         });
 
         // Global variables
