@@ -3273,10 +3273,40 @@
                 <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">Upload Documents</span>
             </button>
+            <button class="avatar-button" aria-haspopup="menu" aria-expanded="false" title="Account">
+                <span class="material-icons">account_circle</span>
+            </button>
         </div>
     </div>
 
     <!-- Compact Search, Sort, Filter Bar -->
+
+    <!-- Profile Dropdown (portaled on open) -->
+    <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+        <div class="profile-header">
+            <div class="avatar avatar--lg">
+                <span class="material-icons">account_circle</span>
+            </div>
+            <div class="profile-info">
+                <div class="profile-name">Account</div>
+                <div class="profile-email">user@example.com</div>
+            </div>
+        </div>
+        <div class="profile-menu">
+            <button class="profile-menu-item" data-action="profile">
+                <span class="material-icons">person</span>
+                <span>Profile</span>
+            </button>
+            <button class="profile-menu-item" data-action="settings">
+                <span class="material-icons">settings</span>
+                <span>Settings</span>
+            </button>
+            <button class="profile-menu-item" data-action="logout">
+                <span class="material-icons">logout</span>
+                <span>Sign out</span>
+            </button>
+        </div>
+    </div>
     <div class="compact-search-filter-bar">
         <div class="search-input-container">
             <span class="material-icons search-icon">search</span>
