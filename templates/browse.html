@@ -7668,14 +7668,21 @@
         
         // Manual authentication for testing
         function manualAuth() {
+            console.log('Setting manual authentication...');
             localStorage.setItem('authenticated', 'true');
             localStorage.setItem('userEmail', 'test@example.com');
-            console.log('Manual authentication set');
-            location.reload();
+            console.log('Manual authentication set:', localStorage.getItem('authenticated'));
+            console.log('User email set:', localStorage.getItem('userEmail'));
+            
+            // Force reload the page
+            setTimeout(() => {
+                location.reload();
+            }, 100);
         }
         
-        // Add test button to page
+        // Add test buttons to page
         function addTestButton() {
+            // Test Auth button
             const testButton = document.createElement('button');
             testButton.textContent = 'Test Auth';
             testButton.style.position = 'fixed';
@@ -7687,8 +7694,27 @@
             testButton.style.padding = '10px';
             testButton.style.border = 'none';
             testButton.style.borderRadius = '5px';
+            testButton.style.marginRight = '10px';
             testButton.onclick = manualAuth;
             document.body.appendChild(testButton);
+            
+            // Logout button
+            const logoutButton = document.createElement('button');
+            logoutButton.textContent = 'Logout';
+            logoutButton.style.position = 'fixed';
+            logoutButton.style.top = '10px';
+            logoutButton.style.right = '120px';
+            logoutButton.style.zIndex = '9999';
+            logoutButton.style.background = 'blue';
+            logoutButton.style.color = 'white';
+            logoutButton.style.padding = '10px';
+            logoutButton.style.border = 'none';
+            logoutButton.style.borderRadius = '5px';
+            logoutButton.onclick = function() {
+                localStorage.clear();
+                location.reload();
+            };
+            document.body.appendChild(logoutButton);
         }
         
         // Check authentication on page load
@@ -7700,12 +7726,15 @@
             if (!window.location.pathname.includes('/login')) {
                 // Check if user is authenticated before running the check
                 const isAuthenticated = localStorage.getItem('authenticated') === 'true';
+                console.log('Authentication check:', isAuthenticated);
+                
                 if (!isAuthenticated) {
                     console.log('User not authenticated, redirecting to login...');
                     // Direct redirect to login instead of calling checkAuthentication
                     window.location.href = '/login';
                 } else {
                     console.log('User is authenticated, initializing user info...');
+                    // Initialize user info and profile menu
                     initializeUserInfo();
                 }
             }
@@ -7727,8 +7756,17 @@
             const initials = getUserInitials(userInfo);
             const roleDisplay = getRoleDisplayName(userInfo.role || 'USER');
             
+            console.log('Initializing user info:', userInfo);
+            console.log('User initials:', initials);
+            
             // Update avatar
-            document.getElementById('userAvatar').textContent = initials;
+            const userAvatar = document.getElementById('userAvatar');
+            if (userAvatar) {
+                userAvatar.textContent = initials;
+                console.log('Avatar updated with initials:', initials);
+            } else {
+                console.log('Avatar element not found');
+            }
             document.getElementById('profileAvatar').textContent = initials;
             
             // Update profile info
