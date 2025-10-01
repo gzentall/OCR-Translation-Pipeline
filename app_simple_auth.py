@@ -672,6 +672,25 @@ def reset_password():
             'message': f'User {username} not found'
         })
 
+@app.route('/debug-storage')
+def debug_storage():
+    """Debug storage status - REMOVE IN PRODUCTION"""
+    try:
+        import os
+        storage_info = {
+            'metadata_documents_count': len(local_storage.metadata['documents']),
+            'documents_dir_exists': os.path.exists('ocr_storage/documents'),
+            'documents_dir_files': 0,
+            'sample_doc_ids': list(local_storage.metadata['documents'].keys())[:3]
+        }
+        
+        if os.path.exists('ocr_storage/documents'):
+            storage_info['documents_dir_files'] = len(os.listdir('ocr_storage/documents'))
+        
+        return jsonify(storage_info)
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
 @app.route('/documents')
 @require_auth
 def list_documents():
