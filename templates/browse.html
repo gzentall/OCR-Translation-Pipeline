@@ -5060,7 +5060,19 @@
         async function loadDocuments() {
             try {
                 console.log('Loading documents...');
-                const response = await fetch('/documents');
+                const response = await fetch('/documents', {
+                    credentials: 'same-origin' // Include cookies for session authentication
+                });
+                
+                // Check if we got redirected to login (302)
+                if (response.redirected && response.url.includes('/login')) {
+                    showError('Session expired. Please log in again.');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                    return;
+                }
+                
                 const data = await response.json();
                 
                 console.log('Documents response:', data);
@@ -5314,7 +5326,19 @@
         async function showDocument(docId) {
             currentDocumentId = docId;
             try {
-                const response = await fetch(`/documents/${docId}`);
+                const response = await fetch(`/documents/${docId}`, {
+                    credentials: 'same-origin' // Include cookies for session authentication
+                });
+                
+                // Check if we got redirected to login (302)
+                if (response.redirected && response.url.includes('/login')) {
+                    showError('Session expired. Please log in again.');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                    return;
+                }
+                
                 const data = await response.json();
                 
                 if (data.success) {
@@ -9022,15 +9046,8 @@
         
         // Auto-logout function for unauthenticated users
         function checkAuthentication() {
-            // Check if user is authenticated
-            // In a real app, you'd check a token or session
-            const isAuthenticated = localStorage.getItem('authenticated') === 'true';
-            
-            if (!isAuthenticated) {
-                // Auto-logout and redirect to login
-                logout();
-                return false;
-            }
+            // Since we're using Flask sessions, we don't need to check localStorage
+            // The server will handle authentication and redirect if needed
             return true;
         }
         
