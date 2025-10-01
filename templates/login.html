@@ -136,7 +136,7 @@
         </form>
         
         <div class="demo-note">
-            <strong>Demo Mode:</strong> Use any email and password to sign in
+            <strong>Demo Mode:</strong> Try username: <code>gzentall</code> with password: <code>password123</code>
         </div>
     </div>
     
@@ -155,13 +155,28 @@
             const password = document.getElementById('password').value;
             
             if (email && password) {
-                // In a real app, you'd validate credentials with the server
-                // For demo purposes, we'll just set a flag and redirect
-                localStorage.setItem('authenticated', 'true');
-                localStorage.setItem('userEmail', email);
+                // Create form data and submit to server
+                const formData = new FormData();
+                formData.append('username', email);
+                formData.append('password', password);
                 
-                // Redirect to main app
-                window.location.href = '/';
+                fetch('/login', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        // Successful login - redirect to main app
+                        window.location.href = response.url;
+                    } else {
+                        // Login failed
+                        alert('Invalid email or password');
+                    }
+                })
+                .catch(error => {
+                    console.error('Login error:', error);
+                    alert('Login failed. Please try again.');
+                });
             } else {
                 alert('Please enter both email and password');
             }
