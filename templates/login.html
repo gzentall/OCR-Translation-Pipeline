@@ -103,11 +103,11 @@
         <form id="loginForm">
             <div class="form-group">
                 <div class="mdc-text-field mdc-text-field--outlined">
-                    <input type="email" id="email" class="mdc-text-field__input" required>
+                    <input type="text" id="username" class="mdc-text-field__input" required>
                     <div class="mdc-notched-outline">
                         <div class="mdc-notched-outline__leading"></div>
                         <div class="mdc-notched-outline__notch">
-                            <label class="mdc-floating-label">Email</label>
+                            <label class="mdc-floating-label">Username</label>
                         </div>
                         <div class="mdc-notched-outline__trailing"></div>
                     </div>
@@ -151,13 +151,13 @@
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            if (email && password) {
+            if (username && password) {
                 // Create form data and submit to server
                 const formData = new FormData();
-                formData.append('username', email);
+                formData.append('username', username);
                 formData.append('password', password);
                 
                 fetch('/login', {
@@ -170,7 +170,7 @@
                         window.location.href = response.url;
                     } else {
                         // Login failed
-                        alert('Invalid email or password');
+                        alert('Invalid username or password');
                     }
                 })
                 .catch(error => {
@@ -178,12 +178,12 @@
                     alert('Login failed. Please try again.');
                 });
             } else {
-                alert('Please enter both email and password');
+                alert('Please enter both username and password');
             }
         });
         
-        // Auto-focus email field
-        document.getElementById('email').focus();
+        // Auto-focus username field
+        document.getElementById('username').focus();
     </script>
 </body>
 </html>
