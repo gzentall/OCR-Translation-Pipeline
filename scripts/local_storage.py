@@ -7,6 +7,7 @@ Stores documents locally with metadata, can export to Notion later when upgraded
 
 import json
 import os
+import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -39,6 +40,9 @@ class LocalOCRStorage:
         return {
             "documents": {},
             "people": {},
+            "context_notes": {},
+            "references": {},
+            "document_references": {},
             "last_updated": datetime.now().isoformat()
         }
     
@@ -271,6 +275,131 @@ class LocalOCRStorage:
     def list_documents(self) -> List[Dict]:
         """List all documents with metadata."""
         return list(self.metadata["documents"].items())
+
+    # -----------------------------
+    # Context Notes (Per-letter)
+    # -----------------------------
+    def add_context_note(self, letter_id: str, note: str) -> Optional[Dict]:
+        """Add a context note to a letter and return created note."""
+        try:
+            # Ensure document exists
+            if letter_id not in self.metadata["documents"]:
+                return None
+
+            # Initialize context list on document file if needed
+            doc = self.get_document(letter_id)
+            if doc is None:
+                return None
+
+            context_list = doc.get("context_notes", [])
+
+            # Create note object
+            context_id = f"ctx_{datetime.now().strftime('%Y%m%d_%H%M%S%f')}"
+            created_at = datetime.now().isoformat()
+            note_obj = {
+                "id": context_id,
+                "letterId": letter_id,
+                "note": note,
+                "createdAt": created_at
+            }
+
+            context_list.append(note_obj)
+            doc["context_notes"] = context_list
+
+            # Persist back to document file
+            doc_file = self.documents_dir / f"{letter_id}.json"
+            with open(doc_file, 'w') as f:
+                json.dump(doc, f, indent=2)
+
+            # Track in global index for quick lookup by id
+            self.metadata.setdefault("context_notes", {})[context_id] = {
+                "letterId": letter_id,
+                "createdAt": created_at
+            }
+            self._save_metadata()
+            return note_obj
+        except Exception as e:
+            print(f"Error adding context note to {letter_id}: {e}")
+            return None
+
+    def list_context_notes(self, letter_id: str) -> List[Dict]:
+        """List all context notes for a letter."""
+        try:
+            doc = self.get_document(letter_id)
+            if doc is None:
+                return []
+            return doc.get("context_notes", [])
+        except Exception as e:
+            print(f"Error listing context notes for {letter_id}: {e}")
+            return []
+
+    def update_context_note(self, context_id: str, note: str) -> Optional[Dict]:
+        """Update a context note by ID and return the updated note."""
+        try:
+            # Find letter id from index
+            ctx_meta = self.metadata.get("context_notes", {}).get(context_id)
+            if not ctx_meta:
+                return None
+            letter_id = ctx_meta["letterId"]
+
+            doc = self.get_document(letter_id)
+            if doc is None:
+                return None
+
+            updated_at = datetime.now().isoformat()
+            notes = doc.get("context_notes", [])
+            updated_note = None
+            for n in notes:
+                if n.get("id") == context_id:
+                    n["note"] = note
+                    n["updatedAt"] = updated_at
+                    updated_note = n
+                    break
+
+            if updated_note is None:
+                return None
+
+            # Persist changes
+            doc_file = self.documents_dir / f"{letter_id}.json"
+            with open(doc_file, 'w') as f:
+                json.dump(doc, f, indent=2)
+
+            self._save_metadata()
+            return updated_note
+        except Exception as e:
+            print(f"Error updating context note {context_id}: {e}")
+            return None
+
+    def delete_context_note(self, context_id: str) -> bool:
+        """Delete a context note by ID."""
+        try:
+            ctx_meta = self.metadata.get("context_notes", {}).get(context_id)
+            if not ctx_meta:
+                return False
+            letter_id = ctx_meta["letterId"]
+
+            doc = self.get_document(letter_id)
+            if doc is None:
+                return False
+
+            notes = doc.get("context_notes", [])
+            filtered = [n for n in notes if n.get("id") != context_id]
+            if len(filtered) == len(notes):
+                return False
+
+            doc["context_notes"] = filtered
+            # Persist changes
+            doc_file = self.documents_dir / f"{letter_id}.json"
+            with open(doc_file, 'w') as f:
+                json.dump(doc, f, indent=2)
+
+            # Remove from global index
+            del self.metadata["context_notes"][context_id]
+            self._save_metadata()
+            return True
+        except Exception as e:
+            print(f"Error deleting context note {context_id}: {e}")
+            return False
     
     def get_people(self) -> Dict:
         """Get all people with their metadata."""
@@ -740,6 +869,215 @@ class LocalOCRStorage:
             report.append("")
         
         return "\n".join(report)
+
+    # -----------------------------
+    # References (with stable IDs)
+    # -----------------------------
+    def add_reference(self, ref_type: str, name: str, aliases: List[str] = None, notes: str = None) -> Optional[Dict]:
+        """Add a new reference with stable ID."""
+        try:
+            ref_id = str(uuid.uuid4())
+            created_at = datetime.now().isoformat()
+            
+            if aliases is None:
+                aliases = []
+            if name not in aliases:
+                aliases.insert(0, name)
+            
+            ref_data = {
+                "id": ref_id,
+                "type": ref_type,
+                "name": name,
+                "aliases": aliases,
+                "notes": notes or "",
+                "mergedIntoId": None,
+                "createdAt": created_at,
+                "updatedAt": created_at
+            }
+            
+            self.metadata.setdefault("references", {})[ref_id] = ref_data
+            self._save_metadata()
+            return ref_data
+        except Exception as e:
+            print(f"Error adding reference {name}: {e}")
+            return None
+
+    def get_reference(self, ref_id: str) -> Optional[Dict]:
+        """Get a reference by ID."""
+        return self.metadata.get("references", {}).get(ref_id)
+
+    def list_references(self, ref_type: str = None, query: str = None) -> List[Dict]:
+        """List references with optional filtering."""
+        refs = list(self.metadata.get("references", {}).values())
+        
+        if ref_type:
+            refs = [r for r in refs if r.get("type") == ref_type]
+        
+        if query:
+            query_lower = query.lower()
+            filtered = []
+            for ref in refs:
+                if (query_lower in ref.get("name", "").lower() or
+                    any(query_lower in alias.lower() for alias in ref.get("aliases", []))):
+                    filtered.append(ref)
+            refs = filtered
+        
+        return refs
+
+    def update_reference(self, ref_id: str, name: str = None, aliases: List[str] = None, notes: str = None) -> Optional[Dict]:
+        """Update a reference."""
+        try:
+            if ref_id not in self.metadata.get("references", {}):
+                return None
+            
+            ref_data = self.metadata["references"][ref_id]
+            updated_at = datetime.now().isoformat()
+            
+            if name is not None:
+                ref_data["name"] = name
+            if aliases is not None:
+                ref_data["aliases"] = aliases
+            if notes is not None:
+                ref_data["notes"] = notes
+            
+            ref_data["updatedAt"] = updated_at
+            self._save_metadata()
+            return ref_data
+        except Exception as e:
+            print(f"Error updating reference {ref_id}: {e}")
+            return None
+
+    def delete_reference(self, ref_id: str) -> bool:
+        """Delete a reference (soft delete by setting mergedIntoId)."""
+        try:
+            if ref_id not in self.metadata.get("references", {}):
+                return False
+            
+            # Soft delete: mark as merged into a special "deleted" reference
+            deleted_ref_id = "deleted"
+            if deleted_ref_id not in self.metadata.get("references", {}):
+                self.metadata.setdefault("references", {})[deleted_ref_id] = {
+                    "id": deleted_ref_id,
+                    "type": "other",
+                    "name": "Deleted Reference",
+                    "aliases": [],
+                    "notes": "Placeholder for deleted references",
+                    "mergedIntoId": None,
+                    "createdAt": datetime.now().isoformat(),
+                    "updatedAt": datetime.now().isoformat()
+                }
+            
+            ref_data = self.metadata["references"][ref_id]
+            ref_data["mergedIntoId"] = deleted_ref_id
+            ref_data["updatedAt"] = datetime.now().isoformat()
+            
+            self._save_metadata()
+            return True
+        except Exception as e:
+            print(f"Error deleting reference {ref_id}: {e}")
+            return False
+
+    def merge_references(self, source_id: str, target_id: str) -> bool:
+        """Soft merge: move source into target, keep source as redirect."""
+        try:
+            if source_id not in self.metadata.get("references", {}) or target_id not in self.metadata.get("references", {}):
+                return False
+            
+            source_ref = self.metadata["references"][source_id]
+            target_ref = self.metadata["references"][target_id]
+            
+            # Merge aliases
+            combined_aliases = list(set(target_ref.get("aliases", []) + source_ref.get("aliases", [])))
+            target_ref["aliases"] = combined_aliases
+            
+            # Merge notes
+            if source_ref.get("notes") and not target_ref.get("notes"):
+                target_ref["notes"] = source_ref["notes"]
+            
+            # Mark source as merged into target
+            source_ref["mergedIntoId"] = target_id
+            source_ref["updatedAt"] = datetime.now().isoformat()
+            target_ref["updatedAt"] = datetime.now().isoformat()
+            
+            # Move all document relations from source to target
+            doc_refs = self.metadata.get("document_references", {})
+            for rel_id, rel_data in list(doc_refs.items()):
+                if rel_data.get("referenceId") == source_id:
+                    rel_data["referenceId"] = target_id
+                    rel_data["updatedAt"] = datetime.now().isoformat()
+            
+            self._save_metadata()
+            return True
+        except Exception as e:
+            print(f"Error merging references {source_id} -> {target_id}: {e}")
+            return False
+
+    def add_reference_to_document(self, doc_id: str, ref_id: str, role: str = None) -> bool:
+        """Add a reference to a document with optional role."""
+        try:
+            if doc_id not in self.metadata.get("documents", {}) or ref_id not in self.metadata.get("references", {}):
+                return False
+            
+            rel_id = str(uuid.uuid4())
+            created_at = datetime.now().isoformat()
+            
+            rel_data = {
+                "id": rel_id,
+                "documentId": doc_id,
+                "referenceId": ref_id,
+                "role": role,
+                "createdAt": created_at
+            }
+            
+            self.metadata.setdefault("document_references", {})[rel_id] = rel_data
+            self._save_metadata()
+            return True
+        except Exception as e:
+            print(f"Error adding reference {ref_id} to document {doc_id}: {e}")
+            return False
+
+    def remove_reference_from_document(self, doc_id: str, ref_id: str) -> bool:
+        """Remove a reference from a document."""
+        try:
+            doc_refs = self.metadata.get("document_references", {})
+            to_remove = []
+            
+            for rel_id, rel_data in doc_refs.items():
+                if rel_data.get("documentId") == doc_id and rel_data.get("referenceId") == ref_id:
+                    to_remove.append(rel_id)
+            
+            for rel_id in to_remove:
+                del doc_refs[rel_id]
+            
+            self._save_metadata()
+            return len(to_remove) > 0
+        except Exception as e:
+            print(f"Error removing reference {ref_id} from document {doc_id}: {e}")
+            return False
+
+    def list_document_references(self, doc_id: str) -> List[Dict]:
+        """List all references for a document."""
+        try:
+            doc_refs = self.metadata.get("document_references", {})
+            ref_ids = [rel_data.get("referenceId") for rel_data in doc_refs.values() 
+                      if rel_data.get("documentId") == doc_id]
+            
+            references = []
+            for ref_id in ref_ids:
+                ref = self.get_reference(ref_id)
+                if ref:
+                    # Find the relation to get the role
+                    rel_data = next((rel for rel in doc_refs.values() 
+                                   if rel.get("documentId") == doc_id and rel.get("referenceId") == ref_id), None)
+                    if rel_data:
+                        ref_copy = ref.copy()
+                        ref_copy["role"] = rel_data.get("role")
+                        references.append(ref_copy)
+            
+            return references
+        except Exception as e:
+            print(f"Error listing references for document {doc_id}: {e}")
+            return []
 
 
 def main():

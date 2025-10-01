@@ -1,0 +1,24 @@
+{
+  "servers": {
+    "letters_mcp_readonly": {
+      "command": "node",
+      "args": ["/Users/gzentall/Documents/OCR project/letters-mcp/dist/index.js"],
+      "env": {
+        "API_BASE_URL": "http://localhost:5001",
+        "API_TOKEN": "${API_TOKEN_READONLY}",
+        "TIMEOUT_MS": "120000",
+        "MODE": "readonly"
+      }
+    },
+    "letters_mcp_admin": {
+      "command": "node",
+      "args": ["/Users/gzentall/Documents/OCR project/letters-mcp/dist/index.js"],
+      "env": {
+        "API_BASE_URL": "http://localhost:5001",
+        "API_TOKEN": "${API_TOKEN_ADMIN}",
+        "TIMEOUT_MS": "120000",
+        "MODE": "admin"
+      }
+    }
+  }
+}

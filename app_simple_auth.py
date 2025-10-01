@@ -1199,6 +1199,70 @@ def delete_document(doc_id):
             'error': str(e)
         }), 500
 
+
+# -----------------------------
+# Context Notes (Per-letter)
+# -----------------------------
+
+@app.route('/documents/<doc_id>/context', methods=['GET'])
+def list_context_notes(doc_id):
+    """List all context notes for a document."""
+    try:
+        notes = local_storage.list_context_notes(doc_id)
+        return jsonify({
+            'success': True,
+            'items': notes,
+            'total': len(notes)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/documents/<doc_id>/context', methods=['POST'])
+def add_context_note(doc_id):
+    """Add a context note to a document."""
+    try:
+        data = request.get_json()
+        if not data or not data.get('note'):
+            return jsonify({'success': False, 'error': 'Note is required'}), 400
+
+        created = local_storage.add_context_note(doc_id, data['note'])
+        if not created:
+            return jsonify({'success': False, 'error': 'Failed to add context note'}), 400
+
+        return jsonify({'success': True, 'item': created})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/context/<context_id>', methods=['PUT'])
+def update_context_note(context_id):
+    """Update a context note by ID."""
+    try:
+        data = request.get_json()
+        if not data or not data.get('note'):
+            return jsonify({'success': False, 'error': 'Note is required'}), 400
+
+        updated = local_storage.update_context_note(context_id, data['note'])
+        if not updated:
+            return jsonify({'success': False, 'error': 'Context note not found'}), 404
+
+        return jsonify({'success': True, 'item': updated})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/context/<context_id>', methods=['DELETE'])
+def delete_context_note(context_id):
+    """Delete a context note by ID."""
+    try:
+        deleted = local_storage.delete_context_note(context_id)
+        if not deleted:
+            return jsonify({'success': False, 'error': 'Context note not found'}), 404
+        return jsonify({'success': True, 'message': 'Context note deleted'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 # User management API endpoints (SuperAdmin only)
 @app.route('/api/users', methods=['GET'])
 @require_auth
@@ -1430,6 +1494,191 @@ def api_delete_user(username):
             'success': False,
             'error': str(e)
         }), 500
+
+
+# -----------------------------
+# References (with stable IDs)
+# -----------------------------
+
+@app.route('/api/references', methods=['GET'])
+def list_references():
+    """List all references with optional filtering."""
+    try:
+        ref_type = request.args.get('type')
+        query = request.args.get('query')
+        
+        references = local_storage.list_references(ref_type=ref_type, query=query)
+        return jsonify({
+            'success': True,
+            'references': references,
+            'total': len(references)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/references/<ref_id>', methods=['GET'])
+def get_reference(ref_id):
+    """Get a specific reference by ID."""
+    try:
+        reference = local_storage.get_reference(ref_id)
+        if not reference:
+            return jsonify({'success': False, 'error': 'Reference not found'}), 404
+        
+        return jsonify({
+            'success': True,
+            'reference': reference
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/references', methods=['POST'])
+def create_reference():
+    """Create a new reference."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        ref_type = data.get('type')
+        name = data.get('name')
+        aliases = data.get('aliases', [])
+        notes = data.get('notes', '')
+        
+        if not ref_type or not name:
+            return jsonify({'success': False, 'error': 'Type and name are required'}), 400
+        
+        reference = local_storage.add_reference(ref_type, name, aliases, notes)
+        if not reference:
+            return jsonify({'success': False, 'error': 'Failed to create reference'}), 400
+        
+        return jsonify({
+            'success': True,
+            'reference': reference
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/references/<ref_id>', methods=['PUT'])
+def update_reference(ref_id):
+    """Update a reference."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        name = data.get('name')
+        aliases = data.get('aliases')
+        notes = data.get('notes')
+        
+        reference = local_storage.update_reference(ref_id, name, aliases, notes)
+        if not reference:
+            return jsonify({'success': False, 'error': 'Reference not found'}), 404
+        
+        return jsonify({
+            'success': True,
+            'reference': reference
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/references/<ref_id>', methods=['DELETE'])
+def delete_reference(ref_id):
+    """Delete a reference."""
+    try:
+        success = local_storage.delete_reference(ref_id)
+        if not success:
+            return jsonify({'success': False, 'error': 'Reference not found'}), 404
+        
+        return jsonify({
+            'success': True,
+            'message': 'Reference deleted successfully'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/references/<source_id>/merge', methods=['POST'])
+def merge_references(source_id):
+    """Merge a source reference into a target reference."""
+    try:
+        data = request.get_json()
+        if not data or not data.get('targetId'):
+            return jsonify({'success': False, 'error': 'targetId is required'}), 400
+        
+        success = local_storage.merge_references(source_id, data['targetId'])
+        if not success:
+            return jsonify({'success': False, 'error': 'Merge failed'}), 400
+        
+        return jsonify({
+            'success': True,
+            'message': f'Reference {source_id} merged into {data["targetId"]}'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# -----------------------------
+# Document-Reference Relations
+# -----------------------------
+
+@app.route('/api/documents/<doc_id>/references', methods=['GET'])
+def list_document_references(doc_id):
+    """List all references for a document."""
+    try:
+        references = local_storage.list_document_references(doc_id)
+        return jsonify({
+            'success': True,
+            'references': references,
+            'total': len(references)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/documents/<doc_id>/references', methods=['POST'])
+def add_document_reference(doc_id):
+    """Add a reference to a document with optional role."""
+    try:
+        data = request.get_json()
+        if not data or not data.get('referenceId'):
+            return jsonify({'success': False, 'error': 'referenceId is required'}), 400
+        
+        role = data.get('role')
+        success = local_storage.add_reference_to_document(doc_id, data['referenceId'], role)
+        if not success:
+            return jsonify({'success': False, 'error': 'Failed to add reference to document'}), 400
+        
+        return jsonify({
+            'success': True,
+            'message': f'Reference {data["referenceId"]} added to document {doc_id}'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/documents/<doc_id>/references', methods=['DELETE'])
+def remove_document_reference(doc_id):
+    """Remove a reference from a document."""
+    try:
+        data = request.get_json()
+        if not data or not data.get('referenceId'):
+            return jsonify({'success': False, 'error': 'referenceId is required'}), 400
+        
+        success = local_storage.remove_reference_from_document(doc_id, data['referenceId'])
+        if not success:
+            return jsonify({'success': False, 'error': 'Failed to remove reference from document'}), 400
+        
+        return jsonify({
+            'success': True,
+            'message': f'Reference {data["referenceId"]} removed from document {doc_id}'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)

@@ -47,9 +47,9 @@ export default function HomePage() {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">
-                Welcome, {session.user.username} ({session.user.role})
+                Welcome, {(session.user as any).username} ({(session.user as any).role})
               </span>
-              {session.user.role === "SUPER_ADMIN" && (
+              {(session.user as any).role === "SUPER_ADMIN" && (
                 <Link
                   href="/admin"
                   className="text-indigo-600 hover:text-indigo-500 text-sm font-medium"

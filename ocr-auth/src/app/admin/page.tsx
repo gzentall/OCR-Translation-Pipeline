@@ -24,7 +24,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (status === "loading") return
     
-    if (!session || session.user.role !== "SUPER_ADMIN") {
+    if (!session || !session.user || (session.user as any).role !== "SUPER_ADMIN") {
       router.push("/")
       return
     }
@@ -55,7 +55,7 @@ export default function AdminPage() {
     )
   }
 
-  if (!session || session.user.role !== "SUPER_ADMIN") {
+  if (!session || !session.user || (session.user as any).role !== "SUPER_ADMIN") {
     return null // Will redirect
   }
 
@@ -78,7 +78,7 @@ export default function AdminPage() {
                 Dashboard
               </Link>
               <span className="text-sm text-gray-700">
-                {session.user.username} (SUPER_ADMIN)
+                {(session.user as any).username} (SUPER_ADMIN)
               </span>
             </div>
           </div>

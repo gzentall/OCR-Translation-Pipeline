@@ -29,7 +29,7 @@ export default function LoginPage() {
       } else {
         // Get the session to check user role
         const session = await getSession()
-        if (session?.user?.role === "SUPER_ADMIN") {
+        if ((session?.user as any)?.role === "SUPER_ADMIN") {
           router.push("/admin")
         } else {
           router.push("/")

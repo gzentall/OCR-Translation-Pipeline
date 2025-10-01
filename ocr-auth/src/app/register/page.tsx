@@ -12,7 +12,7 @@ export default function RegisterPage() {
     confirmPassword: ""
   })
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [, setError] = useState("")
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
