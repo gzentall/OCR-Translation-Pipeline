@@ -70,7 +70,8 @@ class LocalOCRStorage:
             "file_size": document_data.get("file_size", 0),
             "people_count": len(document_data.get("people", [])),
             "summary": document_data.get("summary", "")[:100] + "..." if len(document_data.get("summary", "")) > 100 else document_data.get("summary", ""),
-            "page_count": page_count
+            "page_count": page_count,
+            "status": document_data.get("status", "New")
         }
         
         # Add people to metadata
@@ -222,6 +223,8 @@ class LocalOCRStorage:
                     metadata["source_language"] = updates["source_language"]
                 if "target_language" in updates:
                     metadata["target_language"] = updates["target_language"]
+                if "status" in updates:
+                    metadata["status"] = updates["status"]
                 
                 self._save_metadata()
             

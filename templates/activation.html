@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activate Account - Postmark OCR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .activation-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #1976d2;
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid #1976d2;
+        }
+
+        .user-info h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .user-info p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .form-input:invalid {
+            border-color: #d32f2f;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #1565c0;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .password-requirements {
+            background: #e3f2fd;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #1976d2;
+        }
+
+        .password-requirements ul {
+            margin: 8px 0 0 20px;
+        }
+
+        .password-requirements li {
+            margin: 4px 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c62828;
+        }
+
+        @media (max-width: 600px) {
+            .activation-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="activation-container">
+        <div class="header">
+            <h1>🎉 Welcome to Postmark OCR</h1>
+            <p>Complete your account setup</p>
+        </div>
+
+        <div class="user-info">
+            <h3>Account Details</h3>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Role:</strong> 
+                {% if user.role == 'SUPER_ADMIN' %}Admin
+                {% elif user.role == 'ADMIN' %}Editor
+                {% else %}Viewer
+                {% endif %}
+            </p>
+        </div>
+
+        <form method="POST" action="/activate" onsubmit="return validateForm()">
+            <input type="hidden" name="token" value="{{ token }}">
+            
+            <div class="form-group">
+                <label class="form-label" for="first_name">First Name (Optional)</label>
+                <input type="text" id="first_name" name="first_name" class="form-input" value="{{ user.first_name or '' }}" placeholder="Enter your first name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="last_name">Last Name (Optional)</label>
+                <input type="text" id="last_name" name="last_name" class="form-input" value="{{ user.last_name or '' }}" placeholder="Enter your last name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password *</label>
+                <input type="password" id="password" name="password" class="form-input" required minlength="8" placeholder="Create a secure password">
+                <div class="password-requirements">
+                    <strong>Password Requirements:</strong>
+                    <ul>
+                        <li>At least 8 characters long</li>
+                        <li>Include uppercase and lowercase letters</li>
+                        <li>Include at least one number</li>
+                        <li>Include at least one special character</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="confirm_password">Confirm Password *</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-input" required placeholder="Confirm your password">
+            </div>
+
+            <button type="submit" class="btn">Activate Account</button>
+        </form>
+
+        <div class="footer">
+            <p>Postmark OCR - Document Processing Platform</p>
+            <p>This activation link will expire in 7 days</p>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            // Check password requirements
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long');
+                return false;
+            }
+            
+            if (!hasUpperCase) {
+                alert('Password must contain at least one uppercase letter');
+                return false;
+            }
+            
+            if (!hasLowerCase) {
+                alert('Password must contain at least one lowercase letter');
+                return false;
+            }
+            
+            if (!hasNumbers) {
+                alert('Password must contain at least one number');
+                return false;
+            }
+            
+            if (!hasSpecialChar) {
+                alert('Password must contain at least one special character');
+                return false;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Real-time password validation
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const requirements = document.querySelector('.password-requirements');
+            const items = requirements.querySelectorAll('li');
+            
+            // Reset all items
+            items.forEach(item => {
+                item.style.color = '#1976d2';
+                item.style.textDecoration = 'none';
+            });
+            
+            // Check each requirement
+            if (password.length >= 8) {
+                items[0].style.color = '#4caf50';
+                items[0].style.textDecoration = 'line-through';
+            }
+            
+            if (/[A-Z]/.test(password)) {
+                items[1].style.color = '#4caf50';
+                items[1].style.textDecoration = 'line-through';
+            }
+            
+            if (/[a-z]/.test(password)) {
+                items[2].style.color = '#4caf50';
+                items[2].style.textDecoration = 'line-through';
+            }
+            
+            if (/\d/.test(password)) {
+                items[3].style.color = '#4caf50';
+                items[3].style.textDecoration = 'line-through';
+            }
+            
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                items[4].style.color = '#4caf50';
+                items[4].style.textDecoration = 'line-through';
+            }
+        });
+    </script>
+</body>
+</html>
+

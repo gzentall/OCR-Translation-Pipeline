@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Postmark</title>
+    
+    <!-- Material Design Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Material Design CSS -->
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <!-- Design Tokens -->
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    
+    <style>
+        body {
+            font-family: var(--md-sys-typescale-body-large-font);
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            background: var(--md-sys-color-surface-container);
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 400px;
+            max-width: 500px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .login-logo {
+            font-size: 48px;
+            color: var(--md-sys-color-primary);
+            margin-bottom: 16px;
+        }
+        
+        .login-title {
+            font-family: var(--md-sys-typescale-headline-medium-font);
+            font-size: var(--md-sys-typescale-headline-medium-size);
+            font-weight: var(--md-sys-typescale-headline-medium-weight);
+            margin: 0 0 8px 0;
+            color: var(--md-sys-color-on-surface);
+        }
+        
+        .login-subtitle {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            color: var(--md-sys-color-on-surface-variant);
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .mdc-text-field {
+            width: 100%;
+        }
+        
+        .login-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 32px;
+        }
+        
+        .mdc-button {
+            width: 100%;
+        }
+        
+        .demo-note {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 24px;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-logo">
+                <span class="material-icons">local_post_office</span>
+            </div>
+            <h1 class="login-title">Welcome to Postmark</h1>
+            <p class="login-subtitle">Sign in to access your documents</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <div class="mdc-text-field mdc-text-field--outlined">
+                    <input type="email" id="email" class="mdc-text-field__input" required>
+                    <div class="mdc-notched-outline">
+                        <div class="mdc-notched-outline__leading"></div>
+                        <div class="mdc-notched-outline__notch">
+                            <label class="mdc-floating-label">Email</label>
+                        </div>
+                        <div class="mdc-notched-outline__trailing"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="mdc-text-field mdc-text-field--outlined">
+                    <input type="password" id="password" class="mdc-text-field__input" required>
+                    <div class="mdc-notched-outline">
+                        <div class="mdc-notched-outline__leading"></div>
+                        <div class="mdc-notched-outline__notch">
+                            <label class="mdc-floating-label">Password</label>
+                        </div>
+                        <div class="mdc-notched-outline__trailing"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="login-actions">
+                <button type="submit" class="mdc-button mdc-button--raised">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">Sign In</span>
+                </button>
+            </div>
+        </form>
+        
+        <div class="demo-note">
+            <strong>Demo Mode:</strong> Use any email and password to sign in
+        </div>
+    </div>
+    
+    <!-- Material Design JavaScript -->
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    
+    <script>
+        // Initialize Material Components
+        mdc.autoInit();
+        
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                // In a real app, you'd validate credentials with the server
+                // For demo purposes, we'll just set a flag and redirect
+                localStorage.setItem('authenticated', 'true');
+                localStorage.setItem('userEmail', email);
+                
+                // Redirect to main app
+                window.location.href = '/';
+            } else {
+                alert('Please enter both email and password');
+            }
+        });
+        
+        // Auto-focus email field
+        document.getElementById('email').focus();
+    </script>
+</body>
+</html>

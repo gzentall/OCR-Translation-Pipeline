@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Flask web application for OCR and translation pipeline.
+Flask web application for OCR and translation pipeline with authentication.
 Provides a web interface for uploading PDFs and processing them through OCR and translation.
 """
 
@@ -12,9 +12,12 @@ import shutil
 import traceback
 import html
 import sys
+import jwt
+import bcrypt
 from pathlib import Path
-from datetime import datetime
-from flask import Flask, request, jsonify, render_template, send_file, redirect, session
+from datetime import datetime, timedelta
+from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for, flash
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import uuid
 
@@ -24,12 +27,11 @@ from scripts.local_storage import LocalOCRStorage
 from scripts.fallback_ai_processor import FallbackAIProcessor
 
 app = Flask(__name__)
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your-secret-key-change-this')
+CORS(app)
+
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB max file size
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable caching for development
-app.secret_key = 'dev-secret-key-12345-change-in-production'  # Change this in production
-app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 # Project paths
 PROJECT_ROOT = Path(__file__).parent
@@ -48,11 +50,45 @@ ai_processor = FallbackAIProcessor()
 
 ALLOWED_EXTENSIONS = {'pdf'}
 
+# Simple in-memory user storage (in production, use a database)
+USERS = {
+    'gzentall': {
+        'username': 'gzentall',
+        'email': 'gabe@zentall.com',
+        'password_hash': '$2b$12$MW7tZ/tTaGieqPgSTtc5oe8mGP6PNBwLwuU5/oE4Rci5C/9bva1.y',
+        'role': 'SUPER_ADMIN',
+        'is_active': True
+    }
+}
 
 def allowed_file(filename):
     """Check if file extension is allowed."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def require_auth(f):
+    """Decorator to require authentication."""
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    decorated_function.__name__ = f.__name__
+    return decorated_function
+
+def require_role(required_role):
+    """Decorator to require specific role."""
+    def decorator(f):
+        def decorated_function(*args, **kwargs):
+            if 'user_id' not in session:
+                return redirect(url_for('login'))
+            
+            user = USERS.get(session['user_id'])
+            if not user or user['role'] != required_role and user['role'] != 'SUPER_ADMIN':
+                flash('Insufficient permissions', 'error')
+                return redirect(url_for('index'))
+            return f(*args, **kwargs)
+        decorated_function.__name__ = f.__name__
+        return decorated_function
+    return decorator
 
 def run_ocr_script(pdf_path, doc_id=None):
     """Run the Vision OCR script on a PDF file."""
@@ -75,7 +111,6 @@ def run_ocr_script(pdf_path, doc_id=None):
     except Exception as e:
         return False, "", str(e)
 
-
 def run_translation_script(text_file_path):
     """Run the Google Translate script on a text file."""
     script_path = PROJECT_ROOT / "scripts" / "translate_google.py"
@@ -93,135 +128,70 @@ def run_translation_script(text_file_path):
     except Exception as e:
         return False, "", str(e)
 
-
-@app.route('/')
-def index():
-    """Serve the main application page (Documents tab)."""
-    # Get user info from session
-    user = None
-    if session.get('authenticated'):
-        user = {
-            'id': session.get('user_id'),
-            'username': session.get('username'),
-            'role': session.get('role')
-        }
-        print(f"DEBUG: User authenticated - {user}")  # Debug log
-    else:
-        print("DEBUG: No authenticated user in session")  # Debug log
-        print(f"DEBUG: Session data: {dict(session)}")  # Debug log
-    
-    return render_template('browse.html', user=user)
-
-@app.route('/upload-form')
-def upload_form():
-    """Serve the upload form for modal loading."""
-    return render_template('upload_modal.html')
-
-
-@app.route('/browse')
-def browse():
-    """Serve the main application interface."""
-    # Get user info from session
-    user = None
-    if session.get('authenticated'):
-        user = {
-            'id': session.get('user_id'),
-            'username': session.get('username'),
-            'role': session.get('role')
-        }
-    return render_template('browse.html', user=user)
-
-
-@app.route('/stats-page')
-def stats_page():
-    """Serve the statistics page interface."""
-    return render_template('stats.html')
-
-
-@app.route('/people-page')
-def people_page():
-    """Serve the people management page."""
-    return render_template('people.html')
-
-@app.route('/logout')
-def logout():
-    """Logout user and redirect to login page."""
-    # Clear session data
-    session.clear()
-    return redirect('/login')
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Serve the login page or handle login attempts."""
+    """Login page."""
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         
-        # Simple authentication - in a real app, you'd hash passwords and check against a database
-        if username == 'gzentall' and password == 'password':
-            # Set session data
-            session['user_id'] = 1
-            session['username'] = 'gzentall'
-            session['role'] = 'SUPER_ADMIN'
-            session['authenticated'] = True
-            
-            print(f"DEBUG: Login successful for {username}")  # Debug log
-            print(f"DEBUG: Session set - {dict(session)}")  # Debug log
-            
-            # Redirect to main app
-            return redirect('/')
-        elif username == 'admin' and password == 'password':
-            # Set session data
-            session['user_id'] = 2
-            session['username'] = 'admin'
-            session['role'] = 'ADMIN'
-            session['authenticated'] = True
-            
-            # Redirect to main app
-            return redirect('/')
+        user = USERS.get(username)
+        if user and user['is_active'] and bcrypt.checkpw(password.encode('utf-8'), user['password_hash'].encode('utf-8')):
+            session['user_id'] = username
+            session['user_role'] = user['role']
+            flash('Login successful!', 'success')
+            return redirect(url_for('index'))
         else:
-            # Invalid credentials
-            return render_template('login.html', error='Invalid username or password')
+            flash('Invalid username or password', 'error')
     
     return render_template('login.html')
 
-@app.route('/api/users')
-def get_users():
-    """Get list of users."""
-    try:
-        # For now, return a simple list of users
-        users = [
-            {
-                "id": 1,
-                "username": "gzentall",
-                "email": "gzentall@example.com",
-                "role": "SUPER_ADMIN",
-                "status": "ACTIVE",
-                "created_at": "2025-01-01T00:00:00Z"
-            },
-            {
-                "id": 2,
-                "username": "admin",
-                "email": "admin@example.com",
-                "role": "ADMIN",
-                "status": "ACTIVE",
-                "created_at": "2025-01-01T00:00:00Z"
-            },
-            {
-                "id": 3,
-                "username": "user1",
-                "email": "user1@example.com", 
-                "role": "USER",
-                "status": "ACTIVE",
-                "created_at": "2025-01-02T00:00:00Z"
-            }
-        ]
-        return jsonify({"users": users, "success": True})
-    except Exception as e:
-        return jsonify({"error": str(e), "success": False}), 500
+@app.route('/logout')
+def logout():
+    """Logout user."""
+    session.clear()
+    flash('You have been logged out', 'info')
+    return redirect(url_for('login'))
 
+@app.route('/')
+@require_auth
+def index():
+    """Serve the main application page (Documents tab)."""
+    return render_template('browse.html', user=USERS.get(session['user_id']))
+
+@app.route('/upload-form')
+@require_auth
+def upload_form():
+    """Serve the upload form for modal loading."""
+    return render_template('upload_modal.html')
+
+@app.route('/browse')
+@require_auth
+def browse():
+    """Serve the main application interface."""
+    return render_template('browse.html', user=USERS.get(session['user_id']))
+
+@app.route('/stats-page')
+@require_auth
+def stats_page():
+    """Serve the statistics page interface."""
+    return render_template('stats.html', user=USERS.get(session['user_id']))
+
+@app.route('/people-page')
+@require_auth
+def people_page():
+    """Serve the people management page."""
+    return render_template('people.html', user=USERS.get(session['user_id']))
+
+@app.route('/users-page')
+@require_auth
+@require_role('SUPER_ADMIN')
+def users_page():
+    """Serve the user management page (SuperAdmin only)."""
+    return render_template('users.html', user=USERS.get(session['user_id']), users=USERS)
 
 @app.route('/documents/<doc_id>/images/<int:page_num>')
+@require_auth
 def get_document_image(doc_id, page_num):
     """Serve original document images."""
     try:
@@ -257,8 +227,8 @@ def get_document_image(doc_id, page_num):
         print(f"Error serving image: {e}")
         return "Error serving image", 500
 
-
 @app.route('/upload', methods=['POST'])
+@require_auth
 def upload_file():
     """Handle PDF file upload and processing."""
     try:
@@ -431,8 +401,8 @@ def upload_file():
         if pdf_path.exists():
             pdf_path.unlink()
 
-
 @app.route('/download/<filename>')
+@require_auth
 def download_file(filename):
     """Download processed files."""
     file_path = EN_DIR / filename
@@ -441,8 +411,8 @@ def download_file(filename):
     else:
         return jsonify({'error': 'File not found'}), 404
 
-
 @app.route('/status')
+@require_auth
 def status():
     """Check system status and prerequisites."""
     status_info = {
@@ -468,8 +438,8 @@ def status():
     
     return jsonify(status_info)
 
-
 @app.route('/test')
+@require_auth
 def test_endpoint():
     """Simple test endpoint to verify the server is working."""
     return jsonify({
@@ -477,8 +447,8 @@ def test_endpoint():
         'timestamp': str(uuid.uuid4())[:8]
     })
 
-
 @app.route('/documents')
+@require_auth
 def list_documents():
     """List all stored documents."""
     try:
@@ -502,8 +472,8 @@ def list_documents():
             'error': str(e)
         }), 500
 
-
 @app.route('/documents/<doc_id>')
+@require_auth
 def get_document(doc_id):
     """Get a specific document by ID."""
     try:
@@ -524,8 +494,8 @@ def get_document(doc_id):
             'error': str(e)
         }), 500
 
-
 @app.route('/people', methods=['GET', 'POST'])
+@require_auth
 def handle_people():
     """List all people mentioned in documents or add a new person."""
     if request.method == 'GET':
@@ -587,8 +557,8 @@ def handle_people():
                 'error': str(e)
             }), 500
 
-
 @app.route('/people/detailed')
+@require_auth
 def get_people_detailed():
     """Get all people with their associated documents."""
     try:
@@ -604,8 +574,8 @@ def get_people_detailed():
             'error': str(e)
         }), 500
 
-
 @app.route('/people/sorted')
+@require_auth
 def get_people_sorted():
     """Get all people sorted by frequency (document count) for dropdown menus."""
     try:
@@ -630,8 +600,8 @@ def get_people_sorted():
             'error': str(e)
         }), 500
 
-
 @app.route('/people/<person_name>/documents')
+@require_auth
 def get_person_documents(person_name):
     """Get all documents that mention a specific person."""
     try:
@@ -648,8 +618,9 @@ def get_person_documents(person_name):
             'error': str(e)
         }), 500
 
-
 @app.route('/people/<person_name>', methods=['PUT'])
+@require_auth
+@require_role('ADMIN')
 def update_person(person_name):
     """Update a person's name and context, or merge with another person."""
     try:
@@ -713,6 +684,8 @@ def update_person(person_name):
         }), 500
 
 @app.route('/documents/<doc_id>/people', methods=['POST'])
+@require_auth
+@require_role('ADMIN')
 def add_person_to_document(doc_id):
     """Add a person reference to a document."""
     try:
@@ -750,6 +723,8 @@ def add_person_to_document(doc_id):
         }), 500
 
 @app.route('/documents/<doc_id>/people', methods=['DELETE'])
+@require_auth
+@require_role('ADMIN')
 def remove_person_from_document(doc_id):
     """Remove a person reference from a document."""
     try:
@@ -786,8 +761,9 @@ def remove_person_from_document(doc_id):
             'error': str(e)
         }), 500
 
-
 @app.route('/people/<person_name>', methods=['DELETE'])
+@require_auth
+@require_role('ADMIN')
 def remove_person(person_name):
     """Remove a person from the database."""
     try:
@@ -810,8 +786,8 @@ def remove_person(person_name):
             'error': str(e)
         }), 500
 
-
 @app.route('/search')
+@require_auth
 def search_documents():
     """Search documents by query."""
     try:
@@ -835,8 +811,8 @@ def search_documents():
             'error': str(e)
         }), 500
 
-
 @app.route('/export')
+@require_auth
 def export_data():
     """Export all data."""
     try:
@@ -866,8 +842,8 @@ def export_data():
             'error': str(e)
         }), 500
 
-
 @app.route('/stats')
+@require_auth
 def get_statistics():
     """Get statistics about stored data."""
     try:
@@ -899,8 +875,9 @@ def get_statistics():
             'error': str(e)
         }), 500
 
-
 @app.route('/documents/<doc_id>', methods=['PUT'])
+@require_auth
+@require_role('ADMIN')
 def update_document(doc_id):
     """Update a document."""
     try:
@@ -955,8 +932,9 @@ def update_document(doc_id):
             'error': str(e)
         }), 500
 
-
 @app.route('/documents/<doc_id>', methods=['DELETE'])
+@require_auth
+@require_role('ADMIN')
 def delete_document(doc_id):
     """Delete a document."""
     try:
@@ -979,6 +957,164 @@ def delete_document(doc_id):
             'error': str(e)
         }), 500
 
+# User management API endpoints (SuperAdmin only)
+@app.route('/api/users', methods=['GET'])
+@require_auth
+@require_role('SUPER_ADMIN')
+def api_list_users():
+    """List all users (SuperAdmin only)."""
+    try:
+        user_list = []
+        for username, user_data in USERS.items():
+            user_list.append({
+                'username': username,
+                'email': user_data['email'],
+                'role': user_data['role'],
+                'is_active': user_data['is_active']
+            })
+        
+        return jsonify({
+            'success': True,
+            'users': user_list,
+            'total': len(user_list)
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/users', methods=['POST'])
+@require_auth
+@require_role('SUPER_ADMIN')
+def api_create_user():
+    """Create a new user (SuperAdmin only)."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'No data provided'
+            }), 400
+        
+        username = data.get('username', '').strip()
+        email = data.get('email', '').strip()
+        password = data.get('password', '').strip()
+        role = data.get('role', 'USER')
+        
+        if not username or not email or not password:
+            return jsonify({
+                'success': False,
+                'error': 'Username, email, and password are required'
+            }), 400
+        
+        if username in USERS:
+            return jsonify({
+                'success': False,
+                'error': 'Username already exists'
+            }), 400
+        
+        # Hash password
+        password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        
+        # Create user
+        USERS[username] = {
+            'username': username,
+            'email': email,
+            'password_hash': password_hash,
+            'role': role,
+            'is_active': True
+        }
+        
+        return jsonify({
+            'success': True,
+            'message': 'User created successfully',
+            'user': {
+                'username': username,
+                'email': email,
+                'role': role,
+                'is_active': True
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/users/<username>', methods=['PUT'])
+@require_auth
+@require_role('SUPER_ADMIN')
+def api_update_user(username):
+    """Update a user (SuperAdmin only)."""
+    try:
+        if username not in USERS:
+            return jsonify({
+                'success': False,
+                'error': 'User not found'
+            }), 404
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'No data provided'
+            }), 400
+        
+        # Update user data
+        if 'email' in data:
+            USERS[username]['email'] = data['email']
+        if 'role' in data:
+            USERS[username]['role'] = data['role']
+        if 'is_active' in data:
+            USERS[username]['is_active'] = data['is_active']
+        if 'password' in data and data['password']:
+            # Hash new password
+            password_hash = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            USERS[username]['password_hash'] = password_hash
+        
+        return jsonify({
+            'success': True,
+            'message': 'User updated successfully'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/users/<username>', methods=['DELETE'])
+@require_auth
+@require_role('SUPER_ADMIN')
+def api_delete_user(username):
+    """Delete a user (SuperAdmin only)."""
+    try:
+        if username not in USERS:
+            return jsonify({
+                'success': False,
+                'error': 'User not found'
+            }), 404
+        
+        if USERS[username]['role'] == 'SUPER_ADMIN':
+            return jsonify({
+                'success': False,
+                'error': 'Cannot delete SUPER_ADMIN user'
+            }), 400
+        
+        del USERS[username]
+        
+        return jsonify({
+            'success': True,
+            'message': 'User deleted successfully'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
