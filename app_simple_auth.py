@@ -691,6 +691,73 @@ def debug_storage():
     except Exception as e:
         return jsonify({'error': str(e)})
 
+@app.route('/create-sample-docs')
+def create_sample_docs():
+    """Create sample documents for testing - REMOVE IN PRODUCTION"""
+    try:
+        import os
+        import json
+        from datetime import datetime
+        
+        # Ensure directories exist
+        os.makedirs('ocr_storage/documents', exist_ok=True)
+        
+        # Create sample documents
+        sample_docs = [
+            {
+                'id': 'sample_doc_1',
+                'title': 'Sample Letter 1 - 1938',
+                'date': '1938-01-15',
+                'source_language': 'German',
+                'target_language': 'English',
+                'summary': 'This is a sample letter from 1938. It contains important historical information about the period.',
+                'people': ['John Smith', 'Maria Garcia'],
+                'status': 'completed',
+                'created_at': datetime.now().isoformat(),
+                'page_count': 2
+            },
+            {
+                'id': 'sample_doc_2', 
+                'title': 'Sample Letter 2 - 1940',
+                'date': '1940-05-20',
+                'source_language': 'French',
+                'target_language': 'English',
+                'summary': 'Another sample letter from 1940. This one discusses family matters and local events.',
+                'people': ['Robert Johnson', 'Anna Müller'],
+                'status': 'completed',
+                'created_at': datetime.now().isoformat(),
+                'page_count': 1
+            }
+        ]
+        
+        created_count = 0
+        for doc in sample_docs:
+            doc_file = f"ocr_storage/documents/{doc['id']}.json"
+            with open(doc_file, 'w') as f:
+                json.dump(doc, f, indent=2)
+            
+            # Add to metadata
+            local_storage.metadata['documents'][doc['id']] = {
+                'title': doc['title'],
+                'date': doc['date'],
+                'summary': doc['summary'][:100] + '...' if len(doc['summary']) > 100 else doc['summary'],
+                'people_count': len(doc['people']),
+                'page_count': doc['page_count'],
+                'status': doc['status']
+            }
+            created_count += 1
+        
+        # Save metadata
+        local_storage.save_metadata()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Created {created_count} sample documents',
+            'documents': [doc['id'] for doc in sample_docs]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
 @app.route('/documents')
 @require_auth
 def list_documents():
