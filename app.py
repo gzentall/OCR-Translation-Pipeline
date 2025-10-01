@@ -14,7 +14,7 @@ import html
 import sys
 from pathlib import Path
 from datetime import datetime
-from flask import Flask, request, jsonify, render_template, send_file, redirect
+from flask import Flask, request, jsonify, render_template, send_file, redirect, session
 from werkzeug.utils import secure_filename
 import uuid
 
@@ -26,6 +26,10 @@ from scripts.fallback_ai_processor import FallbackAIProcessor
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB max file size
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable caching for development
+app.secret_key = 'dev-secret-key-12345-change-in-production'  # Change this in production
+app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 # Project paths
 PROJECT_ROOT = Path(__file__).parent
@@ -93,7 +97,20 @@ def run_translation_script(text_file_path):
 @app.route('/')
 def index():
     """Serve the main application page (Documents tab)."""
-    return render_template('browse.html')
+    # Get user info from session
+    user = None
+    if session.get('authenticated'):
+        user = {
+            'id': session.get('user_id'),
+            'username': session.get('username'),
+            'role': session.get('role')
+        }
+        print(f"DEBUG: User authenticated - {user}")  # Debug log
+    else:
+        print("DEBUG: No authenticated user in session")  # Debug log
+        print(f"DEBUG: Session data: {dict(session)}")  # Debug log
+    
+    return render_template('browse.html', user=user)
 
 @app.route('/upload-form')
 def upload_form():
@@ -104,7 +121,15 @@ def upload_form():
 @app.route('/browse')
 def browse():
     """Serve the main application interface."""
-    return render_template('browse.html')
+    # Get user info from session
+    user = None
+    if session.get('authenticated'):
+        user = {
+            'id': session.get('user_id'),
+            'username': session.get('username'),
+            'role': session.get('role')
+        }
+    return render_template('browse.html', user=user)
 
 
 @app.route('/stats-page')
@@ -121,13 +146,43 @@ def people_page():
 @app.route('/logout')
 def logout():
     """Logout user and redirect to login page."""
-    # Clear any session data
-    # In a real app, you'd clear the session here
+    # Clear session data
+    session.clear()
     return redirect('/login')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Serve the login page."""
+    """Serve the login page or handle login attempts."""
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        # Simple authentication - in a real app, you'd hash passwords and check against a database
+        if username == 'gzentall' and password == 'password':
+            # Set session data
+            session['user_id'] = 1
+            session['username'] = 'gzentall'
+            session['role'] = 'SUPER_ADMIN'
+            session['authenticated'] = True
+            
+            print(f"DEBUG: Login successful for {username}")  # Debug log
+            print(f"DEBUG: Session set - {dict(session)}")  # Debug log
+            
+            # Redirect to main app
+            return redirect('/')
+        elif username == 'admin' and password == 'password':
+            # Set session data
+            session['user_id'] = 2
+            session['username'] = 'admin'
+            session['role'] = 'ADMIN'
+            session['authenticated'] = True
+            
+            # Redirect to main app
+            return redirect('/')
+        else:
+            # Invalid credentials
+            return render_template('login.html', error='Invalid username or password')
+    
     return render_template('login.html')
 
 @app.route('/api/users')
@@ -138,6 +193,14 @@ def get_users():
         users = [
             {
                 "id": 1,
+                "username": "gzentall",
+                "email": "gzentall@example.com",
+                "role": "SUPER_ADMIN",
+                "status": "ACTIVE",
+                "created_at": "2025-01-01T00:00:00Z"
+            },
+            {
+                "id": 2,
                 "username": "admin",
                 "email": "admin@example.com",
                 "role": "ADMIN",
@@ -145,7 +208,7 @@ def get_users():
                 "created_at": "2025-01-01T00:00:00Z"
             },
             {
-                "id": 2,
+                "id": 3,
                 "username": "user1",
                 "email": "user1@example.com", 
                 "role": "USER",

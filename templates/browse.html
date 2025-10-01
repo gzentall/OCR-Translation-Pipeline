@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Postmark</title>
     
     <!-- Material Design Icons -->
@@ -12,7 +15,7 @@
     <!-- Google Fonts - Material Design 3 Type Scale -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Flex:wght@100..900&display=swap" rel="stylesheet">
     <!-- Design Tokens -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}?v={{ range(1000, 9999) | random }}">
     
     <style>
         :root {
@@ -190,6 +193,41 @@
         }
 
         /* 
+         * RESPONSIVE BREAKPOINT SYSTEM - Material Design 3 Guidelines
+         * 
+         * Breakpoints follow Material Design 3 specifications:
+         * - Mobile: 0-599px (compact layout, single column)
+         * - Tablet: 600-839px (medium layout, adaptive columns)
+         * - Desktop: 840px+ (expanded layout, multi-column)
+         * - Large Desktop: 1200px+ (maximum content width)
+         */
+        
+        /* Breakpoint Variables */
+        :root {
+            --breakpoint-mobile: 599px;
+            --breakpoint-tablet: 840px;
+            --breakpoint-desktop: 1200px;
+            --breakpoint-large: 1440px;
+            
+            /* Grid System Variables */
+            --grid-columns-mobile: 1;
+            --grid-columns-tablet: 2;
+            --grid-columns-desktop: 3;
+            --grid-columns-large: 4;
+            
+            --grid-gap-mobile: 16px;
+            --grid-gap-tablet: 20px;
+            --grid-gap-desktop: 24px;
+            --grid-gap-large: 32px;
+            
+            /* Container Max Widths */
+            --container-max-width-mobile: 100%;
+            --container-max-width-tablet: 100%;
+            --container-max-width-desktop: 1200px;
+            --container-max-width-large: 1440px;
+        }
+
+        /* 
          * Z-INDEX SYSTEM - Systematic Hierarchy Implementation
          * 
          * This system follows a strict hierarchy to prevent z-index conflicts:
@@ -253,9 +291,6 @@
             z-index: 1000; /* Dropdown level */ /* Dropdown menus */
         }
         
-        .profile-dropdown {
-            z-index: 1000; /* Dropdown level */ /* Profile dropdown */
-        }
         
         .mdc-drawer {
             z-index: 1100; /* Side sheets */
@@ -350,6 +385,45 @@
             font-weight: var(--md-sys-typescale-headline-small-weight);
             line-height: var(--md-sys-typescale-headline-small-line-height);
             letter-spacing: var(--md-sys-typescale-headline-small-tracking);
+        }
+
+        /* Responsive App Bar */
+        @media (max-width: 599px) {
+            .app-bar {
+                padding: var(--md-sys-spacing-3) var(--md-sys-spacing-4);
+                flex-wrap: wrap;
+                gap: var(--md-sys-spacing-3);
+                min-height: 56px;
+            }
+            
+            .app-title h1 {
+                font-size: 20px;
+            }
+            
+            .nav-tabs {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .nav-tab-label {
+                display: none;
+            }
+            
+            .nav-tab {
+                min-width: 48px;
+                padding: 8px;
+            }
+        }
+
+        @media (min-width: 600px) and (max-width: 839px) {
+            .app-bar {
+                padding: var(--md-sys-spacing-3) var(--md-sys-spacing-5);
+            }
+            
+            .nav-tab-label {
+                font-size: 14px;
+            }
         }
 
         .back-button {
@@ -498,27 +572,31 @@
         }
 
         .profile-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 8px;
-            background: var(--md-sys-color-surface);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: fixed; /* Always fixed for portaling */
+            background: var(--md-sys-color-surface-container);
+            border-radius: 12px; /* M3 spec: 12dp radius */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 
+                        0 1px 3px 1px rgba(0, 0, 0, 0.15); /* M3 elevation 1 */
             min-width: 200px;
-            z-index: 1000; /* Dropdown level */ /* Dropdown level - above content but below modals */
+            z-index: 1000;
             overflow: hidden;
-            display: none;
+            
+            /* Hidden by default */
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            
+            /* Smooth transition */
+            transition: opacity 150ms ease-out, visibility 150ms;
         }
 
-        /* Floating variant to escape parent overflow/z-index clipping */
-        .profile-dropdown.profile-dropdown--floating {
-            position: fixed !important;
-            left: 0;
-            top: 0;
-            z-index: 1000 !important; /* Dropdown level - above content but below modals */
+        .profile-dropdown.is-open {
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
             display: block !important;
         }
+        
 
         .profile-header {
             padding: 16px;
@@ -607,9 +685,88 @@
             padding: 24px 24px 0 24px;
         }
 
-        /* Dialog Content */
+        /* Responsive Dialog Content */
         .mdc-dialog__content {
-            padding: 24px;
+            padding: 0;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Full-screen dialog for document editor */
+        .mdc-dialog.document-editor-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            max-height: none;
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .mdc-dialog.document-editor-dialog .mdc-dialog__container {
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            max-height: none;
+        }
+
+        .mdc-dialog.document-editor-dialog .mdc-dialog__surface {
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            max-height: none;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mdc-dialog.document-editor-dialog .mdc-dialog__header {
+            flex-shrink: 0;
+            padding: var(--md-sys-spacing-4);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .mdc-dialog.document-editor-dialog .mdc-dialog__content {
+            flex: 1;
+            padding: var(--md-sys-spacing-4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mdc-dialog.document-editor-dialog .mdc-dialog__actions {
+            flex-shrink: 0;
+            padding: var(--md-sys-spacing-4);
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        /* Responsive breakpoints for document editor dialog */
+        @media (max-width: 599px) {
+            .mdc-dialog.document-editor-dialog .mdc-dialog__header,
+            .mdc-dialog.document-editor-dialog .mdc-dialog__content,
+            .mdc-dialog.document-editor-dialog .mdc-dialog__actions {
+                padding: var(--md-sys-spacing-3);
+            }
+        }
+
+        @media (min-width: 600px) and (max-width: 839px) {
+            .mdc-dialog.document-editor-dialog .mdc-dialog__header,
+            .mdc-dialog.document-editor-dialog .mdc-dialog__content,
+            .mdc-dialog.document-editor-dialog .mdc-dialog__actions {
+                padding: var(--md-sys-spacing-4);
+            }
+        }
+
+        @media (min-width: 840px) {
+            .mdc-dialog.document-editor-dialog .mdc-dialog__header,
+            .mdc-dialog.document-editor-dialog .mdc-dialog__content,
+            .mdc-dialog.document-editor-dialog .mdc-dialog__actions {
+                padding: var(--md-sys-spacing-5);
+            }
         }
 
         /* User Header - Horizontal Layout */
@@ -836,6 +993,83 @@
             justify-content: flex-end;
         }
 
+        /* Responsive Grid System */
+        .container {
+            width: 100%;
+            max-width: var(--container-max-width-desktop);
+            margin: 0 auto;
+            padding: 0 var(--grid-gap-mobile);
+        }
+
+        .grid {
+            display: grid;
+            gap: var(--grid-gap-mobile);
+            grid-template-columns: repeat(var(--grid-columns-mobile), 1fr);
+        }
+
+        .grid-item {
+            min-width: 0; /* Prevent grid blowout */
+        }
+
+        /* Responsive Grid Adjustments */
+        @media (min-width: 600px) {
+            .container {
+                padding: 0 var(--grid-gap-tablet);
+            }
+            
+            .grid {
+                gap: var(--grid-gap-tablet);
+                grid-template-columns: repeat(var(--grid-columns-tablet), 1fr);
+            }
+        }
+
+        @media (min-width: 840px) {
+            .container {
+                max-width: var(--container-max-width-desktop);
+                padding: 0 var(--grid-gap-desktop);
+            }
+            
+            .grid {
+                gap: var(--grid-gap-desktop);
+                grid-template-columns: repeat(var(--grid-columns-desktop), 1fr);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                max-width: var(--container-max-width-large);
+                padding: 0 var(--grid-gap-large);
+            }
+            
+            .grid {
+                gap: var(--grid-gap-large);
+                grid-template-columns: repeat(var(--grid-columns-large), 1fr);
+            }
+        }
+
+        /* Utility Classes for Grid Spans */
+        .grid-span-1 { grid-column: span 1; }
+        .grid-span-2 { grid-column: span 2; }
+        .grid-span-3 { grid-column: span 3; }
+        .grid-span-4 { grid-column: span 4; }
+        .grid-span-full { grid-column: 1 / -1; }
+
+        /* Responsive Span Adjustments */
+        @media (max-width: 599px) {
+            .grid-span-2,
+            .grid-span-3,
+            .grid-span-4 {
+                grid-column: span 1;
+            }
+        }
+
+        @media (min-width: 600px) and (max-width: 839px) {
+            .grid-span-3,
+            .grid-span-4 {
+                grid-column: span 2;
+            }
+        }
+
         .main-content {
             padding: var(--md-sys-spacing-6);
             max-width: 1200px;
@@ -924,9 +1158,9 @@
             }
 
             /* Responsive adjustments for smaller screens */
-            @media (max-width: 768px) {
+            @media (max-width: 599px) {
                 .compact-search-filter-bar {
-            flex-wrap: wrap;
+                    flex-wrap: wrap;
                     gap: 8px;
                 }
                 
@@ -936,9 +1170,9 @@
                 
                 .filter-chips-container {
                     gap: 4px;
-        }
+                }
 
-        .filter-chip {
+                .filter-chip {
                     font-size: 11px;
                     height: 28px;
                     min-width: 60px;
@@ -972,7 +1206,7 @@
                     font-size: 16px;
                     margin-right: 6px;
                 }
-        }
+            }
 
         .filter-chip {
             background: var(--md-sys-color-surface);
@@ -1232,6 +1466,7 @@
                 white-space: nowrap;
                 height: 32px;
                 min-width: 80px;
+                line-height: 1.2;
             }
 
         .sort-chip:hover {
@@ -1493,11 +1728,339 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
+        /* Documents Grid Layout */
+        .documents-grid {
+            display: grid;
+            gap: var(--grid-gap-mobile);
+            grid-template-columns: repeat(var(--grid-columns-mobile), 1fr);
+        }
+
+        .document-card {
+            background: var(--md-sys-color-surface);
+            border-radius: var(--md-sys-shape-radius-md);
+            padding: var(--md-sys-spacing-4);
+            box-shadow: var(--md-sys-elevation-level1);
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            cursor: pointer;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .document-card:hover {
+            box-shadow: var(--md-sys-elevation-level2);
+            transform: translateY(-2px);
+        }
+
+        .document-card:active {
+            transform: translateY(0);
+            box-shadow: var(--md-sys-elevation-level1);
+        }
+
+        .document-thumbnail {
+            width: 100%;
+            height: 120px;
+            border-radius: var(--md-sys-shape-radius-sm);
+            background: var(--md-sys-color-surface-container);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: var(--md-sys-spacing-3);
+            position: relative;
+        }
+
+        .document-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .document-thumbnail .no-image {
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 24px;
+        }
+
+        .document-page-badge {
+            position: absolute;
+            top: var(--md-sys-spacing-1);
+            right: var(--md-sys-spacing-1);
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 500;
+            border: 1px solid var(--md-sys-color-surface);
+        }
+
+        .document-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .document-title {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            line-height: var(--md-sys-typescale-title-medium-line-height);
+            color: var(--md-sys-color-on-surface);
+            margin: 0 0 var(--md-sys-spacing-2) 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .document-summary {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            color: var(--md-sys-color-on-surface-variant);
+            margin: 0 0 var(--md-sys-spacing-2) 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .document-people {
+            font-family: var(--md-sys-typescale-label-small-font);
+            font-size: var(--md-sys-typescale-label-small-size);
+            font-weight: var(--md-sys-typescale-label-small-weight);
+            color: var(--md-sys-color-primary);
+            margin-top: auto;
+            padding-top: var(--md-sys-spacing-2);
+        }
+
+        /* Responsive Documents Grid */
+        @media (min-width: 600px) {
+            .documents-grid {
+                gap: var(--grid-gap-tablet);
+                grid-template-columns: repeat(var(--grid-columns-tablet), 1fr);
+            }
+            
+            .document-card {
+                padding: var(--md-sys-spacing-5);
+            }
+            
+            .document-thumbnail {
+                height: 140px;
+            }
+        }
+
+        @media (min-width: 840px) {
+            .documents-grid {
+                gap: var(--grid-gap-desktop);
+                grid-template-columns: repeat(var(--grid-columns-desktop), 1fr);
+            }
+            
+            .document-card {
+                padding: var(--md-sys-spacing-6);
+            }
+            
+            .document-thumbnail {
+                height: 160px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .documents-grid {
+                gap: var(--grid-gap-large);
+                grid-template-columns: repeat(var(--grid-columns-large), 1fr);
+            }
+            
+            .document-thumbnail {
+                height: 180px;
+            }
+            
+            /* Desktop enhancements */
+            .main-content {
+                padding: var(--md-sys-spacing-8);
+            }
+            
+            .document-card {
+                min-height: 200px;
+                padding: var(--md-sys-spacing-6);
+                transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+            }
+            
+            .document-card:hover {
+                transform: translateY(-4px);
+                box-shadow: var(--md-sys-elevation-level3);
+            }
+            
+            .search-row {
+                gap: var(--md-sys-spacing-6);
+            }
+            
+            .compact-search-filter-bar {
+                padding: var(--md-sys-spacing-5);
+            }
+            
+            /* Enhanced typography for desktop */
+            .document-title {
+                font-size: 18px;
+                line-height: 1.4;
+            }
+            
+            .document-summary {
+                font-size: 15px;
+                line-height: 1.5;
+            }
+        }
+
         .section-title {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 500;
             margin: 0 0 16px 0;
             color: var(--mdc-theme-on-surface);
+        }
+
+        /* Documents Header Layout */
+        .documents-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 16px;
+        }
+
+        /* Responsive Documents Header */
+        @media (max-width: 599px) {
+            .documents-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--md-sys-spacing-3);
+            }
+            
+            .documents-title-container {
+                justify-content: space-between;
+            }
+            
+            .sort-controls {
+                justify-content: flex-end;
+            }
+        }
+
+        @media (min-width: 600px) and (max-width: 839px) {
+            .documents-header {
+                gap: var(--md-sys-spacing-4);
+            }
+            
+            /* Tablet-specific optimizations */
+            .main-content {
+                padding: var(--md-sys-spacing-5);
+            }
+            
+            .document-card {
+                min-height: 160px;
+                padding: var(--md-sys-spacing-5);
+            }
+            
+            .document-thumbnail {
+                height: 140px;
+            }
+            
+            .search-row {
+                gap: var(--md-sys-spacing-4);
+            }
+            
+            .compact-search-filter-bar {
+                padding: var(--md-sys-spacing-4);
+            }
+        }
+
+        .documents-title-container {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .documents-title-container .section-title {
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .show-all-link {
+            color: var(--md-sys-color-primary);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.2;
+            transition: color 0.2s ease;
+        }
+
+        .show-all-link:hover {
+            color: var(--md-sys-color-primary-container);
+            text-decoration: underline;
+        }
+
+        .sort-controls {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .view-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 16px;
+        }
+
+        .view-toggle-group {
+            display: flex;
+            background: var(--md-sys-color-surface-container);
+            border-radius: var(--md-sys-shape-radius-sm);
+            padding: 2px;
+            border: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .view-toggle-btn {
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            border-radius: var(--md-sys-shape-radius-xs);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            color: var(--md-sys-color-on-surface-variant);
+            min-width: 40px;
+            height: 36px;
+        }
+
+        .view-toggle-btn:hover {
+            background: var(--md-sys-color-surface-container-high);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .view-toggle-btn.active {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            box-shadow: var(--md-sys-elevation-level1);
+        }
+
+        .view-toggle-btn .material-icons {
+            font-size: 20px;
+        }
+
+        .sort-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            line-height: 1.2;
         }
 
         .mdc-list {
@@ -3019,7 +3582,7 @@
             grid-template-columns: 1fr;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 599px) {
             .form-row {
                 grid-template-columns: 1fr;
             }
@@ -3120,6 +3683,266 @@
             display: block !important;
         }
         
+        /* Multi-Column Document Editor Layout */
+        .document-editor-layout {
+            display: grid;
+            gap: var(--md-sys-spacing-4);
+            height: 100%;
+            min-height: 500px;
+        }
+
+        /* Document editor layout in full-screen dialog */
+        .mdc-dialog.document-editor-dialog .document-editor-layout {
+            height: 100%;
+            min-height: 0;
+            flex: 1;
+        }
+
+        /* 3-Column Layout (Desktop) */
+        .document-editor-layout.three-column {
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-areas: 
+                "image tabs comments";
+        }
+
+        /* 2-Column Layout (Tablet) */
+        .document-editor-layout.two-column {
+            grid-template-columns: 2fr 1fr;
+            grid-template-areas: 
+                "tabs comments";
+        }
+
+        /* 1-Column Layout (Mobile) */
+        .document-editor-layout.one-column {
+            grid-template-columns: 1fr;
+            grid-template-areas: 
+                "tabs";
+        }
+
+        /* Layout Areas */
+        .editor-image-section {
+            grid-area: image;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .editor-tabs-section {
+            grid-area: tabs;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .editor-comments-section {
+            grid-area: comments;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* Image Section Styles */
+        .editor-image-section .image-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .editor-image-section .image-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--md-sys-spacing-3);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            flex-shrink: 0;
+        }
+
+        .editor-image-section .page-navigation {
+            display: flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-2);
+        }
+
+        .editor-image-section .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-2);
+        }
+
+        .editor-image-section .page-info,
+        .editor-image-section .zoom-info {
+            font-size: var(--md-sys-typescale-body-small-size);
+            color: var(--md-sys-color-on-surface-variant);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .editor-image-section .mdc-button {
+            min-width: 40px;
+            height: 40px;
+            padding: 0;
+        }
+
+        .editor-image-section .mdc-button .material-icons {
+            font-size: 20px;
+        }
+
+        .editor-image-section .image-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--md-sys-color-surface-container);
+            overflow: auto;
+            padding: var(--md-sys-spacing-4);
+            min-height: 0;
+        }
+
+        .editor-image-section .image-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.2s ease;
+        }
+
+        .editor-image-section .image-content.zoomed img {
+            cursor: grab;
+        }
+
+        .editor-image-section .image-content.zoomed img:active {
+            cursor: grabbing;
+        }
+
+        /* Comments Section Styles */
+        .editor-comments-section {
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: var(--md-sys-shape-radius-md);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .comments-header {
+            display: flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-2);
+            padding: var(--md-sys-spacing-4);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            flex-shrink: 0;
+        }
+
+        .comments-header h3 {
+            font-family: var(--md-sys-typescale-title-medium-font);
+            font-size: var(--md-sys-typescale-title-medium-size);
+            font-weight: var(--md-sys-typescale-title-medium-weight);
+            line-height: var(--md-sys-typescale-title-medium-line-height);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+        }
+
+        .comments-content {
+            flex: 1;
+            padding: var(--md-sys-spacing-4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comments-textarea {
+            flex: 1;
+            width: 100%;
+            min-height: 200px;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--md-sys-shape-radius-sm);
+            padding: var(--md-sys-spacing-3);
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            color: var(--md-sys-color-on-surface);
+            background: var(--md-sys-color-surface);
+            resize: none;
+            outline: none;
+            transition: border-color 0.2s ease;
+            overflow-y: auto;
+        }
+
+        .comments-textarea:focus {
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .comments-textarea::placeholder {
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        /* Responsive Layout Adjustments */
+        @media (max-width: 599px) {
+            .document-editor-layout {
+                gap: var(--md-sys-spacing-3);
+                min-height: 400px;
+            }
+            
+            .editor-comments-section {
+                padding: var(--md-sys-spacing-3);
+            }
+            
+            .comments-textarea {
+                min-height: 200px;
+            }
+            
+            /* Ensure tabs are scrollable on mobile */
+            .editor-tabs-section .mdc-tab-bar {
+                overflow-x: auto;
+            }
+            
+            /* Stack image controls on mobile */
+            .editor-image-section .image-controls {
+                flex-direction: column;
+                gap: var(--md-sys-spacing-2);
+                align-items: stretch;
+            }
+            
+            .editor-image-section .page-navigation,
+            .editor-image-section .zoom-controls {
+                justify-content: center;
+            }
+        }
+
+        /* Ensure proper scrolling in full-screen dialog */
+        .mdc-dialog.document-editor-dialog .mdc-dialog__content {
+            overflow: hidden;
+        }
+
+        .mdc-dialog.document-editor-dialog .edit-form {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mdc-dialog.document-editor-dialog .document-editor-layout {
+            flex: 1;
+            min-height: 0;
+        }
+
+        @media (min-width: 600px) and (max-width: 839px) {
+            .document-editor-layout {
+                gap: var(--md-sys-spacing-4);
+            }
+        }
+
+        @media (min-width: 840px) {
+            .document-editor-layout {
+                gap: var(--md-sys-spacing-5);
+            }
+            
+            .editor-comments-section {
+                padding: var(--md-sys-spacing-5);
+            }
+        }
+
         /* Ensure modal content container has proper height */
         .modal-content {
             min-height: 400px;
@@ -3511,7 +4334,7 @@
             border-color: var(--md-sys-color-outline);
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 599px) {
             .main-content {
                 padding: var(--md-sys-spacing-4);
             }
@@ -3521,22 +4344,38 @@
                 align-items: stretch;
             }
             
-            .mdc-list-item {
-                min-height: 72px; /* Keep two-line height on mobile */
+            /* Touch-friendly document cards */
+            .document-card {
+                min-height: 140px;
+                padding: var(--md-sys-spacing-4);
+                touch-action: manipulation;
             }
             
-            .mdc-list-item__graphic {
-                width: 48px;
-                height: 48px;
-                margin: 12px 0 12px 12px; /* Reduced padding for mobile */
+            .document-thumbnail {
+                height: 100px;
             }
             
-            .mdc-list-item__text {
-                padding: 12px 12px 16px 0; /* Reduced padding for mobile */
+            .document-title {
+                font-size: 16px;
+                line-height: 1.3;
             }
             
-            .mdc-list-item__meta {
-                padding: 12px 12px 16px 0; /* Reduced padding for mobile */
+            .document-summary {
+                font-size: 14px;
+                line-height: 1.4;
+            }
+            
+            /* Touch-friendly buttons and interactive elements */
+            .filter-chip,
+            .sort-chip,
+            .mdc-button {
+                min-height: 44px; /* iOS touch target minimum */
+                min-width: 44px;
+            }
+            
+            .nav-tab {
+                min-height: 48px;
+                min-width: 48px;
             }
             
             /* Mobile dialog adjustments */
@@ -3567,6 +4406,7 @@
             .mdc-dialog__button {
                 flex: 1;
                 min-width: 0;
+                min-height: 44px;
             }
         }
 
@@ -3656,7 +4496,7 @@
         }
 
         /* Mobile responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 599px) {
             .mdc-snackbar {
                 bottom: 8px;
                 left: 8px;
@@ -3703,7 +4543,7 @@
                 <button class="avatar-button" onclick="toggleProfileMenu()">
                     <div class="avatar" id="userAvatar">U</div>
                 </button>
-                <div class="profile-dropdown" id="profileDropdown" style="display: none;">
+                <div class="profile-dropdown" id="profileDropdown">
                     <div class="profile-header">
                         <div class="profile-avatar" id="profileAvatar">U</div>
                         <div class="profile-info">
@@ -3714,7 +4554,11 @@
                     <div class="profile-actions">
                         <button class="profile-action" onclick="logout()">
                             <span class="material-icons">logout</span>
-                            Logout
+                            <span id="logoutText">Logout</span>
+                        </button>
+                        <button class="profile-action" onclick="clearAuthData()" id="clearAuthButton" style="display: none;">
+                            <span class="material-icons">clear</span>
+                            Clear Auth Data
                         </button>
                     </div>
                 </div>
@@ -3841,33 +4685,6 @@
                     </div>
                 </div>
         
-        <div class="sort-container">
-            <div class="sort-chip" id="sortChip" data-sort="date_added" data-direction="desc">
-                <i class="material-icons sort-icon">sort</i>
-                <span class="sort-text">Added (d)</span>
-                <i class="material-icons sort-arrow">keyboard_arrow_down</i>
-            </div>
-            <div class="sort-dropdown" id="sortDropdown" style="display: none;">
-                <div class="sort-option" data-sort="name" data-direction="asc">
-                    <span class="sort-option-text">Name (a)</span>
-                </div>
-                <div class="sort-option" data-sort="name" data-direction="desc">
-                    <span class="sort-option-text">Name (d)</span>
-                </div>
-                <div class="sort-option" data-sort="date" data-direction="asc">
-                    <span class="sort-option-text">Authored (a)</span>
-                </div>
-                <div class="sort-option" data-sort="date" data-direction="desc">
-                    <span class="sort-option-text">Authored (d)</span>
-                </div>
-                <div class="sort-option" data-sort="date_added" data-direction="asc">
-                    <span class="sort-option-text">Added (a)</span>
-                </div>
-                <div class="sort-option" data-sort="date_added" data-direction="desc">
-                    <span class="sort-option-text">Added (d)</span>
-                </div>
-            </div>
-        </div>
             </div>
 
     <!-- Main Content -->
@@ -3879,7 +4696,52 @@
 
             <!-- Documents Section -->
             <div class="documents-section">
-                <h2 class="section-title" id="documentsTitle">Documents</h2>
+                <div class="documents-header">
+                    <div class="documents-title-container">
+                        <h2 class="section-title" id="documentsTitle">Documents</h2>
+                        <a href="#" id="showAllLink" class="show-all-link" onclick="resetFiltersAndSearch(); return false;">show all</a>
+                    </div>
+                    <div class="sort-controls">
+                        <span class="sort-label">Sort:</span>
+                        <div class="sort-container">
+                            <div class="sort-chip" id="sortChip" data-sort="date_added" data-direction="desc">
+                                <i class="material-icons sort-icon">sort</i>
+                                <span class="sort-text">Added (d)</span>
+                                <i class="material-icons sort-arrow">keyboard_arrow_down</i>
+                            </div>
+                            <div class="sort-dropdown" id="sortDropdown" style="display: none;">
+                                <div class="sort-option" data-sort="name" data-direction="asc">
+                                    <span class="sort-option-text">Name (a)</span>
+                                </div>
+                                <div class="sort-option" data-sort="name" data-direction="desc">
+                                    <span class="sort-option-text">Name (d)</span>
+                                </div>
+                                <div class="sort-option" data-sort="date_added" data-direction="asc">
+                                    <span class="sort-option-text">Added (a)</span>
+                                </div>
+                                <div class="sort-option" data-sort="date_added" data-direction="desc">
+                                    <span class="sort-option-text">Added (d)</span>
+                                </div>
+                                <div class="sort-option" data-sort="date_modified" data-direction="asc">
+                                    <span class="sort-option-text">Modified (a)</span>
+                                </div>
+                                <div class="sort-option" data-sort="date_modified" data-direction="desc">
+                                    <span class="sort-option-text">Modified (d)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="view-controls">
+                            <div class="view-toggle-group">
+                                <button class="view-toggle-btn active" id="gridViewBtn" onclick="toggleView('grid')" title="Grid View">
+                                    <span class="material-icons">grid_view</span>
+                                </button>
+                                <button class="view-toggle-btn" id="listViewBtn" onclick="toggleView('list')" title="List View">
+                                    <span class="material-icons">view_list</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div id="documentsContainer">
                     <div class="loading">
                         <p>Loading documents...</p>
@@ -4220,6 +5082,25 @@
             }
         }
 
+        // View toggle functionality
+        let currentView = 'grid'; // Default to grid view
+        
+        function toggleView(view) {
+            currentView = view;
+            
+            // Update button states
+            const gridBtn = document.getElementById('gridViewBtn');
+            const listBtn = document.getElementById('listViewBtn');
+            
+            if (gridBtn && listBtn) {
+                gridBtn.classList.toggle('active', view === 'grid');
+                listBtn.classList.toggle('active', view === 'list');
+            }
+            
+            // Re-render documents with new view
+            renderDocuments();
+        }
+
         // Render documents
         function renderDocuments() {
             console.log('Rendering documents...');
@@ -4246,35 +5127,68 @@
                 return;
             }
             
-            container.innerHTML = `
-                <div class="mdc-list">
-                    ${filteredDocuments.map(doc => `
-                        <div class="mdc-list-item" onclick="showDocument('${doc.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); showDocument('${doc.id}');}" tabindex="0" role="button" aria-label="View document ${escapeHtml(doc.title)}">
-                            <div class="mdc-list-item__graphic">
-                                ${doc.page_count > 0 ? 
-                                    `<img src="/documents/${doc.id}/images/1?t=${Date.now()}" 
-                                          alt="Document thumbnail" 
-                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                     <div class="no-image" style="display: none;">📄</div>` :
-                                    `<div class="no-image">📄</div>`
-                                }
-                                <div class="page-badge">${doc.page_count || 0}</div>
-                            </div>
-                            <div class="mdc-list-item__text">
-                                <div class="mdc-list-item__primary-text">${escapeHtml(doc.title || doc.id || 'Untitled Document')}</div>
-                                <div class="mdc-list-item__secondary-text">
-                                    ${doc.summary ? escapeHtml(doc.summary).substring(0, 100) + (doc.summary.length > 100 ? '...' : '') : 'No summary available'}
+            if (currentView === 'grid') {
+                container.innerHTML = `
+                    <div class="documents-grid">
+                        ${filteredDocuments.map(doc => `
+                            <div class="document-card" onclick="showDocument('${doc.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); showDocument('${doc.id}');}" tabindex="0" role="button" aria-label="View document ${escapeHtml(doc.title)}">
+                                <div class="document-thumbnail">
+                                    ${doc.page_count > 0 ? 
+                                        `<img src="/documents/${doc.id}/images/1?t=${Date.now()}" 
+                                              alt="Document thumbnail" 
+                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                         <div class="no-image" style="display: none;">📄</div>` :
+                                        `<div class="no-image">📄</div>`
+                                    }
+                                    <div class="document-page-badge">${doc.page_count || 0}</div>
                                 </div>
-                                ${(doc.people && doc.people.length > 0) ? `
-                                <div class="mdc-list-item__tertiary-text">
-                                    ${renderPeopleList(doc.people)}
+                                <div class="document-content">
+                                    <div class="document-title">${escapeHtml(doc.title || doc.id || 'Untitled Document')}</div>
+                                    <div class="document-summary">
+                                        ${doc.summary ? escapeHtml(doc.summary).substring(0, 100) + (doc.summary.length > 100 ? '...' : '') : 'No summary available'}
+                                    </div>
+                                    ${(doc.people && doc.people.length > 0) ? `
+                                    <div class="document-people">
+                                        ${renderPeopleList(doc.people)}
+                                    </div>
+                                    ` : ''}
                                 </div>
-                                ` : ''}
                             </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                // List view using the original mdc-list structure
+                container.innerHTML = `
+                    <div class="mdc-list">
+                        ${filteredDocuments.map(doc => `
+                            <div class="mdc-list-item" onclick="showDocument('${doc.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); showDocument('${doc.id}');}" tabindex="0" role="button" aria-label="View document ${escapeHtml(doc.title)}">
+                                <div class="mdc-list-item__graphic">
+                                    ${doc.page_count > 0 ? 
+                                        `<img src="/documents/${doc.id}/images/1?t=${Date.now()}" 
+                                              alt="Document thumbnail" 
+                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                         <div class="no-image" style="display: none;">📄</div>` :
+                                        `<div class="no-image">📄</div>`
+                                    }
+                                    <div class="page-badge">${doc.page_count || 0}</div>
+                                </div>
+                                <div class="mdc-list-item__text">
+                                    <div class="mdc-list-item__primary-text">${escapeHtml(doc.title || doc.id || 'Untitled Document')}</div>
+                                    <div class="mdc-list-item__secondary-text">
+                                        ${doc.summary ? escapeHtml(doc.summary).substring(0, 100) + (doc.summary.length > 100 ? '...' : '') : 'No summary available'}
+                                    </div>
+                                    ${(doc.people && doc.people.length > 0) ? `
+                                    <div class="mdc-list-item__tertiary-text">
+                                        ${renderPeopleList(doc.people)}
+                                    </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
         }
 
         // Sort documents
@@ -4424,6 +5338,7 @@
             if (modal) {
                 console.log('Modal found, removing mdc-dialog--open class');
                 modal.classList.remove('mdc-dialog--open');
+                modal.classList.remove('document-editor-dialog');
                 console.log('Modal classes after removal:', modal.className);
                 
                 // Also try to close any MDC dialog instance if it exists
@@ -4850,6 +5765,7 @@
                             </div>
                         </div>
                         
+                        ${layoutClass !== 'three-column' ? `
                         <!-- Image Tab -->
                         <div class="tab-panel" id="tab-image">
                             <div class="image-controls">
@@ -4870,6 +5786,15 @@
                                 <div class="image-loading">Loading image...</div>
                             </div>
                         </div>
+                        ` : ''}
+                        ${layoutClass === 'one-column' ? `
+                        <!-- Comments Tab -->
+                        <div class="tab-panel" id="tab-comments">
+                            <div class="comments-content">
+                                <textarea id="editComments" class="comments-textarea" placeholder="Add your comments about this document...">${escapeHtml(doc.comments || '')}</textarea>
+                            </div>
+                        </div>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -5113,8 +6038,114 @@
             console.log('Modal initialized with frequency-sorted people');
             
             
-            // Load the first page image
-            loadDocumentImage(doc.id);
+                // Initialize image controls
+                currentDocumentId = doc.id;
+                currentPage = 1;
+                currentZoom = 1;
+                totalPages = doc.page_count || 1;
+                
+                // Update controls after a short delay to ensure DOM is ready
+                setTimeout(() => {
+                    updatePageInfo();
+                    updateZoomInfo();
+                    applyZoom();
+                }, 100);
+                
+                // Load the first page image
+                loadDocumentImage(doc.id);
+        }
+
+        // Determine document editor layout based on screen size
+        function getDocumentEditorLayout() {
+            const width = window.innerWidth;
+            if (width >= 1200) {
+                return 'three-column';
+            } else if (width >= 600) {
+                return 'two-column';
+            } else {
+                return 'one-column';
+            }
+        }
+
+        // Image navigation and zoom functionality
+        let currentPage = 1;
+        let currentZoom = 1;
+        let totalPages = 1;
+
+        function updatePageInfo() {
+            const pageInfo = document.getElementById('pageInfo');
+            if (pageInfo) {
+                pageInfo.textContent = `${currentPage} / ${totalPages}`;
+            }
+            
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentPage <= 1;
+            if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+        }
+
+        function updateZoomInfo() {
+            const zoomInfo = document.getElementById('zoomInfo');
+            if (zoomInfo) {
+                zoomInfo.textContent = `${Math.round(currentZoom * 100)}%`;
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                loadPage(currentPage);
+                updatePageInfo();
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                loadPage(currentPage);
+                updatePageInfo();
+            }
+        }
+
+        function loadPage(pageNumber) {
+            const img = document.getElementById('documentImage');
+            if (img && currentDocumentId) {
+                img.src = `/documents/${currentDocumentId}/images/${pageNumber}?t=${Date.now()}`;
+            }
+        }
+
+        function zoomIn() {
+            currentZoom = Math.min(currentZoom * 1.2, 5);
+            applyZoom();
+            updateZoomInfo();
+        }
+
+        function zoomOut() {
+            currentZoom = Math.max(currentZoom / 1.2, 0.1);
+            applyZoom();
+            updateZoomInfo();
+        }
+
+        function resetZoom() {
+            currentZoom = 1;
+            applyZoom();
+            updateZoomInfo();
+        }
+
+        function applyZoom() {
+            const img = document.getElementById('documentImage');
+            const content = document.getElementById('imageContent');
+            
+            if (img && content) {
+                img.style.transform = `scale(${currentZoom})`;
+                
+                if (currentZoom > 1) {
+                    content.classList.add('zoomed');
+                } else {
+                    content.classList.remove('zoomed');
+                }
+            }
         }
 
         // Show edit modal with reliable HTML select elements and tabs
@@ -5133,6 +6164,9 @@
             });
             
             modalTitle.textContent = doc.title || doc.id || 'Untitled Document';
+            
+            // Add full-screen class for document editor
+            modal.classList.add('document-editor-dialog');
             
             try {
                 // 1. Fetch data first
@@ -5187,55 +6221,115 @@
                 console.log('SafeDoc summary:', safeDoc.summary);
                 console.log('Frequency sorted people count:', frequencySortedPeople.length);
                 
+                // Determine layout based on screen size
+                const layoutClass = getDocumentEditorLayout();
+                
                 modalContent.innerHTML = `
                     <div class="edit-form">
-                        <!-- M3 Tabs Container at Top -->
-                        <div class="mdc-tab-bar-container">
-                            <div class="mdc-tab-bar" role="tablist">
-                                <div class="mdc-tab-scroller">
-                                    <div class="mdc-tab-scroller__scroll-area">
-                                        <div class="mdc-tab-scroller__scroll-content">
-                                            <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0" data-tab="summary">
-                                                <span class="mdc-tab__content">
-                                                    <span class="mdc-tab__text-label">Summary</span>
-                                                </span>
-                                                <span class="mdc-tab-indicator mdc-tab-indicator--active">
-                                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                                                </span>
-                                                <span class="mdc-tab__ripple"></span>
-                                            </button>
-                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="translation">
-                                                <span class="mdc-tab__content">
-                                                    <span class="mdc-tab__text-label">Translation</span>
-                                                </span>
-                                                <span class="mdc-tab-indicator">
-                                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                                                </span>
-                                                <span class="mdc-tab__ripple"></span>
-                                            </button>
-                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="original">
-                                                <span class="mdc-tab__content">
-                                                    <span class="mdc-tab__text-label">Original</span>
-                                                </span>
-                                                <span class="mdc-tab-indicator">
-                                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                                                </span>
-                                                <span class="mdc-tab__ripple"></span>
-                                            </button>
-                                            <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="image">
-                                                <span class="mdc-tab__content">
-                                                    <span class="mdc-tab__text-label">Image</span>
-                                                </span>
-                                                <span class="mdc-tab-indicator">
-                                                    <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                                                </span>
-                                                <span class="mdc-tab__ripple"></span>
-                                            </button>
+                        <div class="document-editor-layout ${layoutClass}">
+                            ${layoutClass === 'three-column' ? `
+                                <!-- Image Section (Left Column) -->
+                                <div class="editor-image-section">
+                                    <div class="image-tab">
+                                        <div class="image-controls">
+                                            <div class="page-navigation">
+                                                <button class="mdc-button mdc-button--outlined" onclick="previousPage()" id="prevPageBtn" disabled>
+                                                    <span class="material-icons">chevron_left</span>
+                                                </button>
+                                                <span class="page-info" id="pageInfo">1 / ${doc.page_count || 1}</span>
+                                                <button class="mdc-button mdc-button--outlined" onclick="nextPage()" id="nextPageBtn" ${doc.page_count <= 1 ? 'disabled' : ''}>
+                                                    <span class="material-icons">chevron_right</span>
+                                                </button>
+                                            </div>
+                                            <div class="zoom-controls">
+                                                <button class="mdc-button mdc-button--outlined" onclick="zoomOut()" id="zoomOutBtn">
+                                                    <span class="material-icons">zoom_out</span>
+                                                </button>
+                                                <span class="zoom-info" id="zoomInfo">100%</span>
+                                                <button class="mdc-button mdc-button--outlined" onclick="zoomIn()" id="zoomInBtn">
+                                                    <span class="material-icons">zoom_in</span>
+                                                </button>
+                                                <button class="mdc-button mdc-button--outlined" onclick="resetZoom()" id="resetZoomBtn">
+                                                    <span class="material-icons">refresh</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="image-content" id="imageContent">
+                                            ${doc.page_count > 0 ? 
+                                                `<img src="/documents/${doc.id}/images/1?t=${Date.now()}" 
+                                                      alt="Document image" 
+                                                      id="documentImage"
+                                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                 <div class="no-image" style="display: none;">📄</div>` :
+                                                `<div class="no-image">📄</div>`
+                                            }
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                            ` : ''}
+                            
+                            <!-- Tabs Section (Middle Column or Full Width) -->
+                            <div class="editor-tabs-section">
+                                <!-- M3 Tabs Container -->
+                                <div class="mdc-tab-bar-container">
+                                    <div class="mdc-tab-bar" role="tablist">
+                                        <div class="mdc-tab-scroller">
+                                            <div class="mdc-tab-scroller__scroll-area">
+                                                <div class="mdc-tab-scroller__scroll-content">
+                                                    <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0" data-tab="summary">
+                                                        <span class="mdc-tab__content">
+                                                            <span class="mdc-tab__text-label">Summary</span>
+                                                        </span>
+                                                        <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                        </span>
+                                                        <span class="mdc-tab__ripple"></span>
+                                                    </button>
+                                                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="translation">
+                                                        <span class="mdc-tab__content">
+                                                            <span class="mdc-tab__text-label">Translation</span>
+                                                        </span>
+                                                        <span class="mdc-tab-indicator">
+                                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                        </span>
+                                                        <span class="mdc-tab__ripple"></span>
+                                                    </button>
+                                                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="original">
+                                                        <span class="mdc-tab__content">
+                                                            <span class="mdc-tab__text-label">Original</span>
+                                                        </span>
+                                                        <span class="mdc-tab-indicator">
+                                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                        </span>
+                                                        <span class="mdc-tab__ripple"></span>
+                                                    </button>
+                                                    ${layoutClass !== 'three-column' ? `
+                                                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="image">
+                                                        <span class="mdc-tab__content">
+                                                            <span class="mdc-tab__text-label">Image</span>
+                                                        </span>
+                                                        <span class="mdc-tab-indicator">
+                                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                        </span>
+                                                        <span class="mdc-tab__ripple"></span>
+                                                    </button>
+                                                    ` : ''}
+                                                    ${layoutClass === 'one-column' ? `
+                                                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="comments">
+                                                        <span class="mdc-tab__content">
+                                                            <span class="mdc-tab__text-label">Comments</span>
+                                                        </span>
+                                                        <span class="mdc-tab-indicator">
+                                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                        </span>
+                                                        <span class="mdc-tab__ripple"></span>
+                                                    </button>
+                                                    ` : ''}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         
                         <!-- Tab Content -->
                         <div class="tab-content">
@@ -5371,8 +6465,35 @@
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- Comments Tab (only in 1-column layout) -->
+                            ${layoutClass === 'one-column' ? `
+                            <div id="comments-tab" class="tab-panel">
+                                <div class="comments-section">
+                                    <div class="comments-header">
+                                        <span class="material-icons">comment</span>
+                                        <h3>Comments</h3>
+                                    </div>
+                                    <textarea id="editComments" class="comments-textarea" placeholder="Add your comments about this document...">${escapeHtml(doc.comments || '')}</textarea>
+                                </div>
+                            </div>
+                            ` : ''}
                         </div>
+                        
+                        ${layoutClass !== 'one-column' ? `
+                        <!-- Comments Section (Right Column) -->
+                        <div class="editor-comments-section">
+                            <div class="comments-header">
+                                <span class="material-icons">comment</span>
+                                <h3>Comments</h3>
+                            </div>
+                            <div class="comments-content">
+                                <textarea id="editComments" class="comments-textarea" placeholder="Add your comments about this document...">${escapeHtml(doc.comments || '')}</textarea>
+                            </div>
+                        </div>
+                        ` : ''}
                     </div>
+                </div>
                 `;
                 
                 console.log('Modal content set, checking for elements...');
@@ -6541,6 +7662,7 @@
             const recipient = document.getElementById('recipientSelect')?.value || '';
             const originalText = document.getElementById('editOriginalText').value.trim();
             const translatedText = document.getElementById('editTranslatedText').value.trim();
+            const comments = document.getElementById('editComments')?.value.trim() || '';
             // Auto-switch status to Editing if any change is made
             if (window.currentDocumentStatus !== 'Final') {
                 updateStatusButtons('Editing');
@@ -6573,7 +7695,8 @@
                     recipient: recipient === 'Select Recipient' ? '' : recipient,
                     original_text: originalText,
                     translated_text: translatedText,
-                    summary: summary
+                    summary: summary,
+                    comments: comments
                 };
                 
                 const response = await fetch(`/documents/${currentDocumentId}`, {
@@ -6768,7 +7891,7 @@
         function initializeStatusFilter() {
             const container = document.getElementById('statusOptions');
             if (!container) return;
-            const statuses = ['New', 'Editing', 'Final'];
+            const statuses = ['All', 'New', 'Editing', 'Final'];
             container.innerHTML = statuses.map(s => `
                 <div class="filter-option" data-value="${s}">
                     <span class="filter-option-text">${s}</span>
@@ -6783,8 +7906,18 @@
         }
 
         function selectStatusFilter(statusValue) {
-            activeFilters.status = statusValue;
-            updateFilterChip('status', statusValue);
+            if (statusValue === 'All') {
+                // Clear the status filter when "All" is selected
+                activeFilters.status = null;
+                const chip = document.getElementById('statusFilter');
+                if (chip) {
+                    chip.classList.remove('active');
+                    chip.querySelector('.filter-chip-text').textContent = 'Status';
+                }
+            } else {
+                activeFilters.status = statusValue;
+                updateFilterChip('status', statusValue);
+            }
             hideAllFilterDropdowns();
             applyFilters();
         }
@@ -6819,6 +7952,40 @@
             document.getElementById('dateFilter').querySelector('.filter-chip-text').textContent = 'Date';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
+            applyFilters();
+        }
+
+        function resetFiltersAndSearch() {
+            // Clear search input
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchIcon').style.display = 'none';
+            
+            // Clear all active filters
+            activeFilters = {
+                sender: null,
+                recipient: null,
+                dateRange: { start: null, end: null },
+                status: null
+            };
+            
+            // Reset all filter chips
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+                const textElement = chip.querySelector('.filter-chip-text');
+                if (textElement) {
+                    const filterType = chip.id.replace('Filter', '');
+                    textElement.textContent = filterType.charAt(0).toUpperCase() + filterType.slice(1);
+                }
+            });
+            
+            // Clear date inputs
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            
+            // Hide all dropdowns
+            hideAllFilterDropdowns();
+            
+            // Apply filters to show all documents
             applyFilters();
         }
 
@@ -6918,11 +8085,9 @@
         }
 
         // Carousel state management
-        let currentPage = 1;
-        let totalPages = 1;
+        // Note: currentPage, totalPages, and currentZoom are already declared above
         
         // Zoom slider state
-        let currentZoom = 1.0; // Start at 100% (fit to width)
         let isDragging = false;
         
         // Pan state
@@ -7412,12 +8577,19 @@
         }
 
         function getUserInitials(user) {
+            if (!user) return 'U';
+            
             const firstName = user.first_name || '';
             const lastName = user.last_name || '';
             if (firstName && lastName) {
                 return (firstName[0] + lastName[0]).toUpperCase();
             } else if (user.username) {
                 return user.username.substring(0, 2).toUpperCase();
+            } else if (user.name) {
+                return user.name.substring(0, 2).toUpperCase();
+            } else if (user.email) {
+                const namePart = user.email.split('@')[0];
+                return namePart.substring(0, 2).toUpperCase();
             }
             return 'U';
         }
@@ -7605,46 +8777,215 @@
             loadUsers();
         }
 
+        // M3 Menu positioning utility - follows Material Design 3 spec
+        function positionMenuM3(menuElement, triggerElement, options = {}) {
+            const {
+                margin = 8,
+                minWidth = 200,
+                preferredPosition = 'below',
+                align = 'end'  // Changed default to 'end' for profile menus
+            } = options;
+            
+            // Get viewport dimensions (use innerWidth/innerHeight for consistency)
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            const rect = triggerElement.getBoundingClientRect();
+            const menuWidth = Math.max(minWidth, menuElement.offsetWidth || minWidth);
+            const menuHeight = menuElement.offsetHeight || 120;
+            
+            
+            let left, top;
+            let actualAlign = align;  // Track what alignment we actually use
+            
+            // Calculate initial horizontal position based on alignment
+            switch (align) {
+                case 'start':
+                    left = rect.left;
+                    break;
+                case 'center':
+                    left = rect.left + (rect.width - menuWidth) / 2;
+                    break;
+                case 'end':
+                    left = rect.right - menuWidth;
+                    break;
+            }
+            
+            // Horizontal boundary checking with smart flipping
+            const spaceOnRight = viewportWidth - rect.right;
+            const spaceOnLeft = rect.left;
+            
+            // Check if menu extends beyond right edge
+            if (left + menuWidth > viewportWidth - margin) {
+                // Try flipping alignment
+                if (align === 'start' || align === 'center') {
+                    // Try aligning to end instead
+                    const endAlignLeft = rect.right - menuWidth;
+                    if (endAlignLeft >= margin) {
+                        left = endAlignLeft;
+                        actualAlign = 'end';
+                    } else {
+                        // Not enough space with any alignment, clamp to right edge
+                        left = viewportWidth - menuWidth - margin;
+                        actualAlign = 'clamped-right';
+                    }
+                } else {
+                    // Already end-aligned, just clamp
+                    left = viewportWidth - menuWidth - margin;
+                    actualAlign = 'clamped-right';
+                }
+            }
+            
+            // Check if menu extends beyond left edge
+            if (left < margin) {
+                // Try flipping alignment
+                if (align === 'end' || align === 'center') {
+                    // Try aligning to start instead
+                    const startAlignLeft = rect.left;
+                    if (startAlignLeft + menuWidth <= viewportWidth - margin) {
+                        left = startAlignLeft;
+                        actualAlign = 'start';
+                    } else {
+                        // Not enough space with any alignment, clamp to left edge
+                        left = margin;
+                        actualAlign = 'clamped-left';
+                    }
+                } else {
+                    // Already start-aligned, just clamp
+                    left = margin;
+                    actualAlign = 'clamped-left';
+                }
+            }
+            
+            // Vertical positioning with flipping
+            const spaceBelow = viewportHeight - rect.bottom;
+            const spaceAbove = rect.top;
+            
+            if (preferredPosition === 'below') {
+                if (spaceBelow >= menuHeight + margin) {
+                    // Enough space below
+                    top = rect.bottom + margin;
+                } else if (spaceAbove >= menuHeight + margin) {
+                    // Not enough space below, flip to above
+                    top = rect.top - menuHeight - margin;
+                } else {
+                    // Not enough space either direction, use the larger space
+                    if (spaceBelow >= spaceAbove) {
+                        top = rect.bottom + margin;
+                    } else {
+                        top = rect.top - menuHeight - margin;
+                    }
+                }
+            } else {
+                // preferredPosition === 'above'
+                if (spaceAbove >= menuHeight + margin) {
+                    top = rect.top - menuHeight - margin;
+                } else if (spaceBelow >= menuHeight + margin) {
+                    top = rect.bottom + margin;
+                } else {
+                    if (spaceAbove >= spaceBelow) {
+                        top = rect.top - menuHeight - margin;
+                    } else {
+                        top = rect.bottom + margin;
+                    }
+                }
+            }
+            
+            // Final clamping to ensure menu stays within viewport
+            top = Math.max(margin, Math.min(top, viewportHeight - menuHeight - margin));
+            left = Math.max(margin, Math.min(left, viewportWidth - menuWidth - margin));
+            
+            // Apply styles
+            menuElement.style.left = `${left}px`;
+            menuElement.style.top = `${top}px`;
+            menuElement.style.width = `${menuWidth}px`;
+            
+            // Optional: Add data attribute for styling based on actual positioning
+            menuElement.dataset.align = actualAlign;
+            menuElement.dataset.position = top < rect.top ? 'above' : 'below';
+            
+            return {
+                left,
+                top,
+                align: actualAlign,
+                position: top < rect.top ? 'above' : 'below'
+            };
+        }
+
+        // Global variables for menu management
+        let activeMenu = null;
+        let activeMenuTrigger = null;
+        let repositionHandler = null;
+
         // Profile menu functions
         function toggleProfileMenu() {
-            console.log('toggleProfileMenu called');
             const dropdown = document.getElementById('profileDropdown');
             const avatarButton = document.querySelector('.avatar-button');
-            const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
             
-            console.log('Dropdown found:', !!dropdown);
-            console.log('Avatar button found:', !!avatarButton);
-            console.log('Is hidden:', isHidden);
-
+            // Check if elements exist
+            if (!dropdown || !avatarButton) {
+                return;
+            }
+            
+            const isHidden = !dropdown.classList.contains('is-open');
+            
             if (isHidden) {
-                // Make floating and position relative to avatar
-                dropdown.classList.add('profile-dropdown--floating');
-                dropdown.style.display = 'block';
-
-                const rect = avatarButton.getBoundingClientRect();
-                const margin = 8;
-                const dropdownWidth = 200; // min-width from CSS
-                const dropdownHeight = 120; // estimated height
+                // Remove inline display style if it exists
+                dropdown.style.display = '';
                 
-                // Position dropdown below and to the right of avatar
-                const left = Math.max(8, Math.min(window.innerWidth - dropdownWidth - 8, rect.right - dropdownWidth));
-                const top = Math.min(window.innerHeight - dropdownHeight - 8, rect.bottom + margin);
+                // Show via class first (so offsetWidth/offsetHeight are accurate)
+                dropdown.classList.add('is-open');
                 
-                dropdown.style.left = `${left}px`;
-                dropdown.style.top = `${top}px`;
-                dropdown.style.width = `${dropdownWidth}px`;
-
-                console.log('Positioned dropdown at:', left, top);
-
-                // Close dropdown when clicking outside
+                // Store references for reposition handler
+                activeMenu = dropdown;
+                activeMenuTrigger = avatarButton;
+                
+                // Initial position
+                positionMenuM3(dropdown, avatarButton, {
+                    margin: 8,
+                    minWidth: 200,
+                    preferredPosition: 'below',
+                    align: 'end' // Right-align the menu with the button
+                });
+                
+                // Add reposition handler
+                repositionHandler = () => {
+                    if (activeMenu && activeMenuTrigger) {
+                        positionMenuM3(activeMenu, activeMenuTrigger, {
+                            margin: 8,
+                            minWidth: 200,
+                            preferredPosition: 'below',
+                            align: 'end'
+                        });
+                    }
+                };
+                
+                window.addEventListener('scroll', repositionHandler, { passive: true, capture: true });
+                window.addEventListener('resize', repositionHandler, { passive: true });
+                
                 setTimeout(() => {
                     document.addEventListener('click', closeProfileMenuOnOutsideClick);
                 }, 0);
             } else {
-                dropdown.style.display = 'none';
-                dropdown.classList.remove('profile-dropdown--floating');
-                document.removeEventListener('click', closeProfileMenuOnOutsideClick);
+                closeProfileMenu();
             }
+        }
+
+        function closeProfileMenu() {
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.remove('is-open');
+            
+            // Clean up handlers
+            if (repositionHandler) {
+                window.removeEventListener('scroll', repositionHandler, { capture: true });
+                window.removeEventListener('resize', repositionHandler);
+                repositionHandler = null;
+            }
+            
+            activeMenu = null;
+            activeMenuTrigger = null;
+            
+            document.removeEventListener('click', closeProfileMenuOnOutsideClick);
         }
 
         function closeProfileMenuOnOutsideClick(event) {
@@ -7652,8 +8993,7 @@
             const avatarButton = document.querySelector('.avatar-button');
             
             if (!dropdown.contains(event.target) && !avatarButton.contains(event.target)) {
-                dropdown.style.display = 'none';
-                document.removeEventListener('click', closeProfileMenuOnOutsideClick);
+                closeProfileMenu();
             }
         }
 
@@ -7662,9 +9002,23 @@
             localStorage.clear();
             sessionStorage.clear();
             
-            // Redirect to logout endpoint
+            // Redirect to logout endpoint or home page
             window.location.href = '/logout';
         }
+        
+        function clearAuthData() {
+            // Clear authentication-related data only
+            localStorage.removeItem('authenticated');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userInfo');
+            sessionStorage.clear();
+            
+            // Refresh the page to reset state
+            window.location.reload();
+        }
+
+        
+        
         
         // Auto-logout function for unauthenticated users
         function checkAuthentication() {
@@ -7693,13 +9047,31 @@
             const userEmail = localStorage.getItem('userEmail') || 'User';
             const isAuthenticated = localStorage.getItem('authenticated') === 'true';
             
-            const userInfo = window.userInfo || {
+            // Check if we have user info from the server (window.userInfo)
+            const serverUserInfo = window.userInfo;
+            const isServerAuthenticated = serverUserInfo && serverUserInfo.id;
+            
+            
+            
+            // Use server user info if available, otherwise fall back to localStorage
+            const userInfo = serverUserInfo || {
                 email: userEmail,
                 name: userEmail.split('@')[0] || 'User',
                 role: isAuthenticated ? 'Admin' : 'Guest'
             };
+            
+            // Update authentication state in localStorage if we have server confirmation
+            if (isServerAuthenticated && !isAuthenticated) {
+                localStorage.setItem('authenticated', 'true');
+                localStorage.setItem('userEmail', userInfo.email || userInfo.username || 'User');
+            }
+            
+            // Force authentication state based on server data
+            const finalAuthState = isServerAuthenticated || isAuthenticated;
+            
             const initials = getUserInitials(userInfo);
             const roleDisplay = getRoleDisplayName(userInfo.role || 'GUEST');
+            
             
             // Update avatar
             const userAvatar = document.getElementById('userAvatar');
@@ -7712,6 +9084,9 @@
             const fullName = `${userInfo.first_name || ''} ${userInfo.last_name || ''}`.trim() || userInfo.username || userInfo.name || 'User';
             document.getElementById('profileName').textContent = fullName;
             document.getElementById('profileRole').textContent = roleDisplay;
+            
+            
+            
         }
 
         // Upload side sheet functions

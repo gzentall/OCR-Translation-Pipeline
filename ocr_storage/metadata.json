@@ -146,16 +146,31 @@
       "people_count": 3,
       "summary": "This appears to be a personal letter involving Nocigenthal Mine, Cameri Versa, Nocigenthal Mine Mone...",
       "page_count": 5
+    },
+    "doc_20250930_130320": {
+      "title": "099-1933-08-24-ger - 2025-09-30",
+      "date_processed": "2025-09-30T13:04:08.479338",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 783700,
+      "people_count": 6,
+      "summary": "This appears to be a personal letter involving Zabalein Now, If Ellen, Haus Kalm. discusses business...",
+      "page_count": 6,
+      "status": "New"
     }
   },
   "people": {
     "elizabeth zentall": {
       "aliases": [
         "Elizabeth Zentall",
-        "Betty"
+        "Betty",
+        "Bubi Bubi"
       ],
       "first_mentioned": "2025-09-26T14:04:13.787081",
-      "documents": [],
+      "documents": [
+        "doc_20250930_130320",
+        "doc_20250927_105223"
+      ],
       "context": ""
     },
     "his rol": {
@@ -281,15 +296,6 @@
       "first_mentioned": "2025-09-27T10:49:56.847319",
       "documents": [
         "doc_20250927_104916"
-      ]
-    },
-    "bubi bubi": {
-      "aliases": [
-        "Bubi Bubi"
-      ],
-      "first_mentioned": "2025-09-27T10:52:49.976224",
-      "documents": [
-        "doc_20250927_105223"
       ]
     },
     "deza here": {
@@ -499,7 +505,52 @@
         "doc_20250925_165151"
       ],
       "context": ""
+    },
+    "zabalein now": {
+      "aliases": [
+        "Zabalein Now"
+      ],
+      "first_mentioned": "2025-09-30T13:04:08.479338",
+      "documents": [
+        "doc_20250930_130320"
+      ]
+    },
+    "haus kalm": {
+      "aliases": [
+        "Haus Kalm"
+      ],
+      "first_mentioned": "2025-09-30T13:04:08.479338",
+      "documents": [
+        "doc_20250930_130320"
+      ]
+    },
+    "bredit arbeitsnot": {
+      "aliases": [
+        "Bredit Arbeitsnot"
+      ],
+      "first_mentioned": "2025-09-30T13:04:08.479338",
+      "documents": [
+        "doc_20250930_130320"
+      ]
+    },
+    "ce deutsche": {
+      "aliases": [
+        "Ce Deutsche"
+      ],
+      "first_mentioned": "2025-09-30T13:04:08.479338",
+      "documents": [
+        "doc_20250930_130320"
+      ]
+    },
+    "ce deutsche waren": {
+      "aliases": [
+        "Ce Deutsche Waren"
+      ],
+      "first_mentioned": "2025-09-30T13:04:08.479338",
+      "documents": [
+        "doc_20250930_130320"
+      ]
     }
   },
-  "last_updated": "2025-09-30T08:09:21.760931"
+  "last_updated": "2025-09-30T13:12:30.239070"
 }
