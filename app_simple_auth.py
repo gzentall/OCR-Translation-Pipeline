@@ -652,6 +652,26 @@ def test_endpoint():
         'timestamp': str(uuid.uuid4())[:8]
     })
 
+@app.route('/reset-password')
+def reset_password():
+    """Reset password for testing - REMOVE IN PRODUCTION"""
+    username = request.args.get('username', 'gzentall')
+    new_password = request.args.get('password', 'password123')
+    
+    if username in USERS:
+        password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        USERS[username]['password_hash'] = password_hash
+        return jsonify({
+            'success': True,
+            'message': f'Password reset for {username}',
+            'new_password': new_password
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'message': f'User {username} not found'
+        })
+
 @app.route('/documents')
 @require_auth
 def list_documents():
