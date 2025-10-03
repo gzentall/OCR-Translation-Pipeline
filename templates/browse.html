@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Postmark</title>
+    <title>Postmark - TESTING CHANGES ARE WORKING - UPDATED AT 6:20 PM</title>
     
     <!-- Material Design Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -3690,6 +3690,24 @@
             height: 100%;
             min-height: 500px;
         }
+        
+        /* Debug: Ensure three-column layout is visible */
+        .document-editor-layout.three-column {
+            display: grid !important;
+            grid-template-columns: 1fr 2fr 1fr !important;
+            grid-template-areas: 
+                "image tabs comments" !important;
+            gap: 20px !important;
+        }
+        
+        /* Force all document editor layouts to be three-column for testing */
+        .document-editor-layout {
+            display: grid !important;
+            grid-template-columns: 1fr 2fr 1fr !important;
+            grid-template-areas: 
+                "image tabs comments" !important;
+            gap: 20px !important;
+        }
 
         /* Document editor layout in full-screen dialog */
         .mdc-dialog.document-editor-dialog .document-editor-layout {
@@ -3722,10 +3740,12 @@
         /* Layout Areas */
         .editor-image-section {
             grid-area: image;
-            display: flex;
-            flex-direction: column;
+            position: relative;
             min-height: 0;
+            height: 100%;
             overflow: hidden;
+            /* M3 vertical divider between columns */
+            border-right: 1px solid var(--md-sys-color-outline-variant);
         }
 
         .editor-tabs-section {
@@ -3734,14 +3754,50 @@
             flex-direction: column;
             min-height: 0;
             overflow: hidden;
+            /* M3 vertical divider between columns */
+            border-right: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .editor-tabs-section .tab-content {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+            max-height: 100%;
+        }
+        
+        .editor-tabs-section .tab-panel {
+            max-height: 100%;
+            overflow-y: auto;
+            padding: var(--md-sys-spacing-4);
+        }
+        
+        .editor-tabs-section .tab-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .editor-tabs-section .tab-panel::-webkit-scrollbar-track {
+            background: var(--md-sys-color-surface-variant);
+            border-radius: 4px;
+        }
+        
+        .editor-tabs-section .tab-panel::-webkit-scrollbar-thumb {
+            background: var(--md-sys-color-outline);
+            border-radius: 4px;
+        }
+        
+        .editor-tabs-section .tab-panel::-webkit-scrollbar-thumb:hover {
+            background: var(--md-sys-color-outline-variant);
         }
 
         .editor-comments-section {
             grid-area: comments;
-            display: flex;
+            display: flex !important;
             flex-direction: column;
             min-height: 0;
             overflow: hidden;
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: var(--md-sys-shape-radius-md);
+            border: 2px solid var(--md-sys-color-primary);
         }
 
         /* Image Section Styles */
@@ -3753,24 +3809,139 @@
         }
 
         .editor-image-section .image-controls {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            z-index: 5;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: var(--md-sys-spacing-3);
-            border-bottom: 1px solid var(--md-sys-color-outline-variant);
-            flex-shrink: 0;
+            justify-content: center;
+            pointer-events: none;
         }
+        .editor-image-section .image-controls .page-navigation { pointer-events: auto; }
 
         .editor-image-section .page-navigation {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: var(--md-sys-spacing-2);
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            height: 40px;
         }
 
         .editor-image-section .zoom-controls {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: var(--md-sys-spacing-2);
+        }
+
+        /* Fresh Zoom Slider - Material Design 3 */
+        .zoom-slider-container {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            max-width: 160px;
+            min-width: 120px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+        
+        .zoom-slider-container:hover {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .zoom-slider {
+            position: relative;
+            width: 100%;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .zoom-track {
+            position: absolute;
+            top: 50%;
+            left: 8px;
+            right: 8px;
+            height: 3px;
+            transform: translateY(-50%);
+            background: var(--md-sys-color-surface-variant);
+            border-radius: 2px;
+        }
+
+        .zoom-track-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--md-sys-color-primary);
+            border-radius: 2px;
+            transition: width 0.1s ease;
+            pointer-events: none;
+        }
+
+.zoom-thumb {
+    position: absolute;
+    top: 50%;
+    left: 8px; /* Will be updated by JS */
+    width: 4px;
+    height: 16px;
+    /* Only vertical centering! No translateX! */
+    transform: translateY(-50%);
+    background: var(--md-sys-color-primary);
+    border-radius: 2px;
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: width 0.2s ease, height 0.2s ease, box-shadow 0.2s ease;
+    /* Remove transition on left/transform for smooth dragging */
+}
+
+        .zoom-thumb:hover {
+            width: 5px;
+            height: 18px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .zoom-thumb:active,
+        .zoom-thumb.dragging {
+            cursor: grabbing;
+            width: 6px;
+            height: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .zoom-value {
+            position: absolute;
+            top: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .zoom-slider-container:hover .zoom-value,
+        .zoom-thumb:active ~ .zoom-value {
+            opacity: 1;
         }
 
         .editor-image-section .page-info,
@@ -3783,8 +3954,8 @@
 
         .editor-image-section .mdc-button {
             min-width: 40px;
-            height: 40px;
-            padding: 0;
+            height: 36px;
+            padding: 0 8px;
         }
 
         .editor-image-section .mdc-button .material-icons {
@@ -3792,14 +3963,15 @@
         }
 
         .editor-image-section .image-content {
-            flex: 1;
+            position: absolute;
+            inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             background: var(--md-sys-color-surface-container);
-            overflow: auto;
+            overflow: hidden;
             padding: var(--md-sys-spacing-4);
-            min-height: 0;
+            padding-bottom: 64px;
         }
 
         .editor-image-section .image-content img {
@@ -3824,6 +3996,8 @@
             display: flex;
             flex-direction: column;
             min-height: 0;
+            overflow: hidden;
+            border: none;
         }
 
         .comments-header {
@@ -3851,11 +4025,94 @@
             display: flex;
             flex-direction: column;
         }
+        .comments-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .send-icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .send-icon-btn .material-icons { font-size: 20px; }
+        .send-icon-btn:hover { filter: brightness(1.05); }
+        .send-icon-btn:active { filter: brightness(0.98); }
+
+        .comments-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: var(--md-sys-spacing-4);
+            padding-right: var(--md-sys-spacing-2);
+            max-height: 400px;
+        }
+
+        .comment-item {
+            background: var(--md-sys-color-surface-container);
+            border-radius: var(--md-sys-shape-radius-sm);
+            padding: var(--md-sys-spacing-3);
+            margin-bottom: var(--md-sys-spacing-3);
+            border-left: 3px solid var(--md-sys-color-primary);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--md-sys-spacing-2);
+        }
+
+        .comment-author {
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            font-size: var(--md-sys-typescale-body-medium-size);
+        }
+
+        .comment-date {
+            font-size: var(--md-sys-typescale-body-small-size);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .comment-text {
+            color: var(--md-sys-color-on-surface);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .comments-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--md-sys-spacing-6) var(--md-sys-spacing-4);
+            text-align: center;
+            opacity: 0.6;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: var(--md-sys-spacing-2);
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: var(--md-sys-typescale-body-medium-size);
+            color: var(--md-sys-color-on-surface-variant);
+        }
 
         .comments-textarea {
-            flex: 1;
             width: 100%;
-            min-height: 200px;
+            min-height: 40px; /* single-row collapsed */
+            max-height: 160px;
             border: 1px solid var(--md-sys-color-outline);
             border-radius: var(--md-sys-shape-radius-sm);
             padding: var(--md-sys-spacing-3);
@@ -3866,12 +4123,13 @@
             background: var(--md-sys-color-surface);
             resize: none;
             outline: none;
-            transition: border-color 0.2s ease;
+            transition: border-color 0.2s ease, max-height 0.2s ease;
             overflow-y: auto;
         }
 
         .comments-textarea:focus {
             border-color: var(--md-sys-color-primary);
+            max-height: 240px; /* allow expansion while focused */
         }
 
         .comments-textarea::placeholder {
@@ -3890,7 +4148,7 @@
             }
             
             .comments-textarea {
-                min-height: 200px;
+                min-height: 40px;
             }
             
             /* Ensure tabs are scrollable on mobile */
@@ -4518,7 +4776,7 @@
     <div class="app-bar">
         <div class="app-title">
             <i class="material-icons app-logo">local_post_office</i>
-            <h1>Postmark</h1>
+            <h1>Postmark - TESTING CHANGES ARE WORKING - UPDATED AT 6:20 PM</h1>
         </div>
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('documents')">
@@ -5601,6 +5859,33 @@
             return text.replace(/[&<>"']/g, m => map[m]);
         }
 
+        function getRelativeTime(timestamp) {
+            if (!timestamp) return '';
+            const now = new Date();
+            const then = new Date(timestamp);
+            const seconds = Math.floor((now - then) / 1000);
+            
+            if (seconds < 60) return 'just now';
+            
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+            
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+            
+            const days = Math.floor(hours / 24);
+            if (days < 7) return `${days} day${days !== 1 ? 's' : ''} ago`;
+            
+            const weeks = Math.floor(days / 7);
+            if (weeks < 4) return `${weeks} week${weeks !== 1 ? 's' : ''} ago`;
+            
+            const months = Math.floor(days / 30);
+            if (months < 12) return `${months} month${months !== 1 ? 's' : ''} ago`;
+            
+            const years = Math.floor(days / 365);
+            return `${years} year${years !== 1 ? 's' : ''} ago`;
+        }
+
         // OLD FUNCTION - DISABLED TO PREVENT CONFLICTS
         async function showEditModal_OLD_DISABLED(doc) {
             console.log('=== Starting showEditModal ===');
@@ -5815,7 +6100,7 @@
                         <!-- Comments Tab -->
                         <div class="tab-panel" id="tab-comments">
                             <div class="comments-content">
-                                <textarea id="editComments" class="comments-textarea" placeholder="Add your comments about this document...">${escapeHtml(doc.comments || '')}</textarea>
+                                <textarea id="editCommentsTab" rows="1" class="comments-textarea" placeholder="Add your comments about this document...">${escapeHtml(doc.comments || '')}</textarea>
                             </div>
                         </div>
                         ` : ''}
@@ -6060,41 +6345,68 @@
             
             // Menus are already populated with frequency-sorted people
             console.log('Modal initialized with frequency-sorted people');
-            
-            
-                // Initialize image controls
-                currentDocumentId = doc.id;
-                currentPage = 1;
-                currentZoom = 1;
-                totalPages = doc.page_count || 1;
-                
-                // Update controls after a short delay to ensure DOM is ready
-                setTimeout(() => {
-                    updatePageInfo();
-                    updateZoomInfo();
-                    applyZoom();
-                }, 100);
-                
-                // Load the first page image
-                loadDocumentImage(doc.id);
         }
 
         // Determine document editor layout based on screen size
         function getDocumentEditorLayout() {
             const width = window.innerWidth;
-            if (width >= 1200) {
-                return 'three-column';
-            } else if (width >= 600) {
-                return 'two-column';
-            } else {
-                return 'one-column';
-            }
+            console.log('Screen width:', width);
+            // Always return three-column for now to test
+            return 'three-column';
         }
 
         // Image navigation and zoom functionality
         let currentPage = 1;
         let currentZoom = 1;
         let totalPages = 1;
+        let panOffsetX = 0;
+        let panOffsetY = 0;
+        let zoomSliderInitialized = false;
+        let commentsInitialized = false;
+
+        function ensureCommentsInitialized() {
+            if (commentsInitialized) return;
+            const ta = document.getElementById('editComments');
+            const btn = document.getElementById('addCommentBtn');
+            const list = document.getElementById('commentsList');
+            if (ta && btn && list) {
+                const autoGrow = () => {
+                    ta.style.height = 'auto';
+                    ta.style.height = Math.min(ta.scrollHeight, 240) + 'px';
+                };
+                ta.addEventListener('input', () => { console.log('[comments] input'); autoGrow(); });
+                ta.addEventListener('focus', () => { console.log('[comments] focus'); autoGrow(); });
+                ta.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        console.log('[comments] enter->click');
+                        btn.click();
+                    }
+                });
+                btn.addEventListener('click', async () => {
+                    console.log('[comments] send click');
+                    await addComment();
+                });
+                autoGrow();
+                commentsInitialized = true;
+                console.log('[comments] initialized');
+                return;
+            }
+            setTimeout(ensureCommentsInitialized, 100);
+        }
+
+        function ensureZoomSliderInitialized() {
+            if (zoomSliderInitialized) return;
+            const slider = document.getElementById('zoomSlider');
+            const thumb = document.getElementById('zoomThumb');
+            const trackFill = document.getElementById('zoomTrackFill');
+            const valueDisplay = document.getElementById('zoomValue');
+            if (slider && thumb && trackFill && valueDisplay) {
+                try { initializeZoomSlider(); } catch (e) { console.warn('initializeZoomSlider error', e); }
+                return;
+            }
+            setTimeout(ensureZoomSliderInitialized, 100);
+        }
 
         function updatePageInfo() {
             const pageInfo = document.getElementById('pageInfo');
@@ -6162,12 +6474,16 @@
             const content = document.getElementById('imageContent');
             
             if (img && content) {
-                img.style.transform = `scale(${currentZoom})`;
+                // Apply both zoom and pan transform
+                img.style.transform = `scale(${currentZoom}) translate(${panOffsetX}px, ${panOffsetY}px)`;
                 
                 if (currentZoom > 1) {
                     content.classList.add('zoomed');
                 } else {
                     content.classList.remove('zoomed');
+                    // Reset pan when zoomed out
+                    panOffsetX = 0;
+                    panOffsetY = 0;
                 }
             }
         }
@@ -6180,6 +6496,34 @@
             const modal = document.getElementById('documentModal');
             const modalTitle = document.getElementById('dialogTitle');
             const modalContent = document.getElementById('modalContent');
+            
+            // Proactively observe for slider elements and initialize when they appear
+            try {
+                if (modalContent) {
+                    const observer = new MutationObserver(() => {
+                        // Zoom slider
+                        if (!zoomSliderInitialized && document.getElementById('zoomSlider') &&
+                            document.getElementById('zoomThumb') &&
+                            document.getElementById('zoomTrackFill') &&
+                            document.getElementById('zoomValue')) {
+                            zoomSliderInitialized = false;
+                            ensureZoomSliderInitialized();
+                        }
+                        // Comments
+                        if (!commentsInitialized && document.getElementById('commentsList') &&
+                            document.getElementById('editComments') &&
+                            document.getElementById('addCommentBtn')) {
+                            ensureCommentsInitialized();
+                        }
+                        if (zoomSliderInitialized && commentsInitialized) {
+                            observer.disconnect();
+                        }
+                    });
+                    observer.observe(modalContent, { childList: true, subtree: true });
+                }
+            } catch (e) {
+                console.warn('Failed to attach slider observer', e);
+            }
             
             console.log('Modal elements found:', {
                 modal: !!modal,
@@ -6247,46 +6591,47 @@
                 
                 // Determine layout based on screen size
                 const layoutClass = getDocumentEditorLayout();
+                console.log('Layout class determined:', layoutClass, 'Screen width:', window.innerWidth);
                 
                 modalContent.innerHTML = `
                     <div class="edit-form">
-                        <div class="document-editor-layout ${layoutClass}">
+                        <div class="document-editor-layout ${layoutClass}" id="documentEditorLayout">
                             ${layoutClass === 'three-column' ? `
                                 <!-- Image Section (Left Column) -->
                                 <div class="editor-image-section">
-                                    <div class="image-tab">
-                                        <div class="image-controls">
-                                            <div class="page-navigation">
-                                                <button class="mdc-button mdc-button--outlined" onclick="previousPage()" id="prevPageBtn" disabled>
-                                                    <span class="material-icons">chevron_left</span>
-                                                </button>
-                                                <span class="page-info" id="pageInfo">1 / ${doc.page_count || 1}</span>
-                                                <button class="mdc-button mdc-button--outlined" onclick="nextPage()" id="nextPageBtn" ${doc.page_count <= 1 ? 'disabled' : ''}>
-                                                    <span class="material-icons">chevron_right</span>
-                                                </button>
-                                            </div>
-                                            <div class="zoom-controls">
-                                                <button class="mdc-button mdc-button--outlined" onclick="zoomOut()" id="zoomOutBtn">
-                                                    <span class="material-icons">zoom_out</span>
-                                                </button>
-                                                <span class="zoom-info" id="zoomInfo">100%</span>
-                                                <button class="mdc-button mdc-button--outlined" onclick="zoomIn()" id="zoomInBtn">
-                                                    <span class="material-icons">zoom_in</span>
-                                                </button>
-                                                <button class="mdc-button mdc-button--outlined" onclick="resetZoom()" id="resetZoomBtn">
-                                                    <span class="material-icons">refresh</span>
-                                                </button>
-                                            </div>
+                                    <!-- Page Navigation (Top) -->
+                                    <div class="image-controls">
+                                        <div class="page-navigation">
+                                            <button class="mdc-button mdc-button--outlined" onclick="previousPage()" id="prevPageBtn" disabled>
+                                                <span class="material-icons">chevron_left</span>
+                                            </button>
+                                            <span class="page-info" id="pageInfo">1 / ${doc.page_count || 1}</span>
+                                            <button class="mdc-button mdc-button--outlined" onclick="nextPage()" id="nextPageBtn" ${doc.page_count <= 1 ? 'disabled' : ''}>
+                                                <span class="material-icons">chevron_right</span>
+                                            </button>
                                         </div>
-                                        <div class="image-content" id="imageContent">
-                                            ${doc.page_count > 0 ? 
-                                                `<img src="/documents/${doc.id}/images/1?t=${Date.now()}" 
-                                                      alt="Document image" 
-                                                      id="documentImage"
-                                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                 <div class="no-image" style="display: none;">📄</div>` :
-                                                `<div class="no-image">📄</div>`
-                                            }
+                                    </div>
+                                    
+                                    <!-- Image Content (with zoom slider floating at bottom) -->
+                                    <div class="image-content" id="imageContent">
+                                        ${doc.page_count > 0 ? 
+                                            `<img src="/documents/${doc.id}/images/1?t=${Date.now()}" 
+                                                  alt="Document image" 
+                                                  id="documentImage"
+                                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                             <div class="no-image" style="display: none;">📄</div>` :
+                                            `<div class="no-image">📄</div>`
+                                        }
+                                        
+                                        <!-- Fresh Zoom Slider -->
+                                        <div class="zoom-slider-container">
+                                            <div class="zoom-slider" id="zoomSlider">
+                                                <div class="zoom-track">
+                                                    <div class="zoom-track-fill" id="zoomTrackFill"></div>
+                                                </div>
+                                                <div class="zoom-thumb" id="zoomThumb"></div>
+                                                <div class="zoom-value" id="zoomValue">100%</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -6472,51 +6817,43 @@
                                         <div id="imageViewer" class="document-image-container">
                                             <p class="image-placeholder">Document image will appear here</p>
                                         </div>
-                                        
-                                        <!-- Floating Zoom Slider -->
-                                        <div class="zoom-slider-container">
-                                            <div class="zoom-slider">
-                                                <div class="zoom-slider__track">
-                                                    <div class="zoom-slider__track--inactive"></div>
-                                                    <div class="zoom-slider__track--active" id="zoomTrackActive"></div>
-                                                </div>
-                                                <div class="zoom-slider__thumb" id="zoomThumb">
-                                                    <div class="zoom-slider__thumb-knob"></div>
-                                                </div>
-                                                <div class="zoom-slider__value-display" id="zoomValueDisplay">100%</div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
                             <!-- Comments Tab (only in 1-column layout) -->
                             ${layoutClass === 'one-column' ? `
-                            <div id="comments-tab" class="tab-panel">
-                                <div class="comments-section">
-                                    <div class="comments-header">
-                                        <span class="material-icons">comment</span>
-                                        <h3>Comments</h3>
-                                    </div>
-                                    <textarea id="editComments" class="comments-textarea" placeholder="Add your comments about this document...">${escapeHtml(doc.comments || '')}</textarea>
-                                </div>
-                            </div>
                             ` : ''}
                         </div>
-                        
-                        ${layoutClass !== 'one-column' ? `
-                        <!-- Comments Section (Right Column) -->
-                        <div class="editor-comments-section">
-                            <div class="comments-header">
-                                <span class="material-icons">comment</span>
-                                <h3>Comments</h3>
+                    </div>
+                    
+                    ${layoutClass !== 'one-column' ? `
+                    <!-- Comments Section (Right Column) -->
+                    <div class="editor-comments-section">
+                        <div class="comments-header">
+                            <span class="material-icons">comment</span>
+                            <h3>Comments</h3>
+                        </div>
+                        <div class="comments-content">
+                            <div class="comments-list" id="commentsList">
+                                <!-- Comments will be loaded here -->
+                                <div class="comment-item">
+                                    <div class="comment-header">
+                                        <span class="comment-author">Test User</span>
+                                        <span class="comment-date">Just now</span>
+                                    </div>
+                                    <div class="comment-text">This is a test comment to verify the comments section is working!</div>
+                                </div>
                             </div>
-                            <div class="comments-content">
-                                <textarea id="editComments" class="comments-textarea" placeholder="Add your comments about this document...">${escapeHtml(doc.comments || '')}</textarea>
+                            <div class="comments-input">
+                                <textarea id="editComments" rows="1" class="comments-textarea" placeholder="Add a comment..." aria-label="Add a comment"></textarea>
+                                <button id="addCommentBtn" type="button" class="send-icon-btn" aria-label="Send comment" title="Send">
+                                    <span class="material-icons">send</span>
+                                </button>
                             </div>
                         </div>
-                        ` : ''}
                     </div>
+                    ` : ''}
                 </div>
                 `;
                 
@@ -6528,6 +6865,32 @@
                 console.log('Tab content container exists:', !!document.querySelector('.tab-content'));
                 console.log('Document summary:', doc.summary);
                 console.log('SafeDoc summary:', safeDoc.summary);
+                
+                // Debug layout
+                setTimeout(() => {
+                    const layoutEl = document.getElementById('documentEditorLayout');
+                    if (layoutEl) {
+                        console.log('Layout element found:', layoutEl);
+                        console.log('Layout classes:', layoutEl.className);
+                        console.log('Layout computed style:', window.getComputedStyle(layoutEl).display);
+                        console.log('Layout grid-template-areas:', window.getComputedStyle(layoutEl).gridTemplateAreas);
+                        
+                        // Force three-column layout
+                        layoutEl.className = 'document-editor-layout three-column';
+                        console.log('Forced three-column layout');
+                        
+                        // Check if comments section exists
+                        const commentsSection = document.querySelector('.editor-comments-section');
+                        if (commentsSection) {
+                            console.log('Comments section found:', commentsSection);
+                            console.log('Comments section computed style:', window.getComputedStyle(commentsSection).display);
+                        } else {
+                            console.log('Comments section NOT found!');
+                        }
+                    } else {
+                        console.log('Layout element NOT found!');
+                    }
+                }, 100);
                 
                 // Check date field value and set it explicitly
                 const dateField = document.getElementById('editDocumentDate');
@@ -6579,6 +6942,124 @@
                 }
                 
                 modal.classList.add('mdc-dialog--open');
+                
+                // Initialize image controls
+                currentDocumentId = doc.id;
+                currentPage = 1;
+                currentZoom = 1;
+                totalPages = doc.page_count || 1;
+                commentsInitialized = false;
+                
+                // Update controls after a short delay to ensure DOM is ready
+                const kickOff = async () => {
+                    updatePageInfo();
+                    updateZoomInfo();
+                    applyZoom();
+                    zoomSliderInitialized = false;
+                    ensureZoomSliderInitialized();
+                    initializeImagePanning();
+                    ensureCommentsInitialized();
+                    // Wire comments input UX
+                    const ta = document.getElementById('editComments');
+                    const btn = document.getElementById('addCommentBtn');
+                    if (ta) {
+                        const autoGrow = () => {
+                            ta.style.height = 'auto';
+                            ta.style.height = Math.min(ta.scrollHeight, 240) + 'px';
+                        };
+                        ta.addEventListener('input', () => { console.log('[comments] input'); autoGrow(); });
+                        ta.addEventListener('focus', () => { console.log('[comments] focus'); autoGrow(); });
+                        ta.addEventListener('keydown', (e) => {
+                            console.log('[comments] keydown', e.key, 'shift:', e.shiftKey);
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                if (btn) { console.log('[comments] enter->click'); btn.click(); }
+                            }
+                        });
+                        autoGrow();
+                    }
+                    if (btn) {
+                        btn.addEventListener('click', async () => {
+                            console.log('[comments] send click');
+                            await addComment();
+                            // Reload comments to reflect persisted state
+                            try {
+                                if (typeof currentDocumentId !== 'undefined' && currentDocumentId) {
+                                    const res = await fetch(`/documents/${currentDocumentId}/comments`, { credentials: 'same-origin' });
+                                    const data = await res.json();
+                                    if (data && data.success && Array.isArray(data.comments)) {
+                                        const list = document.getElementById('commentsList');
+                                        if (list) {
+                                            list.innerHTML = '';
+                                            for (const c of data.comments) {
+                                                const el = document.createElement('div');
+                                                el.className = 'comment-item';
+                                                el.innerHTML = `
+                                                    <div class="comment-header">
+                                                        <span class="comment-author">${escapeHtml(c.author || 'User')}</span>
+                                                        <span class="comment-date">${getRelativeTime(c.createdAt)}</span>
+                                                    </div>
+                                                    <div class="comment-text">${escapeHtml(c.text || '')}</div>
+                                                `;
+                                                list.appendChild(el);
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (_) {}
+                        });
+                    }
+                    // Load existing comments from backend
+                    try {
+                        if (typeof currentDocumentId !== 'undefined' && currentDocumentId) {
+                            console.log('[kickoff] Loading comments for document:', currentDocumentId);
+                            const res = await fetch(`/documents/${currentDocumentId}/comments`, { credentials: 'same-origin' });
+                            const data = await res.json();
+                            console.log('[kickoff] Comments response:', data, 'isArray:', Array.isArray(data.comments));
+                            if (data && data.success && Array.isArray(data.comments)) {
+                                const list = document.getElementById('commentsList');
+                                console.log('[kickoff] commentsList element:', list, 'comment count:', data.comments.length);
+                                if (list) {
+                                    list.innerHTML = '';
+                                    if (data.comments.length === 0) {
+                                        // Show empty state message
+                                        const emptyMsg = document.createElement('div');
+                                        emptyMsg.className = 'comments-empty-state';
+                                        emptyMsg.innerHTML = `
+                                            <div class="empty-state-icon">💬</div>
+                                            <div class="empty-state-text">No comments yet</div>
+                                        `;
+                                        list.appendChild(emptyMsg);
+                                    } else {
+                                        for (const c of data.comments) {
+                                            const el = document.createElement('div');
+                                            el.className = 'comment-item';
+                                            el.innerHTML = `
+                                                <div class="comment-header">
+                                                    <span class="comment-author">${escapeHtml(c.author || 'User')}</span>
+                                                    <span class="comment-date">${getRelativeTime(c.createdAt)}</span>
+                                                </div>
+                                                <div class="comment-text">${escapeHtml(c.text || '')}</div>
+                                            `;
+                                            list.appendChild(el);
+                                            console.log('[kickoff] Added comment to DOM:', c.text.substring(0, 50));
+                                        }
+                                    }
+                                }
+                            } else {
+                                console.warn('[kickoff] Invalid data structure:', data);
+                            }
+                        }
+                    } catch (err) {
+                        console.error('[kickoff] Failed to load comments:', err);
+                    }
+                };
+                console.log('[showEditModal] document.readyState:', document.readyState);
+                // Always call kickOff immediately - the document is already loaded when modal opens
+                setTimeout(kickOff, 0);
+                
+                // Load the first page image
+                loadDocumentImage(doc.id);
                 
                 // Initialize M3 components for other fields
                 console.log('Initializing M3 components for other fields...');
@@ -6762,7 +7243,8 @@
                     stack: error.stack,
                     doc: doc
                 });
-                alert('Failed to load people data. Please try again. Error: ' + error.message);
+                // Don't show alert for people data errors, just log them
+                console.warn('People data loading failed, continuing with document data only');
             }
         }
 
@@ -7028,124 +7510,7 @@
                     text-align: center;
                 }
                 
-                /* M3 Vertical Zoom Slider */
-                .zoom-slider-container {
-                    position: absolute;
-                    right: 20px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    z-index: 2; /* Tab level */
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 8px;
-                }
-                
-                .zoom-slider {
-                    position: relative;
-                    width: 20px;
-                    height: 200px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                }
-                
-                .zoom-slider__track {
-                    position: relative;
-                    width: 4px;
-                    height: 100%;
-                    background: #e0e0e0;
-                    border-radius: 2px;
-                    cursor: pointer;
-                }
-                
-                .zoom-slider__track--inactive {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: #e0e0e0;
-                    border-radius: 2px;
-                }
-                
-                .zoom-slider__track--active {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 50%;
-                    background: #6750a4;
-                    border-radius: 2px;
-                    transition: height 0.2s ease;
-                }
-                
-                .zoom-slider__thumb {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 20px;
-                    height: 20px;
-                    cursor: grab;
-                    z-index: 2; /* Tab level */
-                }
-                
-                .zoom-slider__thumb:active {
-                    cursor: grabbing;
-                }
-                
-                .zoom-slider__thumb-knob {
-                    width: 100%;
-                    height: 100%;
-                    background: #6750a4;
-                    border: 2px solid #fff;
-                    border-radius: 50%;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-                    transition: all 0.2s ease;
-                }
-                
-                .zoom-slider__thumb:hover .zoom-slider__thumb-knob {
-                    background: #5a3d8a;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-                }
-                
-                .zoom-slider__value-display {
-                    position: absolute;
-                    right: 30px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    background: rgba(0, 0, 0, 0.8);
-                    color: white;
-                    padding: 4px 8px;
-                    border-radius: 4px;
-                    font-size: 12px;
-                    font-weight: 500;
-                    white-space: nowrap;
-                    opacity: 0;
-                    transition: opacity 0.2s ease;
-                    pointer-events: none;
-                }
-                
-                .zoom-slider__thumb:hover + .zoom-slider__value-display,
-                .zoom-slider__value-display:hover {
-                    opacity: 1;
-                }
-                
-                .zoom-slider__labels {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 2px;
-                    margin-top: 8px;
-                }
-                
-                .zoom-label {
-                    font-size: 10px;
-                    color: #666;
-                    font-weight: 400;
-                    line-height: 1;
-                }
+                /* Old vertical zoom slider CSS removed - using M3 horizontal slider instead */
                 
                 .summary-section {
                     margin-bottom: 16px;
@@ -7686,7 +8051,7 @@
             const recipient = document.getElementById('recipientSelect')?.value || '';
             const originalText = document.getElementById('editOriginalText').value.trim();
             const translatedText = document.getElementById('editTranslatedText').value.trim();
-            const comments = document.getElementById('editComments')?.value.trim() || '';
+            // Do NOT include comments here; comments are persisted via dedicated endpoints
             // Auto-switch status to Editing if any change is made
             if (window.currentDocumentStatus !== 'Final') {
                 updateStatusButtons('Editing');
@@ -7719,8 +8084,7 @@
                     recipient: recipient === 'Select Recipient' ? '' : recipient,
                     original_text: originalText,
                     translated_text: translatedText,
-                    summary: summary,
-                    comments: comments
+                    summary: summary
                 };
                 
                 const response = await fetch(`/documents/${currentDocumentId}`, {
@@ -8114,12 +8478,10 @@
         // Zoom slider state
         let isDragging = false;
         
-        // Pan state
+        // Pan state (panOffsetX and panOffsetY are global - declared earlier)
         let isPanning = false;
         let panStartX = 0;
         let panStartY = 0;
-        let panOffsetX = 0;
-        let panOffsetY = 0;
 
         // Initialize carousel for a document
         function initializeCarousel(docId, pageCount) {
@@ -8129,7 +8491,6 @@
             
             updateCarouselUI();
             loadDocumentImage(docId, currentPage);
-            initializeZoomSlider();
         }
 
         // Update carousel UI elements
@@ -8237,211 +8598,311 @@
             }
         }
 
-        // Initialize zoom slider
+        // Fresh Zoom Slider Implementation
         function initializeZoomSlider() {
-            const slider = document.querySelector('.zoom-slider');
+            const slider = document.getElementById('zoomSlider');
             const thumb = document.getElementById('zoomThumb');
-            const track = document.querySelector('.zoom-slider__track');
-            const trackActive = document.getElementById('zoomTrackActive');
-            const valueDisplay = document.getElementById('zoomValueDisplay');
+            const trackFill = document.getElementById('zoomTrackFill');
+            const valueDisplay = document.getElementById('zoomValue');
             
-            if (!slider || !thumb || !track || !trackActive || !valueDisplay) {
-                console.log('Zoom slider elements not found');
+            if (!slider || !thumb || !trackFill || !valueDisplay) {
+                console.warn('Zoom slider elements not found, retrying...');
+                setTimeout(initializeZoomSlider, 100);
                 return;
             }
+            zoomSliderInitialized = true;
+            console.log('Initializing zoom slider...');
+            console.log('Elements found:', {
+                slider: !!slider,
+                thumb: !!thumb,
+                trackFill: !!trackFill,
+                valueDisplay: !!valueDisplay
+            });
             
-            // Set initial position (100% zoom at bottom of slider)
-            updateZoomSlider(1.0);
+            let isDragging = false;
+            let sliderRect = null;
+            
+            // Set initial position (100% zoom = 0% slider position)
+            updateZoomPosition(0.0);
             
             // Mouse events
-            thumb.addEventListener('mousedown', startDrag);
-            track.addEventListener('click', handleTrackClick);
-            
-            // Touch events for mobile
-            thumb.addEventListener('touchstart', startDrag, { passive: false });
-            
-            // Global events
-            document.addEventListener('mousemove', handleDrag);
+            thumb.addEventListener('mousedown', (e) => {
+                console.log('Thumb mousedown event fired');
+                startDrag(e);
+            });
+            document.addEventListener('mousemove', drag);
             document.addEventListener('mouseup', endDrag);
-            document.addEventListener('touchmove', handleDrag, { passive: false });
+            
+            // Touch events
+            thumb.addEventListener('touchstart', startDrag, { passive: false });
+            document.addEventListener('touchmove', drag, { passive: false });
             document.addEventListener('touchend', endDrag);
-        }
-        
-        // Start dragging
-        function startDrag(e) {
-            e.preventDefault();
-            isDragging = true;
-            const thumb = document.getElementById('zoomThumb');
-            thumb.style.cursor = 'grabbing';
-        }
-        
-        // Handle dragging
-        function handleDrag(e) {
-            if (!isDragging) return;
             
-            e.preventDefault();
-            const track = document.querySelector('.zoom-slider__track');
-            const rect = track.getBoundingClientRect();
+            // Click on track to jump to position
+            slider.addEventListener('click', (e) => {
+                if (e.target === thumb) return;
+                sliderRect = slider.getBoundingClientRect();
+                const x = e.clientX - sliderRect.left;
+                const padding = 8;
+                const trackWidth = sliderRect.width - (padding * 2);
+                const percentage = Math.max(0, Math.min(1, (x - padding) / trackWidth));
+                console.log('Track clicked:', { x, percentage });
+                updateZoomPosition(percentage);
+            });
             
-            let clientY;
-            if (e.type === 'touchmove') {
-                clientY = e.touches[0].clientY;
-            } else {
-                clientY = e.clientY;
+            function startDrag(e) {
+                isDragging = true;
+                sliderRect = slider.getBoundingClientRect();
+                thumb.classList.add('dragging');
+                e.preventDefault();
+                console.log('Drag started');
             }
             
-            const y = clientY - rect.top;
-            const percentage = Math.max(0, Math.min(1, y / rect.height));
-            
-            // Convert to zoom level (1.0 to 3.0) - 100% to 300%
-            const zoom = 1.0 + (percentage * 2.0);
-            updateZoomSlider(zoom);
-        }
-        
-        // End dragging
-        function endDrag() {
-            isDragging = false;
-            const thumb = document.getElementById('zoomThumb');
-            if (thumb) {
-                thumb.style.cursor = 'grab';
-            }
-        }
-        
-        // Handle track click
-        function handleTrackClick(e) {
-            const track = document.querySelector('.zoom-slider__track');
-            const rect = track.getBoundingClientRect();
-            const y = e.clientY - rect.top;
-            const percentage = Math.max(0, Math.min(1, y / rect.height));
-            
-            // Convert to zoom level (1.0 to 3.0) - 100% to 300%
-            const zoom = 1.0 + (percentage * 2.0);
-            updateZoomSlider(zoom);
-        }
-        
-        // Update zoom slider position and value
-        function updateZoomSlider(zoom) {
-            currentZoom = Math.max(1.0, Math.min(3.0, zoom));
-            
-            const thumb = document.getElementById('zoomThumb');
-            const trackActive = document.getElementById('zoomTrackActive');
-            const valueDisplay = document.getElementById('zoomValueDisplay');
-            
-            if (!thumb || !trackActive || !valueDisplay) return;
-            
-            // Calculate position (0 to 1)
-            const percentage = (currentZoom - 1.0) / 2.0;
-            
-            // Update thumb position
-            const trackHeight = 200; // Height of slider track
-            const thumbPosition = percentage * trackHeight;
-            thumb.style.top = `${thumbPosition}px`;
-            
-            // Update active track
-            trackActive.style.height = `${percentage * 100}%`;
-            
-            // Update value display
-            valueDisplay.textContent = `${Math.round(currentZoom * 100)}%`;
-            
-            // Reset pan when zoom changes
-            if (currentZoom <= 1.0) {
-                panOffsetX = 0;
-                panOffsetY = 0;
+            function drag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                if (!clientX) return;
+                
+                const x = clientX - sliderRect.left;
+                const padding = 8;
+                const trackWidth = sliderRect.width - (padding * 2);
+                const percentage = Math.max(0, Math.min(1, (x - padding) / trackWidth));
+                
+                console.log('Dragging:', { 
+                    isDragging, 
+                    clientX, 
+                    x, 
+                    percentage, 
+                    sliderRect: sliderRect ? { left: sliderRect.left, width: sliderRect.width } : 'null'
+                });
+                updateZoomPosition(percentage);
             }
             
-            // Apply zoom to image
-            applyZoomToImage();
+            function endDrag() {
+                if (!isDragging) return;
+                isDragging = false;
+                thumb.classList.remove('dragging');
+                console.log('Drag ended');
+            }
             
-            // Update cursor based on zoom level
-            const img = document.getElementById('documentImage');
-            if (img) {
-                img.style.cursor = currentZoom > 1.0 ? 'grab' : 'default';
+            function getCurrentPosition() {
+                const rect = slider.getBoundingClientRect();
+                const thumbRect = thumb.getBoundingClientRect();
+                const thumbCenter = thumbRect.left + thumbRect.width / 2;
+                return Math.max(0, Math.min(1, (thumbCenter - rect.left) / rect.width));
             }
+            
+            function updateZoomPosition(percentage) {
+                // Convert percentage (0-1) to zoom level (1.0-3.0)
+                // 0% = 100% zoom (fit to column), 100% = 300% zoom
+                currentZoom = 1.0 + (percentage * 2.0);
+                
+                // Calculate thumb position
+                const padding = 8;
+                const sliderWidth = slider.offsetWidth;
+                const trackWidth = sliderWidth - (padding * 2);
+                const thumbWidth = thumb.offsetWidth;
+                
+                // Position thumb center at percentage point
+                const thumbLeft = padding + (percentage * trackWidth) - (thumbWidth / 2);
+                
+                console.log('Update position:', { 
+                    percentage, 
+                    zoom: currentZoom, 
+                    thumbLeft,
+                    trackWidth,
+                    thumbWidth
+                });
+                
+                // Apply positioning
+                thumb.style.left = `${thumbLeft}px`;
+                trackFill.style.width = `${percentage * 100}%`;
+                valueDisplay.textContent = `${Math.round(currentZoom * 100)}%`;
+                
+                // Apply zoom to image
+                applyZoom();
+            }
+            
+            console.log('Zoom slider initialized successfully');
+            
+            // Add test function to window for debugging
+            window.testZoomSlider = function() {
+                console.log('Testing zoom slider...');
+                const testThumb = document.getElementById('zoomThumb');
+                const testSlider = document.getElementById('zoomSlider');
+                if (testThumb && testSlider) {
+                    console.log('Elements found, testing movement...');
+                    updateZoomPosition(0.5); // Move to 50%
+                    setTimeout(() => updateZoomPosition(0.0), 1000); // Back to 0%
+                    setTimeout(() => updateZoomPosition(1.0), 2000); // To 100%
+                } else {
+                    console.log('Elements not found!');
+                }
+            };
         }
         
-        // Apply zoom and pan to the current image
-        function applyZoomToImage() {
-            const img = document.getElementById('documentImage');
-            if (img) {
-                img.style.transform = `scale(${currentZoom}) translate(${panOffsetX}px, ${panOffsetY}px)`;
-                img.style.transition = 'transform 0.2s ease';
-            }
-        }
         
-        // Initialize pan functionality for image
+        // Initialize image panning functionality
         function initializeImagePanning() {
             const img = document.getElementById('documentImage');
             if (!img) return;
             
-            // Reset pan when zoom changes
-            if (currentZoom <= 1.0) {
-                panOffsetX = 0;
-                panOffsetY = 0;
-            }
+            let isPanning = false;
+            let panStartX = 0;
+            let panStartY = 0;
             
-            // Add pan event listeners
+            // Mouse events
             img.addEventListener('mousedown', startPan);
-            img.addEventListener('touchstart', startPan, { passive: false });
-            
-            // Global pan events
             document.addEventListener('mousemove', handlePan);
             document.addEventListener('mouseup', endPan);
-            document.addEventListener('touchmove', handlePan, { passive: false });
+            
+            // Touch events
+            img.addEventListener('touchstart', startPan);
+            document.addEventListener('touchmove', handlePan);
             document.addEventListener('touchend', endPan);
-        }
-        
-        // Start panning
-        function startPan(e) {
-            if (currentZoom <= 1.0) return; // Only pan when zoomed in
             
-            e.preventDefault();
-            isPanning = true;
-            
-            let clientX, clientY;
-            if (e.type === 'touchstart') {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
-            
-            panStartX = clientX - panOffsetX;
-            panStartY = clientY - panOffsetY;
-            
-            const img = document.getElementById('documentImage');
-            if (img) {
+            function startPan(e) {
+                if (currentZoom <= 1.0) return; // Only pan when zoomed in
+                
+                e.preventDefault();
+                isPanning = true;
+                
+                let clientX, clientY;
+                if (e.type === 'touchstart') {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                
+                panStartX = clientX - panOffsetX;
+                panStartY = clientY - panOffsetY;
+                
                 img.style.cursor = 'grabbing';
             }
-        }
-        
-        // Handle panning
-        function handlePan(e) {
-            if (!isPanning || currentZoom <= 1.0) return;
             
-            e.preventDefault();
-            
-            let clientX, clientY;
-            if (e.type === 'touchmove') {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
+            function handlePan(e) {
+                if (!isPanning || currentZoom <= 1.0) return;
+                
+                e.preventDefault();
+                
+                let clientX, clientY;
+                if (e.type === 'touchmove') {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                
+                // Update global pan offset variables
+                panOffsetX = clientX - panStartX;
+                panOffsetY = clientY - panStartY;
+                
+                applyZoom();
             }
             
-            panOffsetX = clientX - panStartX;
-            panOffsetY = clientY - panStartY;
-            
-            applyZoomToImage();
+            function endPan() {
+                isPanning = false;
+                img.style.cursor = currentZoom > 1.0 ? 'grab' : 'default';
+            }
         }
         
-        // End panning
-        function endPan() {
-            isPanning = false;
-            const img = document.getElementById('documentImage');
-            if (img) {
-                img.style.cursor = currentZoom > 1.0 ? 'grab' : 'default';
+        // Add comment functionality (will persist if doc id is known)
+        async function addComment() {
+            const textarea = document.getElementById('editComments');
+            const commentsList = document.getElementById('commentsList');
+            
+            if (!textarea || !commentsList) return;
+            
+            const commentText = textarea.value.trim();
+            if (!commentText) { console.log('[comments] empty, ignoring'); return; }
+            
+            // Create comment element
+            const commentElement = document.createElement('div');
+            commentElement.className = 'comment-item';
+            
+            const now = new Date();
+            const author = 'Current User'; // This should come from session/auth
+            
+            commentElement.innerHTML = `
+                <div class="comment-header">
+                    <span class="comment-author">${author}</span>
+                    <span class="comment-date">just now</span>
+                </div>
+                <div class="comment-text">${escapeHtml(commentText)}</div>
+            `;
+            
+            // Add to top of comments list
+            commentsList.insertBefore(commentElement, commentsList.firstChild);
+            
+            // Clear textarea
+            textarea.value = '';
+            
+            // Scroll to top to show new comment
+            commentsList.scrollTop = 0;
+
+            // Persist via API if we have a current document id
+            try {
+                if (typeof currentDocumentId !== 'undefined' && currentDocumentId) {
+                    const payload = { text: commentText };
+                    const bodyStr = JSON.stringify(payload);
+                    console.log(`[addComment] Sending POST: docId=${currentDocumentId}, payload=`, payload, 'body=', bodyStr);
+                    let res = await fetch(`/documents/${currentDocumentId}/comments`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'same-origin',
+                        body: bodyStr
+                    });
+                    console.log(`[addComment] Response: status=${res.status}, ok=${res.ok}`);
+                    if (!res.ok) {
+                        const txt = await res.text().catch(() => '');
+                        console.warn('Persist comment failed (json)', res.status, txt);
+                        // Fallback: form-encoded POST
+                        try {
+                            res = await fetch(`/documents/${currentDocumentId}/comments`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                                credentials: 'same-origin',
+                                body: `text=${encodeURIComponent(commentText)}`
+                            });
+                        } catch (e) {
+                            console.warn('Persist comment fallback error', e);
+                        }
+                    }
+                    if (!res.ok) {
+                        const txt2 = await res.text().catch(() => '');
+                        console.warn('Persist comment failed (after fallback)', res.status, txt2);
+                    } else {
+                        // Reload comments to ensure persisted order/state
+                        try {
+                            const refresh = await fetch(`/documents/${currentDocumentId}/comments`, { credentials: 'same-origin' });
+                            const data = await refresh.json();
+                            const list = document.getElementById('commentsList');
+                            if (list && data && data.success && Array.isArray(data.comments)) {
+                                list.innerHTML = '';
+                                for (const c of data.comments) {
+                                    const el = document.createElement('div');
+                                    el.className = 'comment-item';
+                                    el.innerHTML = `
+                <div class="comment-header">
+                    <span class="comment-author">${escapeHtml(c.author || 'User')}</span>
+                    <span class="comment-date">${getRelativeTime(c.createdAt)}</span>
+                </div>
+                <div class="comment-text">${escapeHtml(c.text || '')}</div>`;
+                                    list.appendChild(el);
+                                }
+                            }
+                        } catch (e) {
+                            console.warn('Failed to refresh comments after save', e);
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to persist comment:', e);
             }
         }
 

@@ -15,6 +15,7 @@ import sys
 import bcrypt
 import secrets
 import requests
+import json
 from pathlib import Path
 from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for, flash
@@ -643,6 +644,74 @@ def status():
     
     return jsonify(status_info)
 
+# -----------------------------
+# Comments API
+# -----------------------------
+@app.errorhandler(400)
+def handle_400(e):
+    """Log 400 errors to diagnose comment POST issues."""
+    print(f"[400 ERROR] path={request.path}, method={request.method}, CT={request.headers.get('Content-Type')}, body_len={request.content_length}")
+    try:
+        raw_body = request.get_data(as_text=True)
+        print(f"[400 ERROR] body preview: {raw_body[:500]}")
+    except Exception as ex:
+        print(f"[400 ERROR] couldn't read body: {ex}")
+    return jsonify({'error': 'Bad Request', 'message': str(e)}), 400
+
+@app.route('/documents/<doc_id>/comments', methods=['GET'])
+@require_auth
+def list_comments(doc_id):
+    try:
+        comments = local_storage.list_comments(doc_id)
+        print(f"[list_comments] doc_id={doc_id}, type={type(comments)}, len={len(comments) if isinstance(comments, list) else 'N/A'}, first_50_chars={str(comments)[:50]}")
+        response = { 'success': True, 'comments': comments }
+        print(f"[list_comments] response={str(response)[:200]}")
+        return jsonify(response)
+    except Exception as e:
+        print(f"[list_comments] ERROR: {e}")
+        return jsonify({ 'success': False, 'error': str(e) }), 500
+
+@app.route('/documents/<doc_id>/comments', methods=['POST'])
+@require_auth
+def add_comment(doc_id):
+    print(f"[DEBUG] add_comment called: doc_id={doc_id}, method={request.method}, CT={request.headers.get('Content-Type')}")
+    try:
+        # Accept JSON, raw body JSON, or form; be permissive about keys
+        text = ''
+        data = request.get_json(silent=True)
+        print(f"[DEBUG] get_json returned: {type(data)}, {data}")
+        if isinstance(data, dict):
+            text = (data.get('text') or data.get('comment') or '').strip()
+        if not text:
+            # Try raw body parse if Content-Type was unusual
+            raw = request.get_data(as_text=True) or ''
+            try:
+                j = json.loads(raw) if raw else None
+                if isinstance(j, dict):
+                    text = (j.get('text') or j.get('comment') or '').strip()
+            except Exception:
+                pass
+        if not text and request.form:
+            text = (request.form.get('text') or request.form.get('comment') or '').strip()
+        if not text and request.args:
+            text = (request.args.get('text') or request.args.get('comment') or '').strip()
+        if not text:
+            # Debug context to diagnose client payload issues (safe output)
+            print(f"comments POST 400: missing text. CT={request.headers.get('Content-Type')} len={request.content_length} raw={ (request.get_data(as_text=True) or '')[:200] }")
+            return jsonify({ 'success': False, 'error': 'Text is required' }), 400
+        user = USERS.get(session['user_id'], {})
+        author = f"{user.get('first_name','') } { user.get('last_name','') }".strip() or user.get('username','User')
+        print(f"comments POST begin: doc_id={doc_id} author={author} text_len={len(text)}")
+        created = local_storage.add_comment(doc_id, text, author)
+        if not created:
+            print(f"comments POST fail: add_comment returned None for doc_id={doc_id}")
+            return jsonify({ 'success': False, 'error': 'Failed to add comment' }), 400
+        print(f"comments POST ok: id={created.get('id')} at={created.get('createdAt')}")
+        return jsonify({ 'success': True, 'comment': created })
+    except Exception as e:
+        print(f"/documents/{doc_id}/comments POST error: {e}")
+        return jsonify({ 'success': False, 'error': str(e) }), 500
+
 @app.route('/test')
 @require_auth
 def test_endpoint():
@@ -1194,6 +1263,10 @@ def update_document(doc_id):
                 'error': 'No data provided'
             }), 400
         
+        # Never allow comments to be overwritten via this endpoint
+        if 'comments' in data:
+            data.pop('comments', None)
+
         # Check if we should regenerate summary
         regenerate_summary = data.pop('regenerate_summary', False)
         

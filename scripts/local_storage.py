@@ -871,6 +871,82 @@ class LocalOCRStorage:
         return "\n".join(report)
 
     # -----------------------------
+    # Comments per document
+    # -----------------------------
+    def add_comment(self, doc_id: str, text: str, author: str) -> Optional[Dict]:
+        """Add a comment to a document and persist it to its JSON file."""
+        try:
+            doc = self.get_document(doc_id)
+            if doc is None:
+                # Create a minimal document JSON if it doesn't exist yet
+                meta = self.metadata["documents"].get(doc_id, {})
+                doc = {
+                    "id": doc_id,
+                    "title": meta.get("title") or meta.get("name") or doc_id,
+                    "document_date": meta.get("document_date") or meta.get("date"),
+                    "page_count": meta.get("page_count", 0),
+                    "people": meta.get("people", []),
+                    "summary": meta.get("summary", ""),
+                    "comments": []
+                }
+                doc_file = self.documents_dir / f"{doc_id}.json"
+                doc_file.parent.mkdir(parents=True, exist_ok=True)
+                with open(doc_file, 'w', encoding='utf-8') as f:
+                    json.dump(doc, f, indent=2, ensure_ascii=False)
+            # Handle cases where comments field is a string, None, or missing - normalize to list
+            comments = doc.get("comments", [])
+            if not isinstance(comments, list):
+                print(f"[local_storage] Fixing comments field for {doc_id}: was {type(comments)}, converting to list")
+                comments = []
+            
+            comment_id = f"cmt_{datetime.now().strftime('%Y%m%d_%H%M%S%f')}"
+            created_at = datetime.now().isoformat()
+            c = {
+                "id": comment_id,
+                "author": author,
+                "text": text,
+                "createdAt": created_at
+            }
+            comments.insert(0, c)
+            doc["comments"] = comments
+            # Persist back to file
+            doc_file = self.documents_dir / f"{doc_id}.json"
+            with open(doc_file, 'w', encoding='utf-8') as f:
+                json.dump(doc, f, indent=2, ensure_ascii=False)
+            # Update metadata summary snippet if present so UI sees file change
+            if doc_id in self.metadata.get("documents", {}):
+                self.metadata["documents"][doc_id]["last_commented_at"] = created_at
+            self._save_metadata()
+            return c
+        except Exception as e:
+            print(f"Error adding comment to {doc_id}: {e}")
+            return None
+
+    def list_comments(self, doc_id: str) -> List[Dict]:
+        """List comments for a document (most recent first)."""
+        try:
+            doc = self.get_document(doc_id)
+            if doc is None:
+                return []
+            comments = doc.get("comments", [])
+            # Normalize bad historical data where comments might be a string/None
+            if not isinstance(comments, list):
+                print(f"[local_storage] Normalizing non-list comments for {doc_id}: was {type(comments)}")
+                comments = []
+                doc["comments"] = comments
+                # Persist the normalization so future reads are clean
+                try:
+                    doc_file = self.documents_dir / f"{doc_id}.json"
+                    with open(doc_file, 'w', encoding='utf-8') as f:
+                        json.dump(doc, f, indent=2, ensure_ascii=False)
+                except Exception as e:
+                    print(f"[local_storage] Failed to persist normalized comments for {doc_id}: {e}")
+            return comments
+        except Exception as e:
+            print(f"Error listing comments for {doc_id}: {e}")
+            return []
+
+    # -----------------------------
     # References (with stable IDs)
     # -----------------------------
     def add_reference(self, ref_type: str, name: str, aliases: List[str] = None, notes: str = None) -> Optional[Dict]:
