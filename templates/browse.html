@@ -4020,23 +4020,28 @@
 
         .comments-content {
             flex: 1;
-            padding: var(--md-sys-spacing-4);
+            padding: calc(var(--md-sys-spacing-2) / 4);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            min-height: 0; /* allow flex child scrolling */
         }
         .comments-input {
             display: flex;
             align-items: center;
             gap: 8px;
+            position: sticky;
+            bottom: 0;
+            background: var(--md-sys-color-surface-container-lowest);
+            padding-top: calc(var(--md-sys-spacing-2) / 4);
         }
         .send-icon-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 18px;
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
             background: var(--md-sys-color-primary);
             color: var(--md-sys-color-on-primary);
             border: none;
@@ -4050,9 +4055,9 @@
         .comments-list {
             flex: 1;
             overflow-y: auto;
-            margin-bottom: var(--md-sys-spacing-4);
-            padding-right: var(--md-sys-spacing-2);
-            max-height: 400px;
+            margin: 0;
+            padding-right: calc(var(--md-sys-spacing-2) / 4);
+            /* remove fixed max-height; let flex compute available height */
         }
 
         .comment-item {
@@ -4111,14 +4116,16 @@
 
         .comments-textarea {
             width: 100%;
-            min-height: 40px; /* single-row collapsed */
+            min-height: 56px; /* M3 single-line height */
+            height: 56px; /* enforce initial single-line height */
             max-height: 160px;
+            box-sizing: border-box;
             border: 1px solid var(--md-sys-color-outline);
             border-radius: var(--md-sys-shape-radius-sm);
-            padding: var(--md-sys-spacing-3);
+            padding: 16px 12px; /* vertically center single-line text per M3 */
             font-family: var(--md-sys-typescale-body-medium-font);
             font-size: var(--md-sys-typescale-body-medium-size);
-            line-height: var(--md-sys-typescale-body-medium-line-height);
+            line-height: 24px;
             color: var(--md-sys-color-on-surface);
             background: var(--md-sys-color-surface);
             resize: none;
@@ -4144,11 +4151,12 @@
             }
             
             .editor-comments-section {
-                padding: var(--md-sys-spacing-3);
+                padding: calc(var(--md-sys-spacing-2) / 2);
             }
             
             .comments-textarea {
-                min-height: 40px;
+                min-height: 56px;
+                height: 56px;
             }
             
             /* Ensure tabs are scrollable on mobile */
@@ -4197,7 +4205,7 @@
             }
             
             .editor-comments-section {
-                padding: var(--md-sys-spacing-5);
+                padding: calc(var(--md-sys-spacing-2) / 2);
             }
         }
 
@@ -6370,10 +6378,15 @@
             const btn = document.getElementById('addCommentBtn');
             const list = document.getElementById('commentsList');
             if (ta && btn && list) {
+                const baseHeight = 56; // dp/px height for single-line
                 const autoGrow = () => {
                     ta.style.height = 'auto';
-                    ta.style.height = Math.min(ta.scrollHeight, 240) + 'px';
+                    const next = Math.max(baseHeight, Math.min(ta.scrollHeight, 240));
+                    ta.style.height = next + 'px';
                 };
+                ta.addEventListener('blur', () => {
+                    if (!ta.value.trim()) ta.style.height = baseHeight + 'px';
+                });
                 ta.addEventListener('input', () => { console.log('[comments] input'); autoGrow(); });
                 ta.addEventListener('focus', () => { console.log('[comments] focus'); autoGrow(); });
                 ta.addEventListener('keydown', (e) => {
@@ -6387,7 +6400,7 @@
                     console.log('[comments] send click');
                     await addComment();
                 });
-                autoGrow();
+                ta.style.height = baseHeight + 'px';
                 commentsInitialized = true;
                 console.log('[comments] initialized');
                 return;
@@ -6830,10 +6843,6 @@
                     ${layoutClass !== 'one-column' ? `
                     <!-- Comments Section (Right Column) -->
                     <div class="editor-comments-section">
-                        <div class="comments-header">
-                            <span class="material-icons">comment</span>
-                            <h3>Comments</h3>
-                        </div>
                         <div class="comments-content">
                             <div class="comments-list" id="commentsList">
                                 <!-- Comments will be loaded here -->
@@ -6846,7 +6855,7 @@
                                 </div>
                             </div>
                             <div class="comments-input">
-                                <textarea id="editComments" rows="1" class="comments-textarea" placeholder="Add a comment..." aria-label="Add a comment"></textarea>
+                                <textarea id="editComments" class="comments-textarea" placeholder="Add a comment..." aria-label="Add a comment"></textarea>
                                 <button id="addCommentBtn" type="button" class="send-icon-btn" aria-label="Send comment" title="Send">
                                     <span class="material-icons">send</span>
                                 </button>
@@ -6963,10 +6972,15 @@
                     const ta = document.getElementById('editComments');
                     const btn = document.getElementById('addCommentBtn');
                     if (ta) {
-                        const autoGrow = () => {
-                            ta.style.height = 'auto';
-                            ta.style.height = Math.min(ta.scrollHeight, 240) + 'px';
-                        };
+                    const baseHeight = 56;
+                    const autoGrow = () => {
+                        ta.style.height = 'auto';
+                        const next = Math.max(baseHeight, Math.min(ta.scrollHeight, 240));
+                        ta.style.height = next + 'px';
+                    };
+                    ta.addEventListener('blur', () => {
+                        if (!ta.value.trim()) ta.style.height = baseHeight + 'px';
+                    });
                         ta.addEventListener('input', () => { console.log('[comments] input'); autoGrow(); });
                         ta.addEventListener('focus', () => { console.log('[comments] focus'); autoGrow(); });
                         ta.addEventListener('keydown', (e) => {
@@ -6976,7 +6990,7 @@
                                 if (btn) { console.log('[comments] enter->click'); btn.click(); }
                             }
                         });
-                        autoGrow();
+                    ta.style.height = baseHeight + 'px';
                     }
                     if (btn) {
                         btn.addEventListener('click', async () => {
