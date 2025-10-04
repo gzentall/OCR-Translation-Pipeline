@@ -1,0 +1,206 @@
+import React, { useState } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Avatar,
+  Menu,
+  MenuItem,
+  Box,
+  Chip,
+} from '@mui/material';
+import {
+  Mail as MailIcon,
+  Description as DocumentsIcon,
+  People as PeopleIcon,
+  Person as PersonIcon,
+  Upload as UploadIcon,
+  Logout as LogoutIcon,
+} from '@mui/icons-material';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+interface User {
+  name: string;
+  email: string;
+  role: string;
+  initials: string;
+}
+
+interface HeaderProps {
+  user?: User;
+}
+
+const Header: React.FC<HeaderProps> = ({ user }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    // Clear authentication data
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate('/login');
+  };
+
+  const handleUpload = () => {
+    // TODO: Implement upload modal
+    console.log('Upload clicked');
+  };
+
+  const getRoleDisplayName = (role: string) => {
+    const roleMap: { [key: string]: string } = {
+      admin: 'Super Admin',
+      viewer: 'Viewer',
+      editor: 'Editor',
+    };
+    return roleMap[role] || 'Viewer';
+  };
+
+  const getUserInitials = (name: string) => {
+    if (!name || name === 'User') return 'U';
+    const parts = name.split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
+  const navigationItems = [
+    { path: '/documents', label: 'Documents', icon: <DocumentsIcon /> },
+    { path: '/users', label: 'Users', icon: <PeopleIcon /> },
+    { path: '/references', label: 'References', icon: <PersonIcon /> },
+  ];
+
+  return (
+    <AppBar position="static" sx={{ backgroundColor: 'background.paper', color: 'text.primary' }}>
+      <Toolbar sx={{ justifyContent: 'space-between', px: 3 }}>
+        {/* Logo and Navigation */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <MailIcon sx={{ color: 'primary.main' }} />
+            <Typography variant="h6" component="div" sx={{ fontWeight: 500, color: 'primary.main' }}>
+              Postmark
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {navigationItems.map((item) => (
+              <Button
+                key={item.path}
+                startIcon={item.icon}
+                onClick={() => navigate(item.path)}
+                sx={{
+                  color: location.pathname === item.path ? 'primary.main' : 'text.secondary',
+                  backgroundColor: location.pathname === item.path ? 'primary.light' : 'transparent',
+                  borderRadius: '20px',
+                  px: 2,
+                  py: 1,
+                  '&:hover': {
+                    backgroundColor: 'action.hover',
+                  },
+                }}
+              >
+                {item.label}
+              </Button>
+            ))}
+          </Box>
+        </Box>
+
+        {/* Actions and Profile */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Button
+            variant="contained"
+            startIcon={<UploadIcon />}
+            onClick={handleUpload}
+            sx={{
+              backgroundColor: 'primary.main',
+              borderRadius: '20px',
+              px: 3,
+              py: 1,
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+              },
+            }}
+          >
+            Upload
+          </Button>
+
+          <IconButton
+            onClick={handleProfileMenuOpen}
+            sx={{
+              width: 40,
+              height: 40,
+              backgroundColor: 'primary.main',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+                transform: 'scale(1.05)',
+              },
+            }}
+          >
+            <Avatar sx={{ width: 32, height: 32, backgroundColor: 'transparent' }}>
+              {user ? getUserInitials(user.name) : 'U'}
+            </Avatar>
+          </IconButton>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleProfileMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            sx={{
+              '& .MuiPaper-root': {
+                borderRadius: '12px',
+                minWidth: 280,
+                mt: 1,
+              },
+            }}
+          >
+            {user && (
+              <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Avatar sx={{ backgroundColor: 'primary.main', width: 48, height: 48 }}>
+                    {getUserInitials(user.name)}
+                  </Avatar>
+                  <Box>
+                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                      {user.name}
+                    </Typography>
+                    <Chip
+                      label={getRoleDisplayName(user.role)}
+                      size="small"
+                      sx={{ mt: 0.5, fontSize: '12px' }}
+                    />
+                  </Box>
+                </Box>
+              </Box>
+            )}
+            <MenuItem onClick={handleLogout} sx={{ gap: 1 }}>
+              <LogoutIcon fontSize="small" />
+              Logout
+            </MenuItem>
+          </Menu>
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default Header;
