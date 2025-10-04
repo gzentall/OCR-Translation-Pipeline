@@ -318,7 +318,7 @@ const DocumentsPage: React.FC = () => {
       {viewMode === 'grid' ? (
         <Grid container spacing={2} sx={{ p: 3 }}>
           {sortedDocuments.map((document) => (
-            <Grid item xs={12} sm={6} md={4} key={document.id}>
+            <Grid item xs={12} sm={6} md={4} key={document.id} component="div">
               <Card
                 sx={{
                   cursor: 'pointer',

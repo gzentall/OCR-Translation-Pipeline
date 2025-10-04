@@ -247,7 +247,7 @@ const ReferencesPage: React.FC = () => {
       {/* References List */}
       <Grid container spacing={2}>
         {sortedReferences.map((reference) => (
-          <Grid item xs={12} sm={6} md={4} key={reference.id}>
+          <Grid item xs={12} sm={6} md={4} key={reference.id} component="div">
             <Card
               sx={{
                 cursor: 'pointer',
