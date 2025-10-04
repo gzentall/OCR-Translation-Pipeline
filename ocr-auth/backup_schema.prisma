@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String     @id @default(cuid())
+  email           String     @unique
+  username        String     @unique
+  passwordHash    String?
+  emailVerifiedAt DateTime?
+  isActive        Boolean    @default(true)
+  role            Role       @default(USER)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  accounts        Account[]
+  auditLogs       AuditLog[]
+  documents       Document[]
+  people          Person[]
+  sessions        Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Document {
+  id             String           @id @default(cuid())
+  title          String
+  dateProcessed  DateTime         @default(now())
+  sourceLanguage String           @default("unknown")
+  targetLanguage String           @default("en")
+  originalText   String?
+  translatedText String?
+  fileSize       Int              @default(0)
+  summary        String?
+  pageCount      Int              @default(0)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  userId         String
+  auditLogs      AuditLog[]
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  people         DocumentPerson[]
+}
+
+model Person {
+  id             String           @id @default(cuid())
+  name           String           @unique
+  aliases        String[]
+  context        String?
+  firstMentioned DateTime         @default(now())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  userId         String
+  auditLogs      AuditLog[]
+  documents      DocumentPerson[]
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DocumentPerson {
+  id         String   @id @default(cuid())
+  documentId String
+  personId   String
+  createdAt  DateTime @default(now())
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  person     Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, personId])
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  actorUserId String?
+  action      String
+  targetType  String
+  targetId    String?
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  actor       User?     @relation(fields: [actorUserId], references: [id])
+  document    Document? @relation(fields: [targetId], references: [id], map: "AuditLog_document_fkey")
+  document    Person?   @relation(fields: [targetId], references: [id], map: "AuditLog_document_fkey")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
+

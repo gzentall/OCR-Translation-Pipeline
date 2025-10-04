@@ -9,6 +9,7 @@ type NextAuthOptions = {
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcryptjs"
+import { logAuditEvent, AUDIT_ACTIONS } from "@/lib/audit"
 
 const prisma = new PrismaClient()
 
@@ -65,6 +66,19 @@ export const authOptions: NextAuthOptions = {
         }
 
         console.log("✅ Authentication successful")
+        
+        // Log successful login
+        await logAuditEvent({
+          actorUserId: user.id,
+          action: AUDIT_ACTIONS.USER_LOGIN,
+          targetType: "USER",
+          targetId: user.id,
+          metadata: {
+            loginMethod: "credentials",
+            timestamp: new Date().toISOString()
+          }
+        })
+        
         return {
           id: user.id,
           email: user.email,
@@ -93,6 +107,22 @@ export const authOptions: NextAuthOptions = {
         session.user.username = token.username as string
       }
       return session
+    }
+  },
+  events: {
+    async signOut({ token }: any) {
+      // Log logout event
+      if (token?.sub) {
+        await logAuditEvent({
+          actorUserId: token.sub,
+          action: AUDIT_ACTIONS.USER_LOGOUT,
+          targetType: "USER",
+          targetId: token.sub,
+          metadata: {
+            timestamp: new Date().toISOString()
+          }
+        })
+      }
     }
   },
   pages: {

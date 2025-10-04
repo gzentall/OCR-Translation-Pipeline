@@ -1,0 +1,237 @@
+/**
+ * Shared Header Component CSS
+ * Material Design 3 compliant header styles
+ */
+
+/* App Bar */
+.app-bar {
+    background: var(--md-sys-color-surface-container);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    position: relative;
+    z-index: 3; /* App bar level */
+    min-height: 48px;
+}
+
+.app-bar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--md-sys-spacing-6);
+    min-height: 48px;
+}
+
+.app-bar-left {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-spacing-4);
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-spacing-2);
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--md-sys-color-primary);
+}
+
+.logo .material-icons {
+    font-size: 24px;
+}
+
+.logo-text {
+    font-weight: 500;
+}
+
+/* Navigation Tabs */
+.nav-tabs {
+    display: flex;
+    gap: var(--md-sys-spacing-1);
+}
+
+.nav-tab {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-spacing-1);
+    padding: var(--md-sys-spacing-2) var(--md-sys-spacing-3);
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    text-decoration: none;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    position: relative;
+    min-height: 48px;
+}
+
+.nav-tab:hover {
+    background: var(--md-sys-color-surface-container-high);
+}
+
+.nav-tab.active {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+.nav-tab .material-icons {
+    font-size: 18px;
+}
+
+.nav-text {
+    font-weight: 500;
+}
+
+/* App Bar Actions */
+.app-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-spacing-2);
+}
+
+/* Upload Button */
+.upload-btn {
+    background: var(--md-sys-color-primary) !important;
+    color: var(--md-sys-color-on-primary) !important;
+    border-radius: var(--md-sys-shape-corner-extra-large) !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+    padding: 0 var(--md-sys-spacing-4) !important;
+    min-width: auto !important;
+    height: 40px !important;
+}
+
+.upload-btn:hover {
+    background: var(--md-sys-color-primary) !important;
+    opacity: 0.92 !important;
+}
+
+/* Profile Menu Container */
+.profile-menu-container {
+    position: relative;
+    z-index: 3; /* App bar level */
+}
+
+.avatar-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.avatar-button:hover {
+    transform: scale(1.05);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 16px;
+    border: 2px solid var(--md-sys-color-outline-variant);
+}
+
+/* Profile Dropdown */
+.profile-dropdown {
+    position: fixed;
+    background: var(--md-sys-color-surface-container);
+    border-radius: 12px;
+    box-shadow: 0px 2px 6px 2px rgba(0, 0, 0, 0.15),
+                0px 1px 2px 0px rgba(0, 0, 0, 0.30);
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+    z-index: 1000;
+    display: none;
+    opacity: 0;
+    transition: opacity 200ms cubic-bezier(0.2, 0, 0, 1);
+    
+    /* Force new stacking context and reset inherited properties */
+    isolation: isolate;
+    transform: none !important;
+    filter: none;
+}
+
+.profile-dropdown.is-open {
+    display: block;
+    opacity: 1;
+}
+
+.profile-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-spacing-3);
+}
+
+.profile-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--md-sys-color-on-surface);
+    margin-bottom: 2px;
+}
+
+.profile-role {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.profile-actions {
+    padding: 8px 0;
+}
+
+.profile-action {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-spacing-2);
+    padding: var(--md-sys-spacing-2) var(--md-sys-spacing-4);
+    background: none;
+    border: none;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: left;
+}
+
+.profile-action:hover {
+    background: var(--md-sys-color-surface-container-high);
+}
+
+.profile-action .material-icons {
+    font-size: 18px;
+}

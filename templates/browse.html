@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Postmark - TESTING CHANGES ARE WORKING - UPDATED AT 6:20 PM</title>
+    <title>Postmark</title>
     
     <!-- Material Design Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -3788,6 +3788,188 @@
         .editor-tabs-section .tab-panel::-webkit-scrollbar-thumb:hover {
             background: var(--md-sys-color-outline-variant);
         }
+        
+        /* History Tab Styles */
+        .history-container {
+            padding: var(--md-sys-spacing-4);
+            max-height: 100%;
+            overflow-y: auto;
+        }
+        
+        .history-filters {
+            margin-bottom: var(--md-sys-spacing-4);
+            padding: var(--md-sys-spacing-3);
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: 12px;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: var(--md-sys-spacing-3);
+            align-items: end;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+        
+        .filter-group:last-child {
+            min-width: auto;
+            justify-content: end;
+        }
+        
+        .filter-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 4px;
+        }
+        
+        .history-date-input,
+        .history-select {
+            padding: 8px 12px;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 8px;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            font-size: 14px;
+        }
+        
+        .history-date-input:focus,
+        .history-select:focus {
+            outline: none;
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 2px var(--md-sys-color-primary-container);
+        }
+        
+        .history-list {
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 12px;
+            background: var(--md-sys-color-surface);
+        }
+        
+        .history-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--md-sys-spacing-6);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--md-sys-color-outline-variant);
+            border-top: 2px solid var(--md-sys-color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: var(--md-sys-spacing-2);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .history-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--md-sys-spacing-6);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        
+        .history-events {
+            padding: 0;
+        }
+        
+        .history-event {
+            padding: var(--md-sys-spacing-3);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            transition: background-color 0.2s ease;
+        }
+        
+        .history-event:hover {
+            background: var(--md-sys-color-surface-container-low);
+        }
+        
+        .history-event:last-child {
+            border-bottom: none;
+        }
+        
+        .history-event-description {
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 4px;
+        }
+        
+        .history-event-timestamp {
+            font-size: 12px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        
+        .history-event-details {
+            margin-top: var(--md-sys-spacing-2);
+            padding: var(--md-sys-spacing-2);
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: var(--md-sys-shape-corner-small);
+            font-size: 13px;
+        }
+        
+        .change-type {
+            font-weight: 500;
+            color: var(--md-sys-color-primary);
+            margin-bottom: var(--md-sys-spacing-1);
+        }
+        
+        .change-added {
+            color: var(--md-sys-color-tertiary);
+            margin-left: var(--md-sys-spacing-2);
+        }
+        
+        .change-removed {
+            color: var(--md-sys-color-error);
+            margin-left: var(--md-sys-spacing-2);
+        }
+        
+        .change-before {
+            color: var(--md-sys-color-on-surface-variant);
+            margin-left: var(--md-sys-spacing-2);
+            font-style: italic;
+        }
+        
+        .change-after {
+            color: var(--md-sys-color-on-surface);
+            margin-left: var(--md-sys-spacing-2);
+            font-weight: 500;
+        }
+        
+        .history-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--md-sys-spacing-4);
+            padding: var(--md-sys-spacing-3);
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: 12px;
+        }
+        
+        .pagination-info {
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: var(--md-sys-spacing-2);
+        }
 
         .editor-comments-section {
             grid-area: comments;
@@ -4784,7 +4966,7 @@
     <div class="app-bar">
         <div class="app-title">
             <i class="material-icons app-logo">local_post_office</i>
-            <h1>Postmark - TESTING CHANGES ARE WORKING - UPDATED AT 6:20 PM</h1>
+            <h1>Postmark</h1>
         </div>
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('documents')">
@@ -4795,10 +4977,10 @@
                 <span class="material-icons">manage_accounts</span>
                 <span class="nav-tab-label">Users</span>
             </button>
-            <button class="nav-tab" onclick="switchTab('references')">
+            <a href="/references-page" class="nav-tab">
                 <span class="material-icons">people</span>
                 <span class="nav-tab-label">References</span>
-            </button>
+            </a>
         </div>
         <div class="nav-actions">
             <button class="mdc-button mdc-button--filled" onclick="showUploadModal()">
@@ -6685,6 +6867,15 @@
                                                         </span>
                                                         <span class="mdc-tab__ripple"></span>
                                                     </button>
+                                                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="history">
+                                                        <span class="mdc-tab__content">
+                                                            <span class="mdc-tab__text-label">History</span>
+                                                        </span>
+                                                        <span class="mdc-tab-indicator">
+                                                            <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                                                        </span>
+                                                        <span class="mdc-tab__ripple"></span>
+                                                    </button>
                                                     ${layoutClass !== 'three-column' ? `
                                                     <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1" data-tab="image">
                                                         <span class="mdc-tab__content">
@@ -6804,6 +6995,76 @@
                             <!-- Original Tab -->
                             <div id="original-tab" class="tab-panel">
                                 <textarea id="editOriginalText" class="full-textarea" placeholder="Original text">${escapeHtml(safeDoc.original_text || '')}</textarea>
+                            </div>
+                            
+                            <!-- History Tab -->
+                            <div id="history-tab" class="tab-panel">
+                                <div class="history-container">
+                                    <!-- History Filters -->
+                                    <div class="history-filters">
+                                        <div class="filter-row">
+                                            <div class="filter-group">
+                                                <label for="historyStartDate">From Date</label>
+                                                <input type="date" id="historyStartDate" class="history-date-input">
+                                            </div>
+                                            <div class="filter-group">
+                                                <label for="historyEndDate">To Date</label>
+                                                <input type="date" id="historyEndDate" class="history-date-input">
+                                            </div>
+                                            <div class="filter-group">
+                                                <label for="historyEventType">Event Type</label>
+                                                <select id="historyEventType" class="history-select">
+                                                    <option value="all">All Events</option>
+                                                    <option value="DOCUMENT_CREATE">Document Created</option>
+                                                    <option value="DOCUMENT_UPDATE">Document Updated</option>
+                                                    <option value="DOCUMENT_VIEW">Document Viewed</option>
+                                                    <option value="DOCUMENT_TRANSLATE">Document Translated</option>
+                                                    <option value="DOCUMENT_PROCESS">Document Processed</option>
+                                                    <option value="DOCUMENT_SUMMARY_UPDATE">Summary Updated</option>
+                                                    <option value="DOCUMENT_PEOPLE_UPDATE">People Updated</option>
+                                                    <option value="USER_LOGIN">User Login</option>
+                                                    <option value="USER_LOGOUT">User Logout</option>
+                                                </select>
+                                            </div>
+                                            <div class="filter-group">
+                                                <button id="refreshHistoryBtn" class="mdc-button mdc-button--outlined" title="Refresh">
+                                                    <span class="material-icons">refresh</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- History List -->
+                                    <div class="history-list" id="historyList">
+                                        <div class="history-loading" id="historyLoading" style="display: none;">
+                                            <div class="loading-spinner"></div>
+                                            <p>Loading history...</p>
+                                        </div>
+                                        <div class="history-empty" id="historyEmpty" style="display: none;">
+                                            <p>No history events found.</p>
+                                        </div>
+                                        <div class="history-events" id="historyEvents">
+                                            <!-- History events will be loaded here -->
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- History Pagination -->
+                                    <div class="history-pagination" id="historyPagination" style="display: none;">
+                                        <div class="pagination-info">
+                                            <span id="historyPaginationInfo">Showing 1 to 100 of 100 entries</span>
+                                        </div>
+                                        <div class="pagination-controls">
+                                            <button id="historyPrevBtn" class="mdc-button mdc-button--outlined" disabled>
+                                                <span class="material-icons">chevron_left</span>
+                                                Previous
+                                            </button>
+                                            <button id="historyNextBtn" class="mdc-button mdc-button--outlined">
+                                                Next
+                                                <span class="material-icons">chevron_right</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <!-- Image Tab -->
@@ -7241,6 +7502,9 @@
                 
                 // Set up M3 tab functionality
                 setupM3Tabs();
+                
+                // Set up history functionality
+                setupHistoryFilters();
                 
                 // Add custom styles for the new layout
                 addCustomStyles();
@@ -7682,8 +7946,293 @@
                     const targetPanel = document.getElementById(`${tabName}-tab`);
                     if (targetPanel) {
                         targetPanel.classList.add('active');
+                        
+                        // Load history when history tab is clicked
+                        if (tabName === 'history') {
+                            loadDocumentHistory();
+                        }
                     }
                 });
+            });
+        }
+        
+        // History functionality
+        let currentHistoryPage = 1;
+        let currentHistoryFilters = {
+            startDate: '',
+            endDate: '',
+            eventType: 'all'
+        };
+        
+        function loadDocumentHistory() {
+            const historyLoading = document.getElementById('historyLoading');
+            const historyEmpty = document.getElementById('historyEmpty');
+            const historyEvents = document.getElementById('historyEvents');
+            const historyPagination = document.getElementById('historyPagination');
+            
+            // Show loading state
+            historyLoading.style.display = 'flex';
+            historyEmpty.style.display = 'none';
+            historyEvents.innerHTML = '';
+            historyPagination.style.display = 'none';
+            
+            // For testing - show mock data immediately
+            console.log('Loading document history for:', window.currentDocumentId);
+            console.log('History version 2 - showing updated mock data with relative timestamps');
+            const mockEvents = [
+                {
+                    id: '1',
+                    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+                    description: 'Gabe Zentall created this document (VERSION 2)',
+                    action: 'DOCUMENT_CREATE',
+                    metadata: {
+                        changes: ['title', 'summary', 'document_date']
+                    }
+                },
+                {
+                    id: '2',
+                    timestamp: new Date(Date.now() - 90 * 60 * 1000).toISOString(), // 90 minutes ago
+                    description: 'Gabe Zentall modified the summary',
+                    action: 'DOCUMENT_UPDATE',
+                    metadata: {
+                        changes: ['summary']
+                    }
+                },
+                {
+                    id: '3',
+                    timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString(), // 1 hour ago
+                    description: 'Gabe Zentall added people to this document',
+                    action: 'DOCUMENT_PEOPLE_UPDATE',
+                    metadata: {
+                        changes: ['people'],
+                        added: ['elizabeth zentall', 'robert lweisenthal'],
+                        removed: []
+                    }
+                },
+                {
+                    id: '4',
+                    timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(), // 45 minutes ago
+                    description: 'System processed the document',
+                    action: 'DOCUMENT_PROCESS',
+                    metadata: {
+                        changes: ['status', 'page_count']
+                    }
+                },
+                {
+                    id: '5',
+                    timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
+                    description: 'Gabe Zentall updated the document status',
+                    action: 'DOCUMENT_UPDATE',
+                    metadata: {
+                        changes: ['status']
+                    }
+                },
+                {
+                    id: '6',
+                    timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // 15 minutes ago
+                    description: 'Gabe Zentall removed people from this document',
+                    action: 'DOCUMENT_PEOPLE_UPDATE',
+                    metadata: {
+                        changes: ['people'],
+                        added: [],
+                        removed: ['robert lweisenthal']
+                    }
+                }
+            ];
+            
+            // Show mock data for testing
+            setTimeout(() => {
+                historyLoading.style.display = 'none';
+                displayHistoryEvents(mockEvents);
+                updateHistoryPagination({
+                    page: 1,
+                    limit: 100,
+                    total: 3,
+                    totalPages: 1
+                });
+                historyPagination.style.display = 'flex';
+            }, 500);
+            
+            // TODO: Re-enable API call once authentication is working
+            /*
+            // Build query parameters
+            const params = new URLSearchParams({
+                page: currentHistoryPage.toString(),
+                limit: '100'
+            });
+            
+            if (currentHistoryFilters.startDate) {
+                params.append('startDate', currentHistoryFilters.startDate);
+            }
+            if (currentHistoryFilters.endDate) {
+                params.append('endDate', currentHistoryFilters.endDate);
+            }
+            if (currentHistoryFilters.eventType !== 'all') {
+                params.append('eventType', currentHistoryFilters.eventType);
+            }
+            
+            // Fetch history data
+            fetch(`/api/documents/${window.currentDocumentId}/history?${params}`)
+                .then(response => {
+                    console.log('History API response status:', response.status);
+                    console.log('History API response headers:', response.headers);
+                    return response.text();
+                })
+                .then(text => {
+                    console.log('History API raw response:', text);
+                    try {
+                        const data = JSON.parse(text);
+                        console.log('History API parsed data:', data);
+                        historyLoading.style.display = 'none';
+                        
+                        if (data.success && data.data && data.data.length > 0) {
+                            displayHistoryEvents(data.data);
+                            updateHistoryPagination(data.pagination);
+                            historyPagination.style.display = 'flex';
+                        } else {
+                            console.log('No history data found or success=false');
+                            historyEmpty.style.display = 'flex';
+                        }
+                    } catch (e) {
+                        console.error('Error parsing JSON response:', e);
+                        console.log('Response was not JSON:', text);
+                        historyLoading.style.display = 'none';
+                        historyEmpty.style.display = 'flex';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading history:', error);
+                    historyLoading.style.display = 'none';
+                    historyEmpty.style.display = 'flex';
+                });
+            */
+        }
+        
+        function displayHistoryEvents(events) {
+            console.log('displayHistoryEvents called with:', events);
+            const historyEvents = document.getElementById('historyEvents');
+            console.log('historyEvents element:', historyEvents);
+            
+            if (!events || events.length === 0) {
+                console.log('No events to display');
+                return;
+            }
+            
+            const html = events.map(event => {
+                let changeDetails = '';
+                
+                if (event.metadata && event.metadata.changes) {
+                    const changes = event.metadata.changes;
+                    const added = event.metadata.added || [];
+                    const removed = event.metadata.removed || [];
+                    
+                    if (changes.includes('people') && (added.length > 0 || removed.length > 0)) {
+                        changeDetails = `
+                            <div class="history-event-details">
+                                <div class="change-type">People Changes:</div>
+                                ${added.length > 0 ? `<div class="change-added">+ Added: ${added.join(', ')}</div>` : ''}
+                                ${removed.length > 0 ? `<div class="change-removed">- Removed: ${removed.join(', ')}</div>` : ''}
+                            </div>
+                        `;
+                    } else if (changes.length > 0) {
+                        changeDetails = `
+                            <div class="history-event-details">
+                                <div class="change-type">Fields Changed: ${changes.join(', ')}</div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Calculate relative time like comments
+                const now = new Date();
+                const eventTime = new Date(event.timestamp);
+                const diffMs = now - eventTime;
+                const diffMins = Math.floor(diffMs / (1000 * 60));
+                const diffHours = Math.floor(diffMins / 60);
+                const diffDays = Math.floor(diffHours / 24);
+                
+                let relativeTime;
+                if (diffMins < 1) {
+                    relativeTime = 'just now';
+                } else if (diffMins < 60) {
+                    relativeTime = `${diffMins} minute${diffMins === 1 ? '' : 's'} ago`;
+                } else if (diffHours < 24) {
+                    relativeTime = `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`;
+                } else {
+                    relativeTime = `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
+                }
+                
+                return `
+                    <div class="history-event">
+                        <div class="history-event-description">${event.description}</div>
+                        ${changeDetails}
+                        <div class="history-event-timestamp">${relativeTime}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            console.log('Generated HTML:', html);
+            historyEvents.innerHTML = html;
+        }
+        
+        function updateHistoryPagination(pagination) {
+            const paginationInfo = document.getElementById('historyPaginationInfo');
+            const prevBtn = document.getElementById('historyPrevBtn');
+            const nextBtn = document.getElementById('historyNextBtn');
+            
+            paginationInfo.textContent = `Showing ${((pagination.page - 1) * pagination.limit) + 1} to ${Math.min(pagination.page * pagination.limit, pagination.total)} of ${pagination.total} entries`;
+            
+            prevBtn.disabled = pagination.page <= 1;
+            nextBtn.disabled = pagination.page >= pagination.totalPages;
+        }
+        
+        function setupHistoryFilters() {
+            const startDateInput = document.getElementById('historyStartDate');
+            const endDateInput = document.getElementById('historyEndDate');
+            const eventTypeSelect = document.getElementById('historyEventType');
+            const refreshBtn = document.getElementById('refreshHistoryBtn');
+            
+            // Set default end date to today
+            const today = new Date().toISOString().split('T')[0];
+            endDateInput.value = today;
+            
+            startDateInput.addEventListener('change', () => {
+                currentHistoryFilters.startDate = startDateInput.value;
+                currentHistoryPage = 1;
+                loadDocumentHistory();
+            });
+            
+            endDateInput.addEventListener('change', () => {
+                currentHistoryFilters.endDate = endDateInput.value;
+                currentHistoryPage = 1;
+                loadDocumentHistory();
+            });
+            
+            eventTypeSelect.addEventListener('change', () => {
+                currentHistoryFilters.eventType = eventTypeSelect.value;
+                currentHistoryPage = 1;
+                loadDocumentHistory();
+            });
+            
+            refreshBtn.addEventListener('click', () => {
+                currentHistoryPage = 1;
+                loadDocumentHistory();
+            });
+            
+            // Pagination buttons
+            const prevBtn = document.getElementById('historyPrevBtn');
+            const nextBtn = document.getElementById('historyNextBtn');
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentHistoryPage > 1) {
+                    currentHistoryPage--;
+                    loadDocumentHistory();
+                }
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                currentHistoryPage++;
+                loadDocumentHistory();
             });
         }
 
@@ -9293,6 +9842,14 @@
             const menuWidth = Math.max(minWidth, menuElement.offsetWidth || minWidth);
             const menuHeight = menuElement.offsetHeight || 120;
             
+            console.log('positionMenuM3 called:', {
+                rect: { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom },
+                menuWidth,
+                menuHeight,
+                viewport: { width: viewportWidth, height: viewportHeight },
+                align
+            });
+            
             
             let left, top;
             let actualAlign = align;  // Track what alignment we actually use
@@ -9393,6 +9950,18 @@
             // Final clamping to ensure menu stays within viewport
             top = Math.max(margin, Math.min(top, viewportHeight - menuHeight - margin));
             left = Math.max(margin, Math.min(left, viewportWidth - menuWidth - margin));
+            
+            console.log('Final position after clamping:', {
+                left,
+                top,
+                actualAlign,
+                willFitInViewport: {
+                    right: left + menuWidth <= viewportWidth - margin,
+                    bottom: top + menuHeight <= viewportHeight - margin,
+                    left: left >= margin,
+                    top: top >= margin
+                }
+            });
             
             // Apply styles
             menuElement.style.left = `${left}px`;

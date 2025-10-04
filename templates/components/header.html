@@ -1,0 +1,56 @@
+<!-- Reusable Header Component -->
+<header class="app-bar">
+    <div class="app-bar-content">
+        <!-- Logo and Navigation -->
+        <div class="app-bar-left">
+            <div class="logo">
+                <span class="material-icons">mail</span>
+                <span class="logo-text">Postmark</span>
+            </div>
+            
+            <nav class="nav-tabs">
+                <a href="/browse" class="nav-tab {{ 'active' if request.endpoint == 'browse' else '' }}">
+                    <span class="material-icons">description</span>
+                    <span class="nav-text">Documents</span>
+                </a>
+                <a href="/users" class="nav-tab {{ 'active' if request.endpoint == 'users' else '' }}">
+                    <span class="material-icons">people</span>
+                    <span class="nav-text">Users</span>
+                </a>
+                <a href="/references-page" class="nav-tab {{ 'active' if request.endpoint == 'references_page' else '' }}">
+                    <span class="material-icons">person</span>
+                    <span class="nav-text">References</span>
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Actions and Profile -->
+        <div class="app-bar-actions">
+            <button class="mdc-button mdc-button--raised upload-btn" onclick="showUploadModal()">
+                <span class="material-icons">upload</span>
+                Upload
+            </button>
+            
+            <div class="profile-menu-container">
+                <button class="avatar-button" onclick="toggleProfileMenu()">
+                    <div class="avatar" id="userAvatar">{{ user.initials if user else 'U' }}</div>
+                </button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="profileAvatar">{{ user.initials if user else 'U' }}</div>
+                        <div class="profile-info">
+                            <div class="profile-name" id="profileName">{{ user.name if user else 'User' }}</div>
+                            <div class="profile-role" id="profileRole">{{ user.role_display if user else 'Viewer' }}</div>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="profile-action" onclick="logout()">
+                            <span class="material-icons">logout</span>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

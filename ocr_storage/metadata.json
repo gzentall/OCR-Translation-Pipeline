@@ -157,7 +157,7 @@
       "summary": "This appears to be a personal letter involving Zabalein Now, If Ellen, Haus Kalm. discusses business...",
       "page_count": 6,
       "status": "Editing",
-      "last_commented_at": "2025-10-03T08:33:39.021042"
+      "last_commented_at": "2025-10-04T09:31:35.635545"
     }
   },
   "people": {
@@ -194,7 +194,8 @@
         "doc_20250927_104916",
         "doc_20250925_165151",
         "doc_20250927_122524",
-        "doc_20250927_105223"
+        "doc_20250927_105223",
+        "doc_20250930_130320"
       ],
       "context": ""
     },
@@ -507,36 +508,9 @@
       ],
       "context": ""
     },
-    "zabalein now": {
-      "aliases": [
-        "Zabalein Now"
-      ],
-      "first_mentioned": "2025-09-30T13:04:08.479338",
-      "documents": [
-        "doc_20250930_130320"
-      ]
-    },
     "haus kalm": {
       "aliases": [
         "Haus Kalm"
-      ],
-      "first_mentioned": "2025-09-30T13:04:08.479338",
-      "documents": [
-        "doc_20250930_130320"
-      ]
-    },
-    "bredit arbeitsnot": {
-      "aliases": [
-        "Bredit Arbeitsnot"
-      ],
-      "first_mentioned": "2025-09-30T13:04:08.479338",
-      "documents": [
-        "doc_20250930_130320"
-      ]
-    },
-    "ce deutsche": {
-      "aliases": [
-        "Ce Deutsche"
       ],
       "first_mentioned": "2025-09-30T13:04:08.479338",
       "documents": [
@@ -549,9 +523,10 @@
       ],
       "first_mentioned": "2025-09-30T13:04:08.479338",
       "documents": [
-        "doc_20250930_130320"
+        "doc_20250930_130320",
+        "doc_20250927_122524"
       ]
     }
   },
-  "last_updated": "2025-10-03T08:33:39.023155"
+  "last_updated": "2025-10-04T09:46:22.464535"
 }

@@ -88,6 +88,7 @@ model Document {
   userId          String
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   people          DocumentPerson[]
+  references      DocumentReference[]
   
   // Audit logs
   auditLogs       AuditLog[]
@@ -123,24 +124,82 @@ model DocumentPerson {
   @@unique([documentId, personId])
 }
 
+// Reference System Models
+model Reference {
+  id              String   @id @default(cuid())
+  type            ReferenceType
+  canonicalName   String
+  notes           String?  @db.Text
+  createdBy       CreatedBy @default(AUTO)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relationships
+  variants        ReferenceVariant[]
+  documentRefs    DocumentReference[]
+  
+  // Audit logs
+  auditLogs       AuditLog[]
+}
+
+model ReferenceVariant {
+  id          String   @id @default(cuid())
+  parentId    String
+  label       String
+  createdBy   CreatedBy @default(AUTO)
+  createdAt   DateTime @default(now())
+  
+  parent      Reference @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  
+  @@unique([parentId, label])
+}
+
+model DocumentReference {
+  id            String   @id @default(cuid())
+  documentId    String
+  referenceId   String
+  matchText     String
+  confidence    Int      // 0-100
+  role          String?  // e.g., "mentioned", "location", "fromAddress", "toAddress"
+  createdAt     DateTime @default(now())
+  
+  document      Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  reference     Reference @relation(fields: [referenceId], references: [id], onDelete: Cascade)
+  
+  @@unique([documentId, referenceId, matchText])
+}
+
 // Audit Logging
 model AuditLog {
   id          String   @id @default(cuid())
   actorUserId String?
-  action      String   // e.g. USER_INVITE, ROLE_CHANGE, LOGIN, DOCUMENT_CREATE
-  targetType  String   // USER | DOCUMENT | PERSON | SYSTEM
+  action      String   // e.g. USER_INVITE, ROLE_CHANGE, LOGIN, DOCUMENT_CREATE, REFERENCE_MERGE
+  targetType  String   // USER | DOCUMENT | PERSON | REFERENCE | SYSTEM
   targetId    String?
   metadata    Json?
   createdAt   DateTime @default(now())
   
   // Relationships
-  actor       User?    @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
-  document    Document? @relation(fields: [targetId], references: [id], onDelete: SetNull, map: "AuditLog_document_fkey")
-  person      Person?  @relation(fields: [targetId], references: [id], onDelete: SetNull, map: "AuditLog_person_fkey")
+  actor       User?      @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  document    Document?  @relation(fields: [targetId], references: [id], onDelete: SetNull, map: "AuditLog_document_fkey")
+  person      Person?    @relation(fields: [targetId], references: [id], onDelete: SetNull, map: "AuditLog_person_fkey")
+  reference   Reference? @relation(fields: [targetId], references: [id], onDelete: SetNull, map: "AuditLog_reference_fkey")
 }
 
 enum Role {
   SUPER_ADMIN
   ADMIN
   USER
+}
+
+enum ReferenceType {
+  PERSON
+  PLACE
+  EVENT
+  OTHER
+}
+
+enum CreatedBy {
+  AUTO
+  HUMAN
 }

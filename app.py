@@ -980,5 +980,97 @@ def delete_document(doc_id):
         }), 500
 
 
+@app.route('/api/documents/<doc_id>/history')
+def get_document_history(doc_id):
+    """Get history for a specific document."""
+    try:
+        # Get query parameters
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 100))
+        start_date = request.args.get('startDate')
+        end_date = request.args.get('endDate')
+        event_type = request.args.get('eventType', 'all')
+        
+        # For now, return mock history data
+        # In a real implementation, you would query your audit log database
+        mock_history = [
+            {
+                'id': '1',
+                'timestamp': '2025-01-27T10:30:00Z',
+                'description': 'Gabe Zentall created "Sample Document"',
+                'action': 'DOCUMENT_CREATE',
+                'actor': {
+                    'id': 'user1',
+                    'username': 'gzentall',
+                    'email': 'gzentall@example.com'
+                },
+                'metadata': {
+                    'changes': ['title', 'summary'],
+                    'timestamp': '2025-01-27T10:30:00Z'
+                }
+            },
+            {
+                'id': '2',
+                'timestamp': '2025-01-27T10:35:00Z',
+                'description': 'Gabe Zentall modified "Sample Document"',
+                'action': 'DOCUMENT_UPDATE',
+                'actor': {
+                    'id': 'user1',
+                    'username': 'gzentall',
+                    'email': 'gzentall@example.com'
+                },
+                'metadata': {
+                    'changes': ['summary'],
+                    'previousTitle': 'Sample Document',
+                    'newTitle': 'Sample Document'
+                }
+            },
+            {
+                'id': '3',
+                'timestamp': '2025-01-27T10:40:00Z',
+                'description': 'System processed "Sample Document"',
+                'action': 'DOCUMENT_PROCESS',
+                'actor': None,
+                'metadata': {
+                    'processingType': 'OCR',
+                    'timestamp': '2025-01-27T10:40:00Z'
+                }
+            }
+        ]
+        
+        # Apply filters
+        filtered_history = mock_history
+        
+        if start_date:
+            filtered_history = [h for h in filtered_history if h['timestamp'] >= start_date]
+        if end_date:
+            filtered_history = [h for h in filtered_history if h['timestamp'] <= end_date + 'T23:59:59Z']
+        if event_type != 'all':
+            filtered_history = [h for h in filtered_history if h['action'] == event_type]
+        
+        # Apply pagination
+        total = len(filtered_history)
+        start_idx = (page - 1) * limit
+        end_idx = start_idx + limit
+        paginated_history = filtered_history[start_idx:end_idx]
+        
+        return jsonify({
+            'success': True,
+            'data': paginated_history,
+            'pagination': {
+                'page': page,
+                'limit': limit,
+                'total': total,
+                'totalPages': (total + limit - 1) // limit
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)

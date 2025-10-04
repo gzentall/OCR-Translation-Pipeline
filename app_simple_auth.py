@@ -16,6 +16,7 @@ import bcrypt
 import secrets
 import requests
 import json
+import time
 from pathlib import Path
 from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for, flash
@@ -23,14 +24,15 @@ from werkzeug.utils import secure_filename
 import uuid
 from dotenv import load_dotenv
 
-# Load environment variables from ocr-auth/.env.local
-env_path = Path(__file__).parent / 'ocr-auth' / '.env.local'
+# Load environment variables from ocr-auth/.env
+env_path = Path(__file__).parent / 'ocr-auth' / '.env'
 load_dotenv(env_path)
 
 # Add scripts directory to path for local storage
 sys.path.append(str(Path(__file__).parent / 'scripts'))
 from scripts.local_storage import LocalOCRStorage
 from scripts.fallback_ai_processor import FallbackAIProcessor
+from scripts.simple_reference_service import simple_reference_service
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your-secret-key-change-this')
@@ -355,7 +357,7 @@ def complete_activation():
 def index():
     """Serve the main application page (Documents tab)."""
     user = USERS.get(session['user_id'])
-    return render_template('browse.html', user=user)
+    return render_template('browse.html', user=user, cache_bust=time.time())
 
 @app.route('/upload-form')
 @require_auth
@@ -368,7 +370,7 @@ def upload_form():
 def browse():
     """Serve the main application interface."""
     user = USERS.get(session['user_id'])
-    return render_template('browse.html', user=user)
+    return render_template('browse.html', user=user, cache_bust=time.time())
 
 @app.route('/stats-page')
 @require_auth
@@ -1162,6 +1164,99 @@ def remove_person(person_name):
             'error': str(e)
         }), 500
 
+
+@app.route('/api/documents/<doc_id>/history')
+@require_auth
+def get_document_history(doc_id):
+    """Get history for a specific document."""
+    try:
+        # Get query parameters
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 100))
+        start_date = request.args.get('startDate')
+        end_date = request.args.get('endDate')
+        event_type = request.args.get('eventType', 'all')
+        
+        # For now, return mock history data
+        # In a real implementation, you would query your audit log database
+        mock_history = [
+            {
+                'id': '1',
+                'timestamp': '2025-01-27T10:30:00Z',
+                'description': 'Gabe Zentall created "Sample Document"',
+                'action': 'DOCUMENT_CREATE',
+                'actor': {
+                    'id': 'user1',
+                    'username': 'gzentall',
+                    'email': 'gzentall@example.com'
+                },
+                'metadata': {
+                    'changes': ['title', 'summary'],
+                    'timestamp': '2025-01-27T10:30:00Z'
+                }
+            },
+            {
+                'id': '2',
+                'timestamp': '2025-01-27T10:35:00Z',
+                'description': 'Gabe Zentall modified "Sample Document"',
+                'action': 'DOCUMENT_UPDATE',
+                'actor': {
+                    'id': 'user1',
+                    'username': 'gzentall',
+                    'email': 'gzentall@example.com'
+                },
+                'metadata': {
+                    'changes': ['summary'],
+                    'previousTitle': 'Sample Document',
+                    'newTitle': 'Sample Document'
+                }
+            },
+            {
+                'id': '3',
+                'timestamp': '2025-01-27T10:40:00Z',
+                'description': 'System processed "Sample Document"',
+                'action': 'DOCUMENT_PROCESS',
+                'actor': None,
+                'metadata': {
+                    'processingType': 'OCR',
+                    'timestamp': '2025-01-27T10:40:00Z'
+                }
+            }
+        ]
+        
+        # Apply filters
+        filtered_history = mock_history
+        
+        if start_date:
+            filtered_history = [h for h in filtered_history if h['timestamp'] >= start_date]
+        if end_date:
+            filtered_history = [h for h in filtered_history if h['timestamp'] <= end_date + 'T23:59:59Z']
+        if event_type != 'all':
+            filtered_history = [h for h in filtered_history if h['action'] == event_type]
+        
+        # Apply pagination
+        total = len(filtered_history)
+        start_idx = (page - 1) * limit
+        end_idx = start_idx + limit
+        paginated_history = filtered_history[start_idx:end_idx]
+        
+        return jsonify({
+            'success': True,
+            'data': paginated_history,
+            'pagination': {
+                'page': page,
+                'limit': limit,
+                'total': total,
+                'totalPages': (total + limit - 1) // limit
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/search')
 @require_auth
 def search_documents():
@@ -1680,13 +1775,13 @@ def api_delete_user(username):
 # -----------------------------
 
 @app.route('/api/references', methods=['GET'])
-def list_references():
+async def list_references():
     """List all references with optional filtering."""
     try:
         ref_type = request.args.get('type')
-        query = request.args.get('query')
+        query = request.args.get('q') or request.args.get('query')
         
-        references = local_storage.list_references(ref_type=ref_type, query=query)
+        references = await simple_reference_service.search_references(query=query, ref_type=ref_type)
         return jsonify({
             'success': True,
             'references': references,
@@ -1857,6 +1952,216 @@ def remove_document_reference(doc_id):
         })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# -----------------------------
+# New Reference System (PostgreSQL)
+# -----------------------------
+
+@app.route('/api/v2/references', methods=['GET'])
+def list_references_v2():
+    """List all references with optional filtering (PostgreSQL version)."""
+    try:
+        ref_type = request.args.get('type')
+        query = request.args.get('q') or request.args.get('query')
+        
+        # Run async function in sync context
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            references = loop.run_until_complete(
+                simple_reference_service.search_references(query=query, ref_type=ref_type)
+            )
+        finally:
+            loop.close()
+        
+        return jsonify({
+            'success': True,
+            'references': references,
+            'total': len(references)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/v2/references/<ref_id>', methods=['GET'])
+def get_reference_v2(ref_id):
+    """Get a specific reference by ID (PostgreSQL version)."""
+    try:
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            reference = loop.run_until_complete(
+                simple_reference_service.get_reference_by_id(ref_id)
+            )
+        finally:
+            loop.close()
+        
+        if not reference:
+            return jsonify({'success': False, 'error': 'Reference not found'}), 404
+        
+        return jsonify({
+            'success': True,
+            'reference': reference
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/v2/references', methods=['POST'])
+def create_reference_v2():
+    """Create a new reference (PostgreSQL version)."""
+    try:
+        data = request.get_json()
+        if not data or not data.get('canonicalName') or not data.get('type'):
+            return jsonify({'success': False, 'error': 'canonicalName and type are required'}), 400
+        
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            reference = loop.run_until_complete(
+                simple_reference_service.create_reference(
+                    canonical_name=data['canonicalName'],
+                    ref_type=data['type'],
+                    notes=data.get('notes'),
+                    initial_variants=data.get('initialVariants', [])
+                )
+            )
+        finally:
+            loop.close()
+        
+        return jsonify({
+            'success': True,
+            'reference': reference
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/v2/references/<ref_id>', methods=['PUT'])
+def update_reference_v2(ref_id):
+    """Update a reference (PostgreSQL version)."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        updates = {}
+        if 'canonicalName' in data:
+            updates['canonicalName'] = data['canonicalName']
+        if 'type' in data:
+            updates['type'] = data['type']
+        if 'notes' in data:
+            updates['notes'] = data['notes']
+        if 'initialVariants' in data:
+            updates['initialVariants'] = data['initialVariants']
+        
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            reference = loop.run_until_complete(
+                simple_reference_service.update_reference(ref_id, updates)
+            )
+        finally:
+            loop.close()
+        
+        if not reference:
+            return jsonify({'success': False, 'error': 'Reference not found'}), 404
+        
+        return jsonify({
+            'success': True,
+            'reference': reference
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/v2/references/<ref_id>', methods=['DELETE'])
+def delete_reference_v2(ref_id):
+    """Delete a reference (PostgreSQL version)."""
+    try:
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success = loop.run_until_complete(
+                simple_reference_service.delete_reference(ref_id)
+            )
+        finally:
+            loop.close()
+        
+        if not success:
+            return jsonify({'success': False, 'error': 'Reference not found or has linked documents'}), 404
+        
+        return jsonify({
+            'success': True,
+            'message': 'Reference deleted successfully'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/v2/references/<source_id>/merge', methods=['POST'])
+def merge_references_v2(source_id):
+    """Merge source reference into target reference (PostgreSQL version)."""
+    try:
+        data = request.get_json()
+        if not data or not data.get('targetId'):
+            return jsonify({'success': False, 'error': 'targetId is required'}), 400
+        
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success = loop.run_until_complete(
+                simple_reference_service.merge_references(source_id, data['targetId'])
+            )
+        finally:
+            loop.close()
+        
+        if not success:
+            return jsonify({'success': False, 'error': 'Failed to merge references'}), 400
+        
+        return jsonify({
+            'success': True,
+            'message': 'References merged successfully'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/v2/references/metrics', methods=['GET'])
+def get_reference_metrics():
+    """Get reference system metrics (PostgreSQL version)."""
+    try:
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            metrics = loop.run_until_complete(
+                simple_reference_service.get_metrics()
+            )
+        finally:
+            loop.close()
+        
+        return jsonify({
+            'success': True,
+            'metrics': metrics
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/references-page')
+@require_auth
+def references_page():
+    """References management page."""
+    user = USERS.get(session['user_id'])
+    return render_template('references.html', user=user, cache_bust=time.time())
 
 
 if __name__ == '__main__':
