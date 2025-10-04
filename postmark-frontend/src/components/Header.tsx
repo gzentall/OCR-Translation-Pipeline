@@ -82,31 +82,34 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
   ];
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'background.paper', color: 'text.primary' }}>
-      <Toolbar sx={{ justifyContent: 'space-between', px: 3 }}>
+    <AppBar position="static" elevation={1}>
+      <Toolbar sx={{ justifyContent: 'space-between', px: 3, minHeight: 48 }}>
         {/* Logo and Navigation */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <MailIcon sx={{ color: 'primary.main' }} />
-            <Typography variant="h6" component="div" sx={{ fontWeight: 500, color: 'primary.main' }}>
+            <MailIcon sx={{ color: 'primary.main', fontSize: 24 }} />
+            <Typography variant="h6" component="div" sx={{ fontWeight: 500, color: 'primary.main', fontSize: 20 }}>
               Postmark
             </Typography>
           </Box>
 
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 0.5 }}>
             {navigationItems.map((item) => (
               <Button
                 key={item.path}
                 startIcon={item.icon}
                 onClick={() => navigate(item.path)}
                 sx={{
-                  color: location.pathname === item.path ? 'primary.main' : 'text.secondary',
+                  color: location.pathname === item.path ? 'primary.main' : 'text.primary',
                   backgroundColor: location.pathname === item.path ? 'primary.light' : 'transparent',
                   borderRadius: '20px',
                   px: 2,
                   py: 1,
+                  minHeight: 48,
+                  fontSize: 14,
+                  fontWeight: 500,
                   '&:hover': {
-                    backgroundColor: 'action.hover',
+                    backgroundColor: location.pathname === item.path ? 'primary.light' : 'action.hover',
                   },
                 }}
               >

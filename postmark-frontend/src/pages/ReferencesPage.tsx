@@ -150,23 +150,31 @@ const ReferencesPage: React.FC = () => {
   }
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
+    <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
       {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" sx={{ fontWeight: 500 }}>
+        <Typography variant="h4" sx={{ fontWeight: 400, fontSize: '28px', lineHeight: '36px' }}>
           References
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          sx={{ borderRadius: '20px', px: 3 }}
+          sx={{ 
+            borderRadius: '20px', 
+            px: 3,
+            py: 1,
+            backgroundColor: 'primary.main',
+            '&:hover': {
+              backgroundColor: 'primary.dark',
+            },
+          }}
         >
           Add Reference
         </Button>
       </Box>
 
       {/* Search and Filters */}
-      <Box sx={{ display: 'flex', gap: 2, mb: 3, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', gap: 2, mb: 3, alignItems: 'center', flexWrap: 'wrap' }}>
         <TextField
           placeholder="Search references..."
           value={searchTerm}
@@ -178,21 +186,37 @@ const ReferencesPage: React.FC = () => {
               </InputAdornment>
             ),
           }}
-          sx={{ flexGrow: 1, maxWidth: 400 }}
+          sx={{ 
+            flexGrow: 1, 
+            maxWidth: 400,
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '20px',
+            },
+          }}
         />
         
         <Chip
           label={filterType}
           icon={<FilterIcon />}
           onClick={() => {/* TODO: Implement filter dropdown */}}
-          sx={{ borderRadius: '16px' }}
+          sx={{ 
+            borderRadius: '16px',
+            backgroundColor: 'background.paper',
+            border: '1px solid',
+            borderColor: 'divider',
+          }}
         />
         
         <Chip
           label={`Sort: ${sortBy} (${sortDirection})`}
           icon={<SortIcon />}
           onClick={() => {/* TODO: Implement sort dropdown */}}
-          sx={{ borderRadius: '16px' }}
+          sx={{ 
+            borderRadius: '16px',
+            backgroundColor: 'background.paper',
+            border: '1px solid',
+            borderColor: 'divider',
+          }}
         />
       </Box>
 
