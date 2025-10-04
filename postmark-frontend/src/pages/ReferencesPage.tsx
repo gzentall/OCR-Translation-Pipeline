@@ -11,7 +11,6 @@ import {
   IconButton,
   Checkbox,
   Fab,
-  Grid,
   Avatar,
 } from '@mui/material';
 import {
@@ -245,9 +244,13 @@ const ReferencesPage: React.FC = () => {
       )}
 
       {/* References List */}
-      <Grid container spacing={2}>
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+        gap: 2
+      }}>
         {sortedReferences.map((reference) => (
-          <Grid item xs={12} sm={6} md={4} key={reference.id} component="div">
+          <Box key={reference.id}>
             <Card
               sx={{
                 cursor: 'pointer',
@@ -327,9 +330,9 @@ const ReferencesPage: React.FC = () => {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
 
       {/* Floating Action Button */}
       <Fab

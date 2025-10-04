@@ -11,7 +11,6 @@ import {
   IconButton,
   Checkbox,
   Fab,
-  Grid,
   Avatar,
   List,
   ListItem,
@@ -316,9 +315,14 @@ const DocumentsPage: React.FC = () => {
 
       {/* Documents List/Grid */}
       {viewMode === 'grid' ? (
-        <Grid container spacing={2} sx={{ p: 3 }}>
+        <Box sx={{ 
+          display: 'grid', 
+          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+          gap: 2,
+          p: 3
+        }}>
           {sortedDocuments.map((document) => (
-            <Grid item xs={12} sm={6} md={4} key={document.id} component="div">
+            <Box key={document.id}>
               <Card
                 sx={{
                   cursor: 'pointer',
@@ -389,9 +393,9 @@ const DocumentsPage: React.FC = () => {
                   </Box>
                 </CardContent>
             </Card>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
       ) : (
         <List sx={{ p: 0 }}>
           {sortedDocuments.map((document) => (
