@@ -14,24 +14,19 @@ import {
   Avatar,
   List,
   ListItem,
+  ListItemButton,
   ListItemAvatar,
   ListItemText,
   ListItemSecondaryAction,
   ToggleButton,
   ToggleButtonGroup,
-  Menu,
-  MenuItem,
   Paper,
-  Popper,
   ClickAwayListener,
 } from '@mui/material';
 import {
   Search as SearchIcon,
-  FilterList as FilterIcon,
-  Sort as SortIcon,
   Add as AddIcon,
   Description as DocumentIcon,
-  Person as PersonIcon,
   GridView as GridViewIcon,
   ViewList as ListViewIcon,
   MoreVert as MoreIcon,
@@ -336,16 +331,16 @@ const DocumentsPage: React.FC = () => {
                   </Box>
                   <List dense>
                     {Array.from(new Set(documents.map(doc => doc.sender).filter(Boolean))).map(sender => (
-                      <ListItem 
-                        key={sender}
-                        button
-                        onClick={() => {
-                          setFilterSender(sender || 'All Senders');
-                          toggleFilterDropdown('sender');
-                        }}
-                        sx={{ borderRadius: 1 }}
-                      >
-                        <ListItemText primary={sender} />
+                      <ListItem key={sender} disablePadding>
+                        <ListItemButton
+                          onClick={() => {
+                            setFilterSender(sender || 'All Senders');
+                            toggleFilterDropdown('sender');
+                          }}
+                          sx={{ borderRadius: 1 }}
+                        >
+                          <ListItemText primary={sender} />
+                        </ListItemButton>
                       </ListItem>
                     ))}
                   </List>
@@ -399,16 +394,16 @@ const DocumentsPage: React.FC = () => {
                   </Box>
                   <List dense>
                     {Array.from(new Set(documents.map(doc => doc.recipient).filter(Boolean))).map(recipient => (
-                      <ListItem 
-                        key={recipient}
-                        button
-                        onClick={() => {
-                          setFilterRecipient(recipient || 'All Recipients');
-                          toggleFilterDropdown('recipient');
-                        }}
-                        sx={{ borderRadius: 1 }}
-                      >
-                        <ListItemText primary={recipient} />
+                      <ListItem key={recipient} disablePadding>
+                        <ListItemButton
+                          onClick={() => {
+                            setFilterRecipient(recipient || 'All Recipients');
+                            toggleFilterDropdown('recipient');
+                          }}
+                          sx={{ borderRadius: 1 }}
+                        >
+                          <ListItemText primary={recipient} />
+                        </ListItemButton>
                       </ListItem>
                     ))}
                   </List>
