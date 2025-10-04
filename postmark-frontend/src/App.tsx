@@ -27,12 +27,7 @@ const theme = createTheme({
       dark: designTokens.colors.roles.onSecondary,
       contrastText: designTokens.colors.roles.onSecondary,
     },
-    tertiary: {
-      main: designTokens.colors.roles.tertiary,
-      light: designTokens.colors.tertiary[80],
-      dark: designTokens.colors.roles.onTertiary,
-      contrastText: designTokens.colors.roles.onTertiary,
-    },
+    // Note: Material-UI doesn't have tertiary in palette, we'll use it in custom theme
     error: {
       main: designTokens.colors.roles.error,
       light: designTokens.colors.error[80],
