@@ -17,11 +17,88 @@ import secrets
 import requests
 import json
 import time
+import re
 from pathlib import Path
+import threading
+from typing import Dict
+from datetime import datetime
 from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for, flash
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import uuid
+
+def extract_date_from_title(title):
+    """
+    Extract date from document title.
+    Looks for patterns like MM-DD-YYYY or YYYY-MM-DD in the title.
+    Returns the date as a string in YYYY-MM-DD format, or None if no valid date found.
+    """
+    if not title:
+        return None
+    
+    # Pattern 1: MM-DD-YYYY (like 01-05-1938)
+    pattern1 = r'(\d{1,2})-(\d{1,2})-(\d{4})'
+    match1 = re.search(pattern1, title)
+    if match1:
+        month, day, year = match1.groups()
+        # Only consider dates before 2025
+        if int(year) < 2025:
+            try:
+                # Validate the date
+                date_obj = datetime(int(year), int(month), int(day))
+                return date_obj.strftime('%Y-%m-%d')
+            except ValueError:
+                pass
+    
+    # Pattern 2: YYYY-MM-DD (like 1933-08-24)
+    pattern2 = r'(\d{4})-(\d{1,2})-(\d{1,2})'
+    match2 = re.search(pattern2, title)
+    if match2:
+        year, month, day = match2.groups()
+        # Only consider dates before 2025
+        if int(year) < 2025:
+            try:
+                # Validate the date
+                date_obj = datetime(int(year), int(month), int(day))
+                return date_obj.strftime('%Y-%m-%d')
+            except ValueError:
+                pass
+    
+    return None
+
+def update_document_dates():
+    """
+    Update all documents with extracted dates from their titles.
+    """
+    try:
+        # Get all documents
+        documents = local_storage.list_documents()
+        updated_count = 0
+        
+        for doc_id, metadata in documents:
+            title = metadata.get('title', '')
+            current_document_date = metadata.get('document_date')
+            
+            # Extract date from title
+            extracted_date = extract_date_from_title(title)
+            
+            if extracted_date and extracted_date != current_document_date:
+                # Update the document with the extracted date
+                update_data = {
+                    'document_date': extracted_date
+                }
+                
+                success = local_storage.update_document(doc_id, update_data, actor="system")
+                if success:
+                    updated_count += 1
+                    print(f"Updated document {doc_id} with date {extracted_date}")
+        
+        return updated_count
+        
+    except Exception as e:
+        print(f"Error updating document dates: {e}")
+        return 0
 from dotenv import load_dotenv
 
 # Load environment variables from ocr-auth/.env
@@ -36,6 +113,13 @@ from scripts.simple_reference_service import simple_reference_service
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your-secret-key-change-this')
+
+# Enable CORS for React app with credentials support
+CORS(app, 
+     origins=['http://localhost:3000', 'http://localhost:3001'],
+     supports_credentials=True,
+     allow_headers=['Content-Type', 'Authorization'],
+     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB max file size
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable caching for development
@@ -64,52 +148,98 @@ USERS = {
         'email': 'gabe@zentall.com',
         'first_name': 'Gabe',
         'last_name': 'Zentall',
-        'password_hash': '$2b$12$MW7tZ/tTaGieqPgSTtc5oe8mGP6PNBwLwuU5/oE4Rci5C/9bva1.y',
-        'role': 'SUPER_ADMIN',
+        'password_hash': '$2b$12$h5US3E2pV5I/Nof8e1FYmuuph05kK1Pw87myqL72hn1LTZolXPghy',
+        'role': 'ADMIN',
         'is_active': True,
         'is_activated': True,
         'invitation_token': None,
         'invited_at': None,
-        'activated_at': datetime.now().isoformat()
+        'activated_at': datetime.now().isoformat(),
+        'last_login': (datetime.now() - timedelta(minutes=30)).isoformat()
     },
     'admin': {
         'username': 'admin',
         'email': 'admin@example.com',
         'first_name': 'Admin',
         'last_name': '',
-        'password_hash': '$2b$12$MW7tZ/tTaGieqPgSTtc5oe8mGP6PNBwLwuU5/oE4Rci5C/9bva1.y',  # Same as gzentall for testing
-        'role': 'ADMIN',
+        'password_hash': '$2b$12$YO4pCCazkUslOmRLWzyWxOyW/P8zZO6GwXi5msc.REpAFM2pyELD2',  # Same as gzentall for testing
+        'role': 'EDITOR',
         'is_active': True,
         'is_activated': True,
         'invitation_token': None,
         'invited_at': None,
-        'activated_at': datetime.now().isoformat()
+        'activated_at': datetime.now().isoformat(),
+        'last_login': (datetime.now() - timedelta(hours=1)).isoformat()
     },
     'user1': {
         'username': 'user1',
         'email': 'user1@example.com',
         'first_name': 'User',
         'last_name': 'One',
-        'password_hash': '$2b$12$MW7tZ/tTaGieqPgSTtc5oe8mGP6PNBwLwuU5/oE4Rci5C/9bva1.y',  # Same as gzentall for testing
-        'role': 'USER',
+        'password_hash': '$2b$12$YO4pCCazkUslOmRLWzyWxOyW/P8zZO6GwXi5msc.REpAFM2pyELD2',  # Same as gzentall for testing
+        'role': 'VIEWER',
         'is_active': True,
         'is_activated': True,
         'invitation_token': None,
         'invited_at': None,
-        'activated_at': datetime.now().isoformat()
+        'activated_at': datetime.now().isoformat(),
+        'last_login': (datetime.now() - timedelta(hours=2)).isoformat()
     },
     'inactive_user': {
         'username': 'inactive_user',
         'email': 'inactive@example.com',
         'first_name': 'Inactive',
         'last_name': 'User',
-        'password_hash': '$2b$12$MW7tZ/tTaGieqPgSTtc5oe8mGP6PNBwLwuU5/oE4Rci5C/9bva1.y',  # Same as gzentall for testing
-        'role': 'USER',
+        'password_hash': '$2b$12$YO4pCCazkUslOmRLWzyWxOyW/P8zZO6GwXi5msc.REpAFM2pyELD2',  # Same as gzentall for testing
+        'role': 'VIEWER',
         'is_active': False,
         'is_activated': True,
         'invitation_token': None,
         'invited_at': None,
-        'activated_at': datetime.now().isoformat()
+        'activated_at': datetime.now().isoformat(),
+        'last_login': (datetime.now() - timedelta(days=30)).isoformat()
+    },
+    'editor1': {
+        'username': 'editor1',
+        'email': 'editor@example.com',
+        'first_name': 'Sarah',
+        'last_name': 'Johnson',
+        'password_hash': '$2b$12$YO4pCCazkUslOmRLWzyWxOyW/P8zZO6GwXi5msc.REpAFM2pyELD2',
+        'role': 'EDITOR',
+        'is_active': True,
+        'is_activated': True,
+        'invitation_token': None,
+        'invited_at': None,
+        'activated_at': datetime.now().isoformat(),
+        'last_login': (datetime.now() - timedelta(days=1)).isoformat()
+    },
+    'viewer1': {
+        'username': 'viewer1',
+        'email': 'viewer@example.com',
+        'first_name': 'Mike',
+        'last_name': 'Chen',
+        'password_hash': '$2b$12$YO4pCCazkUslOmRLWzyWxOyW/P8zZO6GwXi5msc.REpAFM2pyELD2',
+        'role': 'VIEWER',
+        'is_active': True,
+        'is_activated': True,
+        'invitation_token': None,
+        'invited_at': None,
+        'activated_at': datetime.now().isoformat(),
+        'last_login': (datetime.now() - timedelta(days=7)).isoformat()
+    },
+    'pending_user': {
+        'username': 'pending_user',
+        'email': 'pending@example.com',
+        'first_name': 'Alex',
+        'last_name': 'Smith',
+        'password_hash': None,
+        'role': 'VIEWER',
+        'is_active': True,
+        'is_activated': False,
+        'invitation_token': 'abc123',
+        'invited_at': (datetime.now() - timedelta(days=3)).isoformat(),
+        'activated_at': None,
+        'last_login': None
     }
 }
 
@@ -275,6 +405,136 @@ def logout():
     flash('You have been logged out', 'info')
     return redirect(url_for('login'))
 
+# API endpoints for React app authentication
+@app.route('/api/auth/login', methods=['POST'])
+def api_login():
+    """API login endpoint for React app."""
+    try:
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        
+        if not username or not password:
+            return jsonify({'success': False, 'error': 'Username and password required'}), 400
+        
+        user = USERS.get(username)
+        if user and user['is_active'] and user.get('is_activated', True):
+            if user['password_hash'] and bcrypt.checkpw(password.encode('utf-8'), user['password_hash'].encode('utf-8')):
+                # Update last login time
+                user['last_login'] = datetime.now().isoformat()
+                
+                session['user_id'] = username
+                session['user_role'] = user['role']
+                
+                return jsonify({
+                    'success': True,
+                    'user': {
+                        'username': username,
+                        'email': user['email'],
+                        'first_name': user['first_name'],
+                        'last_name': user['last_name'],
+                        'role': user['role']
+                    }
+                })
+            else:
+                return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
+        elif user and not user.get('is_activated', True):
+            return jsonify({'success': False, 'error': 'Account not activated'}), 401
+        else:
+            return jsonify({'success': False, 'error': 'Invalid username or password'}), 401
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/auth/logout', methods=['POST'])
+def api_logout():
+    """API logout endpoint for React app."""
+    session.clear()
+    return jsonify({'success': True, 'message': 'Logged out successfully'})
+
+@app.route('/api/auth/me', methods=['GET'])
+def api_get_user():
+    """Get current user info."""
+    if 'user_id' in session:
+        username = session['user_id']
+        user = USERS.get(username)
+        if user:
+            return jsonify({
+                'success': True,
+                'user': {
+                    'username': username,
+                    'email': user['email'],
+                    'first_name': user['first_name'],
+                    'last_name': user['last_name'],
+                    'role': user['role']
+                }
+            })
+    
+    return jsonify({'success': False, 'error': 'Not authenticated'}), 401
+
+@app.route('/api/seed/users', methods=['POST'])
+def seed_users():
+    """Seed the database with initial users."""
+    try:
+        # This would typically be used in development/testing
+        # In production, you'd want to restrict this endpoint
+        
+        # Reset USERS to initial state
+        global USERS
+        USERS = {
+            'gzentall': {
+                'username': 'gzentall',
+                'email': 'gabe@zentall.com',
+                'first_name': 'Gabe',
+                'last_name': 'Zentall',
+                'password_hash': '$2b$12$YO4pCCazkUslOmRLWzyWxOyW/P8zZO6GwXi5msc.REpAFM2pyELD2',
+                'role': 'EDITOR',
+                'is_active': True,
+                'is_activated': True,
+                'invitation_token': None,
+                'invited_at': None,
+                'activated_at': datetime.now().isoformat()
+            },
+            'admin': {
+                'username': 'admin',
+                'email': 'admin@example.com',
+                'first_name': 'Admin',
+                'last_name': 'User',
+                'password_hash': '$2b$12$YO4pCCazkUslOmRLWzyWxOyW/P8zZO6GwXi5msc.REpAFM2pyELD2',
+                'role': 'EDITOR',
+                'is_active': True,
+                'is_activated': True,
+                'invitation_token': None,
+                'invited_at': None,
+                'activated_at': datetime.now().isoformat()
+            },
+            'user1': {
+                'username': 'user1',
+                'email': 'user1@example.com',
+                'first_name': 'User',
+                'last_name': 'One',
+                'password_hash': '$2b$12$YO4pCCazkUslOmRLWzyWxOyW/P8zZO6GwXi5msc.REpAFM2pyELD2',
+                'role': 'VIEWER',
+                'is_active': True,
+                'is_activated': True,
+                'invitation_token': None,
+                'invited_at': None,
+                'activated_at': datetime.now().isoformat()
+            }
+        }
+        
+        return jsonify({
+            'success': True,
+            'message': 'Users seeded successfully',
+            'users': list(USERS.keys())
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/token-audit')
 def token_audit():
     """Design token audit page."""
@@ -391,7 +651,7 @@ def people_page():
 def users_page():
     """Serve the user management page (SuperAdmin only)."""
     user = USERS.get(session['user_id'])
-    if user['role'] != 'SUPER_ADMIN':
+    if user['role'] != 'ADMIN':
         flash('Access denied', 'error')
         return redirect(url_for('index'))
     return render_template('users.html', user=user, users=USERS)
@@ -432,6 +692,129 @@ def get_document_image(doc_id, page_num):
     except Exception as e:
         print(f"Error serving image: {e}")
         return "Error serving image", 500
+
+# -----------------------------
+# Upload preflight (CORS) helpers
+# -----------------------------
+@app.route('/upload', methods=['OPTIONS'])
+def upload_options():
+    return ('', 200)
+
+@app.route('/api/uploads', methods=['OPTIONS'])
+def api_uploads_options():
+    return ('', 200)
+
+# -----------------------------
+# Simple in-memory job status store
+# -----------------------------
+JOB_STATE: Dict[str, Dict] = {}
+
+def set_job(job_id: str, **kwargs):
+    current = JOB_STATE.get(job_id, {})
+    current.update(kwargs)
+    JOB_STATE[job_id] = current
+
+def get_job(job_id: str) -> Dict:
+    return JOB_STATE.get(job_id, {})
+
+@app.route('/api/uploads', methods=['POST'])
+def api_uploads():
+    """Async upload endpoint: accept file, start background processing, return jobId."""
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'error': 'No file provided'}), 400
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'No file selected'}), 400
+        if not allowed_file(file.filename):
+            return jsonify({'success': False, 'error': 'Only PDF files are allowed'}), 400
+
+        # Persist upload to inbox with unique name
+        unique_id = str(uuid.uuid4())[:8]
+        filename = secure_filename(file.filename)
+        name, ext = os.path.splitext(filename)
+        unique_filename = f"{name}_{unique_id}{ext}"
+        pdf_path = INBOX_DIR / unique_filename
+        file.save(str(pdf_path))
+
+        job_id = str(uuid.uuid4())
+        set_job(job_id, state='queued', progress=0, message='Queued', filename=filename)
+
+        def worker():
+            try:
+                set_job(job_id, state='processing', progress=5, message='OCR started')
+                # Use existing synchronous pipeline pieces
+                doc_id_local = f"doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                relative_pdf_path = f"letters/inbox/{unique_filename}"
+                success, stdout, stderr = run_ocr_script(relative_pdf_path, doc_id_local)
+                if not success:
+                    set_job(job_id, state='error', progress=0, message=f"OCR failed: {stderr[:160]}")
+                    return
+
+                set_job(job_id, state='translating', progress=85, message='Translating…')
+
+                text_filename = f"{name}_{unique_id}.vision.txt"
+                text_path = WORK_DIR / text_filename
+                success, stdout, stderr = run_translation_script(text_path)
+                translation_failed = not success
+
+                # move translated file as in /upload and store document (reuse logic by calling upload_file flow bits)
+                try:
+                    translated_filename = f"{name}_{unique_id}.translated.txt"
+                    translated_path = WORK_DIR / translated_filename
+                    final_translated_path = EN_DIR / translated_filename
+                    if translated_path.exists():
+                        shutil.move(str(translated_path), str(final_translated_path))
+                        with open(final_translated_path, 'r', encoding='utf-8') as f:
+                            translated_content = html.unescape(f.read())
+                    else:
+                        translated_content = ''
+
+                    original_text = ''
+                    if text_path.exists():
+                        with open(text_path, 'r', encoding='utf-8') as f:
+                            original_text = f.read()
+
+                    document_data = {
+                        "title": f"{name} - {datetime.now().strftime('%Y-%m-%d')}",
+                        "date_processed": datetime.now().isoformat(),
+                        "source_language": "unknown",
+                        "target_language": "en",
+                        "original_text": original_text,
+                        "translated_text": translated_content,
+                        "file_size": pdf_path.stat().st_size if pdf_path.exists() else 0,
+                        "summary": "",
+                        "people": [],
+                        "status": "New",
+                        "filename": filename,
+                    }
+                    stored_id = local_storage.add_document(document_data, doc_id_local)
+                    if translation_failed:
+                        set_job(job_id, state='warning', progress=100, message=f'OCR done; translation failed (id={stored_id})')
+                    else:
+                        set_job(job_id, state='complete', progress=100, message=f'Done (id={stored_id})')
+                except Exception as ee:
+                    set_job(job_id, state='error', progress=0, message=f"Store failed: {ee}")
+            except Exception as e:
+                set_job(job_id, state='error', progress=0, message=f"{type(e).__name__}: {e}")
+            finally:
+                if pdf_path.exists():
+                    try:
+                        pdf_path.unlink()
+                    except Exception:
+                        pass
+
+        threading.Thread(target=worker, daemon=True).start()
+
+        return jsonify({'success': True, 'jobs': [{'id': job_id, 'filename': filename}]})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/uploads/status', methods=['GET'])
+def api_uploads_status():
+    ids = [i for i in request.args.get('ids', '').split(',') if i]
+    jobs = [{'id': jid, **get_job(jid)} for jid in ids]
+    return jsonify({'success': True, 'jobs': jobs})
 
 @app.route('/upload', methods=['POST'])
 @require_auth
@@ -722,6 +1105,548 @@ def test_endpoint():
         'message': 'Server is working!',
         'timestamp': str(uuid.uuid4())[:8]
     })
+
+@app.route('/api/test-documents')
+def test_documents():
+    """Test endpoint for React app - returns sample documents without authentication."""
+    try:
+        # Try to get real documents if possible, otherwise return mock data
+        try:
+            documents = local_storage.list_documents()
+            document_list = []
+            for doc_id, metadata in documents:
+                try:
+                    # Get full document data to include sender/recipient
+                    full_doc = local_storage.get_document(doc_id)
+                    if full_doc:
+                        # Merge metadata with full document data, prioritizing full document data
+                        document_data = {
+                            'id': doc_id,
+                            **metadata,
+                            **full_doc,  # This will override metadata with full document data
+                            'id': doc_id  # Ensure ID is correct
+                        }
+                        print(f"[DEBUG] Document {doc_id}: sender={full_doc.get('sender')}, recipient={full_doc.get('recipient')}")
+                    else:
+                        # Fallback to metadata only
+                        document_data = {
+                            'id': doc_id,
+                            **metadata
+                        }
+                        print(f"[DEBUG] Document {doc_id}: no full document data")
+                    document_list.append(document_data)
+                except Exception as e:
+                    print(f"[ERROR] Failed to process document {doc_id}: {e}")
+                    # Fallback to metadata only
+                    document_data = {
+                        'id': doc_id,
+                        **metadata
+                    }
+                    document_list.append(document_data)
+        except Exception as e:
+            # Fallback to mock data
+            document_list = [
+                {
+                    'id': '099-1933-08-24-ger',
+                    'title': 'Personal Letter from 1933',
+                    'summary': 'This appears to be a personal letter involving Zabalein Now, If Ellen, Haus...',
+                    'page_count': 2,
+                    'people': ['Elizabeth Zentall', 'Betty'],
+                    'date': '2025-09-30',
+                    'filename': '1933-08-24-ger-letter.pdf',
+                    'sender': 'Elizabeth Zentall',
+                    'recipient': 'Betty',
+                    'status': 'Processed',
+                },
+                {
+                    'id': '100-1945-03-15-eng',
+                    'title': 'Business Correspondence',
+                    'summary': 'Official business letter regarding wartime correspondence and family matters...',
+                    'page_count': 1,
+                    'people': ['John Smith', 'Mary Johnson'],
+                    'date': '2025-09-29',
+                    'filename': '1945-03-15-eng-business.pdf',
+                    'sender': 'John Smith',
+                    'recipient': 'Mary Johnson',
+                    'status': 'Pending',
+                },
+                {
+                    'id': '101-1950-12-01-fra',
+                    'title': 'French Document',
+                    'summary': 'Document in French language with official stamps and signatures...',
+                    'page_count': 3,
+                    'people': ['Pierre Dubois'],
+                    'date': '2025-09-28',
+                    'filename': '1950-12-01-fra-document.pdf',
+                    'sender': 'Pierre Dubois',
+                    'recipient': 'Unknown',
+                    'status': 'Processed',
+                },
+            ]
+        
+        return jsonify({
+            'success': True,
+            'documents': document_list,
+            'total': len(document_list)
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/extract-dates', methods=['POST'])
+def extract_dates():
+    """Extract dates from document titles and update the database."""
+    try:
+        updated_count = update_document_dates()
+        return jsonify({
+            'success': True,
+            'message': f'Successfully updated {updated_count} documents with extracted dates',
+            'updated_count': updated_count
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+# Simple probe endpoint to verify this Flask app is the one React is hitting
+@app.route('/api/ping', methods=['GET'])
+def api_ping():
+    return jsonify({
+        'success': True,
+        'app': 'app_simple_auth.py',
+        'time': datetime.now().isoformat()
+    })
+
+@app.route('/api/test-users', methods=['GET'])
+def api_test_users():
+    """Test endpoint to get users without authentication - for debugging."""
+    try:
+        user_list = []
+        for username, user_data in USERS.items():
+            user_list.append({
+                'username': username,
+                'email': user_data['email'],
+                'first_name': user_data.get('first_name', ''),
+                'last_name': user_data.get('last_name', ''),
+                'role': user_data['role'],
+                'is_active': user_data['is_active'],
+                'is_activated': user_data.get('is_activated', True),
+                'invited_at': user_data.get('invited_at'),
+                'activated_at': user_data.get('activated_at'),
+                'last_login': user_data.get('last_login')
+            })
+        
+        return jsonify({
+            'success': True,
+            'users': user_list,
+            'total': len(user_list)
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/test-document/<doc_id>')
+def test_single_document(doc_id):
+    """Test endpoint to get a single document with full data."""
+    try:
+        full_doc = local_storage.get_document(doc_id)
+        if full_doc:
+            return jsonify({
+                'success': True,
+                'document': full_doc
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Document not found'
+            })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
+@app.route('/api/test-history/<doc_id>', methods=['GET'])
+def test_history(doc_id):
+    """Test endpoint to check history without authentication."""
+    try:
+        history_result = local_storage.get_document_history(
+            doc_id=doc_id,
+            page=1,
+            limit=100
+        )
+        return jsonify(history_result)
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/documents/<doc_id>', methods=['GET'])
+def api_get_document(doc_id):
+    """Get a single document with all its data."""
+    try:
+        document = local_storage.get_document(doc_id)
+        if document:
+            return jsonify({
+                'success': True,
+                'document': document
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Document not found'
+            }), 404
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/references', methods=['GET'])
+def api_get_references():
+    """Get all references with their hierarchy and types."""
+    try:
+        ref_type = request.args.get('type')
+        query = request.args.get('query')
+        
+        references = local_storage.list_references(ref_type=ref_type, query=query)
+        return jsonify({
+            'success': True,
+            'references': references
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/references-merge', methods=['POST'])
+def api_merge_references():
+    print("DEBUG: Merge endpoint called!")
+    """Merge multiple references into one."""
+    try:
+        data = request.get_json()
+        if not data or 'referenceIds' not in data or 'targetReferenceId' not in data:
+            return jsonify({
+                'success': False,
+                'error': 'Missing required fields: referenceIds, targetReferenceId'
+            }), 400
+        
+        reference_ids = data['referenceIds']
+        target_id = data['targetReferenceId']
+        
+        if not isinstance(reference_ids, list) or len(reference_ids) < 2:
+            return jsonify({
+                'success': False,
+                'error': 'At least 2 references required for merge'
+            }), 400
+        
+        if target_id not in reference_ids:
+            return jsonify({
+                'success': False,
+                'error': 'Target reference must be in the list of references to merge'
+            }), 400
+        
+        # Get the target reference
+        target_reference = local_storage.get_reference(target_id)
+        if not target_reference:
+            return jsonify({
+                'success': False,
+                'error': 'Target reference not found'
+            }), 404
+        
+        # Get all references to merge
+        references_to_merge = []
+        for ref_id in reference_ids:
+            if ref_id != target_id:  # Skip the target reference
+                ref = local_storage.get_reference(ref_id)
+                if ref:
+                    references_to_merge.append(ref)
+        
+        # Merge aliases and notes
+        all_aliases = set(target_reference.get('aliases', []))
+        all_notes = [target_reference.get('notes', '')]
+        
+        for ref in references_to_merge:
+            # Add aliases from other references
+            if ref.get('aliases'):
+                all_aliases.update(ref['aliases'])
+            
+            # Add notes from other references
+            if ref.get('notes'):
+                all_notes.append(ref['notes'])
+        
+        # Update the target reference with merged data
+        updated_reference = local_storage.update_reference(
+            ref_id=target_id,
+            name=target_reference['name'],
+            aliases=list(all_aliases),
+            notes='\n\n'.join(filter(None, all_notes))
+        )
+        
+        if updated_reference:
+            # Hard delete the other references (remove from database)
+            deleted_count = 0
+            for ref in references_to_merge:
+                try:
+                    # Remove from metadata
+                    if ref['id'] in local_storage.metadata.get("references", {}):
+                        del local_storage.metadata["references"][ref['id']]
+                        local_storage.save_metadata()
+                        deleted_count += 1
+                except Exception as e:
+                    print(f"Error deleting merged reference {ref['id']}: {e}")
+            
+            return jsonify({
+                'success': True,
+                'reference': updated_reference,
+                'deletedCount': deleted_count,
+                'message': f'Successfully merged {len(references_to_merge)} references into {target_reference["name"]}'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to update target reference'
+            }), 500
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/references/<ref_id>', methods=['GET'])
+def api_get_reference(ref_id):
+    """Get a single reference by ID."""
+    try:
+        reference = local_storage.get_reference(ref_id)
+        if reference:
+            return jsonify({
+                'success': True,
+                'reference': reference
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Reference not found'
+            }), 404
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/references', methods=['POST'])
+def api_create_reference():
+    """Create a new reference."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'No data provided'
+            }), 400
+        
+        required_fields = ['type', 'name']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({
+                    'success': False,
+                    'error': f'Missing required field: {field}'
+                }), 400
+        
+        reference = local_storage.add_reference(
+            ref_type=data['type'],
+            name=data['name'],
+            aliases=data.get('aliases', []),
+            notes=data.get('notes')
+        )
+        
+        if reference:
+            return jsonify({
+                'success': True,
+                'reference': reference
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to create reference'
+            }), 500
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/references/<ref_id>', methods=['PUT'])
+def api_update_reference(ref_id):
+    """Update a reference."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'No data provided'
+            }), 400
+        
+        reference = local_storage.update_reference(
+            ref_id=ref_id,
+            name=data.get('name'),
+            aliases=data.get('aliases'),
+            notes=data.get('notes')
+        )
+        
+        if reference:
+            return jsonify({
+                'success': True,
+                'reference': reference
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Reference not found or update failed'
+            }), 404
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/references/<ref_id>', methods=['DELETE'])
+def api_delete_reference(ref_id):
+    """Delete a reference."""
+    try:
+        success = local_storage.delete_reference(ref_id)
+        if success:
+            return jsonify({
+                'success': True,
+                'message': 'Reference deleted successfully'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Reference not found or delete failed'
+            }), 404
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/references/<ref_id>/documents', methods=['GET'])
+def api_list_documents_for_reference(ref_id):
+    """List all documents that reference the given reference."""
+    try:
+        documents = local_storage.list_documents_for_reference(ref_id)
+        return jsonify({
+            'success': True,
+            'documents': documents,
+            'total': len(documents)
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/references/bulk-delete', methods=['POST'])
+def api_bulk_delete_references():
+    """Delete multiple references."""
+    try:
+        data = request.get_json()
+        if not data or 'referenceIds' not in data:
+            return jsonify({
+                'success': False,
+                'error': 'No reference IDs provided'
+            }), 400
+        
+        reference_ids = data['referenceIds']
+        if not isinstance(reference_ids, list) or len(reference_ids) == 0:
+            return jsonify({
+                'success': False,
+                'error': 'Invalid reference IDs'
+            }), 400
+        
+        deleted_count = 0
+        failed_ids = []
+        
+        for ref_id in reference_ids:
+            try:
+                success = local_storage.delete_reference(ref_id)
+                if success:
+                    deleted_count += 1
+                else:
+                    failed_ids.append(ref_id)
+            except Exception as e:
+                failed_ids.append(ref_id)
+                print(f"Error deleting reference {ref_id}: {e}")
+        
+        return jsonify({
+            'success': True,
+            'deletedCount': deleted_count,
+            'failedIds': failed_ids,
+            'message': f'Deleted {deleted_count} references'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/test-images/<doc_id>/<int:page_num>')
+def test_document_image(doc_id, page_num):
+    """Test endpoint for document images without authentication."""
+    try:
+        # Try to get the real image first
+        try:
+            work_dir = Path("letters/work")
+            # Look for image files with the pattern: doc_id_page_XXX.png
+            image_files = list(work_dir.glob(f"{doc_id}_page_{page_num:03d}.png"))
+            if not image_files:
+                # Try alternative patterns
+                image_files = list(work_dir.glob(f"{doc_id}_page_{page_num}.png"))
+            if not image_files:
+                image_files = list(work_dir.glob(f"{doc_id}_page_{page_num}.jpg"))
+            if not image_files:
+                image_files = list(work_dir.glob(f"{doc_id}_page_{page_num}.jpeg"))
+            
+            if image_files:
+                print(f"Found image: {image_files[0]}")
+                return send_file(str(image_files[0]), mimetype='image/png')
+            else:
+                print(f"No image found for {doc_id} page {page_num}")
+        except Exception as e:
+            print(f"Error looking for image: {e}")
+            pass
+        
+        # Fallback: return a simple SVG placeholder
+        svg_content = f"""
+        <svg width="800" height="1000" xmlns="http://www.w3.org/2000/svg">
+            <rect width="800" height="1000" fill="white" stroke="black" stroke-width="2"/>
+            <text x="400" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="black">
+                Document Image
+            </text>
+            <text x="400" y="450" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="gray">
+                {doc_id}
+            </text>
+            <text x="400" y="480" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="gray">
+                Page {page_num}
+            </text>
+        </svg>
+        """
+        
+        return svg_content, 200, {'Content-Type': 'image/svg+xml'}
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @app.route('/reset-password')
 def reset_password():
@@ -1166,7 +2091,7 @@ def remove_person(person_name):
 
 
 @app.route('/api/documents/<doc_id>/history')
-@require_auth
+# @require_auth  # Temporarily disabled for testing
 def get_document_history(doc_id):
     """Get history for a specific document."""
     try:
@@ -1177,79 +2102,17 @@ def get_document_history(doc_id):
         end_date = request.args.get('endDate')
         event_type = request.args.get('eventType', 'all')
         
-        # For now, return mock history data
-        # In a real implementation, you would query your audit log database
-        mock_history = [
-            {
-                'id': '1',
-                'timestamp': '2025-01-27T10:30:00Z',
-                'description': 'Gabe Zentall created "Sample Document"',
-                'action': 'DOCUMENT_CREATE',
-                'actor': {
-                    'id': 'user1',
-                    'username': 'gzentall',
-                    'email': 'gzentall@example.com'
-                },
-                'metadata': {
-                    'changes': ['title', 'summary'],
-                    'timestamp': '2025-01-27T10:30:00Z'
-                }
-            },
-            {
-                'id': '2',
-                'timestamp': '2025-01-27T10:35:00Z',
-                'description': 'Gabe Zentall modified "Sample Document"',
-                'action': 'DOCUMENT_UPDATE',
-                'actor': {
-                    'id': 'user1',
-                    'username': 'gzentall',
-                    'email': 'gzentall@example.com'
-                },
-                'metadata': {
-                    'changes': ['summary'],
-                    'previousTitle': 'Sample Document',
-                    'newTitle': 'Sample Document'
-                }
-            },
-            {
-                'id': '3',
-                'timestamp': '2025-01-27T10:40:00Z',
-                'description': 'System processed "Sample Document"',
-                'action': 'DOCUMENT_PROCESS',
-                'actor': None,
-                'metadata': {
-                    'processingType': 'OCR',
-                    'timestamp': '2025-01-27T10:40:00Z'
-                }
-            }
-        ]
+        # Get real history data from local storage
+        history_result = local_storage.get_document_history(
+            doc_id=doc_id,
+            page=page,
+            limit=limit,
+            start_date=start_date,
+            end_date=end_date,
+            event_type=event_type
+        )
         
-        # Apply filters
-        filtered_history = mock_history
-        
-        if start_date:
-            filtered_history = [h for h in filtered_history if h['timestamp'] >= start_date]
-        if end_date:
-            filtered_history = [h for h in filtered_history if h['timestamp'] <= end_date + 'T23:59:59Z']
-        if event_type != 'all':
-            filtered_history = [h for h in filtered_history if h['action'] == event_type]
-        
-        # Apply pagination
-        total = len(filtered_history)
-        start_idx = (page - 1) * limit
-        end_idx = start_idx + limit
-        paginated_history = filtered_history[start_idx:end_idx]
-        
-        return jsonify({
-            'success': True,
-            'data': paginated_history,
-            'pagination': {
-                'page': page,
-                'limit': limit,
-                'total': total,
-                'totalPages': (total + limit - 1) // limit
-            }
-        })
+        return jsonify(history_result)
         
     except Exception as e:
         return jsonify({
@@ -1379,11 +2242,16 @@ def update_document(doc_id):
             }), 400
         
         # If any changes are made (except status), automatically set status to "Editing"
-        if any(key in data for key in ['title', 'summary', 'translated_text', 'people']):
+        if any(key in data for key in ['title', 'summary', 'translated_text', 'original_text', 'people', 'sender', 'recipient', 'sender_location', 'recipient_location', 'date_processed']):
             data['status'] = 'Editing'
         
+        # Get current user for audit log
+        user_id = session.get('user_id', 'unknown')
+        user = USERS.get(user_id, {})
+        current_user = f"{user.get('first_name', '')} {user.get('last_name', '')}".strip() or user_id
+        
         # Update the document
-        success = local_storage.update_document(doc_id, data, regenerate_summary=regenerate_summary)
+        success = local_storage.update_document(doc_id, data, regenerate_summary=regenerate_summary, actor=current_user)
         
         if success:
             # Get the updated document to return the new summary if regenerated
@@ -1429,8 +2297,13 @@ def update_document_status(doc_id):
                 'error': 'Invalid status. Must be New, Editing, or Final'
             }), 400
         
+        # Get current user for audit log
+        user_id = session.get('user_id', 'unknown')
+        user = USERS.get(user_id, {})
+        current_user = f"{user.get('first_name', '')} {user.get('last_name', '')}".strip() or user_id
+        
         # Update only the status
-        success = local_storage.update_document(doc_id, {'status': status})
+        success = local_storage.update_document(doc_id, {'status': status}, actor=current_user)
         
         if success:
             return jsonify({
@@ -1543,7 +2416,7 @@ def delete_context_note(context_id):
 def api_list_users():
     """List all users (SuperAdmin only)."""
     user = USERS.get(session['user_id'])
-    if user['role'] != 'SUPER_ADMIN':
+    if user['role'] != 'ADMIN':
         return jsonify({'success': False, 'error': 'Access denied'}), 403
     
     try:
@@ -1558,7 +2431,8 @@ def api_list_users():
                 'is_active': user_data['is_active'],
                 'is_activated': user_data.get('is_activated', True),
                 'invited_at': user_data.get('invited_at'),
-                'activated_at': user_data.get('activated_at')
+                'activated_at': user_data.get('activated_at'),
+                'last_login': user_data.get('last_login')
             })
         
         return jsonify({
@@ -1577,7 +2451,7 @@ def api_list_users():
 def api_create_user():
     """Create a new user (SuperAdmin only)."""
     user = USERS.get(session['user_id'])
-    if user['role'] != 'SUPER_ADMIN':
+    if user['role'] != 'ADMIN':
         return jsonify({'success': False, 'error': 'Access denied'}), 403
     
     try:
@@ -1658,7 +2532,7 @@ def api_create_user():
 def api_resend_invite(username):
     """Resend invitation email to a not-yet-activated user (SuperAdmin only)."""
     user = USERS.get(session['user_id'])
-    if user['role'] != 'SUPER_ADMIN':
+    if user['role'] != 'ADMIN':
         return jsonify({'success': False, 'error': 'Access denied'}), 403
 
     try:
@@ -1691,7 +2565,7 @@ def api_resend_invite(username):
 def api_update_user(username):
     """Update a user (SuperAdmin only)."""
     user = USERS.get(session['user_id'])
-    if user['role'] != 'SUPER_ADMIN':
+    if user['role'] != 'ADMIN':
         return jsonify({'success': False, 'error': 'Access denied'}), 403
     
     try:
@@ -1740,7 +2614,7 @@ def api_update_user(username):
 def api_delete_user(username):
     """Delete a user (SuperAdmin only)."""
     user = USERS.get(session['user_id'])
-    if user['role'] != 'SUPER_ADMIN':
+    if user['role'] != 'ADMIN':
         return jsonify({'success': False, 'error': 'Access denied'}), 403
     
     try:
@@ -1750,10 +2624,10 @@ def api_delete_user(username):
                 'error': 'User not found'
             }), 404
         
-        if USERS[username]['role'] == 'SUPER_ADMIN':
+        if USERS[username]['role'] == 'ADMIN':
             return jsonify({
                 'success': False,
-                'error': 'Cannot delete SUPER_ADMIN user'
+                'error': 'Cannot delete ADMIN user'
             }), 400
         
         del USERS[username]
@@ -1768,131 +2642,6 @@ def api_delete_user(username):
             'success': False,
             'error': str(e)
         }), 500
-
-
-# -----------------------------
-# References (with stable IDs)
-# -----------------------------
-
-@app.route('/api/references', methods=['GET'])
-async def list_references():
-    """List all references with optional filtering."""
-    try:
-        ref_type = request.args.get('type')
-        query = request.args.get('q') or request.args.get('query')
-        
-        references = await simple_reference_service.search_references(query=query, ref_type=ref_type)
-        return jsonify({
-            'success': True,
-            'references': references,
-            'total': len(references)
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/references/<ref_id>', methods=['GET'])
-def get_reference(ref_id):
-    """Get a specific reference by ID."""
-    try:
-        reference = local_storage.get_reference(ref_id)
-        if not reference:
-            return jsonify({'success': False, 'error': 'Reference not found'}), 404
-        
-        return jsonify({
-            'success': True,
-            'reference': reference
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/references', methods=['POST'])
-def create_reference():
-    """Create a new reference."""
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'success': False, 'error': 'No data provided'}), 400
-        
-        ref_type = data.get('type')
-        name = data.get('name')
-        aliases = data.get('aliases', [])
-        notes = data.get('notes', '')
-        
-        if not ref_type or not name:
-            return jsonify({'success': False, 'error': 'Type and name are required'}), 400
-        
-        reference = local_storage.add_reference(ref_type, name, aliases, notes)
-        if not reference:
-            return jsonify({'success': False, 'error': 'Failed to create reference'}), 400
-        
-        return jsonify({
-            'success': True,
-            'reference': reference
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/references/<ref_id>', methods=['PUT'])
-def update_reference(ref_id):
-    """Update a reference."""
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'success': False, 'error': 'No data provided'}), 400
-        
-        name = data.get('name')
-        aliases = data.get('aliases')
-        notes = data.get('notes')
-        
-        reference = local_storage.update_reference(ref_id, name, aliases, notes)
-        if not reference:
-            return jsonify({'success': False, 'error': 'Reference not found'}), 404
-        
-        return jsonify({
-            'success': True,
-            'reference': reference
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/references/<ref_id>', methods=['DELETE'])
-def delete_reference(ref_id):
-    """Delete a reference."""
-    try:
-        success = local_storage.delete_reference(ref_id)
-        if not success:
-            return jsonify({'success': False, 'error': 'Reference not found'}), 404
-        
-        return jsonify({
-            'success': True,
-            'message': 'Reference deleted successfully'
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/references/<source_id>/merge', methods=['POST'])
-def merge_references(source_id):
-    """Merge a source reference into a target reference."""
-    try:
-        data = request.get_json()
-        if not data or not data.get('targetId'):
-            return jsonify({'success': False, 'error': 'targetId is required'}), 400
-        
-        success = local_storage.merge_references(source_id, data['targetId'])
-        if not success:
-            return jsonify({'success': False, 'error': 'Merge failed'}), 400
-        
-        return jsonify({
-            'success': True,
-            'message': f'Reference {source_id} merged into {data["targetId"]}'
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 # -----------------------------

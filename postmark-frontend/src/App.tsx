@@ -5,8 +5,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Box } from '@mui/material';
 import designTokens from './theme/designTokens';
 
+// Contexts
+import { AuthProvider } from './contexts/AuthContext';
+
 // Components
 import Header from './components/Header';
+import ProtectedRoute from './components/ProtectedRoute';
 import DocumentsPage from './pages/DocumentsPage';
 import ReferencesPage from './pages/ReferencesPage';
 import UsersPage from './pages/UsersPage';
@@ -107,20 +111,28 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          <Header />
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <AuthProvider>
+        <Router>
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Routes>
-              <Route path="/" element={<DocumentsPage />} />
-              <Route path="/documents" element={<DocumentsPage />} />
-              <Route path="/references" element={<ReferencesPage />} />
-              <Route path="/users" element={<UsersPage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/*" element={
+                <ProtectedRoute>
+                  <Header />
+                  <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                    <Routes>
+                      <Route path="/" element={<DocumentsPage />} />
+                      <Route path="/documents" element={<DocumentsPage />} />
+                      <Route path="/references" element={<ReferencesPage />} />
+                      <Route path="/users" element={<UsersPage />} />
+                    </Routes>
+                  </Box>
+                </ProtectedRoute>
+              } />
             </Routes>
           </Box>
-        </Box>
-      </Router>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

@@ -11,6 +11,7 @@ import {
   Box,
   Chip,
 } from '@mui/material';
+import { useAuth } from '../contexts/AuthContext';
 import {
   Mail as MailIcon,
   Description as DocumentsIcon,
@@ -21,20 +22,12 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-interface User {
-  name: string;
-  email: string;
-  role: string;
-  initials: string;
-}
+// Remove unused User interface - we're using the auth context user type
 
-interface HeaderProps {
-  user?: User;
-}
-
-const Header: React.FC<HeaderProps> = ({ user }) => {
+const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -45,10 +38,8 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    // Clear authentication data
-    localStorage.clear();
-    sessionStorage.clear();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 
@@ -59,20 +50,25 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
 
   const getRoleDisplayName = (role: string) => {
     const roleMap: { [key: string]: string } = {
-      admin: 'Super Admin',
-      viewer: 'Viewer',
-      editor: 'Editor',
+      ADMIN: 'Admin',
+      EDITOR: 'Editor',
+      VIEWER: 'Viewer',
     };
     return roleMap[role] || 'Viewer';
   };
 
-  const getUserInitials = (name: string) => {
-    if (!name || name === 'User') return 'U';
-    const parts = name.split(' ');
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
+  const getUserInitials = (user: any) => {
+    if (user?.first_name && user?.last_name) {
+      return `${user.first_name[0]}${user.last_name[0]}`.toUpperCase();
     }
-    return name.substring(0, 2).toUpperCase();
+    if (user?.email) {
+      const parts = user.email.split('@')[0].split('.');
+      if (parts.length > 1) {
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+      }
+      return parts[0][0].toUpperCase();
+    }
+    return 'U';
   };
 
   const navigationItems = [
@@ -152,7 +148,7 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
             }}
           >
             <Avatar sx={{ width: 32, height: 32, backgroundColor: 'transparent' }}>
-              {user ? getUserInitials(user.name) : 'U'}
+              {user ? getUserInitials(user) : 'U'}
             </Avatar>
           </IconButton>
 
@@ -180,11 +176,11 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
               <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Avatar sx={{ backgroundColor: 'primary.main', width: 48, height: 48 }}>
-                    {getUserInitials(user.name)}
+                    {getUserInitials(user)}
                   </Avatar>
                   <Box>
                     <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                      {user.name}
+                      {user.first_name} {user.last_name}
                     </Typography>
                     <Chip
                       label={getRoleDisplayName(user.role)}

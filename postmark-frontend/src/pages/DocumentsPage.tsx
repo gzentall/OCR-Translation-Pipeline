@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -22,7 +22,10 @@ import {
   ToggleButtonGroup,
   Paper,
   ClickAwayListener,
+  LinearProgress,
 } from '@mui/material';
+import DocumentEditor from '../components/DocumentEditor';
+import { format as formatDate } from 'date-fns';
 import {
   Search as SearchIcon,
   Add as AddIcon,
@@ -33,6 +36,7 @@ import {
   Upload as UploadIcon,
   KeyboardArrowDown as ArrowDownIcon,
   Clear as ClearIcon,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 
 interface Document {
@@ -42,15 +46,62 @@ interface Document {
   page_count: number;
   people: string[];
   date: string;
-  filename: string;
+  date_processed?: string;
+  document_date?: string | null;
+  filename?: string;
   thumbnail_url?: string;
   sender?: string;
   recipient?: string;
+  sender_location?: Location;
+  recipient_location?: Location;
   status?: string;
+  source_language?: string;
+  target_language?: string;
+  file_size?: number;
+  people_count?: number;
+}
+
+interface Location {
+  city: string;
+  state?: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+  display_name: string;
 }
 
 const DocumentsPage: React.FC = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
+
+  // Format date for display
+  const formatDocumentDate = (dateString: string | undefined | null): string => {
+    if (!dateString || dateString === 'null') return 'No date';
+    
+    console.log('Formatting date:', dateString);
+    try {
+      // Handle YYYY-MM-DD format directly
+      if (typeof dateString === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        const [year, month, day] = dateString.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        const formatted = formatDate(date, 'MMMM d, yyyy');
+        console.log('Formatted date (YYYY-MM-DD):', formatted);
+        return formatted;
+      }
+      
+      // Handle ISO date strings
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        console.log('Invalid date:', dateString);
+        return 'Invalid date';
+      }
+      const formatted = formatDate(date, 'MMMM d, yyyy');
+      console.log('Formatted date (ISO):', formatted);
+      return formatted;
+    } catch (error) {
+      console.error('Error formatting date:', error, dateString);
+      return 'Invalid date';
+    }
+  };
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
   const [filterSender, setFilterSender] = useState('All Senders');
@@ -60,6 +111,7 @@ const DocumentsPage: React.FC = () => {
   const [sortBy, setSortBy] = useState('Added (d)');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [loading, setLoading] = useState(true);
+  const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
   const [filterDropdowns, setFilterDropdowns] = useState({
     sender: false,
     recipient: false,
@@ -67,23 +119,58 @@ const DocumentsPage: React.FC = () => {
     status: false,
     sort: false,
   });
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<{current:number,total:number,percent:number,filename:string}|null>(null);
+  const [jobStatuses, setJobStatuses] = useState<Record<string, any>>({});
+  const [showFloatingActions, setShowFloatingActions] = useState(false);
+
+  // Show/hide floating actions based on selection
+  useEffect(() => {
+    setShowFloatingActions(selectedDocuments.length > 0);
+  }, [selectedDocuments]);
 
   // Fetch documents from Flask API
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const response = await fetch('http://localhost:5001/documents', {
+        const token = localStorage.getItem('accessToken');
+        console.log('Auth token:', token);
+        console.log('Fetching documents from Flask API...');
+        
+        const response = await fetch('http://localhost:5001/api/test-documents', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
             'Content-Type': 'application/json',
           },
+          credentials: 'include',
         });
+        
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
         
         if (response.ok) {
           const data = await response.json();
-          setDocuments(data.documents || []);
+          console.log('Documents data:', data);
+          // Handle the API response format: {success: true, documents: [...]}
+          if (data.success && Array.isArray(data.documents)) {
+            console.log('Sample document:', data.documents[0]);
+            console.log('Sample document sender/recipient:', {
+              sender: data.documents[0]?.sender,
+              recipient: data.documents[0]?.recipient,
+              document_date: data.documents[0]?.document_date
+            });
+            setDocuments(data.documents);
+          } else if (Array.isArray(data)) {
+            // Fallback for direct array response
+            console.log('Sample document (direct array):', data[0]);
+            setDocuments(data);
+          } else {
+            console.error('Unexpected API response format:', data);
+            setDocuments([]);
+          }
         } else {
-          console.error('Failed to fetch documents:', response.statusText);
+          const errorText = await response.text();
+          console.error('Failed to fetch documents:', response.status, response.statusText, errorText);
           // Fallback to mock data for development
           setDocuments([
             {
@@ -126,7 +213,8 @@ const DocumentsPage: React.FC = () => {
         }
       } catch (error) {
         console.error('Error fetching documents:', error);
-        // Fallback to mock data
+        // Fallback to mock data for development
+        console.log('Using fallback mock data');
         setDocuments([]);
       } finally {
         setLoading(false);
@@ -141,11 +229,30 @@ const DocumentsPage: React.FC = () => {
   };
 
   const handleSelectDocument = (documentId: string) => {
-    setSelectedDocuments(prev =>
-      prev.includes(documentId)
+    setSelectedDocuments(prev => 
+      prev.includes(documentId) 
         ? prev.filter(id => id !== documentId)
         : [...prev, documentId]
     );
+  };
+
+  const handleDeleteDocuments = async () => {
+    if (selectedDocuments.length === 0) return;
+    
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${selectedDocuments.length} document(s)? This action cannot be undone.`
+    );
+    
+    if (!confirmed) return;
+
+    try {
+      // For now, we'll just clear the selection since we don't have a bulk delete endpoint
+      // TODO: Implement bulk delete API endpoint
+      console.log('Would delete documents:', selectedDocuments);
+      setSelectedDocuments([]);
+    } catch (error) {
+      console.error('Error deleting documents:', error);
+    }
   };
 
   const handleSelectAll = () => {
@@ -182,10 +289,129 @@ const DocumentsPage: React.FC = () => {
     });
   };
 
-  const filteredDocuments = documents.filter(doc => {
+  const handleDocumentClick = (documentId: string) => {
+    setSelectedDocumentId(documentId);
+  };
+
+  const handleCloseEditor = () => {
+    setSelectedDocumentId(null);
+  };
+
+  const refreshDocuments = async () => {
+    try {
+      const resp = await fetch('http://localhost:5001/api/test-documents', {
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.success && Array.isArray(data.documents)) setDocuments(data.documents);
+      }
+    } catch (_) {}
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFilesSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setIsUploading(true);
+    try {
+      const collectedJobIds: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        setUploadStatus({ current: i + 1, total: files.length, percent: 0, filename: file.name });
+
+        const form = new FormData();
+        form.append('file', file);
+        form.append('process', 'true');
+        form.append('translate', 'true');
+
+        // Use XHR to track progress
+        const xhr = new XMLHttpRequest();
+        const targetUrl = 'http://localhost:5001/api/uploads';
+        await new Promise<void>((resolve) => {
+          xhr.upload.onprogress = (ev) => {
+            if (ev.lengthComputable) {
+              const pct = Math.round((ev.loaded / ev.total) * 100);
+              setUploadStatus({ current: i + 1, total: files.length, percent: pct, filename: file.name });
+            }
+          };
+          xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                  const data = JSON.parse(xhr.responseText || '{}');
+                  if (data?.success && Array.isArray(data.jobs) && data.jobs[0]?.id) {
+                    collectedJobIds.push(data.jobs[0].id);
+                  }
+                } catch {}
+                resolve();
+              } else {
+                // try legacy fall-back once
+                const xhr2 = new XMLHttpRequest();
+                xhr2.onreadystatechange = () => {
+                  if (xhr2.readyState === 4) resolve();
+                };
+                xhr2.open('POST', 'http://localhost:5001/upload');
+                xhr2.withCredentials = true;
+                xhr2.send(form);
+              }
+            }
+          };
+          xhr.open('POST', targetUrl);
+          xhr.withCredentials = true;
+          xhr.send(form);
+        });
+      }
+      // Poll job status until complete
+      await (async () => {
+        if (!collectedJobIds.length) return;
+        let done = false;
+        while (!done) {
+          try {
+            const resp = await fetch(`http://localhost:5001/api/uploads/status?ids=${collectedJobIds.join(',')}`, { credentials: 'include' });
+            if (resp.ok) {
+              const data = await resp.json();
+              if (data?.success && Array.isArray(data.jobs)) {
+                const map: Record<string, any> = {};
+                let allDone = true;
+                data.jobs.forEach((j: any) => {
+                  map[j.id] = j;
+                  if (!['complete','error'].includes(j.state)) allDone = false;
+                });
+                setJobStatuses(map);
+                done = allDone;
+              } else {
+                done = true;
+              }
+            } else {
+              done = true;
+            }
+          } catch {
+            done = true;
+          }
+          if (!done) await new Promise(r => setTimeout(r, 1000));
+        }
+      })();
+
+      await refreshDocuments();
+    } catch (err) {
+      console.error('Upload failed', err);
+    } finally {
+      setIsUploading(false);
+      setUploadStatus(null);
+      setJobStatuses({});
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const filteredDocuments = (documents || []).filter(doc => {
     const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          doc.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.people.some(person => person.toLowerCase().includes(searchTerm.toLowerCase()));
+                         (doc.people || []).some(person => person.toLowerCase().includes(searchTerm.toLowerCase()));
     return matchesSearch;
   });
 
@@ -194,17 +420,6 @@ const DocumentsPage: React.FC = () => {
     return a.title.localeCompare(b.title);
   });
 
-  const renderPeopleList = (people: string[]) => {
-    return people.slice(0, 2).map((person, index) => (
-      <Chip
-        key={index}
-        label={person}
-        size="small"
-        variant="outlined"
-        sx={{ mr: 0.5, mb: 0.5 }}
-      />
-    ));
-  };
 
   if (loading) {
     return (
@@ -214,13 +429,23 @@ const DocumentsPage: React.FC = () => {
     );
   }
 
+  // Show document editor if a document is selected
+  if (selectedDocumentId) {
+    return (
+      <DocumentEditor 
+        documentId={selectedDocumentId} 
+        onClose={handleCloseEditor} 
+      />
+    );
+  }
+
   return (
     <ClickAwayListener onClickAway={closeAllDropdowns}>
       <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
       {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" sx={{ fontWeight: 400, fontSize: '28px', lineHeight: '36px' }}>
-          {documents.length} documents
+          {documents?.length || 0} documents
         </Typography>
         <Button
           variant="contained"
@@ -234,9 +459,23 @@ const DocumentsPage: React.FC = () => {
               backgroundColor: 'primary.dark',
             },
           }}
+          onClick={handleUploadClick}
+          disabled={isUploading}
         >
-          Upload
+          {isUploading ? 'Uploading…' : 'Upload'}
         </Button>
+        {/* Live API probe to confirm this UI is connected to the right Flask app */}
+        <Box sx={{ ml: 2 }}>
+          <ProbeChip />
+        </Box>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/pdf,image/*"
+          multiple
+          style={{ display: 'none' }}
+          onChange={handleFilesSelected}
+        />
       </Box>
 
       {/* Search and Filters - M3 Style */}
@@ -330,7 +569,7 @@ const DocumentsPage: React.FC = () => {
                     </IconButton>
                   </Box>
                   <List dense>
-                    {Array.from(new Set(documents.map(doc => doc.sender).filter(Boolean))).map(sender => (
+                    {Array.from(new Set((documents || []).map(doc => doc.sender).filter(Boolean))).map(sender => (
                       <ListItem key={sender} disablePadding>
                         <ListItemButton
                           onClick={() => {
@@ -393,7 +632,7 @@ const DocumentsPage: React.FC = () => {
                     </IconButton>
                   </Box>
                   <List dense>
-                    {Array.from(new Set(documents.map(doc => doc.recipient).filter(Boolean))).map(recipient => (
+                    {Array.from(new Set((documents || []).map(doc => doc.recipient).filter(Boolean))).map(recipient => (
                       <ListItem key={recipient} disablePadding>
                         <ListItemButton
                           onClick={() => {
@@ -547,67 +786,127 @@ const DocumentsPage: React.FC = () => {
                   '&:hover': {
                     boxShadow: 3,
                     transform: 'translateY(-2px)',
+                    '& .document-checkbox': {
+                      opacity: 1,
+                    },
                   },
                   transition: 'all 0.2s ease',
                   position: 'relative',
                 }}
-                onClick={() => {/* TODO: Open document */}}
+                onClick={() => handleDocumentClick(document.id)}
               >
                 <Checkbox
                   checked={selectedDocuments.includes(document.id)}
-                  onChange={() => handleSelectDocument(document.id)}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    handleSelectDocument(document.id);
+                  }}
+                  className="document-checkbox"
                   sx={{
                     position: 'absolute',
                     top: 8,
                     right: 8,
                     zIndex: 1,
+                    opacity: 0,
+                    transition: 'opacity 0.2s ease',
+                    '&.Mui-checked': {
+                      opacity: 1,
+                    },
                   }}
                 />
                 
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                    <Avatar sx={{ backgroundColor: 'primary.main', width: 48, height: 48 }}>
-                      <DocumentIcon />
-                    </Avatar>
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Typography variant="h6" sx={{ fontWeight: 500, mb: 0.5 }}>
-                        {document.title}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {document.page_count} pages
-                      </Typography>
+                <CardContent sx={{ p: 0 }}>
+                  {/* Document Thumbnail */}
+                  <Box sx={{ 
+                    position: 'relative',
+                    width: '100%',
+                    height: 120,
+                    backgroundColor: 'grey.100',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    borderRadius: '8px 8px 0 0'
+                  }}>
+                    {document.page_count > 0 ? (
+                      <img 
+                        src={`http://localhost:5001/documents/${document.id}/images/1?t=${Date.now()}`}
+                        alt="Document thumbnail"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const fallback = target.nextElementSibling as HTMLElement;
+                          if (fallback) fallback.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <Box sx={{
+                      display: document.page_count > 0 ? 'none' : 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'text.secondary',
+                      fontSize: 24
+                    }}>
+                      📄
+                    </Box>
+                    {/* Page Count Badge */}
+                    <Box sx={{
+                      position: 'absolute',
+                      top: 8,
+                      left: 8,
+                      backgroundColor: 'primary.main',
+                      color: 'primary.contrastText',
+                      borderRadius: '50%',
+                      width: 20,
+                      height: 20,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.75rem',
+                      fontWeight: 500
+                    }}>
+                      {document.page_count || 0}
                     </Box>
                   </Box>
+                  
+                  <Box sx={{ p: 2 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 500, mb: 0.5 }}>
+                      {document.title}
+                    </Typography>
 
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2, minHeight: 40 }}>
-                    {document.summary}
-                  </Typography>
 
-                  {document.people.length > 0 && (
-                    <Box sx={{ mb: 2 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        People:
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        {formatDocumentDate(document.document_date || document.date_processed)}
                       </Typography>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {renderPeopleList(document.people)}
-                        {document.people.length > 2 && (
-                          <Chip
-                            label={`+${document.people.length - 2} more`}
-                            size="small"
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center', flexWrap: 'wrap' }}>
+                          <Chip 
+                            label={document.sender || 'Unknown'} 
+                            size="small" 
                             variant="outlined"
+                            sx={{ fontSize: '0.7rem', height: 20 }}
                           />
-                        )}
+                          <Typography variant="caption" color="text.secondary" sx={{ mx: 0.5 }}>
+                            →
+                          </Typography>
+                          <Chip 
+                            label={document.recipient || 'Unknown'} 
+                            size="small" 
+                            variant="outlined"
+                            sx={{ fontSize: '0.7rem', height: 20 }}
+                          />
+                        </Box>
+                        <IconButton size="small">
+                          <MoreIcon />
+                        </IconButton>
                       </Box>
                     </Box>
-                  )}
-
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="caption" color="text.secondary">
-                      {document.date}
-                    </Typography>
-                    <IconButton size="small">
-                      <MoreIcon />
-                    </IconButton>
                   </Box>
                 </CardContent>
             </Card>
@@ -623,61 +922,125 @@ const DocumentsPage: React.FC = () => {
                 cursor: 'pointer',
                 '&:hover': {
                   backgroundColor: 'action.hover',
+                  '& .document-checkbox': {
+                    opacity: 1,
+                  },
                 },
                 borderBottom: 1,
                 borderColor: 'divider',
                 minHeight: 88,
                 position: 'relative',
               }}
-              onClick={() => {/* TODO: Open document */}}
+                      onClick={() => handleDocumentClick(document.id)}
             >
               <Checkbox
                 checked={selectedDocuments.includes(document.id)}
-                onChange={() => handleSelectDocument(document.id)}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  handleSelectDocument(document.id);
+                }}
+                className="document-checkbox"
                 sx={{
                   position: 'absolute',
                   top: 16,
                   right: 16,
                   zIndex: 1,
+                  opacity: 0,
+                  transition: 'opacity 0.2s ease',
+                  '&.Mui-checked': {
+                    opacity: 1,
+                  },
                 }}
               />
               
               <ListItemAvatar sx={{ mr: 2 }}>
-                <Avatar sx={{ backgroundColor: 'primary.main', width: 56, height: 56 }}>
-                  <DocumentIcon />
-                </Avatar>
+                <Box sx={{ 
+                  position: 'relative',
+                  width: 56,
+                  height: 56,
+                  backgroundColor: 'grey.100',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'hidden',
+                  borderRadius: 1
+                }}>
+                  {document.page_count > 0 ? (
+                    <img 
+                      src={`http://localhost:5001/documents/${document.id}/images/1?t=${Date.now()}`}
+                      alt="Document thumbnail"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const fallback = target.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <Box sx={{
+                    display: document.page_count > 0 ? 'none' : 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'text.secondary',
+                    fontSize: 20
+                  }}>
+                    📄
+                  </Box>
+                  {/* Page Count Badge */}
+                  <Box sx={{
+                    position: 'absolute',
+                    top: 2,
+                    left: 2,
+                    backgroundColor: 'primary.main',
+                    color: 'primary.contrastText',
+                    borderRadius: '50%',
+                    width: 18,
+                    height: 18,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.7rem',
+                    fontWeight: 500
+                  }}>
+                    {document.page_count || 0}
+                  </Box>
+                </Box>
               </ListItemAvatar>
               
               <ListItemText
                 primary={document.title}
                 secondary={
                   <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      {document.summary}
-                    </Typography>
-                    {document.people.length > 0 && (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {renderPeopleList(document.people)}
-                        {document.people.length > 2 && (
-                          <Chip
-                            label={`+${document.people.length - 2} more`}
-                            size="small"
-                            variant="outlined"
-                          />
-                        )}
-                      </Box>
-                    )}
+                    <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center', flexWrap: 'wrap' }}>
+                      <Chip 
+                        label={document.sender || 'Unknown'} 
+                        size="small" 
+                        variant="outlined"
+                        sx={{ fontSize: '0.7rem', height: 20 }}
+                      />
+                      <Typography variant="caption" color="text.secondary" sx={{ mx: 0.5 }}>
+                        →
+                      </Typography>
+                      <Chip 
+                        label={document.recipient || 'Unknown'} 
+                        size="small" 
+                        variant="outlined"
+                        sx={{ fontSize: '0.7rem', height: 20 }}
+                      />
+                    </Box>
                   </Box>
                 }
               />
               
               <ListItemSecondaryAction>
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Typography variant="caption" color="text.secondary">
-                    {document.date}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {document.page_count} pages
+                    {formatDocumentDate(document.document_date || document.date_processed)}
                   </Typography>
                   <IconButton size="small">
                     <MoreIcon />
@@ -689,6 +1052,65 @@ const DocumentsPage: React.FC = () => {
         </List>
       )}
 
+      {/* Floating Action Bar */}
+      {showFloatingActions && (
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 24,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            display: 'flex',
+            gap: 1,
+            bgcolor: 'background.paper',
+            borderRadius: 3,
+            boxShadow: 3,
+            p: 1,
+            border: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              px: 2,
+              color: 'text.secondary',
+            }}
+          >
+            {selectedDocuments.length} selected
+          </Typography>
+          
+          <Button
+            variant="contained"
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={handleDeleteDocuments}
+            sx={{
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: 500,
+            }}
+          >
+            Delete
+          </Button>
+          
+          <Button
+            variant="outlined"
+            onClick={() => setSelectedDocuments([])}
+            sx={{
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: 500,
+            }}
+          >
+            Cancel
+          </Button>
+        </Box>
+      )}
+
       {/* Floating Action Button */}
       <Fab
         color="primary"
@@ -697,13 +1119,98 @@ const DocumentsPage: React.FC = () => {
           bottom: 24,
           right: 24,
         }}
-        onClick={() => {/* TODO: Implement upload */}}
+        onClick={handleUploadClick}
+        disabled={isUploading}
       >
         <AddIcon />
       </Fab>
+
+      {/* Upload progress HUD (M3) */}
+      {Object.keys(jobStatuses).length > 0 && (() => {
+        const jobs: any[] = Object.values(jobStatuses);
+        const total = jobs.length;
+        const completed = jobs.filter(j => j.state === 'complete' || j.state === 'warning').length;
+        const errored = jobs.filter(j => j.state === 'error').length;
+        const percent = Math.round((completed / total) * 100);
+        return (
+          <Box sx={{
+            position: 'fixed',
+            right: 24,
+            bottom: 24,
+            bgcolor: 'background.paper',
+            borderRadius: 2,
+            boxShadow: 6,
+            p: 2,
+            width: 380,
+            maxHeight: 480,
+            overflowY: 'auto',
+            zIndex: 1300,
+            border: '1px solid',
+            borderColor: 'divider',
+          }}>
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="subtitle1">Uploading documents</Typography>
+              <Typography variant="caption" color="text.secondary">
+                {completed}/{total} completed{errored ? `, ${errored} failed` : ''}
+              </Typography>
+              <LinearProgress variant="determinate" value={percent} sx={{ mt: 1 }} />
+            </Box>
+            {jobs.map((j: any) => (
+              <Box key={j.id} sx={{ mb: 1.25 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor:
+                    j.state === 'complete' ? 'success.main' : j.state === 'warning' ? 'warning.main' : j.state === 'error' ? 'error.main' : 'primary.main' }} />
+                  <Typography variant="body2" sx={{ flex: 1 }}>
+                    {j.filename || 'File'}
+                  </Typography>
+                </Box>
+                <Typography variant="caption" color="text.secondary">
+                  {j.message || j.state}
+                </Typography>
+                <LinearProgress
+                  variant={(j.state === 'complete' || j.state === 'warning') ? 'determinate' : (typeof j.progress === 'number' && j.progress > 0 ? 'determinate' : 'indeterminate')}
+                  value={(j.state === 'complete' || j.state === 'warning') ? 100 : (typeof j.progress === 'number' ? j.progress : undefined)}
+                  sx={{ mt: 0.5 }}
+                />
+              </Box>
+            ))}
+          </Box>
+        );
+      })()}
     </Box>
     </ClickAwayListener>
   );
 };
 
 export default DocumentsPage;
+
+// Small component that pings Flask /api/ping and shows status
+function ProbeChip() {
+  const [label, setLabel] = React.useState<string>('API: checking…');
+  const [color, setColor] = React.useState<'default' | 'success' | 'error'>('default');
+
+  React.useEffect(() => {
+    const controller = new AbortController();
+    fetch('http://localhost:5001/api/ping', { signal: controller.signal, credentials: 'include' })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(String(res.status));
+        const data = await res.json();
+        if (data && data.success) {
+          setLabel('API OK');
+          setColor('success');
+        } else {
+          setLabel('API bad response');
+          setColor('error');
+        }
+      })
+      .catch(() => {
+        setLabel('API error');
+        setColor('error');
+      });
+    return () => controller.abort();
+  }, []);
+
+  return (
+    <Chip size="small" label={label} color={color as any} variant={color === 'default' ? 'outlined' : 'filled'} />
+  );
+}

@@ -18,7 +18,9 @@
       "file_size": 54985766,
       "people_count": 0,
       "summary": "This appears to be a personal letter involving National Bank, His Zob. discusses family matters, bus...",
-      "page_count": 2
+      "page_count": 2,
+      "status": "Editing",
+      "document_date": "1938-01-05"
     },
     "doc_20250925_165151": {
       "title": "01-27-2003_eng_letter-001 - 2025-09-25",
@@ -28,16 +30,19 @@
       "file_size": 196279,
       "people_count": 0,
       "summary": "WHO: The sender of the document is identified as \"Grandma\" and the recipient is named Gabe. The send...",
-      "page_count": 2
+      "page_count": 2,
+      "status": "Editing",
+      "document_date": "2003-01-27",
+      "language": []
     },
     "doc_20250926_164736": {
-      "title": "003-1941-07-20-fre - 2025-09-26",
+      "title": "Test Title",
       "date_processed": "2025-09-26T16:48:30.328142",
       "source_language": "unknown",
       "target_language": "en",
       "file_size": 534312,
-      "people_count": 0,
-      "summary": "This appears to be a personal letter involving On Jalmelle, Jon Zob, Zweigenthal Agele. discusses bu...",
+      "people_count": 2,
+      "summary": "Test Summary",
       "page_count": 4,
       "status": "Editing"
     },
@@ -50,7 +55,10 @@
       "people_count": 2,
       "summary": "WHO: The text is written by Eduoard Maurel to Madam Ruberk in Neidenthal.\nNATURE: This document appe...",
       "page_count": 4,
-      "status": "Editing"
+      "status": "Editing",
+      "language": [
+        "French"
+      ]
     },
     "doc_20250926_173124": {
       "title": "005-XXX-fre - 2025-09-26",
@@ -71,7 +79,8 @@
       "people_count": 1,
       "summary": "This appears to be a personal letter involving His Rol. discusses business/financial matters, health...",
       "page_count": 2,
-      "status": "Editing"
+      "status": "Editing",
+      "document_date": "1940-05-08"
     },
     "doc_20250927_100809": {
       "title": "049-1940-05-16-fre - 2025-09-27",
@@ -82,7 +91,8 @@
       "people_count": 5,
       "summary": "This appears to be a personal letter involving Military Postal, Robert Lweisenthal, Vel Rota. discus...",
       "page_count": 3,
-      "status": "Editing"
+      "status": "Editing",
+      "document_date": "1940-05-16"
     },
     "doc_20250927_102706": {
       "title": "054-1940-09-18-fre - 2025-09-27",
@@ -93,7 +103,8 @@
       "people_count": 3,
       "summary": "This appears to be a personal letter involving Police Station, Inveigenthal Robert, Rue Republique. ...",
       "page_count": 1,
-      "status": "Editing"
+      "status": "Editing",
+      "document_date": "1940-09-18"
     },
     "doc_20250927_104916": {
       "title": "051-1940-09-22-fre - 2025-09-27",
@@ -104,7 +115,8 @@
       "people_count": 3,
       "summary": "This appears to be a personal letter involving Mme Pelisuir. discusses family matters, health concer...",
       "page_count": 3,
-      "status": "New"
+      "status": "New",
+      "document_date": "1940-09-22"
     },
     "doc_20250927_105223": {
       "title": "047-1940-05-22-fre - 2025-09-27",
@@ -112,10 +124,12 @@
       "source_language": "unknown",
       "target_language": "en",
       "file_size": 292485,
-      "people_count": 8,
+      "people_count": 0,
       "summary": "This appears to be a personal letter involving Bubi Bubi, Deza Here, Le Vaguemestre. discusses busin...",
       "page_count": 3,
-      "status": "Editing"
+      "status": "Editing",
+      "document_date": "1940-05-22",
+      "language": []
     },
     "doc_20250927_111247": {
       "title": "053-xxx-ger - 2025-09-27",
@@ -135,7 +149,8 @@
       "file_size": 397545,
       "people_count": 6,
       "summary": "This appears to be a personal letter involving Lo Bur, Robert Erreipenthal. discusses family matters...",
-      "page_count": 4
+      "page_count": 4,
+      "document_date": "1940-05-14"
     },
     "doc_20250927_122524": {
       "title": "048-1940-07-24-fre - 2025-09-27",
@@ -143,9 +158,11 @@
       "source_language": "unknown",
       "target_language": "en",
       "file_size": 565968,
-      "people_count": 3,
+      "people_count": 2,
       "summary": "This appears to be a personal letter involving Nocigenthal Mine, Cameri Versa, Nocigenthal Mine Mone...",
-      "page_count": 5
+      "page_count": 5,
+      "status": "Editing",
+      "document_date": "1940-07-24"
     },
     "doc_20250930_130320": {
       "title": "099-1933-08-24-ger - 2025-09-30",
@@ -153,11 +170,31 @@
       "source_language": "unknown",
       "target_language": "en",
       "file_size": 783700,
-      "people_count": 6,
+      "people_count": 3,
       "summary": "This appears to be a personal letter involving Zabalein Now, If Ellen, Haus Kalm. discusses business...",
       "page_count": 6,
       "status": "Editing",
-      "last_commented_at": "2025-10-04T09:31:35.635545"
+      "last_commented_at": "2025-10-04T19:35:29.692796",
+      "language": [
+        "German"
+      ],
+      "document_date": "1933-08-24"
+    },
+    "doc_20251005_132137": {
+      "title": "084-1932-08-09-ger - 2025-10-05",
+      "date_processed": "2025-10-05T13:22:10.102556",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 399334,
+      "people_count": 2,
+      "summary": "TEST SUMMARY",
+      "page_count": 2,
+      "status": "Editing",
+      "language": [
+        "German"
+      ],
+      "last_commented_at": "2025-10-05T15:41:47.565028",
+      "document_date": "1932-08-09"
     }
   },
   "people": {
@@ -528,5 +565,584 @@
       ]
     }
   },
-  "last_updated": "2025-10-04T09:46:22.464535"
+  "last_updated": "2025-10-05T17:32:17.850147",
+  "references": {
+    "4637e6cd-0430-44c1-a1dd-9c1b84c2fcad": {
+      "id": "4637e6cd-0430-44c1-a1dd-9c1b84c2fcad",
+      "type": "PERSON",
+      "name": "Elizabeth Zentall",
+      "aliases": [
+        "elizabeth zentall",
+        "Elizabeth Zentall",
+        "Liz"
+      ],
+      "notes": "Family member mentioned in correspondence",
+      "mergedIntoId": "deleted",
+      "createdAt": "2025-10-04T20:17:39.740150",
+      "updatedAt": "2025-10-04T20:53:47.376632"
+    },
+    "09b3986e-0c3c-4ce5-a4c8-930c42f36c03": {
+      "id": "09b3986e-0c3c-4ce5-a4c8-930c42f36c03",
+      "type": "PERSON",
+      "name": "Gabe Zentall",
+      "aliases": [
+        "Gabriel",
+        "gabe",
+        "Gabe",
+        "his rol",
+        "Gabe Zentall",
+        "His Rol"
+      ],
+      "notes": "Recipient of many letters\n\nMentioned in German letters",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-04T20:17:39.740494",
+      "updatedAt": "2025-10-04T20:57:52.879343"
+    },
+    "b6512987-edcd-4e11-a5f8-d4b106b74a26": {
+      "id": "b6512987-edcd-4e11-a5f8-d4b106b74a26",
+      "type": "PLACE",
+      "name": "M\u00fcnster",
+      "aliases": [
+        "M\u00fcnster",
+        "Munster",
+        "M\u00fcnster, Germany"
+      ],
+      "notes": "German city mentioned in correspondence",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-04T20:17:39.741128",
+      "updatedAt": "2025-10-04T20:17:39.741128"
+    },
+    "439cd4f4-0efb-41c3-a34c-705710f2ea89": {
+      "id": "439cd4f4-0efb-41c3-a34c-705710f2ea89",
+      "type": "PLACE",
+      "name": "Haus Kalm",
+      "aliases": [
+        "Haus Kalm",
+        "Haus Kalm, Germany"
+      ],
+      "notes": "Specific location mentioned in letters",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-04T20:17:39.741667",
+      "updatedAt": "2025-10-04T20:17:39.741667"
+    },
+    "1bce3659-57bd-4b51-a610-5adae3a5abcf": {
+      "id": "1bce3659-57bd-4b51-a610-5adae3a5abcf",
+      "type": "PLACE",
+      "name": "Paris",
+      "aliases": [
+        "Paris",
+        "Paris, France"
+      ],
+      "notes": "City mentioned in travel plans",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-04T20:17:39.742250",
+      "updatedAt": "2025-10-04T20:17:39.742250"
+    },
+    "c7ab04e8-ff9b-4bef-b9bc-a953a8bd7b9f": {
+      "id": "c7ab04e8-ff9b-4bef-b9bc-a953a8bd7b9f",
+      "type": "PLACE",
+      "name": "Hamburg",
+      "aliases": [
+        "Hamburg",
+        "Hamburg, Germany"
+      ],
+      "notes": "German city mentioned in travel plans",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-04T20:17:39.742597",
+      "updatedAt": "2025-10-04T20:17:39.742597"
+    },
+    "a117d3dd-ec7a-4f06-8f73-6db0db2d16aa": {
+      "id": "a117d3dd-ec7a-4f06-8f73-6db0db2d16aa",
+      "type": "EVENT",
+      "name": "World War II",
+      "aliases": [
+        "World War II",
+        "WWII",
+        "World War 2",
+        "Second World War"
+      ],
+      "notes": "Historical context for the correspondence",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-04T20:17:39.742920",
+      "updatedAt": "2025-10-04T20:17:39.742920"
+    },
+    "3039351a-bf9f-40f4-ac68-f193137cdd81": {
+      "id": "3039351a-bf9f-40f4-ac68-f193137cdd81",
+      "type": "EVENT",
+      "name": "Business Exhibition",
+      "aliases": [
+        "Business Exhibition",
+        "exhibition",
+        "trade show",
+        "business display",
+        "test",
+        "trying"
+      ],
+      "notes": "Business event mentioned in letters",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-04T20:17:39.743243",
+      "updatedAt": "2025-10-05T05:18:31.225062"
+    },
+    "f5e135e4-9f11-4672-9197-c4ce531b47e4": {
+      "id": "f5e135e4-9f11-4672-9197-c4ce531b47e4",
+      "type": "PERSON",
+      "name": "Test Person 2",
+      "aliases": [
+        "Test Person",
+        "test",
+        "testing"
+      ],
+      "notes": "Test reference",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-04T20:20:37.731056",
+      "updatedAt": "2025-10-04T20:23:04.398442"
+    },
+    "0d4dffb3-67cd-42fa-8199-9ef823086ea0": {
+      "id": "0d4dffb3-67cd-42fa-8199-9ef823086ea0",
+      "type": "PERSON",
+      "name": "Robert Zweigenthal",
+      "aliases": [
+        "Liz",
+        "Robert Zweigenthal",
+        "Elizabeth Zentall",
+        "Robert Zentall",
+        "elizabeth zentall",
+        "robert lweisenthal",
+        "Robert Lweisenthal",
+        "Bob"
+      ],
+      "notes": "Main correspondent in the letters\n\nMain correspondent in the letters\n\nFamily member mentioned in correspondence\n\nFamily member mentioned in correspondence\n\nMain correspondent in the letters\n\nFamily member mentioned in correspondence\n\nFamily member mentioned in correspondence",
+      "mergedIntoId": "deleted",
+      "createdAt": "2025-10-04T20:26:30.699219",
+      "updatedAt": "2025-10-04T21:00:09.335578"
+    },
+    "deleted": {
+      "id": "deleted",
+      "type": "other",
+      "name": "Robert Zentall",
+      "aliases": [],
+      "notes": "Placeholder for deleted references",
+      "mergedIntoId": "deleted",
+      "createdAt": "2025-10-04T20:50:13.295351",
+      "updatedAt": "2025-10-04T21:12:54.625561"
+    },
+    "6003dc55-2ada-464d-ac6b-80f9c92cd9b7": {
+      "id": "6003dc55-2ada-464d-ac6b-80f9c92cd9b7",
+      "type": "PERSON",
+      "name": "Robert Zentall",
+      "aliases": [
+        "Robert Zentall",
+        "Bob",
+        "Grandpa",
+        "Robert Zweigenthal"
+      ],
+      "notes": "",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-04T21:13:04.743186",
+      "updatedAt": "2025-10-05T17:32:17.850120"
+    },
+    "cedb9670-881d-47e9-8c29-e13270ee387c": {
+      "id": "cedb9670-881d-47e9-8c29-e13270ee387c",
+      "type": "PERSON",
+      "name": "new one",
+      "aliases": [
+        "new one"
+      ],
+      "notes": "",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-05T05:47:37.991640",
+      "updatedAt": "2025-10-05T05:47:37.991640"
+    },
+    "9839420e-fcf8-45a5-9653-a00e0d7dd416": {
+      "id": "9839420e-fcf8-45a5-9653-a00e0d7dd416",
+      "type": "PERSON",
+      "name": "extra one",
+      "aliases": [
+        "extra one"
+      ],
+      "notes": "",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-05T05:47:37.996293",
+      "updatedAt": "2025-10-05T05:47:37.996293"
+    },
+    "6ec7fa1d-3f00-4ccf-a691-9bb49c1ac06c": {
+      "id": "6ec7fa1d-3f00-4ccf-a691-9bb49c1ac06c",
+      "type": "PERSON",
+      "name": "Elizabeth Aigner",
+      "aliases": [
+        "Elizabeth Aigner",
+        "Elizabeth Zentall",
+        "Bubi",
+        "Grandma",
+        "Betty",
+        "Betty Zentall"
+      ],
+      "notes": "",
+      "mergedIntoId": null,
+      "createdAt": "2025-10-05T05:51:33.816823",
+      "updatedAt": "2025-10-05T05:51:33.816823"
+    }
+  },
+  "audit_logs": [
+    {
+      "id": "audit_20251005_140000",
+      "timestamp": "2025-10-05T14:00:00.000000",
+      "action": "DOCUMENT_CREATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250925_145858",
+      "actor": "system",
+      "description": "Document \"01-05-1938_ger_letter-002 - 2025-09-25\" created",
+      "metadata": {
+        "title": "01-05-1938_ger_letter-002 - 2025-09-25",
+        "filename": "01-05-1938_ger_letter-002.pdf"
+      }
+    },
+    {
+      "id": "audit_20251005_140100",
+      "timestamp": "2025-10-05T14:01:00.000000",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250925_145858",
+      "actor": "user",
+      "description": "Document \"01-05-1938_ger_letter-002 - 2025-09-25\" updated",
+      "metadata": {
+        "changes": [
+          "summary",
+          "status"
+        ],
+        "title": "01-05-1938_ger_letter-002 - 2025-09-25"
+      }
+    },
+    {
+      "id": "audit_20251005_140200",
+      "timestamp": "2025-10-05T14:02:00.000000",
+      "action": "DOCUMENT_PROCESS",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250925_145858",
+      "actor": "system",
+      "description": "Document \"01-05-1938_ger_letter-002 - 2025-09-25\" processed",
+      "metadata": {
+        "processingType": "OCR",
+        "timestamp": "2025-10-05T14:02:00.000000"
+      }
+    },
+    {
+      "id": "audit_20251005_141640481671",
+      "timestamp": "2025-10-05T14:16:40.481819",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250926_173049",
+      "actor": "user",
+      "description": "Document '004-1940-fre - 2025-09-26' updated",
+      "metadata": {
+        "changes": [
+          "title",
+          "summary",
+          "date_processed",
+          "sender",
+          "recipient",
+          "sender_location",
+          "recipient_location",
+          "people",
+          "status",
+          "original_text",
+          "translated_text",
+          "language"
+        ],
+        "title": "004-1940-fre - 2025-09-26"
+      }
+    },
+    {
+      "id": "audit_20251005_143628293668",
+      "timestamp": "2025-10-05T14:36:28.293697",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250926_173049",
+      "actor": "user",
+      "description": "Document '004-1940-fre - 2025-09-26' updated",
+      "metadata": {
+        "changes": [
+          "title",
+          "summary",
+          "date_processed",
+          "sender",
+          "recipient",
+          "sender_location",
+          "recipient_location",
+          "people",
+          "status",
+          "original_text",
+          "translated_text",
+          "language"
+        ],
+        "title": "004-1940-fre - 2025-09-26"
+      }
+    },
+    {
+      "id": "audit_20251005_144700873738",
+      "timestamp": "2025-10-05T14:47:00.873772",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250926_173049",
+      "actor": "gzentall",
+      "description": "Document '004-1940-fre - 2025-09-26' updated",
+      "metadata": {
+        "changes": [
+          "title",
+          "summary",
+          "date_processed",
+          "sender",
+          "recipient",
+          "sender_location",
+          "recipient_location",
+          "people",
+          "status",
+          "original_text",
+          "translated_text",
+          "language"
+        ],
+        "title": "004-1940-fre - 2025-09-26"
+      }
+    },
+    {
+      "id": "audit_20251005_145334278870",
+      "timestamp": "2025-10-05T14:53:34.279095",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20251005_132137",
+      "actor": "Gabe Zentall",
+      "description": "Document '084-1932-08-09-ger - 2025-10-05' updated",
+      "metadata": {
+        "changes": [
+          "recipient"
+        ],
+        "title": "084-1932-08-09-ger - 2025-10-05"
+      }
+    },
+    {
+      "id": "audit_20251005_145401910529",
+      "timestamp": "2025-10-05T14:54:01.910563",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20251005_132137",
+      "actor": "Gabe Zentall",
+      "description": "Document '084-1932-08-09-ger - 2025-10-05' updated",
+      "metadata": {
+        "changes": [
+          "people"
+        ],
+        "title": "084-1932-08-09-ger - 2025-10-05"
+      }
+    },
+    {
+      "id": "audit_20251005_145717066356",
+      "timestamp": "2025-10-05T14:57:17.066382",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20251005_132137",
+      "actor": "Gabe Zentall",
+      "description": "Document '084-1932-08-09-ger - 2025-10-05' updated",
+      "metadata": {
+        "changes": [
+          "summary"
+        ],
+        "title": "084-1932-08-09-ger - 2025-10-05"
+      }
+    },
+    {
+      "id": "audit_20251005_154154561376",
+      "timestamp": "2025-10-05T15:41:54.561432",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20251005_132137",
+      "actor": "Gabe Zentall",
+      "description": "Document '084-1932-08-09-ger - 2025-10-05' updated",
+      "metadata": {
+        "changes": [],
+        "title": "084-1932-08-09-ger - 2025-10-05"
+      }
+    },
+    {
+      "id": "audit_20251005_164417955000",
+      "timestamp": "2025-10-05T16:44:17.955013",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250925_145858",
+      "actor": "system",
+      "description": "Document '01-05-1938_ger_letter-002 - 2025-09-25' updated",
+      "metadata": {
+        "changes": [],
+        "title": "01-05-1938_ger_letter-002 - 2025-09-25"
+      }
+    },
+    {
+      "id": "audit_20251005_164417956609",
+      "timestamp": "2025-10-05T16:44:17.956613",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250925_165151",
+      "actor": "system",
+      "description": "Document '01-27-2003_eng_letter-001 - 2025-09-25' updated",
+      "metadata": {
+        "changes": [],
+        "title": "01-27-2003_eng_letter-001 - 2025-09-25"
+      }
+    },
+    {
+      "id": "audit_20251005_164417958261",
+      "timestamp": "2025-10-05T16:44:17.958265",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250926_173158",
+      "actor": "system",
+      "description": "Document '006-1940-05-08-fre - 2025-09-26' updated",
+      "metadata": {
+        "changes": [],
+        "title": "006-1940-05-08-fre - 2025-09-26"
+      }
+    },
+    {
+      "id": "audit_20251005_164417960725",
+      "timestamp": "2025-10-05T16:44:17.960750",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250927_100809",
+      "actor": "system",
+      "description": "Document '049-1940-05-16-fre - 2025-09-27' updated",
+      "metadata": {
+        "changes": [],
+        "title": "049-1940-05-16-fre - 2025-09-27"
+      }
+    },
+    {
+      "id": "audit_20251005_164417962890",
+      "timestamp": "2025-10-05T16:44:17.962893",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250927_102706",
+      "actor": "system",
+      "description": "Document '054-1940-09-18-fre - 2025-09-27' updated",
+      "metadata": {
+        "changes": [],
+        "title": "054-1940-09-18-fre - 2025-09-27"
+      }
+    },
+    {
+      "id": "audit_20251005_164417965652",
+      "timestamp": "2025-10-05T16:44:17.965656",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250927_104916",
+      "actor": "system",
+      "description": "Document '051-1940-09-22-fre - 2025-09-27' updated",
+      "metadata": {
+        "changes": [],
+        "title": "051-1940-09-22-fre - 2025-09-27"
+      }
+    },
+    {
+      "id": "audit_20251005_164417968070",
+      "timestamp": "2025-10-05T16:44:17.968194",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250927_105223",
+      "actor": "system",
+      "description": "Document '047-1940-05-22-fre - 2025-09-27' updated",
+      "metadata": {
+        "changes": [],
+        "title": "047-1940-05-22-fre - 2025-09-27"
+      }
+    },
+    {
+      "id": "audit_20251005_164417970123",
+      "timestamp": "2025-10-05T16:44:17.970127",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250927_113042",
+      "actor": "system",
+      "description": "Document '057-1940-05-14-fre - 2025-09-27' updated",
+      "metadata": {
+        "changes": [],
+        "title": "057-1940-05-14-fre - 2025-09-27"
+      }
+    },
+    {
+      "id": "audit_20251005_164417971808",
+      "timestamp": "2025-10-05T16:44:17.971811",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250927_122524",
+      "actor": "system",
+      "description": "Document '048-1940-07-24-fre - 2025-09-27' updated",
+      "metadata": {
+        "changes": [],
+        "title": "048-1940-07-24-fre - 2025-09-27"
+      }
+    },
+    {
+      "id": "audit_20251005_164417974124",
+      "timestamp": "2025-10-05T16:44:17.974127",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250930_130320",
+      "actor": "system",
+      "description": "Document '099-1933-08-24-ger - 2025-09-30' updated",
+      "metadata": {
+        "changes": [],
+        "title": "099-1933-08-24-ger - 2025-09-30"
+      }
+    },
+    {
+      "id": "audit_20251005_164417976176",
+      "timestamp": "2025-10-05T16:44:17.976189",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20251005_132137",
+      "actor": "system",
+      "description": "Document '084-1932-08-09-ger - 2025-10-05' updated",
+      "metadata": {
+        "changes": [
+          "document_date"
+        ],
+        "title": "084-1932-08-09-ger - 2025-10-05"
+      }
+    },
+    {
+      "id": "audit_20251005_172938635414",
+      "timestamp": "2025-10-05T17:29:38.635493",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250927_105223",
+      "actor": "Gabe Zentall",
+      "description": "Document '047-1940-05-22-fre - 2025-09-27' updated",
+      "metadata": {
+        "changes": [
+          "date_processed",
+          "sender",
+          "recipient",
+          "people",
+          "language"
+        ],
+        "title": "047-1940-05-22-fre - 2025-09-27"
+      }
+    },
+    {
+      "id": "audit_20251005_172951923257",
+      "timestamp": "2025-10-05T17:29:51.923291",
+      "action": "DOCUMENT_UPDATE",
+      "target_type": "DOCUMENT",
+      "target_id": "doc_20250925_165151",
+      "actor": "Gabe Zentall",
+      "description": "Document '01-27-2003_eng_letter-001 - 2025-09-25' updated",
+      "metadata": {
+        "changes": [
+          "date_processed",
+          "sender",
+          "recipient",
+          "language"
+        ],
+        "title": "01-27-2003_eng_letter-001 - 2025-09-25"
+      }
+    }
+  ]
 }

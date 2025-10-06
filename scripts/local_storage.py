@@ -43,6 +43,7 @@ class LocalOCRStorage:
             "context_notes": {},
             "references": {},
             "document_references": {},
+            "audit_logs": [],
             "last_updated": datetime.now().isoformat()
         }
     
@@ -51,6 +52,73 @@ class LocalOCRStorage:
         self.metadata["last_updated"] = datetime.now().isoformat()
         with open(self.metadata_file, 'w') as f:
             json.dump(self.metadata, f, indent=2)
+    
+    def _add_audit_log(self, action: str, target_type: str, target_id: str, 
+                      actor: str = "system", description: str = "", 
+                      metadata: Dict = None) -> str:
+        """Add an audit log entry."""
+        if "audit_logs" not in self.metadata:
+            self.metadata["audit_logs"] = []
+        
+        log_id = f"audit_{datetime.now().strftime('%Y%m%d_%H%M%S%f')}"
+        log_entry = {
+            "id": log_id,
+            "timestamp": datetime.now().isoformat(),
+            "action": action,
+            "target_type": target_type,
+            "target_id": target_id,
+            "actor": actor,
+            "description": description,
+            "metadata": metadata or {}
+        }
+        
+        self.metadata["audit_logs"].append(log_entry)
+        self._save_metadata()
+        return log_id
+    
+    def get_document_history(self, doc_id: str, page: int = 1, limit: int = 100, 
+                           start_date: str = None, end_date: str = None, 
+                           event_type: str = "all") -> Dict:
+        """Get history for a specific document."""
+        if "audit_logs" not in self.metadata:
+            return {
+                "success": True,
+                "data": [],
+                "pagination": {"page": page, "limit": limit, "total": 0, "totalPages": 0}
+            }
+        
+        # Filter logs for this document
+        filtered_logs = []
+        for log in self.metadata["audit_logs"]:
+            if log.get("target_type") == "DOCUMENT" and log.get("target_id") == doc_id:
+                # Apply date filters
+                if start_date and log["timestamp"] < start_date:
+                    continue
+                if end_date and log["timestamp"] > end_date + "T23:59:59Z":
+                    continue
+                if event_type != "all" and log.get("action") != event_type:
+                    continue
+                filtered_logs.append(log)
+        
+        # Sort by timestamp (newest first)
+        filtered_logs.sort(key=lambda x: x["timestamp"], reverse=True)
+        
+        # Apply pagination
+        total = len(filtered_logs)
+        start_idx = (page - 1) * limit
+        end_idx = start_idx + limit
+        paginated_logs = filtered_logs[start_idx:end_idx]
+        
+        return {
+            "success": True,
+            "data": paginated_logs,
+            "pagination": {
+                "page": page,
+                "limit": limit,
+                "total": total,
+                "totalPages": (total + limit - 1) // limit
+            }
+        }
     
     def add_document(self, document_data: Dict, doc_id: str = None) -> str:
         """Add a processed document to local storage."""
@@ -102,6 +170,16 @@ class LocalOCRStorage:
                     # Add document if new
                     if doc_id not in self.metadata["people"][person_name]["documents"]:
                         self.metadata["people"][person_name]["documents"].append(doc_id)
+        
+        # Add audit log
+        self._add_audit_log(
+            action="DOCUMENT_CREATE",
+            target_type="DOCUMENT",
+            target_id=doc_id,
+            actor="system",
+            description=f"Document '{document_data.get('title', doc_id)}' created",
+            metadata={"title": document_data.get("title", ""), "filename": document_data.get("filename", "")}
+        )
         
         self._save_metadata()
         return doc_id
@@ -159,7 +237,7 @@ class LocalOCRStorage:
                 self._save_metadata()
         return None
     
-    def update_document(self, doc_id: str, updates: Dict, regenerate_summary: bool = False) -> bool:
+    def update_document(self, doc_id: str, updates: Dict, regenerate_summary: bool = False, actor: str = "user") -> bool:
         """Update a document with new data."""
         try:
             # Get existing document
@@ -169,6 +247,11 @@ class LocalOCRStorage:
             
             with open(doc_file, 'r') as f:
                 document = json.load(f)
+            
+            # Capture old values before updating for audit log
+            old_values = {}
+            for key, new_value in updates.items():
+                old_values[key] = document.get(key)
             
             # Update the document
             document.update(updates)
@@ -227,10 +310,32 @@ class LocalOCRStorage:
                     metadata["source_language"] = updates["source_language"]
                 if "target_language" in updates:
                     metadata["target_language"] = updates["target_language"]
+                if "document_date" in updates:
+                    metadata["document_date"] = updates["document_date"]
+                if "language" in updates:
+                    metadata["language"] = updates["language"]
                 if "status" in updates:
                     metadata["status"] = updates["status"]
                 
                 self._save_metadata()
+            
+            # Add audit log for document update - only log fields that actually changed
+            changes = []
+            for key, new_value in updates.items():
+                old_value = old_values.get(key)
+                # Compare values, handling different data types
+                if old_value != new_value:
+                    changes.append(key)
+            
+            # Always create audit log, but only include changed fields
+            self._add_audit_log(
+                action="DOCUMENT_UPDATE",
+                target_type="DOCUMENT",
+                target_id=doc_id,
+                actor=actor,
+                description=f"Document '{document.get('title', doc_id)}' updated",
+                metadata={"changes": changes, "title": document.get("title", "")}
+            )
             
             return True
             
@@ -986,6 +1091,9 @@ class LocalOCRStorage:
         """List references with optional filtering."""
         refs = list(self.metadata.get("references", {}).values())
         
+        # Filter out soft-deleted references (those merged into "deleted")
+        refs = [r for r in refs if r.get("mergedIntoId") != "deleted"]
+        
         if ref_type:
             refs = [r for r in refs if r.get("type") == ref_type]
         
@@ -1153,6 +1261,29 @@ class LocalOCRStorage:
             return references
         except Exception as e:
             print(f"Error listing references for document {doc_id}: {e}")
+            return []
+
+    def list_documents_for_reference(self, ref_id: str) -> List[Dict]:
+        """List all documents that reference the given reference ID."""
+        try:
+            relations = self.metadata.get("document_references", {})
+            doc_ids = [rel.get("documentId") for rel in relations.values() if rel.get("referenceId") == ref_id]
+
+            documents = []
+            for doc_id in doc_ids:
+                doc_meta = self.metadata.get("documents", {}).get(doc_id)
+                if doc_meta:
+                    documents.append({
+                        "id": doc_id,
+                        "title": doc_meta.get("title"),
+                        "filename": doc_meta.get("filename"),
+                        "document_date": doc_meta.get("document_date"),
+                        "date_processed": doc_meta.get("date_processed"),
+                        "date": doc_meta.get("date"),
+                    })
+            return documents
+        except Exception as e:
+            print(f"Error listing documents for reference {ref_id}: {e}")
             return []
 
 
