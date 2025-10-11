@@ -5934,8 +5934,10 @@
     </script>
     
     <script>
-        // Initialize Material Components
-        mdc.autoInit();
+        // Initialize Material Components (only if available)
+        if (typeof mdc !== 'undefined') {
+            mdc.autoInit();
+        }
         
         // References-specific JavaScript
         let allReferences = [];
