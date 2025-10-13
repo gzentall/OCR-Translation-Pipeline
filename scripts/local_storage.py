@@ -135,6 +135,28 @@ class LocalOCRStorage:
             print(f"Error counting pages for {doc_id}: {e}")
             return 0
     
+    def get_document_image_path(self, doc_id: str, page: int) -> Optional[str]:
+        """Get the path to a specific page image for a document."""
+        try:
+            work_dir = Path("letters/work")
+            
+            # Look for image files with the document ID and page number
+            image_patterns = [
+                f"{doc_id}_page_{page:03d}.png",  # doc_20250925_132345_page_001.png
+                f"{doc_id}_page_{page}.png",      # doc_20250925_132345_page_1.png
+                f"{doc_id}_{page}.png"            # doc_20250925_132345_1.png
+            ]
+            
+            for pattern in image_patterns:
+                image_path = work_dir / pattern
+                if image_path.exists():
+                    return str(image_path)
+            
+            return None
+        except Exception as e:
+            print(f"Error getting image path for {doc_id} page {page}: {e}")
+            return None
+    
     def get_document(self, doc_id: str) -> Optional[Dict]:
         """Get a document by ID."""
         doc_file = self.documents_dir / f"{doc_id}.json"

@@ -43,74 +43,158 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'var(--md-sys-color-background)',
+      padding: '48px 16px'
+    }}>
+      <div style={{
+        maxWidth: '400px',
+        width: '100%',
+        background: 'var(--md-sys-color-surface)',
+        borderRadius: '16px',
+        padding: '32px',
+        boxShadow: 'var(--md-sys-elevation-level2)',
+        border: '1px solid var(--md-sys-color-outline-variant)'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h1 style={{
+            fontSize: '28px',
+            fontWeight: 400,
+            margin: '0 0 8px 0',
+            color: 'var(--md-sys-color-on-surface)'
+          }}>
             Sign in to your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          </h1>
+          <p style={{
+            fontSize: '14px',
+            color: 'var(--md-sys-color-on-surface-variant)',
+            margin: 0
+          }}>
             Or{" "}
             <Link
               href="/register"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              style={{
+                color: 'var(--md-sys-color-primary)',
+                textDecoration: 'none',
+                fontWeight: 500
+              }}
             >
               create a new account
             </Link>
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="username" className="sr-only">
-                Username or Email
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Username or Email"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+        
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div>
+            <label htmlFor="username" style={{
+              display: 'block',
+              fontSize: '12px',
+              fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
+              marginBottom: '4px'
+            }}>
+              Username or Email
+            </label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              required
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid var(--md-sys-color-outline)',
+                borderRadius: '8px',
+                fontSize: '14px',
+                color: 'var(--md-sys-color-on-surface)',
+                background: 'var(--md-sys-color-surface)',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
+              placeholder="Username or Email"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="password" style={{
+              display: 'block',
+              fontSize: '12px',
+              fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
+              marginBottom: '4px'
+            }}>
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid var(--md-sys-color-outline)',
+                borderRadius: '8px',
+                fontSize: '14px',
+                color: 'var(--md-sys-color-on-surface)',
+                background: 'var(--md-sys-color-surface)',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
 
           {error && (
-            <div className="text-red-600 text-sm text-center">{error}</div>
+            <div style={{
+              color: 'var(--md-sys-color-error)',
+              fontSize: '14px',
+              textAlign: 'center',
+              padding: '8px',
+              background: 'var(--md-sys-color-error-container)',
+              borderRadius: '8px'
+            }}>
+              {error}
+            </div>
           )}
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {isLoading ? "Signing in..." : "Sign in"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              background: 'var(--md-sys-color-primary)',
+              color: 'var(--md-sys-color-on-primary)',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 500,
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              opacity: isLoading ? 0.6 : 1,
+              transition: 'opacity 0.2s ease'
+            }}
+          >
+            {isLoading ? "Signing in..." : "Sign in"}
+          </button>
 
-          <div className="text-center">
+          <div style={{ textAlign: 'center' }}>
             <Link
               href="/forgot-password"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              style={{
+                color: 'var(--md-sys-color-primary)',
+                textDecoration: 'none',
+                fontSize: '14px',
+                fontWeight: 500
+              }}
             >
               Forgot your password?
             </Link>

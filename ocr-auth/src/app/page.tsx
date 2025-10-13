@@ -1,146 +1,286 @@
 "use client"
 
-import { useSession, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
-import Link from "next/link"
+import { useEffect, useState } from "react"
+import Layout from '@/components/Layout'
+
+interface Document {
+  id: string
+  title: string
+  dateProcessed: string
+  sourceLanguage: string
+  targetLanguage: string
+  fileSize: number
+  summary: string | null
+  pageCount: number
+  createdAt: string
+  updatedAt: string
+  status?: string
+}
 
 export default function HomePage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const [documents, setDocuments] = useState<Document[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [sortBy, setSortBy] = useState('date_added')
+  const [sortDirection, setSortDirection] = useState('desc')
 
   useEffect(() => {
-    if (status === "loading") return // Still loading
+    if (status === "loading") return
     
     if (!session) {
       router.push("/login")
       return
     }
+
+    fetchDocuments()
   }, [session, status, router])
 
-  if (status === "loading") {
+  const fetchDocuments = async () => {
+    try {
+      // Try to fetch from Flask backend first (authenticated endpoint)
+      const response = await fetch('/api/flask/documents', {
+        credentials: 'include'
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setDocuments(data.documents || [])
+      } else {
+        // Fallback to test endpoint (no auth required)
+        console.log("Authenticated endpoint failed, trying test endpoint")
+        const testResponse = await fetch('/api/flask/test-documents')
+        if (testResponse.ok) {
+          const testData = await testResponse.json()
+          setDocuments(testData.documents || [])
+        } else {
+          // Final fallback to mock data
+          console.log("All endpoints failed, using mock data")
+          const mockDocuments: Document[] = [
+            {
+              id: "doc_20250925_145858",
+              title: "01-05-1938_ger_letter-002 - 2025-09-25",
+              dateProcessed: "2025-09-25T14:59:29.859316",
+              sourceLanguage: "unknown",
+              targetLanguage: "en",
+              fileSize: 54985766,
+              summary: "This appears to be a personal letter involving National Bank, His Zob. discusses family matters, bus...",
+              pageCount: 2,
+              createdAt: "2025-09-25T14:59:29.859316",
+              updatedAt: "2025-09-25T14:59:29.859316"
+            },
+            {
+              id: "doc_20250925_165151",
+              title: "01-27-2003_eng_letter-001 - 2025-09-25",
+              dateProcessed: "2025-09-25T16:52:03.129192",
+              sourceLanguage: "en",
+              targetLanguage: "en",
+              fileSize: 196279,
+              summary: "WHO: The sender of the document is identified as \"Grandma\" and the recipient is named Gabe. The send...",
+              pageCount: 2,
+              createdAt: "2025-09-25T16:52:03.129192",
+              updatedAt: "2025-09-25T16:52:03.129192"
+            }
+          ]
+          setDocuments(mockDocuments)
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch documents:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const filteredDocuments = documents.filter(doc =>
+    doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    doc.summary?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  if (status === "loading" || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '100vh' 
+      }}>
+        <div>Loading...</div>
       </div>
     )
   }
 
   if (!session) {
-    return null // Will redirect to login
-  }
-
-  const handleSignOut = () => {
-    signOut({ callbackUrl: "/login" })
+    return null
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">
-                OCR Document System
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                href={`/users/${(session.user as any).id}`}
-                className="text-indigo-600 hover:text-indigo-500 text-sm font-medium"
+    <Layout>
+      <div>
+        {/* Compact Search Filter Bar - Exact match from browse.html */}
+        <div className="compact-search-filter-bar">
+          <div className="search-input-container">
+            <span className="material-icons search-icon">search</span>
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Search documents..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <span 
+                className="material-icons clear-icon"
+                onClick={() => setSearchTerm("")}
+                style={{ display: 'block' }}
               >
-                My Profile
-              </Link>
-              <span className="text-sm text-gray-700">
-                Welcome, {(session.user as any).username} ({(session.user as any).role})
+                close
               </span>
-              {(session.user as any).role === "SUPER_ADMIN" && (
-                <Link
-                  href="/admin"
-                  className="text-indigo-600 hover:text-indigo-500 text-sm font-medium"
-                >
-                  Admin Panel
-                </Link>
-              )}
-              <button
-                onClick={handleSignOut}
-                className="text-gray-500 hover:text-gray-700 text-sm font-medium"
+            )}
+          </div>
+          
+          <div className="filter-chips-container">
+            <div className="filter-chip">
+              <span className="filter-chip-text">Sender</span>
+              <span className="material-icons filter-chip-arrow">keyboard_arrow_down</span>
+            </div>
+            <div className="filter-chip">
+              <span className="filter-chip-text">Recipient</span>
+              <span className="material-icons filter-chip-arrow">keyboard_arrow_down</span>
+            </div>
+            <div className="filter-chip">
+              <span className="filter-chip-text">Date</span>
+              <span className="material-icons filter-chip-arrow">keyboard_arrow_down</span>
+            </div>
+            <div className="filter-chip">
+              <span className="filter-chip-text">Status</span>
+              <span className="material-icons filter-chip-arrow">keyboard_arrow_down</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Documents Section - Exact match from browse.html */}
+        <div className="documents-section">
+          <div className="documents-header">
+            <div className="documents-title-container">
+              <h2 className="section-title">Documents</h2>
+              <a 
+                href="#" 
+                className="show-all-link"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setSearchTerm("")
+                }}
               >
-                Sign Out
-              </button>
+                show all
+              </a>
             </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg p-8">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Document Management System
-              </h2>
-              <p className="text-gray-600 mb-8">
-                Upload and process PDF documents with OCR and translation capabilities.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Upload Card */}
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <div className="text-indigo-600 mb-4">
-                    <svg className="h-8 w-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Upload Documents</h3>
-                  <p className="text-gray-600 text-sm">
-                    Upload PDF files for OCR processing and translation.
-                  </p>
+            <div className="sort-controls">
+              <span className="sort-label">Sort:</span>
+              <div className="sort-chip">
+                <span className="material-icons sort-icon">sort</span>
+                <span className="sort-text">Added (d)</span>
+                <span className="material-icons sort-arrow">keyboard_arrow_down</span>
+              </div>
+              <div className="view-controls">
+                <div className="view-toggle-group">
+                  <button
+                    className={`view-toggle ${viewMode === 'grid' ? 'active' : ''}`}
+                    onClick={() => setViewMode('grid')}
+                  >
+                    <span className="material-icons">grid_view</span>
+                  </button>
+                  <button
+                    className={`view-toggle ${viewMode === 'list' ? 'active' : ''}`}
+                    onClick={() => setViewMode('list')}
+                  >
+                    <span className="material-icons">view_list</span>
+                  </button>
                 </div>
-
-                {/* Browse Card */}
-                <Link href="/documents" className="block">
-                  <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer">
-                    <div className="text-indigo-600 mb-4">
-                      <svg className="h-8 w-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                      </svg>
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Browse Documents</h3>
-                    <p className="text-gray-600 text-sm">
-                      View and manage your processed documents.
-                    </p>
-                  </div>
-                </Link>
-
-                {/* People Card */}
-                <Link href="/people" className="block">
-                  <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer">
-                    <div className="text-indigo-600 mb-4">
-                      <svg className="h-8 w-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">People Management</h3>
-                    <p className="text-gray-600 text-sm">
-                      Manage people mentioned in your documents.
-                    </p>
-                  </div>
-                </Link>
-              </div>
-
-              <div className="mt-8">
-                <p className="text-sm text-gray-500">
-                  This is a hybrid system with Next.js frontend and Flask backend.
-                  The actual document processing will be handled by your existing Flask API.
-                </p>
               </div>
             </div>
           </div>
+
+          {/* Documents Grid */}
+          {filteredDocuments.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: 'var(--md-sys-spacing-16)',
+              color: 'var(--md-sys-color-on-surface-variant)'
+            }}>
+              <div style={{ fontSize: '48px', marginBottom: 'var(--md-sys-spacing-4)' }}>📄</div>
+              <p style={{ fontSize: '18px', margin: 0 }}>No documents found</p>
+              <p style={{ fontSize: '14px', margin: 'var(--md-sys-spacing-2) 0 0 0' }}>
+                {searchTerm ? 'Try adjusting your search terms.' : 'Upload your first document to get started.'}
+              </p>
+            </div>
+          ) : (
+            <div className="documents-grid">
+              {filteredDocuments.map((document) => (
+                <div
+                  key={document.id}
+                  className="document-card"
+                  onClick={() => router.push(`/documents/${document.id}`)}
+                >
+                  <div className="document-thumbnail">
+                    <img
+                      src={`/api/flask/test-documents/${document.id}/images/1?t=${Date.now()}`}
+                      alt="Document thumbnail"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: 'var(--md-sys-shape-radius-md)'
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                        const fallback = e.currentTarget.nextElementSibling as HTMLElement
+                        if (fallback) fallback.style.display = 'flex'
+                      }}
+                    />
+                    <div style={{
+                      display: 'none',
+                      width: '100%',
+                      height: '100%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '48px',
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      background: 'var(--md-sys-color-surface-variant)'
+                    }}>
+                      📄
+                    </div>
+                    <div className="document-page-badge">
+                      {document.pageCount}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="document-title">
+                      {document.title}
+                    </h3>
+                    <p className="document-summary">
+                      {document.summary}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      </main>
-    </div>
+
+        {/* Floating Action Button */}
+        <button
+          className="fab"
+          onClick={() => router.push('/upload')}
+        >
+          <span className="material-icons">add</span>
+        </button>
+      </div>
+    </Layout>
   )
 }

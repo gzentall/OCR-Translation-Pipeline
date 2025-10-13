@@ -13,6 +13,10 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^6.5.0",
+    "@mui/material": "^6.5.0",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@node-rs/argon2": "^2.0.2",
     "@prisma/client": "^6.16.2",
@@ -20,6 +24,7 @@
     "@simplewebauthn/browser": "^13.2.0",
     "@simplewebauthn/server": "^13.2.1",
     "@types/bcryptjs": "^2.4.6",
+    "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
     "next": "15.5.4",
     "next-auth": "^4.24.11",

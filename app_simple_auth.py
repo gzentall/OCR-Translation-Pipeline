@@ -20,6 +20,7 @@ import time
 from pathlib import Path
 from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, render_template, send_file, session, redirect, url_for, flash
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import uuid
 from dotenv import load_dotenv
@@ -36,6 +37,9 @@ from scripts.simple_reference_service import simple_reference_service
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your-secret-key-change-this')
+
+# Enable CORS for Next.js frontend
+CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB max file size
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable caching for development
@@ -355,9 +359,704 @@ def complete_activation():
 @app.route('/')
 @require_auth
 def index():
-    """Serve the main application page (Documents tab)."""
+    """Redirect to Next.js frontend."""
+    return redirect('http://localhost:3000')
+
+# API endpoints for Next.js frontend
+@app.route('/api/documents')
+@require_auth
+def api_documents():
+    """API endpoint to get all documents"""
+    try:
+        # Load documents from local storage
+        storage = LocalOCRStorage()
+        documents = []
+        
+        for doc_id, doc_meta in storage.metadata.get('documents', {}).items():
+            documents.append({
+                'id': doc_id,
+                'title': doc_meta.get('title', 'Untitled'),
+                'dateProcessed': doc_meta.get('date_processed', ''),
+                'sourceLanguage': doc_meta.get('source_language', 'unknown'),
+                'targetLanguage': doc_meta.get('target_language', 'en'),
+                'fileSize': doc_meta.get('file_size', 0),
+                'summary': doc_meta.get('summary', ''),
+                'pageCount': doc_meta.get('page_count', 0),
+                'createdAt': doc_meta.get('date_processed', ''),
+                'updatedAt': doc_meta.get('date_processed', ''),
+                'status': doc_meta.get('status', 'New')
+            })
+        
+        return jsonify({'documents': documents})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/references')
+@require_auth
+def api_references():
+    """API endpoint to get all references"""
+    try:
+        # Load references from local storage
+        storage = LocalOCRStorage()
+        references = []
+        
+        # Get people data (which is stored as references)
+        for person_name, person_data in storage.metadata.get('people', {}).items():
+            references.append({
+                'id': person_name,
+                'type': 'PERSON',
+                'canonicalName': person_name,
+                'notes': person_data.get('context', ''),
+                'variants': person_data.get('aliases', []),
+                'documentCount': len(person_data.get('documents', [])),
+                'createdAt': person_data.get('first_mentioned', ''),
+            })
+        
+        return jsonify({'references': references})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/test-references')
+def api_test_references():
+    """Test endpoint to get all references without authentication"""
+    try:
+        # Load references from local storage
+        storage = LocalOCRStorage()
+        references = []
+        
+        # Get people data (which is stored as references)
+        for person_name, person_data in storage.metadata.get('people', {}).items():
+            references.append({
+                'id': person_name,
+                'type': 'PERSON',
+                'canonicalName': person_name,
+                'notes': person_data.get('context', ''),
+                'variants': person_data.get('aliases', []),
+                'documentCount': len(person_data.get('documents', [])),
+                'createdAt': person_data.get('first_mentioned', ''),
+            })
+        
+        return jsonify({'references': references})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/users')
+@require_auth
+def api_users():
+    """API endpoint to get all users (admin only)"""
     user = USERS.get(session['user_id'])
-    return render_template('browse.html', user=user, cache_bust=time.time())
+    if not user or user.get('role') != 'SUPER_ADMIN':
+        return jsonify({'error': 'Forbidden'}), 403
+    
+    try:
+        users = []
+        for user_id, user_data in USERS.items():
+            users.append({
+                'id': user_id,
+                'username': user_data.get('username', ''),
+                'email': user_data.get('email', ''),
+                'role': user_data.get('role', 'USER'),
+                'isActive': user_data.get('active', True),
+                'createdAt': user_data.get('created_at', ''),
+                'lastLogin': user_data.get('last_login', None)
+            })
+        
+        return jsonify({'users': users})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/stats')
+@require_auth
+def api_stats():
+    """API endpoint to get system statistics"""
+    try:
+        storage = LocalOCRStorage()
+        
+        # Count documents
+        total_documents = len(storage.metadata.get('documents', {}))
+        
+        # Count references
+        total_references = len(storage.metadata.get('references', {}))
+        
+        # Count users
+        total_users = len(USERS)
+        
+        # Count documents this month
+        current_month = datetime.now().strftime('%Y-%m')
+        documents_this_month = 0
+        for doc_meta in storage.metadata.get('documents', {}).values():
+            if doc_meta.get('date_processed', '').startswith(current_month):
+                documents_this_month += 1
+        
+        # Get languages processed
+        languages = set()
+        for doc_meta in storage.metadata.get('documents', {}).values():
+            source_lang = doc_meta.get('source_language', 'unknown')
+            if source_lang != 'unknown':
+                languages.add(source_lang)
+        
+        # Mock recent activity
+        recent_activity = [
+            {
+                'id': '1',
+                'type': 'document',
+                'description': f'New document uploaded',
+                'timestamp': datetime.now().isoformat()
+            },
+            {
+                'id': '2',
+                'type': 'reference',
+                'description': 'Reference updated',
+                'timestamp': (datetime.now() - timedelta(hours=2)).isoformat()
+            }
+        ]
+        
+        return jsonify({
+            'totalDocuments': total_documents,
+            'totalReferences': total_references,
+            'totalUsers': total_users,
+            'documentsThisMonth': documents_this_month,
+            'languagesProcessed': list(languages),
+            'recentActivity': recent_activity
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Test endpoint without authentication
+@app.route('/api/test-documents')
+def api_test_documents():
+    """Test endpoint to get documents without authentication"""
+    try:
+        storage = LocalOCRStorage()
+        documents = []
+        
+        for doc_id, doc_meta in storage.metadata.get('documents', {}).items():
+            # Try to load the full document data from the individual JSON file
+            doc_file_path = os.path.join(storage.documents_dir, f"{doc_id}.json")
+            if os.path.exists(doc_file_path):
+                with open(doc_file_path, 'r', encoding='utf-8') as f:
+                    doc_data = json.load(f)
+            else:
+                doc_data = doc_meta
+            
+            # Get people/references associated with this document
+            people = []
+            for person_name, person_data in storage.metadata.get('people', {}).items():
+                if doc_id in person_data.get('documents', []):
+                    people.append({
+                        'id': person_name,
+                        'name': person_data.get('aliases', [person_name])[0],
+                        'aliases': person_data.get('aliases', [])
+                    })
+            
+                # Extract location information
+                from_location = ''
+                to_location = ''
+                if doc_data.get('sender_location'):
+                    from_location = doc_data['sender_location'].get('display_name', '')
+                if doc_data.get('recipient_location'):
+                    to_location = doc_data['recipient_location'].get('display_name', '')
+                
+                # Fix swapped original/translated text fields
+                original_text = doc_data.get('original_text', '')
+                translated_text = doc_data.get('translated_text', '')
+                
+                # If original_text is very short (like "Save Changes") and translated_text is long,
+                # they're likely swapped
+                if len(original_text) < 50 and len(translated_text) > 100:
+                    original_text, translated_text = translated_text, original_text
+                
+                documents.append({
+                    'id': doc_id,
+                    'title': doc_data.get('title', 'Untitled'),
+                    'dateProcessed': doc_data.get('date_processed', ''),
+                    'documentDate': doc_data.get('document_date', ''),
+                    'sourceLanguage': doc_data.get('source_language', 'unknown'),
+                    'targetLanguage': doc_data.get('target_language', 'en'),
+                    'fileSize': doc_data.get('file_size', 0),
+                    'summary': doc_data.get('summary', ''),
+                    'pageCount': doc_data.get('page_count', 0),
+                    'createdAt': doc_data.get('date_processed', ''),
+                    'updatedAt': doc_data.get('date_processed', ''),
+                    'status': doc_data.get('status', 'New'),
+                    'originalText': original_text,
+                    'translatedText': translated_text,
+                    'sender': doc_data.get('sender', ''),
+                    'recipient': doc_data.get('recipient', ''),
+                    'fromLocation': from_location,
+                    'toLocation': to_location,
+                    'people': people
+                })
+        
+        return jsonify({'documents': documents, 'count': len(documents)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/documents/<doc_id>')
+@require_auth
+def api_get_document(doc_id):
+    """API endpoint to get a specific document"""
+    try:
+        storage = LocalOCRStorage()
+        
+        # Try to load the full document data from the individual JSON file
+        doc_file_path = os.path.join(storage.documents_dir, f"{doc_id}.json")
+        if os.path.exists(doc_file_path):
+            with open(doc_file_path, 'r', encoding='utf-8') as f:
+                doc_data = json.load(f)
+        else:
+            # Fallback to metadata only
+            doc_meta = storage.metadata.get('documents', {}).get(doc_id)
+            if not doc_meta:
+                return jsonify({'error': 'Document not found'}), 404
+            doc_data = doc_meta
+        
+        # Get people/references associated with this document
+        people = []
+        for person_name, person_data in storage.metadata.get('people', {}).items():
+            if doc_id in person_data.get('documents', []):
+                people.append({
+                    'id': person_name,
+                    'name': person_data.get('aliases', [person_name])[0],
+                    'aliases': person_data.get('aliases', [])
+                })
+        
+        # Extract location information
+        from_location = ''
+        to_location = ''
+        if doc_data.get('sender_location'):
+            from_location = doc_data['sender_location'].get('display_name', '')
+        if doc_data.get('recipient_location'):
+            to_location = doc_data['recipient_location'].get('display_name', '')
+        
+        # Fix swapped original/translated text fields
+        original_text = doc_data.get('original_text', '')
+        translated_text = doc_data.get('translated_text', '')
+        
+        # If original_text is very short (like "Save Changes") and translated_text is long,
+        # they're likely swapped
+        if len(original_text) < 50 and len(translated_text) > 100:
+            original_text, translated_text = translated_text, original_text
+        
+        document = {
+            'id': doc_id,
+            'title': doc_data.get('title', 'Untitled'),
+            'dateProcessed': doc_data.get('date_processed', ''),
+            'documentDate': doc_data.get('document_date', ''),
+            'sourceLanguage': doc_data.get('source_language', 'unknown'),
+            'targetLanguage': doc_data.get('target_language', 'en'),
+            'fileSize': doc_data.get('file_size', 0),
+            'summary': doc_data.get('summary', ''),
+            'pageCount': doc_data.get('page_count', 0),
+            'createdAt': doc_data.get('date_processed', ''),
+            'updatedAt': doc_data.get('date_processed', ''),
+            'status': doc_data.get('status', 'New'),
+            'originalText': original_text,
+            'translatedText': translated_text,
+            'sender': doc_data.get('sender', ''),
+            'recipient': doc_data.get('recipient', ''),
+            'fromLocation': from_location,
+            'toLocation': to_location,
+            'people': people
+        }
+        
+        return jsonify({'document': document})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/documents/<doc_id>', methods=['PUT'])
+@require_auth
+def api_update_document(doc_id):
+    """API endpoint to update a specific document"""
+    try:
+        storage = LocalOCRStorage()
+        
+        # Try to load the full document data from the individual JSON file
+        doc_file_path = os.path.join(storage.documents_dir, f"{doc_id}.json")
+        if os.path.exists(doc_file_path):
+            with open(doc_file_path, 'r', encoding='utf-8') as f:
+                doc_data = json.load(f)
+        else:
+            # Fallback to metadata only
+            doc_meta = storage.metadata.get('documents', {}).get(doc_id)
+            if not doc_meta:
+                return jsonify({'error': 'Document not found'}), 404
+            doc_data = doc_meta
+        
+        data = request.get_json()
+        
+        # Update document data
+        if 'summary' in data:
+            doc_data['summary'] = data['summary']
+        if 'dateProcessed' in data:
+            doc_data['date_processed'] = data['dateProcessed']
+        if 'documentDate' in data:
+            doc_data['document_date'] = data['documentDate']
+        if 'originalText' in data:
+            doc_data['original_text'] = data['originalText']
+        if 'translatedText' in data:
+            doc_data['translated_text'] = data['translatedText']
+        if 'sender' in data:
+            doc_data['sender'] = data['sender']
+        if 'recipient' in data:
+            doc_data['recipient'] = data['recipient']
+        if 'fromLocation' in data:
+            doc_data['from_location'] = data['fromLocation']
+        if 'toLocation' in data:
+            doc_data['to_location'] = data['toLocation']
+        if 'status' in data:
+            doc_data['status'] = data['status']
+        
+        # Save updated data to individual JSON file if it exists
+        if os.path.exists(doc_file_path):
+            with open(doc_file_path, 'w', encoding='utf-8') as f:
+                json.dump(doc_data, f, indent=2, ensure_ascii=False)
+        
+        # Also update metadata
+        storage.metadata['documents'][doc_id] = doc_data
+        storage._save_metadata()
+        
+        return jsonify({'success': True, 'message': 'Document updated successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/test-documents/<doc_id>', methods=['PUT'])
+def api_test_update_document(doc_id):
+    """Test endpoint to update a specific document without authentication"""
+    try:
+        storage = LocalOCRStorage()
+        
+        # Try to load the full document data from the individual JSON file
+        doc_file_path = os.path.join(storage.documents_dir, f"{doc_id}.json")
+        if os.path.exists(doc_file_path):
+            with open(doc_file_path, 'r', encoding='utf-8') as f:
+                doc_data = json.load(f)
+        else:
+            # Fallback to metadata only
+            doc_meta = storage.metadata.get('documents', {}).get(doc_id)
+            if not doc_meta:
+                return jsonify({'error': 'Document not found'}), 404
+            doc_data = doc_meta
+        
+        data = request.get_json()
+        
+        # Update document data
+        if 'summary' in data:
+            doc_data['summary'] = data['summary']
+        if 'dateProcessed' in data:
+            doc_data['date_processed'] = data['dateProcessed']
+        if 'documentDate' in data:
+            doc_data['document_date'] = data['documentDate']
+        if 'originalText' in data:
+            doc_data['original_text'] = data['originalText']
+        if 'translatedText' in data:
+            doc_data['translated_text'] = data['translatedText']
+        if 'sender' in data:
+            doc_data['sender'] = data['sender']
+        if 'recipient' in data:
+            doc_data['recipient'] = data['recipient']
+        if 'fromLocation' in data:
+            doc_data['from_location'] = data['fromLocation']
+        if 'toLocation' in data:
+            doc_data['to_location'] = data['toLocation']
+        if 'status' in data:
+            doc_data['status'] = data['status']
+        
+        # Save updated data to individual JSON file if it exists
+        if os.path.exists(doc_file_path):
+            with open(doc_file_path, 'w', encoding='utf-8') as f:
+                json.dump(doc_data, f, indent=2, ensure_ascii=False)
+        
+        # Also update metadata
+        storage.metadata['documents'][doc_id] = doc_data
+        storage._save_metadata()
+        
+        return jsonify({'success': True, 'message': 'Document updated successfully'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/test-documents/<doc_id>/comments')
+def api_test_get_document_comments(doc_id):
+    """Test endpoint to get document comments without authentication"""
+    try:
+        storage = LocalOCRStorage()
+        
+        # Try to load the full document data from the individual JSON file
+        doc_file_path = os.path.join(storage.documents_dir, f"{doc_id}.json")
+        if os.path.exists(doc_file_path):
+            with open(doc_file_path, 'r', encoding='utf-8') as f:
+                doc_data = json.load(f)
+        else:
+            return jsonify({'comments': [], 'count': 0})
+        
+        # Get comments from document data
+        comments = doc_data.get('comments', [])
+        
+        return jsonify({'comments': comments, 'count': len(comments)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/test-documents/<doc_id>/comments', methods=['POST'])
+def api_test_add_document_comment(doc_id):
+    """Test endpoint to add a comment to a document without authentication"""
+    try:
+        storage = LocalOCRStorage()
+        
+        # Try to load the full document data from the individual JSON file
+        doc_file_path = os.path.join(storage.documents_dir, f"{doc_id}.json")
+        if os.path.exists(doc_file_path):
+            with open(doc_file_path, 'r', encoding='utf-8') as f:
+                doc_data = json.load(f)
+        else:
+            return jsonify({'error': 'Document not found'}), 404
+        
+        data = request.get_json()
+        comment_text = data.get('text', '').strip()
+        
+        if not comment_text:
+            return jsonify({'error': 'Comment text is required'}), 400
+        
+        # Create new comment
+        new_comment = {
+            'id': f'c{len(doc_data.get("comments", [])) + 1}',
+            'author': data.get('author', 'Current User'),
+            'text': comment_text,
+            'timestamp': data.get('timestamp', datetime.now().isoformat())
+        }
+        
+        # Add comment to document data
+        if 'comments' not in doc_data:
+            doc_data['comments'] = []
+        doc_data['comments'].append(new_comment)
+        
+        # Save updated data to individual JSON file
+        with open(doc_file_path, 'w', encoding='utf-8') as f:
+            json.dump(doc_data, f, indent=2, ensure_ascii=False)
+        
+        # Also update metadata
+        storage.metadata['documents'][doc_id] = doc_data
+        storage._save_metadata()
+        
+        return jsonify({'success': True, 'comment': new_comment})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/documents/<doc_id>/images/<int:page>')
+@require_auth
+def api_get_document_image(doc_id, page):
+    """API endpoint to get document image"""
+    try:
+        storage = LocalOCRStorage()
+        doc_meta = storage.metadata.get('documents', {}).get(doc_id)
+        
+        if not doc_meta:
+            return jsonify({'error': 'Document not found'}), 404
+        
+        # Try to find the image file
+        image_path = storage.get_document_image_path(doc_id, page)
+        
+        if image_path and os.path.exists(image_path):
+            return send_file(image_path, mimetype='image/png')
+        else:
+            # Return a placeholder image or 404
+            return jsonify({'error': 'Image not found'}), 404
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/test-documents/<doc_id>/images/<int:page>')
+def api_test_get_document_image(doc_id, page):
+    """Test API endpoint to get document image without authentication"""
+    try:
+        storage = LocalOCRStorage()
+        
+        # Try to find the image file
+        image_path = storage.get_document_image_path(doc_id, page)
+        
+        if image_path and os.path.exists(image_path):
+            return send_file(image_path, mimetype='image/png')
+        else:
+            # Return a placeholder image or 404
+            return jsonify({'error': 'Image not found'}), 404
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/people')
+@require_auth
+def api_get_people():
+    """API endpoint to get all people/references"""
+    try:
+        storage = LocalOCRStorage()
+        people = []
+        
+        for person_name, person_data in storage.metadata.get('people', {}).items():
+            people.append({
+                'id': person_name,
+                'name': person_data.get('aliases', [person_name])[0],
+                'aliases': person_data.get('aliases', []),
+                'firstMentioned': person_data.get('first_mentioned', ''),
+                'documentCount': len(person_data.get('documents', []))
+            })
+        
+        return jsonify({'people': people, 'count': len(people)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/test-people')
+def api_test_get_people():
+    """Test endpoint to get all people/references without authentication"""
+    try:
+        storage = LocalOCRStorage()
+        people = []
+        
+        for person_name, person_data in storage.metadata.get('people', {}).items():
+            people.append({
+                'id': person_name,
+                'name': person_data.get('aliases', [person_name])[0],
+                'aliases': person_data.get('aliases', []),
+                'firstMentioned': person_data.get('first_mentioned', ''),
+                'documentCount': len(person_data.get('documents', []))
+            })
+        
+        return jsonify({'people': people, 'count': len(people)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/documents/<doc_id>/history')
+@require_auth
+def api_get_document_history(doc_id):
+    """API endpoint to get document history/audit events"""
+    try:
+        storage = LocalOCRStorage()
+        
+        # Try to load the full document data from the individual JSON file
+        doc_file_path = os.path.join(storage.documents_dir, f"{doc_id}.json")
+        if os.path.exists(doc_file_path):
+            with open(doc_file_path, 'r', encoding='utf-8') as f:
+                doc_data = json.load(f)
+        else:
+            return jsonify({'error': 'Document not found'}), 404
+        
+        # Create mock history events based on document data
+        history_events = []
+        
+        # Document creation event
+        if doc_data.get('date_processed'):
+            history_events.append({
+                'id': f'create_{doc_id}',
+                'action': 'DOCUMENT_CREATE',
+                'actor': 'System',
+                'description': f'Document created (VERSION 1)',
+                'fieldsChanged': ['title', 'summary', 'document_date'],
+                'timestamp': doc_data['date_processed'],
+                'metadata': {
+                    'version': 1,
+                    'source': 'upload'
+                }
+            })
+        
+        # Document modification events (mock based on status changes)
+        if doc_data.get('status') and doc_data['status'] != 'New':
+            history_events.append({
+                'id': f'modify_{doc_id}',
+                'action': 'DOCUMENT_UPDATE',
+                'actor': 'Gabe Zentall',
+                'description': f'Modified the summary',
+                'fieldsChanged': ['summary'],
+                'timestamp': doc_data.get('date_processed', ''),
+                'metadata': {
+                    'status': doc_data['status']
+                }
+            })
+        
+        # People addition event (if people exist)
+        if doc_data.get('people') and len(doc_data['people']) > 0:
+            history_events.append({
+                'id': f'people_{doc_id}',
+                'action': 'PEOPLE_ADD',
+                'actor': 'Gabe Zentall',
+                'description': f'Added people to this document',
+                'fieldsChanged': ['people'],
+                'timestamp': doc_data.get('date_processed', ''),
+                'metadata': {
+                    'people': doc_data['people']
+                }
+            })
+        
+        # Sort events by timestamp (newest first)
+        history_events.sort(key=lambda x: x['timestamp'], reverse=True)
+        
+        return jsonify({'events': history_events, 'count': len(history_events)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/test-documents/<doc_id>/history')
+def api_test_get_document_history(doc_id):
+    """Test endpoint to get document history without authentication"""
+    try:
+        storage = LocalOCRStorage()
+        
+        # Try to load the full document data from the individual JSON file
+        doc_file_path = os.path.join(storage.documents_dir, f"{doc_id}.json")
+        if os.path.exists(doc_file_path):
+            with open(doc_file_path, 'r', encoding='utf-8') as f:
+                doc_data = json.load(f)
+        else:
+            return jsonify({'error': 'Document not found'}), 404
+        
+        # Create mock history events based on document data
+        history_events = []
+        
+        # Document creation event
+        if doc_data.get('date_processed'):
+            history_events.append({
+                'id': f'create_{doc_id}',
+                'action': 'DOCUMENT_CREATE',
+                'actor': 'System',
+                'description': f'Document created (VERSION 1)',
+                'fieldsChanged': ['title', 'summary', 'document_date'],
+                'timestamp': doc_data['date_processed'],
+                'metadata': {
+                    'version': 1,
+                    'source': 'upload'
+                }
+            })
+        
+        # Document modification events (mock based on status changes)
+        if doc_data.get('status') and doc_data['status'] != 'New':
+            history_events.append({
+                'id': f'modify_{doc_id}',
+                'action': 'DOCUMENT_UPDATE',
+                'actor': 'Gabe Zentall',
+                'description': f'Modified the summary',
+                'fieldsChanged': ['summary'],
+                'timestamp': doc_data.get('date_processed', ''),
+                'metadata': {
+                    'status': doc_data['status']
+                }
+            })
+        
+        # People addition event (if people exist)
+        if doc_data.get('people') and len(doc_data['people']) > 0:
+            history_events.append({
+                'id': f'people_{doc_id}',
+                'action': 'PEOPLE_ADD',
+                'actor': 'Gabe Zentall',
+                'description': f'Added people to this document',
+                'fieldsChanged': ['people'],
+                'timestamp': doc_data.get('date_processed', ''),
+                'metadata': {
+                    'people': doc_data['people']
+                }
+            })
+        
+        # Sort events by timestamp (newest first)
+        history_events.sort(key=lambda x: x['timestamp'], reverse=True)
+        
+        return jsonify({'events': history_events, 'count': len(history_events)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/upload-form')
 @require_auth
@@ -368,33 +1067,26 @@ def upload_form():
 @app.route('/browse')
 @require_auth
 def browse():
-    """Serve the main application interface."""
-    user = USERS.get(session['user_id'])
-    return render_template('browse.html', user=user, cache_bust=time.time())
+    """Redirect to Next.js frontend."""
+    return redirect('http://localhost:3000')
 
 @app.route('/stats-page')
 @require_auth
 def stats_page():
-    """Serve the statistics page interface."""
-    user = USERS.get(session['user_id'])
-    return render_template('stats.html', user=user)
+    """Redirect to Next.js frontend."""
+    return redirect('http://localhost:3000')
 
 @app.route('/people-page')
 @require_auth
 def people_page():
-    """Serve the people management page."""
-    user = USERS.get(session['user_id'])
-    return render_template('people.html', user=user)
+    """Redirect to Next.js frontend."""
+    return redirect('http://localhost:3000/references')
 
 @app.route('/users-page')
 @require_auth
 def users_page():
-    """Serve the user management page (SuperAdmin only)."""
-    user = USERS.get(session['user_id'])
-    if user['role'] != 'SUPER_ADMIN':
-        flash('Access denied', 'error')
-        return redirect(url_for('index'))
-    return render_template('users.html', user=user, users=USERS)
+    """Redirect to Next.js frontend."""
+    return redirect('http://localhost:3000/users')
 
 @app.route('/documents/<doc_id>/images/<int:page_num>')
 @require_auth

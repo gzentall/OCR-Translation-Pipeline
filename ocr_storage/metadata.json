@@ -67,22 +67,92 @@
       "date_processed": "2025-09-26T17:32:16.135115",
       "source_language": "unknown",
       "target_language": "en",
+      "original_text": "WN'T Came '3 ion Paris 15e plu 1940 ro Babukann \u3072 1.5300 0 Today I just want to kiss you hard. I've worked a lot but despite that I always think - What will it do now, anci Reliefence. I love my little one His Rol",
+      "translated_text": "Save Changes",
       "file_size": 136397,
-      "people_count": 1,
-      "summary": "This appears to be a personal letter involving His Rol. discusses business/financial matters, health...",
-      "page_count": 2,
-      "status": "Editing"
+      "summary": "Updated summary test",
+      "people": [
+        {
+          "original_name": "His Rol",
+          "normalized_name": "his rol",
+          "context": "Mentioned in document"
+        }
+      ],
+      "status": "Editing",
+      "document_date": "1940-05-08",
+      "sender": "Robert Lweisenthal",
+      "recipient": "joan",
+      "from_location": "",
+      "to_location": "",
+      "comments": [
+        {
+          "id": "c1",
+          "author": "Test User",
+          "text": "Test comment from API",
+          "timestamp": "2025-10-13T11:29:10.255593"
+        },
+        {
+          "id": "c2",
+          "author": "Current User",
+          "text": "tes",
+          "timestamp": "2025-10-13T18:35:13.359Z"
+        },
+        {
+          "id": "c3",
+          "author": "Current User",
+          "text": "now",
+          "timestamp": "2025-10-13T18:35:14.929Z"
+        },
+        {
+          "id": "c4",
+          "author": "Current User",
+          "text": "soss",
+          "timestamp": "2025-10-13T18:35:16.690Z"
+        }
+      ]
     },
     "doc_20250927_100809": {
       "title": "049-1940-05-16-fre - 2025-09-27",
       "date_processed": "2025-09-27T10:08:36.138431",
       "source_language": "unknown",
       "target_language": "en",
+      "original_text": "My darling, May 16, 1940 Very quickly, just a few lines. We are all very well, a little nervous, but it's nothing. I am at work all day and come home early so that Mom is alone as little as possible. Write to me every day without fail, it's more important than ever, you know now. K... Tell me also how you are, if you are staying where you are or if you are going somewhere else. I don't have the heart and the courage to look for the films you are asking me for now/ Maybe in a few days. Goodbye my love, good luck, we have plenty! I love you infinitely. Baby. Military Postal Control 181 BAT JE DES CAPUCIN NATIONALE reip 3.87 8H 8 AUE 81 CAPUCINES 40 DES Mr. Robert Lweisenthal for Regiment d Vel Rota la Pezenas Herault Infande REGIM INF. The Vaguemestre * CHECUSLOVAO 250 VOJENSKA CENSUR.",
+      "translated_text": "Save Changes",
       "file_size": 315860,
-      "people_count": 5,
       "summary": "This appears to be a personal letter involving Military Postal, Robert Lweisenthal, Vel Rota. discus...",
-      "page_count": 3,
-      "status": "Editing"
+      "people": [
+        {
+          "original_name": "Military Postal",
+          "normalized_name": "military postal",
+          "context": "Mentioned in document"
+        },
+        {
+          "original_name": "Robert Lweisenthal",
+          "normalized_name": "robert lweisenthal",
+          "context": "Mentioned in document"
+        },
+        {
+          "original_name": "Vel Rota",
+          "normalized_name": "vel rota",
+          "context": "Mentioned in document"
+        },
+        {
+          "original_name": "Pezenas Herault",
+          "normalized_name": "pezenas herault",
+          "context": "Mentioned in document"
+        },
+        {
+          "original_name": "Military Postal Control",
+          "normalized_name": "military postal control",
+          "context": "Mentioned in document"
+        }
+      ],
+      "document_date": "1940-05-16",
+      "sender": "elizabeth zentall",
+      "recipient": "robert lweisenthal",
+      "status": "Editing",
+      "from_location": "",
+      "to_location": ""
     },
     "doc_20250927_102706": {
       "title": "054-1940-09-18-fre - 2025-09-27",
@@ -157,7 +227,7 @@
       "summary": "This appears to be a personal letter involving Zabalein Now, If Ellen, Haus Kalm. discusses business...",
       "page_count": 6,
       "status": "Editing",
-      "last_commented_at": "2025-10-04T09:31:35.635545"
+      "last_commented_at": "2025-10-11T16:12:54.965697"
     }
   },
   "people": {
@@ -528,5 +598,5 @@
       ]
     }
   },
-  "last_updated": "2025-10-04T09:46:22.464535"
+  "last_updated": "2025-10-13T12:10:19.241117"
 }
