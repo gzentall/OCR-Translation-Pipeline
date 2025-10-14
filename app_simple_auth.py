@@ -360,7 +360,7 @@ def complete_activation():
 @require_auth
 def index():
     """Redirect to Next.js frontend."""
-    return redirect('http://localhost:3002')
+    return redirect('http://localhost:3000')
 
 # API endpoints for Next.js frontend
 @app.route('/api/documents')
@@ -1068,25 +1068,25 @@ def upload_form():
 @require_auth
 def browse():
     """Redirect to Next.js frontend."""
-    return redirect('http://localhost:3002')
+    return redirect('http://localhost:3000')
 
 @app.route('/stats-page')
 @require_auth
 def stats_page():
     """Redirect to Next.js frontend."""
-    return redirect('http://localhost:3002')
+    return redirect('http://localhost:3000')
 
 @app.route('/people-page')
 @require_auth
 def people_page():
     """Redirect to Next.js frontend."""
-    return redirect('http://localhost:3002/references')
+    return redirect('http://localhost:3000/references')
 
 @app.route('/users-page')
 @require_auth
 def users_page():
     """Redirect to Next.js frontend."""
-    return redirect('http://localhost:3002/users')
+    return redirect('http://localhost:3000/users')
 
 @app.route('/documents/<doc_id>/images/<int:page_num>')
 @require_auth
