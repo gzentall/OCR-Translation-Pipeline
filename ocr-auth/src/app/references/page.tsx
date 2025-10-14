@@ -326,6 +326,7 @@ export default function ReferencesPage() {
                 </ListItem>
               ))}
             </List>
+            </Card>
           )}
         </Box>
       </AppShell>
