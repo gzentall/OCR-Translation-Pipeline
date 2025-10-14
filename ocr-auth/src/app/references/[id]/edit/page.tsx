@@ -1,26 +1,23 @@
 "use client"
 
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import Layout from '@/components/Layout'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Box,
   Typography,
   TextField,
   Button,
+  Chip,
+  IconButton,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
   Card,
   CardContent,
-  Chip,
-  ButtonGroup,
+  CircularProgress,
   ThemeProvider,
   CssBaseline,
-  createTheme,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions
 } from '@mui/material'
 import {
   Save,
@@ -29,101 +26,65 @@ import {
   Delete,
   Person,
   Place,
-  Business
+  Business,
 } from '@mui/icons-material'
+import AppShell from '@/components/AppShell'
+import m3Theme from '@/theme/m3-theme'
 
 interface Reference {
   id: string
   type: string
   canonicalName: string
-  notes: string | null
+  notes: string
   variants: string[]
   documentCount: number
   createdAt: string
 }
 
-// Material-UI M3 Theme
-const m3Theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#6750A4',
-    },
-    secondary: {
-      main: '#625B71',
-    },
-    surface: {
-      main: '#FFFBFE',
-    },
-    background: {
-      default: '#FFFBFE',
-    },
-  },
-  typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
-  },
-  shape: {
-    borderRadius: 12,
-  },
-})
-
-export default function EditReferencePage({ params }: { params: Promise<{ id: string }> }) {
-  const { data: session, status } = useSession()
+export default function ReferenceEditPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
+  const [referenceId, setReferenceId] = useState<string>('')
   const [reference, setReference] = useState<Reference | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
-  const [newVariant, setNewVariant] = useState("")
-  const [showAddVariant, setShowAddVariant] = useState(false)
-  const [documentId, setDocumentId] = useState<string | null>(null)
+  const [newVariant, setNewVariant] = useState('')
 
   useEffect(() => {
-    if (status === "loading") return
-    
-    if (!session) {
-      router.push("/login")
-      return
-    }
-
     const loadParams = async () => {
       const resolvedParams = await params
-      setDocumentId(resolvedParams.id)
+      setReferenceId(resolvedParams.id)
     }
     loadParams()
-  }, [session, status, router, params])
+  }, [params])
 
   useEffect(() => {
-    if (!documentId) return
+    if (referenceId) {
+      loadReference()
+    }
+  }, [referenceId])
 
-    fetchReference()
-  }, [documentId])
-
-  const fetchReference = async () => {
+  const loadReference = async () => {
     try {
       setIsLoading(true)
-      // Try to fetch from Flask backend
-      const response = await fetch(`/api/flask/test-references`)
       
+      // Try authenticated endpoint first
+      let response = await fetch(`http://localhost:5001/api/references/${referenceId}`, {
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        // Fallback to test endpoint
+        response = await fetch(`http://localhost:5001/api/test-references/${referenceId}`)
+      }
+
       if (response.ok) {
         const data = await response.json()
-        const foundReference = data.references.find((ref: Reference) => ref.id === documentId)
-        if (foundReference) {
-          setReference(foundReference)
-        } else {
-          // Create a new reference if not found
-          setReference({
-            id: documentId,
-            type: 'PERSON',
-            canonicalName: documentId,
-            notes: '',
-            variants: [],
-            documentCount: 0,
-            createdAt: new Date().toISOString()
-          })
-        }
+        setReference(data)
+      } else {
+        console.error('Failed to load reference')
       }
     } catch (error) {
-      console.error("Failed to fetch reference:", error)
+      console.error('Error loading reference:', error)
     } finally {
       setIsLoading(false)
     }
@@ -134,85 +95,118 @@ export default function EditReferencePage({ params }: { params: Promise<{ id: st
 
     try {
       setIsSaving(true)
-      // For now, just navigate back - in a real app, you'd save to the backend
-      router.push('/references')
+      
+      const updateData = {
+        type: reference.type,
+        canonicalName: reference.canonicalName,
+        notes: reference.notes,
+        variants: reference.variants,
+      }
+
+      let response = await fetch(`http://localhost:5001/api/references/${referenceId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(updateData),
+      })
+
+      if (!response.ok) {
+        response = await fetch(`http://localhost:5001/api/test-references/${referenceId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updateData),
+        })
+      }
+
+      if (response.ok) {
+        router.push(`/references/${referenceId}`)
+      } else {
+        console.error('Failed to save reference')
+      }
     } catch (error) {
-      console.error("Failed to save reference:", error)
+      console.error('Error saving reference:', error)
     } finally {
       setIsSaving(false)
     }
   }
 
   const handleCancel = () => {
-    router.push('/references')
+    router.push(`/references/${referenceId}`)
   }
 
-  const handleAddVariant = () => {
-    if (newVariant.trim() && reference) {
-      setReference({
-        ...reference,
-        variants: [...reference.variants, newVariant.trim()]
-      })
-      setNewVariant("")
-      setShowAddVariant(false)
-    }
-  }
-
-  const handleRemoveVariant = (index: number) => {
+  const handleFieldChange = (field: keyof Reference, value: string) => {
     if (reference) {
       setReference({
         ...reference,
-        variants: reference.variants.filter((_, i) => i !== index)
+        [field]: value,
+      })
+    }
+  }
+
+  const addVariant = () => {
+    if (newVariant.trim() && reference) {
+      setReference({
+        ...reference,
+        variants: [...reference.variants, newVariant.trim()],
+      })
+      setNewVariant('')
+    }
+  }
+
+  const removeVariant = (index: number) => {
+    if (reference) {
+      setReference({
+        ...reference,
+        variants: reference.variants.filter((_, i) => i !== index),
       })
     }
   }
 
   const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'PERSON':
+    switch (type.toLowerCase()) {
+      case 'person':
         return <Person />
-      case 'PLACE':
+      case 'place':
         return <Place />
-      case 'ORGANIZATION':
+      case 'organization':
         return <Business />
       default:
         return <Person />
     }
   }
 
-  if (status === "loading" || isLoading) {
+  if (isLoading) {
     return (
       <ThemeProvider theme={m3Theme}>
         <CssBaseline />
-        <Layout>
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            minHeight: '50vh' 
-          }}>
-            <Typography>Loading reference...</Typography>
+        <AppShell>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '50vh',
+            }}
+          >
+            <CircularProgress />
           </Box>
-        </Layout>
+        </AppShell>
       </ThemeProvider>
     )
-  }
-
-  if (!session) {
-    return null
   }
 
   if (!reference) {
     return (
       <ThemeProvider theme={m3Theme}>
         <CssBaseline />
-        <Layout>
-          <Box sx={{ p: 3 }}>
-            <Typography variant="h6" color="error">
-              Reference not found
+        <AppShell>
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Typography variant="h6">Reference not found</Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              The reference you're looking for doesn't exist.
             </Typography>
           </Box>
-        </Layout>
+        </AppShell>
       </ThemeProvider>
     )
   }
@@ -220,103 +214,105 @@ export default function EditReferencePage({ params }: { params: Promise<{ id: st
   return (
     <ThemeProvider theme={m3Theme}>
       <CssBaseline />
-      <Layout>
-        <Box sx={{ p: 3 }}>
+      <AppShell>
+        <Box sx={{ p: 3, maxWidth: 800, mx: 'auto' }}>
           {/* Header */}
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            mb: 3 
-          }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {getTypeIcon(reference.type)}
-              <Typography variant="h4" component="h1" sx={{ fontWeight: 400 }}>
-                Edit Reference
-              </Typography>
-            </Box>
-            <ButtonGroup>
-              <Button
-                variant="outlined"
-                startIcon={<Cancel />}
-                onClick={handleCancel}
-                disabled={isSaving}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<Save />}
-                onClick={handleSave}
-                disabled={isSaving}
-              >
-                {isSaving ? 'Saving...' : 'Save'}
-              </Button>
-            </ButtonGroup>
+          <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton
+              onClick={handleCancel}
+              sx={{ color: 'var(--md-sys-color-primary)' }}
+            >
+              <Cancel />
+            </IconButton>
+            <Typography
+              variant="h5"
+              sx={{
+                fontFamily: 'var(--md-sys-typescale-headline-medium-font-family)',
+                fontSize: 'var(--md-sys-typescale-headline-medium-font-size)',
+                fontWeight: 'var(--md-sys-typescale-headline-medium-font-weight)',
+                color: 'var(--md-sys-color-on-surface)',
+              }}
+            >
+              Edit Reference
+            </Typography>
           </Box>
 
-          {/* Reference Form */}
-          <Card sx={{ borderRadius: 3 }}>
-            <CardContent sx={{ p: 3 }}>
+          {/* Form */}
+          <Card>
+            <CardContent>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {/* Type */}
+                <FormControl fullWidth>
+                  <InputLabel>Type</InputLabel>
+                  <Select
+                    value={reference.type}
+                    onChange={(e) => handleFieldChange('type', e.target.value)}
+                    label="Type"
+                    startAdornment={getTypeIcon(reference.type)}
+                  >
+                    <MenuItem value="person">
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Person />
+                        Person
+                      </Box>
+                    </MenuItem>
+                    <MenuItem value="place">
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Place />
+                        Place
+                      </Box>
+                    </MenuItem>
+                    <MenuItem value="organization">
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Business />
+                        Organization
+                      </Box>
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+
                 {/* Canonical Name */}
                 <TextField
                   label="Canonical Name"
                   value={reference.canonicalName}
-                  onChange={(e) => setReference({ ...reference, canonicalName: e.target.value })}
+                  onChange={(e) => handleFieldChange('canonicalName', e.target.value)}
                   fullWidth
-                  variant="outlined"
+                  required
                 />
-
-                {/* Type */}
-                <TextField
-                  label="Type"
-                  value={reference.type}
-                  onChange={(e) => setReference({ ...reference, type: e.target.value })}
-                  fullWidth
-                  variant="outlined"
-                  select
-                  SelectProps={{
-                    native: true,
-                  }}
-                >
-                  <option value="PERSON">Person</option>
-                  <option value="PLACE">Place</option>
-                  <option value="ORGANIZATION">Organization</option>
-                </TextField>
 
                 {/* Notes */}
                 <TextField
                   label="Notes"
-                  value={reference.notes || ''}
-                  onChange={(e) => setReference({ ...reference, notes: e.target.value })}
-                  fullWidth
+                  value={reference.notes}
+                  onChange={(e) => handleFieldChange('notes', e.target.value)}
                   multiline
                   rows={3}
-                  variant="outlined"
+                  fullWidth
                 />
 
                 {/* Variants */}
                 <Box>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    Variants (Also known as)
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    Variants
                   </Typography>
                   
                   {/* Existing Variants */}
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                    {reference.variants.map((variant, index) => (
-                      <Chip
-                        key={index}
-                        label={variant}
-                        onDelete={() => handleRemoveVariant(index)}
-                        color="primary"
-                        variant="outlined"
-                      />
-                    ))}
-                  </Box>
+                  {reference.variants.length > 0 && (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 2 }}>
+                      {reference.variants.map((variant, index) => (
+                        <Chip
+                          key={index}
+                          label={variant}
+                          onDelete={() => removeVariant(index)}
+                          color="primary"
+                          variant="outlined"
+                        />
+                      ))}
+                    </Box>
+                  )}
 
                   {/* Add New Variant */}
-                  <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
                     <TextField
                       label="Add variant"
                       value={newVariant}
@@ -325,35 +321,44 @@ export default function EditReferencePage({ params }: { params: Promise<{ id: st
                       sx={{ flexGrow: 1 }}
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') {
-                          handleAddVariant()
+                          addVariant()
                         }
                       }}
                     />
                     <Button
                       variant="outlined"
                       startIcon={<Add />}
-                      onClick={handleAddVariant}
+                      onClick={addVariant}
                       disabled={!newVariant.trim()}
                     >
                       Add
                     </Button>
                   </Box>
                 </Box>
-
-                {/* Document Count (Read-only) */}
-                <TextField
-                  label="Document Count"
-                  value={reference.documentCount}
-                  fullWidth
-                  variant="outlined"
-                  InputProps={{ readOnly: true }}
-                  helperText="Number of documents that mention this reference"
-                />
               </Box>
             </CardContent>
           </Card>
+
+          {/* Actions */}
+          <Box sx={{ display: 'flex', gap: 2, mt: 3, justifyContent: 'flex-end' }}>
+            <Button
+              variant="outlined"
+              onClick={handleCancel}
+              disabled={isSaving}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<Save />}
+              onClick={handleSave}
+              disabled={isSaving || !reference.canonicalName.trim()}
+            >
+              {isSaving ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </Box>
         </Box>
-      </Layout>
+      </AppShell>
     </ThemeProvider>
   )
 }

@@ -1,14 +1,12 @@
 "use client"
 
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import Layout from '@/components/Layout'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Box,
   Typography,
   TextField,
-  Button,
+  InputAdornment,
   List,
   ListItem,
   ListItemText,
@@ -17,11 +15,9 @@ import {
   Chip,
   Card,
   CardContent,
-  InputAdornment,
-  Fab,
+  CircularProgress,
   ThemeProvider,
   CssBaseline,
-  createTheme
 } from '@mui/material'
 import {
   Search,
@@ -30,147 +26,71 @@ import {
   Delete,
   Person,
   Place,
-  Business
+  Business,
 } from '@mui/icons-material'
+import AppShell from '@/components/AppShell'
+import m3Theme from '@/theme/m3-theme'
 
 interface Reference {
   id: string
   type: string
   canonicalName: string
-  notes: string | null
+  notes: string
   variants: string[]
   documentCount: number
   createdAt: string
 }
 
-// Material-UI M3 Theme
-const m3Theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#6750A4',
-    },
-    secondary: {
-      main: '#625B71',
-    },
-    surface: {
-      main: '#FFFBFE',
-    },
-    background: {
-      default: '#FFFBFE',
-    },
-  },
-  typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
-  },
-  shape: {
-    borderRadius: 12,
-  },
-})
-
 export default function ReferencesPage() {
-  const { data: session, status } = useSession()
   const router = useRouter()
   const [references, setReferences] = useState<Reference[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
-    if (status === "loading") return
-    
-    if (!session) {
-      router.push("/login")
-      return
-    }
+    loadReferences()
+  }, [])
 
-    fetchReferences()
-  }, [session, status, router])
-
-  const fetchReferences = async () => {
+  const loadReferences = async () => {
     try {
-      // Try to fetch from Flask backend first (authenticated endpoint)
-      const response = await fetch('/api/flask/references', {
-        credentials: 'include'
+      setIsLoading(true)
+
+      // Try authenticated endpoint first
+      let response = await fetch('http://localhost:5001/api/references', {
+        credentials: 'include',
       })
-      
+
+      if (!response.ok) {
+        // Fallback to test endpoint
+        response = await fetch('http://localhost:5001/api/test-references')
+      }
+
       if (response.ok) {
         const data = await response.json()
         setReferences(data.references || [])
-      } else {
-        // Fallback to test endpoint (no authentication required)
-        console.log("Authenticated endpoint failed, trying test endpoint")
-        const testResponse = await fetch('/api/flask/test-references')
-        
-        if (testResponse.ok) {
-          const testData = await testResponse.json()
-          setReferences(testData.references || [])
-        } else {
-          // Final fallback to mock data
-          console.log("All endpoints failed, using mock data")
-          const mockReferences: Reference[] = [
-            {
-              id: "1",
-              type: "PERSON",
-              canonicalName: "John Smith",
-              notes: "Main character in several documents",
-              variants: ["J. Smith", "Johnny", "Mr. Smith"],
-              documentCount: 5,
-              createdAt: new Date().toISOString()
-            },
-            {
-              id: "2",
-              type: "PLACE",
-              canonicalName: "New York",
-              notes: "Frequently mentioned location",
-              variants: ["NYC", "New York City", "The Big Apple"],
-              documentCount: 3,
-              createdAt: new Date().toISOString()
-            },
-            {
-              id: "3",
-              type: "PERSON",
-              canonicalName: "Mary Johnson",
-              notes: "Secondary character",
-              variants: ["M. Johnson", "Mary J."],
-              documentCount: 2,
-              createdAt: new Date().toISOString()
-            }
-          ]
-          setReferences(mockReferences)
-        }
       }
     } catch (error) {
-      console.error("Failed to fetch references:", error)
-      // Still show mock data on error
-      const mockReferences: Reference[] = [
-        {
-          id: "1",
-          type: "PERSON",
-          canonicalName: "John Smith",
-          notes: "Main character in several documents",
-          variants: ["J. Smith", "Johnny", "Mr. Smith"],
-          documentCount: 5,
-          createdAt: new Date().toISOString()
-        }
-      ]
-      setReferences(mockReferences)
+      console.error('Failed to load references:', error)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const filteredReferences = references.filter(ref =>
-    ref.canonicalName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ref.variants.some(variant => variant.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
+  const handleEdit = (referenceId: string) => {
+    router.push(`/references/${referenceId}/edit`)
+  }
+
+  const handleView = (referenceId: string) => {
+    router.push(`/references/${referenceId}`)
+  }
 
   const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'PERSON':
+    switch (type.toLowerCase()) {
+      case 'person':
         return <Person />
-      case 'PLACE':
+      case 'place':
         return <Place />
-      case 'ORGANIZATION':
+      case 'organization':
         return <Business />
       default:
         return <Person />
@@ -178,72 +98,80 @@ export default function ReferencesPage() {
   }
 
   const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'PERSON':
+    switch (type.toLowerCase()) {
+      case 'person':
         return 'primary'
-      case 'PLACE':
+      case 'place':
         return 'secondary'
-      case 'ORGANIZATION':
+      case 'organization':
         return 'success'
       default:
         return 'default'
     }
   }
 
-  if (status === "loading" || isLoading) {
+  const filteredReferences = references.filter(ref =>
+    ref.canonicalName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ref.notes.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ref.variants.some(variant => variant.toLowerCase().includes(searchQuery.toLowerCase()))
+  )
+
+  if (isLoading) {
     return (
       <ThemeProvider theme={m3Theme}>
         <CssBaseline />
-        <Layout>
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            minHeight: '50vh' 
-          }}>
-            <Typography>Loading references...</Typography>
+        <AppShell>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '50vh',
+            }}
+          >
+            <CircularProgress />
           </Box>
-        </Layout>
+        </AppShell>
       </ThemeProvider>
     )
-  }
-
-  if (!session) {
-    return null
   }
 
   return (
     <ThemeProvider theme={m3Theme}>
       <CssBaseline />
-      <Layout>
+      <AppShell>
         <Box sx={{ p: 3 }}>
           {/* Header */}
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            mb: 3 
-          }}>
-            <Typography variant="h4" component="h1" sx={{ fontWeight: 400 }}>
+          <Box sx={{ mb: 3 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontFamily: 'var(--md-sys-typescale-headline-medium-font-family)',
+                fontSize: 'var(--md-sys-typescale-headline-medium-font-size)',
+                fontWeight: 'var(--md-sys-typescale-headline-medium-font-weight)',
+                color: 'var(--md-sys-color-on-surface)',
+              }}
+            >
               References
             </Typography>
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={() => router.push('/references/new')}
-              sx={{ borderRadius: 2 }}
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'var(--md-sys-color-on-surface-variant)',
+                mt: 0.5,
+              }}
             >
-              Add Reference
-            </Button>
+              {references.length} references
+            </Typography>
           </Box>
 
-          {/* Search */}
-          <Box sx={{ mb: 3 }}>
+          {/* Search Bar */}
+          <Box sx={{ mb: 3, maxWidth: 600 }}>
             <TextField
               fullWidth
               placeholder="Search references..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -251,111 +179,156 @@ export default function ReferencesPage() {
                   </InputAdornment>
                 ),
               }}
-              sx={{ maxWidth: 400 }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 'var(--md-sys-shape-corner-medium)',
+                },
+              }}
             />
           </Box>
-          
+
           {/* References List */}
-          <Card sx={{ borderRadius: 3 }}>
-            <CardContent sx={{ p: 0 }}>
-              {filteredReferences.length === 0 ? (
-                <Box sx={{ p: 4, textAlign: 'center' }}>
-                  <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
-                    {searchTerm ? 'No references found matching your search.' : 'No references found.'}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {searchTerm ? 'Try a different search term.' : 'Add your first reference to get started.'}
-                  </Typography>
-                </Box>
-              ) : (
-                <List sx={{ p: 0 }}>
-                  {filteredReferences.map((reference) => (
-                    <ListItem
-                      key={reference.id}
-                      sx={{
-                        borderBottom: '1px solid',
-                        borderColor: 'divider',
-                        '&:last-child': { borderBottom: 'none' },
-                        cursor: 'pointer',
-                        '&:hover': {
-                          backgroundColor: 'action.hover',
-                        },
-                      }}
-                      onClick={() => router.push(`/references/${reference.id}`)}
-                    >
-                      <ListItemText
-                        primary={
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                            {getTypeIcon(reference.type)}
-                            <Typography variant="h6" component="span">
-                              {reference.canonicalName}
-                            </Typography>
-                            <Chip
-                              label={reference.type}
-                              size="small"
-                              color={getTypeColor(reference.type) as any}
-                              variant="outlined"
-                            />
-                          </Box>
-                        }
-                        secondary={
-                          <Box>
-                            {reference.notes && (
-                              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                {reference.notes}
-                              </Typography>
-                            )}
-                            {reference.variants.length > 0 && (
-                              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                {reference.variants.map((variant, index) => (
-                                  <Chip
-                                    key={index}
-                                    label={variant}
-                                    size="small"
-                                    variant="outlined"
-                                    sx={{ fontSize: '0.75rem' }}
-                                  />
-                                ))}
-                              </Box>
-                            )}
-                          </Box>
-                        }
-                      />
-                      <ListItemSecondaryAction>
-                        <Box sx={{ textAlign: 'right' }}>
-                          <Typography variant="body2" color="text.secondary">
-                            {reference.documentCount} document{reference.documentCount !== 1 ? 's' : ''}
+          {filteredReferences.length === 0 ? (
+            <Card
+              sx={{
+                textAlign: 'center',
+                py: 8,
+                bgcolor: 'var(--md-sys-color-surface-variant)',
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" color="text.secondary">
+                  {searchQuery ? 'No matching references' : 'No references found'}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  {searchQuery ? 'Try a different search term' : 'References will appear here when documents are processed'}
+                </Typography>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <List sx={{ p: 0 }}>
+              {filteredReferences.map((ref) => (
+                <ListItem
+                  key={ref.id}
+                  sx={{
+                    height: '72px',
+                    px: 2,
+                    borderBottom: '1px solid var(--md-sys-color-outline-variant)',
+                    '&:hover': {
+                      bgcolor: 'var(--md-sys-color-surface-variant)',
+                    },
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleView(ref.id)}
+                >
+                  <ListItemText
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <Chip
+                          icon={getTypeIcon(ref.type)}
+                          label={ref.type}
+                          size="small"
+                          color={getTypeColor(ref.type) as any}
+                          sx={{ height: '20px' }}
+                        />
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontSize: '16px',
+                            fontWeight: 500,
+                            color: 'var(--md-sys-color-on-surface)',
+                          }}
+                        >
+                          {ref.canonicalName}
+                        </Typography>
+                      </Box>
+                    }
+                    secondary={
+                      <Box>
+                        {ref.notes && (
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontSize: '14px',
+                              color: 'var(--md-sys-color-on-surface-variant)',
+                              mb: 0.5,
+                            }}
+                          >
+                            {ref.notes}
                           </Typography>
-                          <Box sx={{ display: 'flex', gap: 0.5, mt: 1 }}>
-                            <IconButton
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                router.push(`/references/${reference.id}/edit`)
-                              }}
-                            >
-                              <Edit />
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                // Handle delete
-                              }}
-                            >
-                              <Delete />
-                            </IconButton>
+                        )}
+                        {ref.variants.length > 0 && (
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                            {ref.variants.slice(0, 3).map((variant, index) => (
+                              <Chip
+                                key={index}
+                                label={variant}
+                                size="small"
+                                variant="outlined"
+                                sx={{ height: '20px', fontSize: '11px' }}
+                              />
+                            ))}
+                            {ref.variants.length > 3 && (
+                              <Chip
+                                label={`+${ref.variants.length - 3} more`}
+                                size="small"
+                                variant="outlined"
+                                sx={{ height: '20px', fontSize: '11px' }}
+                              />
+                            )}
                           </Box>
-                        </Box>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  ))}
-                </List>
-              )}
-            </CardContent>
-          </Card>
+                        )}
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            fontSize: '12px',
+                            color: 'var(--md-sys-color-on-surface-variant)',
+                            display: 'block',
+                            mt: 0.5,
+                          }}
+                        >
+                          {ref.documentCount} document{ref.documentCount !== 1 ? 's' : ''}
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                  <ListItemSecondaryAction>
+                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleEdit(ref.id)
+                        }}
+                        sx={{
+                          opacity: 0.7,
+                          '&:hover': { opacity: 1 },
+                        }}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          // TODO: Implement delete
+                        }}
+                        sx={{
+                          opacity: 0.7,
+                          '&:hover': { opacity: 1 },
+                        }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Box>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+          )}
         </Box>
-      </Layout>
+      </AppShell>
     </ThemeProvider>
   )
 }

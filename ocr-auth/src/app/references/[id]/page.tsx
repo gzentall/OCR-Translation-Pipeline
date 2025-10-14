@@ -1,191 +1,172 @@
 "use client"
 
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import Layout from '@/components/Layout'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Box,
   Typography,
   Button,
+  Chip,
+  IconButton,
   Card,
   CardContent,
-  Chip,
   List,
   ListItem,
   ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
+  Divider,
+  CircularProgress,
   ThemeProvider,
   CssBaseline,
-  createTheme,
-  Divider
 } from '@mui/material'
 import {
+  ArrowBack,
   Edit,
   Delete,
   Person,
   Place,
   Business,
   Description,
-  ArrowBack
 } from '@mui/icons-material'
+import AppShell from '@/components/AppShell'
+import m3Theme from '@/theme/m3-theme'
 
 interface Reference {
   id: string
   type: string
   canonicalName: string
-  notes: string | null
+  notes: string
   variants: string[]
   documentCount: number
   createdAt: string
 }
 
-interface Document {
-  id: string
-  title: string
-  summary: string
-  dateProcessed: string
-}
-
-// Material-UI M3 Theme
-const m3Theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#6750A4',
-    },
-    secondary: {
-      main: '#625B71',
-    },
-    surface: {
-      main: '#FFFBFE',
-    },
-    background: {
-      default: '#FFFBFE',
-    },
-  },
-  typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
-  },
-  shape: {
-    borderRadius: 12,
-  },
-})
-
 export default function ReferenceDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { data: session, status } = useSession()
   const router = useRouter()
+  const [referenceId, setReferenceId] = useState<string>('')
   const [reference, setReference] = useState<Reference | null>(null)
-  const [documents, setDocuments] = useState<Document[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [documentId, setDocumentId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (status === "loading") return
-    
-    if (!session) {
-      router.push("/login")
-      return
-    }
-
     const loadParams = async () => {
       const resolvedParams = await params
-      setDocumentId(resolvedParams.id)
+      setReferenceId(resolvedParams.id)
     }
     loadParams()
-  }, [session, status, router, params])
+  }, [params])
 
   useEffect(() => {
-    if (!documentId) return
+    if (referenceId) {
+      loadReference()
+    }
+  }, [referenceId])
 
-    fetchReference()
-  }, [documentId])
-
-  const fetchReference = async () => {
+  const loadReference = async () => {
     try {
       setIsLoading(true)
-      // Try to fetch from Flask backend
-      const response = await fetch(`/api/flask/test-references`)
       
+      // Try authenticated endpoint first
+      let response = await fetch(`http://localhost:5001/api/references/${referenceId}`, {
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        // Fallback to test endpoint
+        response = await fetch(`http://localhost:5001/api/test-references/${referenceId}`)
+      }
+
       if (response.ok) {
         const data = await response.json()
-        const foundReference = data.references.find((ref: Reference) => ref.id === documentId)
-        if (foundReference) {
-          setReference(foundReference)
-          // TODO: Fetch related documents
-          setDocuments([])
-        }
+        setReference(data)
+      } else {
+        console.error('Failed to load reference')
       }
     } catch (error) {
-      console.error("Failed to fetch reference:", error)
+      console.error('Error loading reference:', error)
     } finally {
       setIsLoading(false)
     }
   }
 
   const handleEdit = () => {
-    router.push(`/references/${documentId}/edit`)
+    router.push(`/references/${referenceId}/edit`)
   }
 
-  const handleDelete = () => {
-    // TODO: Implement delete functionality
-    console.log('Delete reference:', documentId)
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this reference?')) {
+      try {
+        const response = await fetch(`http://localhost:5001/api/test-references/${referenceId}`, {
+          method: 'DELETE',
+        })
+
+        if (response.ok) {
+          router.push('/references')
+        } else {
+          console.error('Failed to delete reference')
+        }
+      } catch (error) {
+        console.error('Error deleting reference:', error)
+      }
+    }
   }
 
   const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'PERSON':
+    switch (type.toLowerCase()) {
+      case 'person':
         return <Person />
-      case 'PLACE':
+      case 'place':
         return <Place />
-      case 'ORGANIZATION':
+      case 'organization':
         return <Business />
       default:
         return <Person />
     }
   }
 
-  if (status === "loading" || isLoading) {
+  const getTypeColor = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'person':
+        return 'primary'
+      case 'place':
+        return 'secondary'
+      case 'organization':
+        return 'success'
+      default:
+        return 'default'
+    }
+  }
+
+  if (isLoading) {
     return (
       <ThemeProvider theme={m3Theme}>
         <CssBaseline />
-        <Layout>
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            minHeight: '50vh' 
-          }}>
-            <Typography>Loading reference...</Typography>
+        <AppShell>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '50vh',
+            }}
+          >
+            <CircularProgress />
           </Box>
-        </Layout>
+        </AppShell>
       </ThemeProvider>
     )
-  }
-
-  if (!session) {
-    return null
   }
 
   if (!reference) {
     return (
       <ThemeProvider theme={m3Theme}>
         <CssBaseline />
-        <Layout>
-          <Box sx={{ p: 3 }}>
-            <Typography variant="h6" color="error">
-              Reference not found
+        <AppShell>
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            <Typography variant="h6">Reference not found</Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              The reference you're looking for doesn't exist.
             </Typography>
-            <Button
-              startIcon={<ArrowBack />}
-              onClick={() => router.push('/references')}
-              sx={{ mt: 2 }}
-            >
-              Back to References
-            </Button>
           </Box>
-        </Layout>
+        </AppShell>
       </ThemeProvider>
     )
   }
@@ -193,23 +174,39 @@ export default function ReferenceDetailPage({ params }: { params: Promise<{ id: 
   return (
     <ThemeProvider theme={m3Theme}>
       <CssBaseline />
-      <Layout>
+      <AppShell>
         <Box sx={{ p: 3 }}>
           {/* Header */}
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            mb: 3 
-          }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <IconButton onClick={() => router.push('/references')}>
-                <ArrowBack />
-              </IconButton>
-              {getTypeIcon(reference.type)}
-              <Typography variant="h4" component="h1" sx={{ fontWeight: 400 }}>
+          <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton
+              onClick={() => router.push('/references')}
+              sx={{ color: 'var(--md-sys-color-primary)' }}
+            >
+              <ArrowBack />
+            </IconButton>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontFamily: 'var(--md-sys-typescale-headline-medium-font-family)',
+                  fontSize: 'var(--md-sys-typescale-headline-medium-font-size)',
+                  fontWeight: 'var(--md-sys-typescale-headline-medium-font-weight)',
+                  color: 'var(--md-sys-color-on-surface)',
+                }}
+              >
                 {reference.canonicalName}
               </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                <Chip
+                  icon={getTypeIcon(reference.type)}
+                  label={reference.type}
+                  size="small"
+                  color={getTypeColor(reference.type) as any}
+                />
+                <Typography variant="body2" color="text.secondary">
+                  {reference.documentCount} document{reference.documentCount !== 1 ? 's' : ''}
+                </Typography>
+              </Box>
             </Box>
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Button
@@ -230,27 +227,18 @@ export default function ReferenceDetailPage({ params }: { params: Promise<{ id: 
             </Box>
           </Box>
 
-          {/* Reference Details */}
-          <Card sx={{ borderRadius: 3, mb: 3 }}>
-            <CardContent sx={{ p: 3 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {/* Type */}
-                <Box>
-                  <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
-                    Type
-                  </Typography>
-                  <Chip
-                    label={reference.type}
-                    color="primary"
-                    variant="outlined"
-                    icon={getTypeIcon(reference.type)}
-                  />
-                </Box>
-
-                {/* Notes */}
+          {/* Content */}
+          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
+            {/* Main Info */}
+            <Card>
+              <CardContent>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Details
+                </Typography>
+                
                 {reference.notes && (
-                  <Box>
-                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                       Notes
                     </Typography>
                     <Typography variant="body1">
@@ -259,108 +247,57 @@ export default function ReferenceDetailPage({ params }: { params: Promise<{ id: 
                   </Box>
                 )}
 
-                {/* Variants */}
-                {reference.variants.length > 0 && (
-                  <Box>
-                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-                      Also known as
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    Variants
+                  </Typography>
+                  {reference.variants.length > 0 ? (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {reference.variants.map((variant, index) => (
                         <Chip
                           key={index}
                           label={variant}
-                          variant="outlined"
                           size="small"
+                          variant="outlined"
                         />
                       ))}
                     </Box>
-                  </Box>
-                )}
-
-                {/* Document Count */}
-                <Box>
-                  <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
-                    Document Count
-                  </Typography>
-                  <Typography variant="h6" color="primary">
-                    {reference.documentCount} document{reference.documentCount !== 1 ? 's' : ''}
-                  </Typography>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      No variants
+                    </Typography>
+                  )}
                 </Box>
+              </CardContent>
+            </Card>
 
-                {/* Created Date */}
-                <Box>
-                  <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 0.5 }}>
-                    First Mentioned
-                  </Typography>
-                  <Typography variant="body2">
-                    {new Date(reference.createdAt).toLocaleDateString()}
-                  </Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
-
-          {/* Related Documents */}
-          <Card sx={{ borderRadius: 3 }}>
-            <CardContent sx={{ p: 0 }}>
-              <Box sx={{ p: 3, pb: 0 }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Related Documents
+            {/* Documents */}
+            <Card>
+              <CardContent>
+                <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Description />
+                  Documents ({reference.documentCount})
                 </Typography>
-              </Box>
-              
-              {documents.length === 0 ? (
-                <Box sx={{ p: 3, textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
-                    No documents found for this reference.
-                  </Typography>
-                </Box>
-              ) : (
-                <List sx={{ p: 0 }}>
-                  {documents.map((document, index) => (
-                    <ListItem
-                      key={document.id}
-                      sx={{
-                        borderBottom: index < documents.length - 1 ? '1px solid' : 'none',
-                        borderColor: 'divider',
-                        cursor: 'pointer',
-                        '&:hover': {
-                          backgroundColor: 'action.hover',
-                        },
-                      }}
-                      onClick={() => router.push(`/documents/${document.id}`)}
-                    >
+                
+                {reference.documentCount > 0 ? (
+                  <List sx={{ p: 0 }}>
+                    <ListItem sx={{ px: 0 }}>
                       <ListItemText
-                        primary={
-                          <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                            {document.title}
-                          </Typography>
-                        }
-                        secondary={
-                          <Box>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              {document.summary}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              Processed: {new Date(document.dateProcessed).toLocaleDateString()}
-                            </Typography>
-                          </Box>
-                        }
+                        primary="Document references"
+                        secondary="This reference appears in multiple documents"
                       />
-                      <ListItemSecondaryAction>
-                        <IconButton size="small">
-                          <Description />
-                        </IconButton>
-                      </ListItemSecondaryAction>
                     </ListItem>
-                  ))}
-                </List>
-              )}
-            </CardContent>
-          </Card>
+                  </List>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No documents reference this item
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </Box>
         </Box>
-      </Layout>
+      </AppShell>
     </ThemeProvider>
   )
 }
