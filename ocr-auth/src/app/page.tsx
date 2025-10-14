@@ -1,286 +1,267 @@
 "use client"
 
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import Layout from '@/components/Layout'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CardMedia,
+  Chip,
+  CircularProgress,
+  ThemeProvider,
+  CssBaseline,
+} from '@mui/material'
+import AppShell from '@/components/AppShell'
+import m3Theme from '@/theme/m3-theme'
 
 interface Document {
   id: string
   title: string
+  summary: string
   dateProcessed: string
   sourceLanguage: string
-  targetLanguage: string
-  fileSize: number
-  summary: string | null
+  status: string
   pageCount: number
-  createdAt: string
-  updatedAt: string
-  status?: string
 }
 
-export default function HomePage() {
-  const { data: session, status } = useSession()
+export default function DocumentsPage() {
   const router = useRouter()
   const [documents, setDocuments] = useState<Document[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [sortBy, setSortBy] = useState('date_added')
-  const [sortDirection, setSortDirection] = useState('desc')
 
   useEffect(() => {
-    if (status === "loading") return
-    
-    if (!session) {
-      router.push("/login")
-      return
-    }
+    loadDocuments()
+  }, [])
 
-    fetchDocuments()
-  }, [session, status, router])
-
-  const fetchDocuments = async () => {
+  const loadDocuments = async () => {
     try {
-      // Try to fetch from Flask backend first (authenticated endpoint)
-      const response = await fetch('/api/flask/documents', {
-        credentials: 'include'
+      setIsLoading(true)
+
+      // Try authenticated endpoint first
+      let response = await fetch('http://localhost:5001/documents', {
+        credentials: 'include',
       })
-      
+
+      if (!response.ok) {
+        // Fallback to test endpoint
+        response = await fetch('http://localhost:5001/api/test-documents')
+      }
+
       if (response.ok) {
         const data = await response.json()
         setDocuments(data.documents || [])
-      } else {
-        // Fallback to test endpoint (no auth required)
-        console.log("Authenticated endpoint failed, trying test endpoint")
-        const testResponse = await fetch('/api/flask/test-documents')
-        if (testResponse.ok) {
-          const testData = await testResponse.json()
-          setDocuments(testData.documents || [])
-        } else {
-          // Final fallback to mock data
-          console.log("All endpoints failed, using mock data")
-          const mockDocuments: Document[] = [
-            {
-              id: "doc_20250925_145858",
-              title: "01-05-1938_ger_letter-002 - 2025-09-25",
-              dateProcessed: "2025-09-25T14:59:29.859316",
-              sourceLanguage: "unknown",
-              targetLanguage: "en",
-              fileSize: 54985766,
-              summary: "This appears to be a personal letter involving National Bank, His Zob. discusses family matters, bus...",
-              pageCount: 2,
-              createdAt: "2025-09-25T14:59:29.859316",
-              updatedAt: "2025-09-25T14:59:29.859316"
-            },
-            {
-              id: "doc_20250925_165151",
-              title: "01-27-2003_eng_letter-001 - 2025-09-25",
-              dateProcessed: "2025-09-25T16:52:03.129192",
-              sourceLanguage: "en",
-              targetLanguage: "en",
-              fileSize: 196279,
-              summary: "WHO: The sender of the document is identified as \"Grandma\" and the recipient is named Gabe. The send...",
-              pageCount: 2,
-              createdAt: "2025-09-25T16:52:03.129192",
-              updatedAt: "2025-09-25T16:52:03.129192"
-            }
-          ]
-          setDocuments(mockDocuments)
-        }
       }
     } catch (error) {
-      console.error("Failed to fetch documents:", error)
+      console.error('Failed to load documents:', error)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const filteredDocuments = documents.filter(doc =>
-    doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doc.summary?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const handleDocumentClick = (docId: string) => {
+    router.push(`/documents/${docId}`)
+  }
 
-  if (status === "loading" || isLoading) {
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'new':
+        return 'primary'
+      case 'editing':
+        return 'warning'
+      case 'final':
+        return 'success'
+      default:
+        return 'default'
+    }
+  }
+
+  if (isLoading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '100vh' 
-      }}>
-        <div>Loading...</div>
-      </div>
+      <ThemeProvider theme={m3Theme}>
+        <CssBaseline />
+        <AppShell>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '50vh',
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        </AppShell>
+      </ThemeProvider>
     )
   }
 
-  if (!session) {
-    return null
-  }
-
   return (
-    <Layout>
-      <div>
-        {/* Compact Search Filter Bar - Exact match from browse.html */}
-        <div className="compact-search-filter-bar">
-          <div className="search-input-container">
-            <span className="material-icons search-icon">search</span>
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search documents..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {searchTerm && (
-              <span 
-                className="material-icons clear-icon"
-                onClick={() => setSearchTerm("")}
-                style={{ display: 'block' }}
-              >
-                close
-              </span>
-            )}
-          </div>
-          
-          <div className="filter-chips-container">
-            <div className="filter-chip">
-              <span className="filter-chip-text">Sender</span>
-              <span className="material-icons filter-chip-arrow">keyboard_arrow_down</span>
-            </div>
-            <div className="filter-chip">
-              <span className="filter-chip-text">Recipient</span>
-              <span className="material-icons filter-chip-arrow">keyboard_arrow_down</span>
-            </div>
-            <div className="filter-chip">
-              <span className="filter-chip-text">Date</span>
-              <span className="material-icons filter-chip-arrow">keyboard_arrow_down</span>
-            </div>
-            <div className="filter-chip">
-              <span className="filter-chip-text">Status</span>
-              <span className="material-icons filter-chip-arrow">keyboard_arrow_down</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Documents Section - Exact match from browse.html */}
-        <div className="documents-section">
-          <div className="documents-header">
-            <div className="documents-title-container">
-              <h2 className="section-title">Documents</h2>
-              <a 
-                href="#" 
-                className="show-all-link"
-                onClick={(e) => {
-                  e.preventDefault()
-                  setSearchTerm("")
-                }}
-              >
-                show all
-              </a>
-            </div>
-            <div className="sort-controls">
-              <span className="sort-label">Sort:</span>
-              <div className="sort-chip">
-                <span className="material-icons sort-icon">sort</span>
-                <span className="sort-text">Added (d)</span>
-                <span className="material-icons sort-arrow">keyboard_arrow_down</span>
-              </div>
-              <div className="view-controls">
-                <div className="view-toggle-group">
-                  <button
-                    className={`view-toggle ${viewMode === 'grid' ? 'active' : ''}`}
-                    onClick={() => setViewMode('grid')}
-                  >
-                    <span className="material-icons">grid_view</span>
-                  </button>
-                  <button
-                    className={`view-toggle ${viewMode === 'list' ? 'active' : ''}`}
-                    onClick={() => setViewMode('list')}
-                  >
-                    <span className="material-icons">view_list</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+    <ThemeProvider theme={m3Theme}>
+      <CssBaseline />
+      <AppShell>
+        <Box sx={{ p: 3 }}>
+          {/* Header */}
+          <Box sx={{ mb: 3 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontFamily: 'var(--md-sys-typescale-headline-medium-font-family)',
+                fontSize: 'var(--md-sys-typescale-headline-medium-font-size)',
+                fontWeight: 'var(--md-sys-typescale-headline-medium-font-weight)',
+                color: 'var(--md-sys-color-on-surface)',
+              }}
+            >
+              Documents
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'var(--md-sys-color-on-surface-variant)',
+                mt: 0.5,
+              }}
+            >
+              {documents.length} documents
+            </Typography>
+          </Box>
 
           {/* Documents Grid */}
-          {filteredDocuments.length === 0 ? (
-            <div style={{
-              textAlign: 'center',
-              padding: 'var(--md-sys-spacing-16)',
-              color: 'var(--md-sys-color-on-surface-variant)'
-            }}>
-              <div style={{ fontSize: '48px', marginBottom: 'var(--md-sys-spacing-4)' }}>📄</div>
-              <p style={{ fontSize: '18px', margin: 0 }}>No documents found</p>
-              <p style={{ fontSize: '14px', margin: 'var(--md-sys-spacing-2) 0 0 0' }}>
-                {searchTerm ? 'Try adjusting your search terms.' : 'Upload your first document to get started.'}
-              </p>
-            </div>
+          {documents.length === 0 ? (
+            <Box
+              sx={{
+                textAlign: 'center',
+                py: 8,
+                color: 'var(--md-sys-color-on-surface-variant)',
+              }}
+            >
+              <Typography variant="h6">No documents found</Typography>
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                Upload a document to get started
+              </Typography>
+            </Box>
           ) : (
-            <div className="documents-grid">
-              {filteredDocuments.map((document) => (
-                <div
-                  key={document.id}
-                  className="document-card"
-                  onClick={() => router.push(`/documents/${document.id}`)}
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gap: '24px',
+              }}
+            >
+              {documents.map((doc) => (
+                <Card
+                  key={doc.id}
+                  onClick={() => handleDocumentClick(doc.id)}
+                  sx={{
+                    cursor: 'pointer',
+                    borderRadius: 'var(--md-sys-shape-corner-medium)',
+                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    '&:hover': {
+                      transform: 'scale(1.02)',
+                      boxShadow: 'var(--md-sys-elevation-level2)',
+                    },
+                  }}
                 >
-                  <div className="document-thumbnail">
-                    <img
-                      src={`/api/flask/test-documents/${document.id}/images/1?t=${Date.now()}`}
-                      alt="Document thumbnail"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: 'var(--md-sys-shape-radius-md)'
-                      }}
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none'
-                        const fallback = e.currentTarget.nextElementSibling as HTMLElement
-                        if (fallback) fallback.style.display = 'flex'
-                      }}
-                    />
-                    <div style={{
-                      display: 'none',
-                      width: '100%',
-                      height: '100%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '48px',
-                      color: 'var(--md-sys-color-on-surface-variant)',
-                      background: 'var(--md-sys-color-surface-variant)'
-                    }}>
-                      📄
-                    </div>
-                    <div className="document-page-badge">
-                      {document.pageCount}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="document-title">
-                      {document.title}
-                    </h3>
-                    <p className="document-summary">
-                      {document.summary}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                  {/* Thumbnail */}
+                  <CardMedia
+                    component="img"
+                    height="180"
+                    image={`http://localhost:5001/documents/${doc.id}/images/1`}
+                    alt={doc.title}
+                    sx={{
+                      objectFit: 'cover',
+                      bgcolor: 'var(--md-sys-color-surface-variant)',
+                    }}
+                    onError={(e) => {
+                      // Fallback if image fails to load
+                      (e.target as HTMLImageElement).style.display = 'none'
+                    }}
+                  />
 
-        {/* Floating Action Button */}
-        <button
-          className="fab"
-          onClick={() => router.push('/upload')}
-        >
-          <span className="material-icons">add</span>
-        </button>
-      </div>
-    </Layout>
+                  <CardContent sx={{ p: 2 }}>
+                    {/* Title */}
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontSize: '16px',
+                        fontWeight: 500,
+                        lineHeight: '24px',
+                        mb: 1,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {doc.title}
+                    </Typography>
+
+                    {/* Summary */}
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontSize: '12px',
+                        color: 'var(--md-sys-color-on-surface-variant)',
+                        mb: 1.5,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {doc.summary}
+                    </Typography>
+
+                    {/* Metadata */}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        gap: 0.5,
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                      }}
+                    >
+                      {doc.status && (
+                        <Chip
+                          label={doc.status}
+                          size="small"
+                          color={getStatusColor(doc.status) as any}
+                          sx={{
+                            height: '20px',
+                            fontSize: '11px',
+                            fontWeight: 500,
+                            textTransform: 'uppercase',
+                          }}
+                        />
+                      )}
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontSize: '12px',
+                          color: 'var(--md-sys-color-on-surface-variant)',
+                        }}
+                      >
+                        {doc.pageCount} page{doc.pageCount !== 1 ? 's' : ''}
+                      </Typography>
+                      {doc.sourceLanguage && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            fontSize: '12px',
+                            color: 'var(--md-sys-color-on-surface-variant)',
+                          }}
+                        >
+                          · {doc.sourceLanguage}
+                        </Typography>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              ))}
+            </Box>
+          )}
+        </Box>
+      </AppShell>
+    </ThemeProvider>
   )
 }
