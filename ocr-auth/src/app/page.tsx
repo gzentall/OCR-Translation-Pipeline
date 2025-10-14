@@ -107,9 +107,6 @@ export default function DocumentsPage() {
             <Typography
               variant="h5"
               sx={{
-                fontFamily: 'var(--md-sys-typescale-headline-medium-font-family)',
-                fontSize: 'var(--md-sys-typescale-headline-medium-font-size)',
-                fontWeight: 'var(--md-sys-typescale-headline-medium-font-weight)',
                 color: 'var(--md-sys-color-on-surface)',
               }}
             >

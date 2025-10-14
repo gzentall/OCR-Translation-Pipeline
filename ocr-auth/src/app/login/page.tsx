@@ -102,13 +102,10 @@ export default function LoginPage() {
               }} 
             />
             <Typography
-              variant="h4"
+              variant="h5"
               sx={{
-                fontFamily: 'var(--md-sys-typescale-headline-medium-font-family)',
-                fontSize: 'var(--md-sys-typescale-headline-medium-font-size)',
-                fontWeight: 'var(--md-sys-typescale-headline-medium-font-weight)',
-                mb: 1,
                 color: 'var(--md-sys-color-on-surface)',
+                mb: 1,
               }}
             >
               Welcome to Postmark
@@ -116,8 +113,6 @@ export default function LoginPage() {
             <Typography
               variant="body1"
               sx={{
-                fontFamily: 'var(--md-sys-typescale-body-medium-font-family)',
-                fontSize: 'var(--md-sys-typescale-body-medium-font-size)',
                 color: 'var(--md-sys-color-on-surface-variant)',
               }}
             >

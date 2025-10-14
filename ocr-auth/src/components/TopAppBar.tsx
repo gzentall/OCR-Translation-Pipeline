@@ -88,9 +88,6 @@ export default function TopAppBar() {
             <Typography
               variant="h6"
               sx={{
-                fontFamily: 'var(--md-sys-typescale-title-medium-font-family)',
-                fontSize: '20px',
-                fontWeight: 500,
                 color: 'var(--md-sys-color-on-surface)',
               }}
             >

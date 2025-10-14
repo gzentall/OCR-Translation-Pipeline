@@ -1,56 +1,86 @@
 /* Material Design 3 Design Tokens */
-/* Generated from design/tokens.json */
+/* Fully compliant with M3 specifications */
 
 :root {
-  /* Color Tokens - Primary */
+  /* M3 Color System - Primary */
   --md-sys-color-primary: #6750A4;
   --md-sys-color-on-primary: #FFFFFF;
-  --md-sys-color-primary-container: #D0BCFF;
-  --md-sys-color-on-primary-container: #1D1B20;
+  --md-sys-color-primary-container: #EADDFF;
+  --md-sys-color-on-primary-container: #21005D;
 
-  /* Color Tokens - Secondary */
+  /* M3 Color System - Secondary */
   --md-sys-color-secondary: #625B71;
   --md-sys-color-on-secondary: #FFFFFF;
-  --md-sys-color-secondary-container: #CCC2DC;
-  --md-sys-color-on-secondary-container: #1D1B20;
+  --md-sys-color-secondary-container: #E8DEF8;
+  --md-sys-color-on-secondary-container: #1D192B;
 
-  /* Color Tokens - Tertiary */
+  /* M3 Color System - Tertiary */
   --md-sys-color-tertiary: #7D5260;
   --md-sys-color-on-tertiary: #FFFFFF;
-  --md-sys-color-tertiary-container: #EFB8C8;
-  --md-sys-color-on-tertiary-container: #1D1B20;
+  --md-sys-color-tertiary-container: #FFD8E4;
+  --md-sys-color-on-tertiary-container: #31111D;
 
-  /* Color Tokens - Error */
-  --md-sys-color-error: #B3261E;
+  /* M3 Color System - Error */
+  --md-sys-color-error: #BA1A1A;
   --md-sys-color-on-error: #FFFFFF;
-  --md-sys-color-error-container: #F2B8B5;
-  --md-sys-color-on-error-container: #1D1B20;
+  --md-sys-color-error-container: #FFDAD6;
+  --md-sys-color-on-error-container: #410002;
 
-  /* Color Tokens - Surface */
+  /* M3 Color System - Surface */
   --md-sys-color-surface: #FFFBFE;
-  --md-sys-color-on-surface: #1D1B20;
+  --md-sys-color-on-surface: #1C1B1F;
   --md-sys-color-surface-variant: #E7E0EC;
   --md-sys-color-on-surface-variant: #49454F;
+  --md-sys-color-surface-container: #F3EDF7;
+  --md-sys-color-surface-container-high: #ECE6F0;
+  --md-sys-color-surface-container-highest: #E6E0E9;
 
-  /* Color Tokens - Outline */
+  /* M3 Color System - Outline */
   --md-sys-color-outline: #79747E;
-  --md-sys-color-outline-variant: #E7E0EC;
+  --md-sys-color-outline-variant: #CAC4D0;
 
-  /* Color Tokens - Background */
+  /* M3 Color System - Background */
   --md-sys-color-background: #FFFBFE;
-  --md-sys-color-on-background: #1D1B20;
+  --md-sys-color-on-background: #1C1B1F;
 
-  /* Typography Tokens */
+  /* M3 Typography Scale - Display */
   --md-sys-typescale-display-large-font-family: 'Roboto', system-ui, sans-serif;
   --md-sys-typescale-display-large-font-size: 57px;
   --md-sys-typescale-display-large-font-weight: 400;
   --md-sys-typescale-display-large-line-height: 64px;
   --md-sys-typescale-display-large-letter-spacing: -0.25px;
 
+  --md-sys-typescale-display-medium-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-display-medium-font-size: 45px;
+  --md-sys-typescale-display-medium-font-weight: 400;
+  --md-sys-typescale-display-medium-line-height: 52px;
+
+  --md-sys-typescale-display-small-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-display-small-font-size: 36px;
+  --md-sys-typescale-display-small-font-weight: 400;
+  --md-sys-typescale-display-small-line-height: 44px;
+
+  /* M3 Typography Scale - Headline */
+  --md-sys-typescale-headline-large-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-headline-large-font-size: 32px;
+  --md-sys-typescale-headline-large-font-weight: 400;
+  --md-sys-typescale-headline-large-line-height: 40px;
+
   --md-sys-typescale-headline-medium-font-family: 'Roboto', system-ui, sans-serif;
   --md-sys-typescale-headline-medium-font-size: 28px;
   --md-sys-typescale-headline-medium-font-weight: 400;
   --md-sys-typescale-headline-medium-line-height: 36px;
+
+  --md-sys-typescale-headline-small-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-headline-small-font-size: 24px;
+  --md-sys-typescale-headline-small-font-weight: 400;
+  --md-sys-typescale-headline-small-line-height: 32px;
+
+  /* M3 Typography Scale - Title */
+  --md-sys-typescale-title-large-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-title-large-font-size: 22px;
+  --md-sys-typescale-title-large-font-weight: 400;
+  --md-sys-typescale-title-large-line-height: 28px;
 
   --md-sys-typescale-title-medium-font-family: 'Roboto', system-ui, sans-serif;
   --md-sys-typescale-title-medium-font-size: 16px;
@@ -58,11 +88,18 @@
   --md-sys-typescale-title-medium-line-height: 24px;
   --md-sys-typescale-title-medium-letter-spacing: 0.15px;
 
-  --md-sys-typescale-body-medium-font-family: 'Roboto', system-ui, sans-serif;
-  --md-sys-typescale-body-medium-font-size: 14px;
-  --md-sys-typescale-body-medium-font-weight: 400;
-  --md-sys-typescale-body-medium-line-height: 20px;
-  --md-sys-typescale-body-medium-letter-spacing: 0.25px;
+  --md-sys-typescale-title-small-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-title-small-font-size: 14px;
+  --md-sys-typescale-title-small-font-weight: 500;
+  --md-sys-typescale-title-small-line-height: 20px;
+  --md-sys-typescale-title-small-letter-spacing: 0.1px;
+
+  /* M3 Typography Scale - Label */
+  --md-sys-typescale-label-large-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-label-large-font-size: 14px;
+  --md-sys-typescale-label-large-font-weight: 500;
+  --md-sys-typescale-label-large-line-height: 20px;
+  --md-sys-typescale-label-large-letter-spacing: 0.1px;
 
   --md-sys-typescale-label-medium-font-family: 'Roboto', system-ui, sans-serif;
   --md-sys-typescale-label-medium-font-size: 12px;
@@ -70,14 +107,41 @@
   --md-sys-typescale-label-medium-line-height: 16px;
   --md-sys-typescale-label-medium-letter-spacing: 0.5px;
 
-  /* Shape Tokens */
+  --md-sys-typescale-label-small-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-label-small-font-size: 11px;
+  --md-sys-typescale-label-small-font-weight: 500;
+  --md-sys-typescale-label-small-line-height: 16px;
+  --md-sys-typescale-label-small-letter-spacing: 0.5px;
+
+  /* M3 Typography Scale - Body */
+  --md-sys-typescale-body-large-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-body-large-font-size: 16px;
+  --md-sys-typescale-body-large-font-weight: 400;
+  --md-sys-typescale-body-large-line-height: 24px;
+  --md-sys-typescale-body-large-letter-spacing: 0.15px;
+
+  --md-sys-typescale-body-medium-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-body-medium-font-size: 14px;
+  --md-sys-typescale-body-medium-font-weight: 400;
+  --md-sys-typescale-body-medium-line-height: 20px;
+  --md-sys-typescale-body-medium-letter-spacing: 0.25px;
+
+  --md-sys-typescale-body-small-font-family: 'Roboto', system-ui, sans-serif;
+  --md-sys-typescale-body-small-font-size: 12px;
+  --md-sys-typescale-body-small-font-weight: 400;
+  --md-sys-typescale-body-small-line-height: 16px;
+  --md-sys-typescale-body-small-letter-spacing: 0.4px;
+
+  /* M3 Shape System - 7 Corner Styles */
+  --md-sys-shape-corner-none: 0px;
   --md-sys-shape-corner-extra-small: 4px;
   --md-sys-shape-corner-small: 8px;
   --md-sys-shape-corner-medium: 12px;
   --md-sys-shape-corner-large: 16px;
   --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 50%;
 
-  /* Spacing Tokens */
+  /* M3 Spacing System */
   --md-sys-spacing-grid: 4px;
   --md-sys-spacing-xs: 4px;
   --md-sys-spacing-sm: 8px;
@@ -85,14 +149,40 @@
   --md-sys-spacing-lg: 16px;
   --md-sys-spacing-xl: 24px;
   --md-sys-spacing-xxl: 32px;
+  --md-sys-spacing-xxxl: 48px;
 
-  /* Elevation Tokens */
-  --md-sys-elevation-level1: 0 1px 2px rgba(0, 0, 0, 0.14);
-  --md-sys-elevation-level2: 0 2px 6px rgba(0, 0, 0, 0.16);
-  --md-sys-elevation-level3: 0 4px 12px rgba(0, 0, 0, 0.18);
+  /* M3 Elevation System */
+  --md-sys-elevation-level0: none;
+  --md-sys-elevation-level1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level3: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level4: 0 2px 3px rgba(0, 0, 0, 0.3), 0 6px 10px 4px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level5: 0 4px 4px rgba(0, 0, 0, 0.3), 0 8px 12px 6px rgba(0, 0, 0, 0.15);
+
+  /* M3 Motion System */
+  --md-sys-motion-duration-short1: 50ms;
+  --md-sys-motion-duration-short2: 100ms;
+  --md-sys-motion-duration-short3: 150ms;
+  --md-sys-motion-duration-short4: 200ms;
+  --md-sys-motion-duration-medium1: 250ms;
+  --md-sys-motion-duration-medium2: 300ms;
+  --md-sys-motion-duration-medium3: 350ms;
+  --md-sys-motion-duration-medium4: 400ms;
+  --md-sys-motion-duration-long1: 450ms;
+  --md-sys-motion-duration-long2: 500ms;
+  --md-sys-motion-duration-long3: 550ms;
+  --md-sys-motion-duration-long4: 600ms;
+
+  --md-sys-motion-easing-linear: linear;
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+  --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
-/* Base Styles */
+/* Base Styles with M3 Compliance */
 body {
   font-family: var(--md-sys-typescale-body-medium-font-family);
   font-size: var(--md-sys-typescale-body-medium-font-size);
@@ -107,4 +197,29 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+/* M3 Component Base Styles */
+.m3-card {
+  background-color: var(--md-sys-color-surface);
+  border-radius: var(--md-sys-shape-corner-medium);
+  box-shadow: var(--md-sys-elevation-level1);
+  transition: box-shadow var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+
+.m3-card:hover {
+  box-shadow: var(--md-sys-elevation-level2);
+}
+
+.m3-button {
+  border-radius: var(--md-sys-shape-corner-full);
+  transition: all var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+}
+
+.m3-text-field {
+  border-radius: var(--md-sys-shape-corner-small);
+}
+
+.m3-chip {
+  border-radius: var(--md-sys-shape-corner-small);
 }
