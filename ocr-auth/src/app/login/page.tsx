@@ -1,9 +1,20 @@
 "use client"
 
-import { useState } from "react"
-import { signIn, getSession } from "next-auth/react"
+import { useState, useEffect } from "react"
+import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
+import {
+  Box,
+  Card,
+  TextField,
+  Button,
+  Typography,
+  Alert,
+  ThemeProvider,
+  CssBaseline
+} from '@mui/material'
+import { LocalPostOffice } from '@mui/icons-material'
+import m3Theme from '@/theme/m3-theme'
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -12,196 +23,174 @@ export default function LoginPage() {
   const [error, setError] = useState("")
   const router = useRouter()
 
+  // Auto-focus username field on mount
+  useEffect(() => {
+    const usernameInput = document.getElementById('username')
+    if (usernameInput) {
+      usernameInput.focus()
+    }
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
 
+    if (!username || !password) {
+      setError("Please enter both username and password")
+      setIsLoading(false)
+      return
+    }
+
     try {
-      const result = await signIn("credentials", {
-        username,
-        password,
-        redirect: false,
+      // For now, direct fetch to Flask backend
+      const formData = new FormData()
+      formData.append('username', username)
+      formData.append('password', password)
+
+      const response = await fetch('http://localhost:5001/login', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
       })
 
-      if (result?.error) {
-        setError("Invalid username or password")
+      if (response.redirected || response.ok) {
+        // Successful login - redirect to main app
+        router.push('/')
       } else {
-        // Get the session to check user role
-        const session = await getSession()
-        if ((session?.user as any)?.role === "SUPER_ADMIN") {
-          router.push("/admin")
-        } else {
-          router.push("/")
-        }
+        setError("Invalid username or password")
       }
     } catch (error) {
-      setError("An error occurred. Please try again.")
+      console.error('Login error:', error)
+      setError("Login failed. Please try again.")
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'var(--md-sys-color-background)',
-      padding: '48px 16px'
-    }}>
-      <div style={{
-        maxWidth: '400px',
-        width: '100%',
-        background: 'var(--md-sys-color-surface)',
-        borderRadius: '16px',
-        padding: '32px',
-        boxShadow: 'var(--md-sys-elevation-level2)',
-        border: '1px solid var(--md-sys-color-outline-variant)'
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <h1 style={{
-            fontSize: '28px',
-            fontWeight: 400,
-            margin: '0 0 8px 0',
-            color: 'var(--md-sys-color-on-surface)'
-          }}>
-            Sign in to your account
-          </h1>
-          <p style={{
-            fontSize: '14px',
-            color: 'var(--md-sys-color-on-surface-variant)',
-            margin: 0
-          }}>
-            Or{" "}
-            <Link
-              href="/register"
-              style={{
+    <ThemeProvider theme={m3Theme}>
+      <CssBaseline />
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          bgcolor: 'var(--md-sys-color-surface)',
+          color: 'var(--md-sys-color-on-surface)',
+        }}
+      >
+        <Card
+          elevation={3}
+          sx={{
+            minWidth: '400px',
+            maxWidth: '500px',
+            padding: '48px',
+            borderRadius: '16px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            bgcolor: 'var(--md-sys-color-surface)',
+          }}
+        >
+          {/* Header */}
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <LocalPostOffice 
+              sx={{ 
+                fontSize: '48px', 
                 color: 'var(--md-sys-color-primary)',
-                textDecoration: 'none',
-                fontWeight: 500
+                mb: 2
+              }} 
+            />
+            <Typography
+              variant="h4"
+              sx={{
+                fontFamily: 'var(--md-sys-typescale-headline-medium-font-family)',
+                fontSize: 'var(--md-sys-typescale-headline-medium-font-size)',
+                fontWeight: 'var(--md-sys-typescale-headline-medium-font-weight)',
+                mb: 1,
+                color: 'var(--md-sys-color-on-surface)',
               }}
             >
-              create a new account
-            </Link>
-          </p>
-        </div>
-        
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <label htmlFor="username" style={{
-              display: 'block',
-              fontSize: '12px',
-              fontWeight: 500,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              marginBottom: '4px'
-            }}>
-              Username or Email
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              required
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                border: '1px solid var(--md-sys-color-outline)',
-                borderRadius: '8px',
-                fontSize: '14px',
-                color: 'var(--md-sys-color-on-surface)',
-                background: 'var(--md-sys-color-surface)',
-                outline: 'none',
-                boxSizing: 'border-box'
+              Welcome to Postmark
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontFamily: 'var(--md-sys-typescale-body-medium-font-family)',
+                fontSize: 'var(--md-sys-typescale-body-medium-font-size)',
+                color: 'var(--md-sys-color-on-surface-variant)',
               }}
-              placeholder="Username or Email"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-          
-          <div>
-            <label htmlFor="password" style={{
-              display: 'block',
-              fontSize: '12px',
-              fontWeight: 500,
-              color: 'var(--md-sys-color-on-surface-variant)',
-              marginBottom: '4px'
-            }}>
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                border: '1px solid var(--md-sys-color-outline)',
-                borderRadius: '8px',
-                fontSize: '14px',
-                color: 'var(--md-sys-color-on-surface)',
-                background: 'var(--md-sys-color-surface)',
-                outline: 'none',
-                boxSizing: 'border-box'
-              }}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+            >
+              Sign in to access your documents
+            </Typography>
+          </Box>
 
-          {error && (
-            <div style={{
-              color: 'var(--md-sys-color-error)',
+          {/* Login Form */}
+          <form onSubmit={handleSubmit}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <TextField
+                id="username"
+                label="Username"
+                variant="outlined"
+                fullWidth
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={isLoading}
+              />
+
+              <TextField
+                id="password"
+                label="Password"
+                type="password"
+                variant="outlined"
+                fullWidth
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+              />
+
+              {error && (
+                <Alert severity="error" sx={{ mt: 1 }}>
+                  {error}
+                </Alert>
+              )}
+
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                disabled={isLoading}
+                sx={{
+                  mt: 1,
+                  height: '48px',
+                  textTransform: 'none',
+                  fontSize: '16px',
+                  fontWeight: 500,
+                }}
+              >
+                {isLoading ? 'Signing in...' : 'Sign In'}
+              </Button>
+            </Box>
+          </form>
+
+          {/* Demo Note */}
+          <Box
+            sx={{
+              bgcolor: 'var(--md-sys-color-primary-container)',
+              color: 'var(--md-sys-color-on-primary-container)',
+              padding: '16px',
+              borderRadius: '8px',
+              mt: 3,
               fontSize: '14px',
               textAlign: 'center',
-              padding: '8px',
-              background: 'var(--md-sys-color-error-container)',
-              borderRadius: '8px'
-            }}>
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              background: 'var(--md-sys-color-primary)',
-              color: 'var(--md-sys-color-on-primary)',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: 500,
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              opacity: isLoading ? 0.6 : 1,
-              transition: 'opacity 0.2s ease'
             }}
           >
-            {isLoading ? "Signing in..." : "Sign in"}
-          </button>
-
-          <div style={{ textAlign: 'center' }}>
-            <Link
-              href="/forgot-password"
-              style={{
-                color: 'var(--md-sys-color-primary)',
-                textDecoration: 'none',
-                fontSize: '14px',
-                fontWeight: 500
-              }}
-            >
-              Forgot your password?
-            </Link>
-          </div>
-        </form>
-      </div>
-    </div>
+            <strong>Demo Mode:</strong> Try username: <code>gzentall</code> with password: <code>password123</code>
+          </Box>
+        </Card>
+      </Box>
+    </ThemeProvider>
   )
 }
-
