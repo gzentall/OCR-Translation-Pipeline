@@ -53,13 +53,13 @@ export default function UsersPage() {
       setIsLoading(true)
 
       // Try authenticated endpoint first
-      let response = await fetch('http://localhost:5001/api/users', {
+      let response = await fetch('/api/flask/users', {
         credentials: 'include',
       })
 
       if (!response.ok) {
         // Fallback to test endpoint
-        response = await fetch('http://localhost:5001/api/test-users')
+        response = await fetch('/api/flask/test-users')
       }
 
       if (response.ok) {

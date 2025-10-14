@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Box,
   Tabs,
@@ -93,7 +93,7 @@ export default function TabsPanel({ document, onDocumentChange }: TabsPanelProps
 
   const loadPeople = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/test-people')
+      const response = await fetch('/api/flask/test-people')
       if (response.ok) {
         const data = await response.json()
         setAllPeople(data.people || [])
@@ -105,7 +105,7 @@ export default function TabsPanel({ document, onDocumentChange }: TabsPanelProps
 
   const loadHistory = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/test-documents/${document.id}/history`)
+      const response = await fetch(`/api/flask/test-documents/${document.id}/history`)
       if (response.ok) {
         const data = await response.json()
         setHistoryEvents(data.events || [])
@@ -116,10 +116,10 @@ export default function TabsPanel({ document, onDocumentChange }: TabsPanelProps
   }
 
   // Load people and history when component mounts
-  useState(() => {
+  useEffect(() => {
     loadPeople()
     loadHistory()
-  })
+  }, [document.id])
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>

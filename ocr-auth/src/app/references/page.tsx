@@ -56,13 +56,13 @@ export default function ReferencesPage() {
       setIsLoading(true)
 
       // Try authenticated endpoint first
-      let response = await fetch('http://localhost:5001/api/references', {
+      let response = await fetch('/api/flask/references', {
         credentials: 'include',
       })
 
       if (!response.ok) {
         // Fallback to test endpoint
-        response = await fetch('http://localhost:5001/api/test-references')
+        response = await fetch('/api/flask/test-references')
       }
 
       if (response.ok) {

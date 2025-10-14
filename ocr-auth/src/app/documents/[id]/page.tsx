@@ -68,13 +68,13 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
       setIsLoading(true)
       
       // Try authenticated endpoint first
-      let response = await fetch(`http://localhost:5001/api/documents/${documentId}`, {
+      let response = await fetch(`/api/flask/documents/${documentId}`, {
         credentials: 'include',
       })
 
       if (!response.ok) {
         // Fallback to test endpoint
-        response = await fetch(`http://localhost:5001/api/test-documents/${documentId}`)
+        response = await fetch(`/api/flask/test-documents/${documentId}`)
       }
 
       if (response.ok) {
@@ -92,12 +92,12 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
 
   const loadComments = async () => {
     try {
-      let response = await fetch(`http://localhost:5001/api/documents/${documentId}/comments`, {
+      let response = await fetch(`/api/flask/documents/${documentId}/comments`, {
         credentials: 'include',
       })
 
       if (!response.ok) {
-        response = await fetch(`http://localhost:5001/api/test-documents/${documentId}/comments`)
+        response = await fetch(`/api/flask/test-documents/${documentId}/comments`)
       }
 
       if (response.ok) {
@@ -127,7 +127,7 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
         status: document.status,
       }
 
-      let response = await fetch(`http://localhost:5001/api/documents/${documentId}`, {
+      let response = await fetch(`/api/flask/documents/${documentId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -135,7 +135,7 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
       })
 
       if (!response.ok) {
-        response = await fetch(`http://localhost:5001/api/test-documents/${documentId}`, {
+        response = await fetch(`/api/flask/test-documents/${documentId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updateData),

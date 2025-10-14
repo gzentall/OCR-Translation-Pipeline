@@ -40,13 +40,13 @@ export default function DocumentsPage() {
       setIsLoading(true)
 
       // Try authenticated endpoint first
-      let response = await fetch('http://localhost:5001/documents', {
+      let response = await fetch('/api/flask/documents', {
         credentials: 'include',
       })
 
       if (!response.ok) {
         // Fallback to test endpoint
-        response = await fetch('http://localhost:5001/api/test-documents')
+        response = await fetch('/api/flask/test-documents')
       }
 
       if (response.ok) {
