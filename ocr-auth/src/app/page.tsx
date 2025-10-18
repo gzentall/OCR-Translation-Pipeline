@@ -38,6 +38,7 @@ export default function DocumentsPage() {
   const loadDocuments = async () => {
     try {
       setIsLoading(true)
+      console.log('Loading documents...')
 
       // Try authenticated endpoint first
       let response = await fetch('/api/flask/documents', {
@@ -45,13 +46,18 @@ export default function DocumentsPage() {
       })
 
       if (!response.ok) {
+        console.log('Authenticated endpoint failed, trying test endpoint...')
         // Fallback to test endpoint
         response = await fetch('/api/flask/test-documents')
       }
 
       if (response.ok) {
         const data = await response.json()
+        console.log('Documents loaded:', data)
+        console.log('Number of documents:', data.documents?.length || 0)
         setDocuments(data.documents || [])
+      } else {
+        console.error('Failed to load documents, status:', response.status)
       }
     } catch (error) {
       console.error('Failed to load documents:', error)

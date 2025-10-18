@@ -54,6 +54,7 @@ export default function ReferencesPage() {
   const loadReferences = async () => {
     try {
       setIsLoading(true)
+      console.log('Loading references...')
 
       // Try authenticated endpoint first
       let response = await fetch('/api/flask/references', {
@@ -61,13 +62,18 @@ export default function ReferencesPage() {
       })
 
       if (!response.ok) {
+        console.log('Authenticated endpoint failed, trying test endpoint...')
         // Fallback to test endpoint
         response = await fetch('/api/flask/test-references')
       }
 
       if (response.ok) {
         const data = await response.json()
+        console.log('References loaded:', data)
+        console.log('Number of references:', data.references?.length || 0)
         setReferences(data.references || [])
+      } else {
+        console.error('Failed to load references, status:', response.status)
       }
     } catch (error) {
       console.error('Failed to load references:', error)
@@ -323,7 +329,7 @@ export default function ReferencesPage() {
                 </ListItem>
               ))}
             </List>
-            </Card>
+          </Card>
           )}
         </Box>
       </AppShell>
