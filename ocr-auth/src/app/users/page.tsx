@@ -65,10 +65,23 @@ export default function UsersPage() {
       }
 
       if (response.ok) {
-        const data = await response.json()
-        console.log('Users loaded:', data)
-        console.log('Number of users:', data.users?.length || 0)
-        setUsers(data.users || [])
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json()
+          console.log('Users loaded:', data)
+          console.log('Number of users:', data.users?.length || 0)
+          setUsers(data.users || [])
+        } else {
+          console.log('Response is not JSON, trying test endpoint...')
+          // Try test endpoint if response is not JSON
+          const testResponse = await fetch('/api/flask/test-users')
+          if (testResponse.ok) {
+            const data = await testResponse.json()
+            console.log('Users loaded from test endpoint:', data)
+            console.log('Number of users:', data.users?.length || 0)
+            setUsers(data.users || [])
+          }
+        }
       } else {
         console.error('Failed to load users, status:', response.status)
       }

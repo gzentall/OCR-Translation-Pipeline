@@ -68,10 +68,23 @@ export default function ReferencesPage() {
       }
 
       if (response.ok) {
-        const data = await response.json()
-        console.log('References loaded:', data)
-        console.log('Number of references:', data.references?.length || 0)
-        setReferences(data.references || [])
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json()
+          console.log('References loaded:', data)
+          console.log('Number of references:', data.references?.length || 0)
+          setReferences(data.references || [])
+        } else {
+          console.log('Response is not JSON, trying test endpoint...')
+          // Try test endpoint if response is not JSON
+          const testResponse = await fetch('/api/flask/test-references')
+          if (testResponse.ok) {
+            const data = await testResponse.json()
+            console.log('References loaded from test endpoint:', data)
+            console.log('Number of references:', data.references?.length || 0)
+            setReferences(data.references || [])
+          }
+        }
       } else {
         console.error('Failed to load references, status:', response.status)
       }

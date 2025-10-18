@@ -52,10 +52,23 @@ export default function DocumentsPage() {
       }
 
       if (response.ok) {
-        const data = await response.json()
-        console.log('Documents loaded:', data)
-        console.log('Number of documents:', data.documents?.length || 0)
-        setDocuments(data.documents || [])
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json()
+          console.log('Documents loaded:', data)
+          console.log('Number of documents:', data.documents?.length || 0)
+          setDocuments(data.documents || [])
+        } else {
+          console.log('Response is not JSON, trying test endpoint...')
+          // Try test endpoint if response is not JSON
+          const testResponse = await fetch('/api/flask/test-documents')
+          if (testResponse.ok) {
+            const data = await testResponse.json()
+            console.log('Documents loaded from test endpoint:', data)
+            console.log('Number of documents:', data.documents?.length || 0)
+            setDocuments(data.documents || [])
+          }
+        }
       } else {
         console.error('Failed to load documents, status:', response.status)
       }
