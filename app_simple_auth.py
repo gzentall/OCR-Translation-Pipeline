@@ -740,6 +740,77 @@ def api_update_document(doc_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/test-documents/<doc_id>')
+def api_test_get_document(doc_id):
+    """Test endpoint to get a specific document without authentication"""
+    try:
+        storage = LocalOCRStorage()
+        
+        # Try to load the full document data from the individual JSON file
+        doc_file_path = os.path.join(storage.documents_dir, f"{doc_id}.json")
+        if os.path.exists(doc_file_path):
+            with open(doc_file_path, 'r', encoding='utf-8') as f:
+                doc_data = json.load(f)
+        else:
+            # Fallback to metadata only
+            doc_meta = storage.metadata.get('documents', {}).get(doc_id)
+            if not doc_meta:
+                return jsonify({'error': 'Document not found'}), 404
+            doc_data = doc_meta
+        
+        # Get people/references associated with this document
+        people = []
+        for person_name, person_data in storage.metadata.get('people', {}).items():
+            if doc_id in person_data.get('documents', []):
+                people.append({
+                    'id': person_name,
+                    'name': person_data.get('aliases', [person_name])[0],
+                    'aliases': person_data.get('aliases', [])
+                })
+        
+        # Extract location information
+        from_location = ''
+        to_location = ''
+        if doc_data.get('sender_location'):
+            from_location = doc_data['sender_location'].get('display_name', '')
+        if doc_data.get('recipient_location'):
+            to_location = doc_data['recipient_location'].get('display_name', '')
+        
+        # Fix swapped original/translated text fields
+        original_text = doc_data.get('original_text', '')
+        translated_text = doc_data.get('translated_text', '')
+        
+        # If original_text is very short (like "Save Changes") and translated_text is long,
+        # they're likely swapped
+        if len(original_text) < 50 and len(translated_text) > 100:
+            original_text, translated_text = translated_text, original_text
+        
+        document = {
+            'id': doc_id,
+            'title': doc_data.get('title', 'Untitled'),
+            'dateProcessed': doc_data.get('date_processed', ''),
+            'documentDate': doc_data.get('document_date', ''),
+            'sourceLanguage': doc_data.get('source_language', 'unknown'),
+            'targetLanguage': doc_data.get('target_language', 'en'),
+            'fileSize': doc_data.get('file_size', 0),
+            'summary': doc_data.get('summary', ''),
+            'pageCount': doc_data.get('page_count', 0),
+            'createdAt': doc_data.get('date_processed', ''),
+            'updatedAt': doc_data.get('date_processed', ''),
+            'status': doc_data.get('status', 'New'),
+            'originalText': original_text,
+            'translatedText': translated_text,
+            'sender': doc_data.get('sender', ''),
+            'recipient': doc_data.get('recipient', ''),
+            'fromLocation': from_location,
+            'toLocation': to_location,
+            'people': people
+        }
+        
+        return jsonify(document)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/test-documents/<doc_id>', methods=['PUT'])
 def api_test_update_document(doc_id):
     """Test endpoint to update a specific document without authentication"""

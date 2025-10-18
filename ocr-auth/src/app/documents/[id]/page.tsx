@@ -66,6 +66,7 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
   const loadDocument = async () => {
     try {
       setIsLoading(true)
+      console.log('Loading document...')
       
       // Try authenticated endpoint first
       let response = await fetch(`/api/flask/documents/${documentId}`, {
@@ -73,15 +74,29 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
       })
 
       if (!response.ok) {
+        console.log('Authenticated endpoint failed, trying test endpoint...')
         // Fallback to test endpoint
         response = await fetch(`/api/flask/test-documents/${documentId}`)
       }
 
       if (response.ok) {
-        const data = await response.json()
-        setDocument(data)
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json()
+          console.log('Document loaded:', data)
+          setDocument(data)
+        } else {
+          console.log('Response is not JSON, trying test endpoint...')
+          // Try test endpoint if response is not JSON
+          const testResponse = await fetch(`/api/flask/test-documents/${documentId}`)
+          if (testResponse.ok) {
+            const data = await testResponse.json()
+            console.log('Document loaded from test endpoint:', data)
+            setDocument(data)
+          }
+        }
       } else {
-        console.error('Failed to load document')
+        console.error('Failed to load document, status:', response.status)
       }
     } catch (error) {
       console.error('Error loading document:', error)
@@ -92,17 +107,33 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
 
   const loadComments = async () => {
     try {
+      console.log('Loading comments...')
       let response = await fetch(`/api/flask/documents/${documentId}/comments`, {
         credentials: 'include',
       })
 
       if (!response.ok) {
+        console.log('Authenticated comments endpoint failed, trying test endpoint...')
         response = await fetch(`/api/flask/test-documents/${documentId}/comments`)
       }
 
       if (response.ok) {
-        const data = await response.json()
-        setComments(data.comments || [])
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json()
+          console.log('Comments loaded:', data)
+          setComments(data.comments || [])
+        } else {
+          console.log('Comments response is not JSON, trying test endpoint...')
+          const testResponse = await fetch(`/api/flask/test-documents/${documentId}/comments`)
+          if (testResponse.ok) {
+            const data = await testResponse.json()
+            console.log('Comments loaded from test endpoint:', data)
+            setComments(data.comments || [])
+          }
+        }
+      } else {
+        console.error('Failed to load comments, status:', response.status)
       }
     } catch (error) {
       console.error('Error loading comments:', error)
