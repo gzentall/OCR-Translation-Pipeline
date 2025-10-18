@@ -465,6 +465,26 @@ def api_users():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/test-users')
+def api_test_users():
+    """Test endpoint to get all users without authentication"""
+    try:
+        users = []
+        for user_id, user_data in USERS.items():
+            users.append({
+                'id': user_id,
+                'username': user_data.get('username', ''),
+                'email': user_data.get('email', ''),
+                'role': user_data.get('role', 'USER'),
+                'isActive': user_data.get('active', True),
+                'createdAt': user_data.get('created_at', ''),
+                'lastLogin': user_data.get('last_login', None)
+            })
+        
+        return jsonify({'users': users})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/stats')
 @require_auth
 def api_stats():

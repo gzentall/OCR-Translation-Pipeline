@@ -51,6 +51,7 @@ export default function UsersPage() {
   const loadUsers = async () => {
     try {
       setIsLoading(true)
+      console.log('Loading users...')
 
       // Try authenticated endpoint first
       let response = await fetch('/api/flask/users', {
@@ -58,13 +59,18 @@ export default function UsersPage() {
       })
 
       if (!response.ok) {
+        console.log('Authenticated endpoint failed, trying test endpoint...')
         // Fallback to test endpoint
         response = await fetch('/api/flask/test-users')
       }
 
       if (response.ok) {
         const data = await response.json()
+        console.log('Users loaded:', data)
+        console.log('Number of users:', data.users?.length || 0)
         setUsers(data.users || [])
+      } else {
+        console.error('Failed to load users, status:', response.status)
       }
     } catch (error) {
       console.error('Failed to load users:', error)
