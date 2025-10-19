@@ -161,64 +161,6 @@ export default function ReferencesPage() {
             margin: '0 auto',
           }}
         >
-          {/* References Header */}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '24px',
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{
-                fontSize: '20px',
-                fontWeight: 500,
-                margin: 0,
-                color: 'var(--md-sys-color-on-surface)',
-              }}
-            >
-              References
-            </Typography>
-          </Box>
-
-          {/* Search Bar */}
-          <Box sx={{ marginBottom: '24px' }}>
-            <TextField
-              fullWidth
-              placeholder="Search references..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: 'var(--md-sys-color-on-surface-variant)' }} />
-                  </InputAdornment>
-                ),
-                endAdornment: searchQuery && (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClearSearch}
-                      size="small"
-                      sx={{ color: 'var(--md-sys-color-on-surface-variant)' }}
-                    >
-                      <ClearIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 'var(--md-sys-shape-corner-large)',
-                  bgcolor: 'var(--md-sys-color-surface-variant)',
-                  '& fieldset': {
-                    border: 'none',
-                  },
-                },
-              }}
-            />
-          </Box>
 
           {/* References Grid */}
           {filteredReferences.length === 0 ? (

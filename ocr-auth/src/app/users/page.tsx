@@ -140,27 +140,6 @@ export default function UsersPage() {
             margin: '0 auto',
           }}
         >
-          {/* Users Header */}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '24px',
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{
-                fontSize: '20px',
-                fontWeight: 500,
-                margin: 0,
-                color: 'var(--md-sys-color-on-surface)',
-              }}
-            >
-              Users
-            </Typography>
-          </Box>
 
           {/* Users List */}
           {users.length === 0 ? (

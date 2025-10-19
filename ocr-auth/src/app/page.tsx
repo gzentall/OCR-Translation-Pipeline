@@ -188,13 +188,13 @@ export default function DocumentsPage() {
             margin: '0 auto',
           }}
         >
-          {/* Documents Header */}
+          {/* Documents Info */}
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'baseline',
-              marginBottom: '16px',
+              marginBottom: '24px',
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5 }}>
@@ -219,6 +219,19 @@ export default function DocumentsPage() {
                 {documents.length} documents
               </Typography>
             </Box>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'var(--md-sys-color-primary)',
+                fontSize: '14px',
+                cursor: 'pointer',
+                '&:hover': {
+                  textDecoration: 'underline',
+                },
+              }}
+            >
+              show all
+            </Typography>
           </Box>
 
           {/* Documents Grid */}

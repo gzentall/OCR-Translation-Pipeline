@@ -15,11 +15,19 @@ import {
   MenuItem,
   Tabs,
   Tab,
+  Button,
+  Chip,
+  Select,
+  FormControl,
+  InputLabel,
 } from '@mui/material'
 import {
   Search as SearchIcon,
   LocalPostOffice,
   AccountCircle,
+  Sort as SortIcon,
+  FilterList as FilterIcon,
+  Upload as UploadIcon,
 } from '@mui/icons-material'
 
 export default function TopAppBar() {
@@ -27,6 +35,8 @@ export default function TopAppBar() {
   const pathname = usePathname()
   const [searchQuery, setSearchQuery] = useState('')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [sortBy, setSortBy] = useState('date_added')
+  const [sortDirection, setSortDirection] = useState('desc')
 
   // Determine active tab based on current path
   const getActiveTab = () => {
@@ -68,9 +78,33 @@ export default function TopAppBar() {
     handleMenuClose()
   }
 
+  const handleUpload = () => {
+    // TODO: Implement upload functionality
+    console.log('Upload clicked')
+  }
+
+  const handleSortChange = (event: any) => {
+    setSortBy(event.target.value)
+  }
+
+  const handleSortDirectionToggle = () => {
+    setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')
+  }
+
+  const getSortLabel = () => {
+    const labels: { [key: string]: string } = {
+      'date_added': 'Added',
+      'title': 'Title',
+      'status': 'Status',
+      'date_processed': 'Processed',
+    }
+    const direction = sortDirection === 'asc' ? ' (a)' : ' (d)'
+    return `${labels[sortBy] || 'Added'}${direction}`
+  }
+
   return (
     <>
-      {/* App Bar */}
+      {/* Main App Bar with Logo, Search, and User Menu */}
       <AppBar
         position="sticky"
         elevation={2}
@@ -89,6 +123,7 @@ export default function TopAppBar() {
               variant="h6"
               sx={{
                 color: 'var(--md-sys-color-on-surface)',
+                fontWeight: 500,
               }}
             >
               Postmark
@@ -122,6 +157,29 @@ export default function TopAppBar() {
               }}
             />
           </Box>
+
+          {/* Upload Button */}
+          <Button
+            variant="contained"
+            startIcon={<UploadIcon />}
+            onClick={handleUpload}
+            sx={{
+              mr: 2,
+              bgcolor: 'var(--md-sys-color-primary)',
+              color: 'var(--md-sys-color-on-primary)',
+              borderRadius: '20px',
+              px: 3,
+              py: 1,
+              textTransform: 'none',
+              fontWeight: 500,
+              '&:hover': {
+                bgcolor: 'var(--md-sys-color-primary-container)',
+                color: 'var(--md-sys-color-on-primary-container)',
+              },
+            }}
+          >
+            Upload
+          </Button>
 
           {/* User Menu */}
           <Box>
@@ -194,7 +252,96 @@ export default function TopAppBar() {
           <Tab label="Users" />
         </Tabs>
       </Box>
+
+      {/* Toolbar with Sort and Filter Controls */}
+      <Box
+        sx={{
+          bgcolor: 'var(--md-sys-color-surface-container-lowest)',
+          borderBottom: '1px solid var(--md-sys-color-outline-variant)',
+          px: 3,
+          py: 1.5,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+          flexWrap: 'wrap',
+        }}
+      >
+        {/* Sort Controls */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'var(--md-sys-color-on-surface-variant)',
+              fontSize: '14px',
+              fontWeight: 500,
+            }}
+          >
+            Sort:
+          </Typography>
+          <Chip
+            label={getSortLabel()}
+            icon={<SortIcon />}
+            onClick={handleSortDirectionToggle}
+            sx={{
+              height: '32px',
+              borderRadius: '16px',
+              bgcolor: 'var(--md-sys-color-surface-container)',
+              color: 'var(--md-sys-color-on-surface)',
+              '&:hover': {
+                bgcolor: 'var(--md-sys-color-surface-container-high)',
+              },
+            }}
+          />
+        </Box>
+
+        {/* Filter Controls */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'var(--md-sys-color-on-surface-variant)',
+              fontSize: '14px',
+              fontWeight: 500,
+            }}
+          >
+            Filter:
+          </Typography>
+          <Chip
+            label="All"
+            icon={<FilterIcon />}
+            sx={{
+              height: '32px',
+              borderRadius: '16px',
+              bgcolor: 'var(--md-sys-color-surface-container)',
+              color: 'var(--md-sys-color-on-surface)',
+              '&:hover': {
+                bgcolor: 'var(--md-sys-color-surface-container-high)',
+              },
+            }}
+          />
+        </Box>
+
+        {/* Sort Dropdown */}
+        <FormControl size="small" sx={{ minWidth: 120 }}>
+          <InputLabel>Sort by</InputLabel>
+          <Select
+            value={sortBy}
+            onChange={handleSortChange}
+            label="Sort by"
+            sx={{
+              height: '32px',
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'var(--md-sys-color-outline-variant)',
+              },
+            }}
+          >
+            <MenuItem value="date_added">Date Added</MenuItem>
+            <MenuItem value="title">Title</MenuItem>
+            <MenuItem value="status">Status</MenuItem>
+            <MenuItem value="date_processed">Date Processed</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
     </>
   )
 }
-
