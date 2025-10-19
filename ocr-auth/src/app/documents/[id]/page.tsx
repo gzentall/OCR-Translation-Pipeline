@@ -5,116 +5,138 @@ import { useRouter } from 'next/navigation'
 import {
   Box,
   Typography,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Switch,
+  FormControlLabel,
+  Chip,
   CircularProgress,
   ThemeProvider,
   CssBaseline,
+  Paper,
+  Tabs,
+  Tab,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material'
-import { ArrowBack } from '@mui/icons-material'
+import {
+  Close as CloseIcon,
+  Save as SaveIcon,
+  ArrowBack as ArrowBackIcon,
+} from '@mui/icons-material'
 import AppShell from '@/components/AppShell'
+import m3Theme from '@/theme/m3-theme'
 import ImageViewer from '@/components/DocumentEditor/ImageViewer'
 import TabsPanel from '@/components/DocumentEditor/TabsPanel'
 import CommentsPanel from '@/components/DocumentEditor/CommentsPanel'
-import EditorFooter from '@/components/DocumentEditor/EditorFooter'
-import m3Theme from '@/theme/m3-theme'
 
 interface Document {
   id: string
   title: string
   summary: string
+  translatedText: string
+  originalText: string
   documentDate: string
   sender: string
   recipient: string
   fromLocation: string
   toLocation: string
-  originalText: string
-  translatedText: string
   status: string
   pageCount: number
-  people: string[]
+  people?: Array<{ id: string; name: string }>
 }
 
 interface Comment {
   id: string
-  author: string
   text: string
+  author: string
   timestamp: string
 }
 
-export default function DocumentEditorPage({ params }: { params: Promise<{ id: string }> }) {
+export default function DocumentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const [documentId, setDocumentId] = useState<string>('')
   const [document, setDocument] = useState<Document | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
+  const [people, setPeople] = useState<Array<{ id: string; name: string }>>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isEditing, setIsEditing] = useState(true)
+  const [activeTab, setActiveTab] = useState(0)
+  const [showOriginalText, setShowOriginalText] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
-    const loadParams = async () => {
+    const loadDocument = async () => {
       const resolvedParams = await params
-      setDocumentId(resolvedParams.id)
+      const documentId = resolvedParams.id
+      
+      try {
+        setIsLoading(true)
+        console.log('Loading document...')
+        
+        // Try authenticated endpoint first
+        let response = await fetch(`/api/flask/documents/${documentId}`, {
+          credentials: 'include',
+        })
+
+        if (!response.ok) {
+          console.log('Authenticated endpoint failed, trying test endpoint...')
+          // Fallback to test endpoint
+          response = await fetch(`/api/flask/test-documents/${documentId}`)
+        }
+
+        if (response.ok) {
+          const contentType = response.headers.get('content-type')
+          if (contentType && contentType.includes('application/json')) {
+            const data = await response.json()
+            console.log('Document loaded:', data)
+            setDocument(data)
+          } else {
+            console.log('Response is not JSON, trying test endpoint...')
+            // Try test endpoint if response is not JSON
+            const testResponse = await fetch(`/api/flask/test-documents/${documentId}`)
+            if (testResponse.ok) {
+              const data = await testResponse.json()
+              console.log('Document loaded from test endpoint:', data)
+              setDocument(data)
+            }
+          }
+        } else {
+          console.error('Failed to load document')
+        }
+      } catch (error) {
+        console.error('Error loading document:', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
-    loadParams()
+
+    loadDocument()
   }, [params])
 
   useEffect(() => {
-    if (documentId) {
-      loadDocument()
+    if (document?.id) {
       loadComments()
+      loadPeople()
     }
-  }, [documentId])
-
-  const loadDocument = async () => {
-    try {
-      setIsLoading(true)
-      console.log('Loading document...')
-      
-      // Try authenticated endpoint first
-      let response = await fetch(`/api/flask/documents/${documentId}`, {
-        credentials: 'include',
-      })
-
-      if (!response.ok) {
-        console.log('Authenticated endpoint failed, trying test endpoint...')
-        // Fallback to test endpoint
-        response = await fetch(`/api/flask/test-documents/${documentId}`)
-      }
-
-      if (response.ok) {
-        const contentType = response.headers.get('content-type')
-        if (contentType && contentType.includes('application/json')) {
-          const data = await response.json()
-          console.log('Document loaded:', data)
-          setDocument(data)
-        } else {
-          console.log('Response is not JSON, trying test endpoint...')
-          // Try test endpoint if response is not JSON
-          const testResponse = await fetch(`/api/flask/test-documents/${documentId}`)
-          if (testResponse.ok) {
-            const data = await testResponse.json()
-            console.log('Document loaded from test endpoint:', data)
-            setDocument(data)
-          }
-        }
-      } else {
-        console.error('Failed to load document, status:', response.status)
-      }
-    } catch (error) {
-      console.error('Error loading document:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  }, [document?.id])
 
   const loadComments = async () => {
     try {
       console.log('Loading comments...')
-      let response = await fetch(`/api/flask/documents/${documentId}/comments`, {
+      let response = await fetch(`/api/flask/documents/${document?.id}/comments`, {
         credentials: 'include',
       })
 
       if (!response.ok) {
         console.log('Authenticated comments endpoint failed, trying test endpoint...')
-        response = await fetch(`/api/flask/test-documents/${documentId}/comments`)
+        response = await fetch(`/api/flask/test-documents/${document?.id}/comments`)
       }
 
       if (response.ok) {
@@ -125,18 +147,49 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
           setComments(data.comments || [])
         } else {
           console.log('Comments response is not JSON, trying test endpoint...')
-          const testResponse = await fetch(`/api/flask/test-documents/${documentId}/comments`)
+          const testResponse = await fetch(`/api/flask/test-documents/${document?.id}/comments`)
           if (testResponse.ok) {
             const data = await testResponse.json()
             console.log('Comments loaded from test endpoint:', data)
             setComments(data.comments || [])
           }
         }
-      } else {
-        console.error('Failed to load comments, status:', response.status)
       }
     } catch (error) {
       console.error('Error loading comments:', error)
+    }
+  }
+
+  const loadPeople = async () => {
+    try {
+      console.log('Loading people...')
+      let response = await fetch('/api/flask/people', {
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        console.log('Authenticated people endpoint failed, trying test endpoint...')
+        response = await fetch('/api/flask/test-people')
+      }
+
+      if (response.ok) {
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json()
+          console.log('People loaded:', data)
+          setPeople(data.people || [])
+        } else {
+          console.log('People response is not JSON, trying test endpoint...')
+          const testResponse = await fetch('/api/flask/test-people')
+          if (testResponse.ok) {
+            const data = await testResponse.json()
+            console.log('People loaded from test endpoint:', data)
+            setPeople(data.people || [])
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading people:', error)
     }
   }
 
@@ -145,36 +198,44 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
 
     try {
       setIsSaving(true)
-      
+      console.log('Saving document...')
+
       const updateData = {
+        title: document.title,
         summary: document.summary,
+        translatedText: document.translatedText,
+        originalText: document.originalText,
         documentDate: document.documentDate,
         sender: document.sender,
         recipient: document.recipient,
         fromLocation: document.fromLocation,
         toLocation: document.toLocation,
-        originalText: document.originalText,
-        translatedText: document.translatedText,
         status: document.status,
       }
 
-      let response = await fetch(`/api/flask/documents/${documentId}`, {
+      let response = await fetch(`/api/flask/documents/${document.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
         body: JSON.stringify(updateData),
       })
 
       if (!response.ok) {
-        response = await fetch(`/api/flask/test-documents/${documentId}`, {
+        console.log('Authenticated save failed, trying test endpoint...')
+        response = await fetch(`/api/flask/test-documents/${document.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify(updateData),
         })
       }
 
       if (response.ok) {
-        // Success - redirect to documents list
+        console.log('Document saved successfully')
+        setIsEditing(false)
         router.push('/')
       } else {
         console.error('Failed to save document')
@@ -186,7 +247,32 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
     }
   }
 
-  const handleCancel = () => {
+  const handleAddComment = async (text: string) => {
+    if (!document || !text.trim()) return
+
+    try {
+      const response = await fetch(`/api/flask/test-documents/${document.id}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setComments(prev => [...prev, data.comment])
+      }
+    } catch (error) {
+      console.error('Error adding comment:', error)
+    }
+  }
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue)
+  }
+
+  const handleBack = () => {
     router.push('/')
   }
 
@@ -194,16 +280,18 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
     return (
       <ThemeProvider theme={m3Theme}>
         <CssBaseline />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '100vh',
-          }}
-        >
-          <CircularProgress />
-        </Box>
+        <AppShell>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '50vh',
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        </AppShell>
       </ThemeProvider>
     )
   }
@@ -213,11 +301,15 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
       <ThemeProvider theme={m3Theme}>
         <CssBaseline />
         <AppShell>
-          <Box sx={{ p: 3, textAlign: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '50vh',
+            }}
+          >
             <Typography variant="h6">Document not found</Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              The document you're looking for doesn't exist.
-            </Typography>
           </Box>
         </AppShell>
       </ThemeProvider>
@@ -227,139 +319,148 @@ export default function DocumentEditorPage({ params }: { params: Promise<{ id: s
   return (
     <ThemeProvider theme={m3Theme}>
       <CssBaseline />
-      <Box
-        sx={{
-          width: '100vw',
-          height: '100vh',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {/* Header */}
-        <Box
+      <AppShell>
+        {/* Full-screen Document Editor Dialog */}
+        <Dialog
+          open={true}
+          fullScreen
           sx={{
-            height: '64px',
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 1000,
-            bgcolor: 'var(--md-sys-color-surface)',
-            borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-            display: 'flex',
-            alignItems: 'center',
-            px: 3,
-            gap: 2,
+            '& .MuiDialog-paper': {
+              margin: 0,
+              maxHeight: '100vh',
+              maxWidth: '100vw',
+              borderRadius: 0,
+            },
           }}
         >
-          <Box
-            onClick={handleCancel}
+          {/* Dialog Header */}
+          <DialogTitle
             sx={{
               display: 'flex',
               alignItems: 'center',
-              cursor: 'pointer',
-              color: 'var(--md-sys-color-primary)',
-              '&:hover': { bgcolor: 'var(--md-sys-color-primary-container)' },
-              borderRadius: '8px',
-              p: 1,
+              justifyContent: 'space-between',
+              padding: 'var(--md-sys-spacing-4)',
+              borderBottom: '1px solid var(--md-sys-color-outline-variant)',
+              flexShrink: 0,
             }}
           >
-            <ArrowBack />
-          </Box>
-          <Typography
-            variant="h6"
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <IconButton onClick={handleBack} size="small">
+                <ArrowBackIcon />
+              </IconButton>
+              <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                {document.title || document.id || 'Untitled Document'}
+              </Typography>
+            </Box>
+            <IconButton onClick={handleBack} size="small">
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+
+          {/* Dialog Content - 3-Column Layout */}
+          <DialogContent
             sx={{
-              flexGrow: 1,
-              fontFamily: 'var(--md-sys-typescale-title-medium-font-family)',
-              fontSize: 'var(--md-sys-typescale-title-medium-font-size)',
-              fontWeight: 'var(--md-sys-typescale-title-medium-font-weight)',
-              color: 'var(--md-sys-color-on-surface)',
+              padding: 'var(--md-sys-spacing-4)',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+              flex: 1,
+              minHeight: 0,
             }}
           >
-            {document.title}
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <button
-              onClick={handleCancel}
-              style={{
-                padding: '8px 16px',
-                border: '1px solid var(--md-sys-color-outline)',
-                borderRadius: '8px',
-                background: 'transparent',
-                color: 'var(--md-sys-color-on-surface)',
-                cursor: 'pointer',
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  md: '1fr 2fr 1fr',
+                },
+                gridTemplateAreas: {
+                  xs: '"tabs" "image" "comments"',
+                  md: '"image tabs comments"',
+                },
+                gap: '20px',
+                height: '100%',
+                minHeight: 0,
+                flex: 1,
               }}
+            >
+              {/* Image Viewer Column */}
+              <Box
+                sx={{
+                  gridArea: 'image',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: 0,
+                }}
+              >
+                <ImageViewer documentId={document.id} pageCount={document.pageCount} />
+              </Box>
+
+              {/* Tabs Panel Column */}
+              <Box
+                sx={{
+                  gridArea: 'tabs',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: 0,
+                }}
+              >
+                <TabsPanel
+                  document={document}
+                  setDocument={setDocument}
+                  isEditing={isEditing}
+                  people={people}
+                  showOriginalText={showOriginalText}
+                  setShowOriginalText={setShowOriginalText}
+                  activeTab={activeTab}
+                  handleTabChange={handleTabChange}
+                />
+              </Box>
+
+              {/* Comments Panel Column */}
+              <Box
+                sx={{
+                  gridArea: 'comments',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: 0,
+                }}
+              >
+                <CommentsPanel
+                  comments={comments}
+                  onAddComment={handleAddComment}
+                />
+              </Box>
+            </Box>
+          </DialogContent>
+
+          {/* Dialog Actions */}
+          <DialogActions
+            sx={{
+              padding: 'var(--md-sys-spacing-4)',
+              borderTop: '1px solid var(--md-sys-color-outline-variant)',
+              flexShrink: 0,
+            }}
+          >
+            <Button
+              onClick={handleBack}
+              variant="outlined"
+              sx={{ mr: 1 }}
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleSave}
+              variant="contained"
+              startIcon={<SaveIcon />}
               disabled={isSaving}
-              style={{
-                padding: '8px 16px',
-                border: 'none',
-                borderRadius: '8px',
-                background: 'var(--md-sys-color-primary)',
-                color: 'var(--md-sys-color-on-primary)',
-                cursor: isSaving ? 'not-allowed' : 'pointer',
-                opacity: isSaving ? 0.6 : 1,
-              }}
             >
-              {isSaving ? 'Saving...' : 'Save & Close'}
-            </button>
-          </Box>
-        </Box>
-
-        {/* Main Content - 3 Column Layout */}
-        <Box
-          sx={{
-            height: 'calc(100vh - 64px)',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr 400px',
-            mt: '64px',
-          }}
-        >
-          {/* Column 1: Image Viewer */}
-          <Box
-            sx={{
-              bgcolor: 'var(--md-sys-color-surface-variant)',
-              borderRight: '1px solid var(--md-sys-color-outline-variant)',
-            }}
-          >
-            <ImageViewer documentId={documentId} pageCount={document.pageCount} />
-          </Box>
-
-          {/* Column 2: Tabbed Editor */}
-          <Box
-            sx={{
-              borderRight: '1px solid var(--md-sys-color-outline-variant)',
-            }}
-          >
-            <TabsPanel
-              document={document}
-              onDocumentChange={setDocument}
-            />
-          </Box>
-
-          {/* Column 3: Comments Panel */}
-          <Box>
-            <CommentsPanel
-              documentId={documentId}
-              comments={comments}
-              onCommentsChange={setComments}
-            />
-          </Box>
-        </Box>
-
-        {/* Footer */}
-        <EditorFooter
-          document={document}
-          onDocumentChange={setDocument}
-          onSave={handleSave}
-          isSaving={isSaving}
-        />
-      </Box>
+              {isSaving ? 'Saving...' : 'Save'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </AppShell>
     </ThemeProvider>
   )
 }

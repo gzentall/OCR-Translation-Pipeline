@@ -5,38 +5,29 @@ import { useRouter } from 'next/navigation'
 import {
   Box,
   Typography,
-  Button,
-  Chip,
-  IconButton,
   Card,
   CardContent,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  Avatar,
   CircularProgress,
+  Chip,
+  IconButton,
   ThemeProvider,
   CssBaseline,
-  Fab,
 } from '@mui/material'
 import {
-  Add,
-  Edit,
-  Delete,
-  CheckCircle,
-  Cancel,
-  Person,
+  Edit as EditIcon,
+  Person as PersonIcon,
 } from '@mui/icons-material'
 import AppShell from '@/components/AppShell'
 import m3Theme from '@/theme/m3-theme'
 
 interface User {
+  id: string
   username: string
   email: string
   role: string
   isActive: boolean
   createdAt: string
+  lastLogin?: string
 }
 
 export default function UsersPage() {
@@ -92,51 +83,29 @@ export default function UsersPage() {
     }
   }
 
-  const handleEdit = (username: string) => {
+  const handleUserClick = (username: string) => {
     router.push(`/users/${username}/edit`)
   }
 
-  const handleDelete = async (username: string) => {
-    if (window.confirm(`Are you sure you want to delete user ${username}?`)) {
-      try {
-        const response = await fetch(`http://localhost:5001/api/test-users/${username}`, {
-          method: 'DELETE',
-        })
-
-        if (response.ok) {
-          loadUsers() // Reload the list
-        } else {
-          console.error('Failed to delete user')
-        }
-      } catch (error) {
-        console.error('Error deleting user:', error)
-      }
-    }
-  }
-
   const getRoleColor = (role: string) => {
-    switch (role.toUpperCase()) {
-      case 'SUPER_ADMIN':
+    switch (role?.toLowerCase()) {
+      case 'admin':
         return 'error'
-      case 'ADMIN':
+      case 'user':
         return 'primary'
-      case 'USER':
-        return 'secondary'
+      case 'viewer':
+        return 'default'
       default:
         return 'default'
     }
   }
 
-  const getRoleIcon = (role: string) => {
-    switch (role.toUpperCase()) {
-      case 'SUPER_ADMIN':
-        return '🔑'
-      case 'ADMIN':
-        return '👑'
-      case 'USER':
-        return '👤'
-      default:
-        return '👤'
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'Never'
+    try {
+      return new Date(dateString).toLocaleDateString()
+    } catch {
+      return dateString
     }
   }
 
@@ -164,175 +133,185 @@ export default function UsersPage() {
     <ThemeProvider theme={m3Theme}>
       <CssBaseline />
       <AppShell>
-        <Box sx={{ p: 3 }}>
-          {/* Header */}
-          <Box sx={{ mb: 3 }}>
+        <Box
+          sx={{
+            padding: 'var(--md-sys-spacing-6)',
+            maxWidth: '1200px',
+            margin: '0 auto',
+          }}
+        >
+          {/* Users Header */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '24px',
+            }}
+          >
             <Typography
               variant="h5"
               sx={{
+                fontSize: '20px',
+                fontWeight: 500,
+                margin: 0,
                 color: 'var(--md-sys-color-on-surface)',
               }}
             >
-              User Management
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'var(--md-sys-color-on-surface-variant)',
-                mt: 0.5,
-              }}
-            >
-              {users.length} users
+              Users
             </Typography>
           </Box>
 
           {/* Users List */}
           {users.length === 0 ? (
-            <Card
+            <Box
               sx={{
                 textAlign: 'center',
                 py: 8,
-                bgcolor: 'var(--md-sys-color-surface-variant)',
+                color: 'var(--md-sys-color-on-surface-variant)',
               }}
             >
-              <CardContent>
-                <Typography variant="h6" color="text.secondary">
-                  No users found
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  Users will appear here when they register
-                </Typography>
-              </CardContent>
-            </Card>
+              <Typography variant="h6">No users found</Typography>
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                Users will appear here when they are added to the system
+              </Typography>
+            </Box>
           ) : (
-            <Card>
-              <List sx={{ p: 0 }}>
-                {users.map((user) => (
-                  <ListItem
-                    key={user.username}
-                    sx={{
-                      height: '72px',
-                      px: 2,
-                      borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-                      '&:hover': {
-                        bgcolor: 'var(--md-sys-color-surface-variant)',
-                      },
-                    }}
-                  >
-                    <Avatar
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                },
+                gap: '16px',
+              }}
+            >
+              {users.map((user) => (
+                <Card
+                  key={user.id}
+                  sx={{
+                    borderRadius: 'var(--md-sys-shape-corner-medium)',
+                    boxShadow: 'var(--md-sys-elevation-level1)',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      boxShadow: 'var(--md-sys-elevation-level2)',
+                      transform: 'translateY(-2px)',
+                    },
+                  }}
+                >
+                  <CardContent sx={{ p: 3 }}>
+                    {/* User Header */}
+                    <Box
                       sx={{
-                        width: 40,
-                        height: 40,
-                        bgcolor: 'var(--md-sys-color-primary-container)',
-                        color: 'var(--md-sys-color-on-primary-container)',
-                        mr: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1.5,
+                        marginBottom: 2,
                       }}
                     >
-                      <Person />
-                    </Avatar>
-                    <ListItemText
-                      primary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              fontSize: '16px',
-                              fontWeight: 500,
-                              color: 'var(--md-sys-color-on-surface)',
-                            }}
-                          >
-                            {user.username}
-                          </Typography>
-                          <Chip
-                            icon={<span>{getRoleIcon(user.role)}</span>}
-                            label={user.role}
-                            size="small"
-                            color={getRoleColor(user.role) as any}
-                            sx={{ height: '20px' }}
-                          />
-                          <Chip
-                            icon={user.isActive ? <CheckCircle /> : <Cancel />}
-                            label={user.isActive ? 'Active' : 'Inactive'}
-                            size="small"
-                            color={user.isActive ? 'success' : 'error'}
-                            variant="outlined"
-                            sx={{ height: '20px' }}
-                          />
-                        </Box>
-                      }
-                      secondary={
-                        <Box>
+                      <PersonIcon
+                        sx={{
+                          color: 'var(--md-sys-color-primary)',
+                          fontSize: '24px',
+                        }}
+                      />
+                      <Box sx={{ flexGrow: 1 }}>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontSize: '18px',
+                            fontWeight: 500,
+                            color: 'var(--md-sys-color-on-surface)',
+                            margin: 0,
+                          }}
+                        >
+                          {user.username}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: 'var(--md-sys-color-on-surface-variant)',
+                            fontSize: '14px',
+                          }}
+                        >
+                          {user.email}
+                        </Typography>
+                      </Box>
+                      <IconButton
+                        onClick={() => handleUserClick(user.username)}
+                        size="small"
+                        sx={{
+                          color: 'var(--md-sys-color-on-surface-variant)',
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Box>
+
+                    {/* User Details */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                      {/* Role and Status */}
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                        <Chip
+                          label={user.role}
+                          size="small"
+                          color={getRoleColor(user.role) as any}
+                          sx={{
+                            height: '24px',
+                            fontSize: '12px',
+                            fontWeight: 500,
+                            textTransform: 'uppercase',
+                          }}
+                        />
+                        <Chip
+                          label={user.isActive ? 'Active' : 'Inactive'}
+                          size="small"
+                          variant="outlined"
+                          color={user.isActive ? 'success' : 'default'}
+                          sx={{
+                            height: '24px',
+                            fontSize: '12px',
+                          }}
+                        />
+                      </Box>
+
+                      {/* Created Date */}
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: 'var(--md-sys-color-on-surface-variant)',
+                            fontSize: '12px',
+                            fontWeight: 500,
+                          }}
+                        >
+                          Created: {formatDate(user.createdAt)}
+                        </Typography>
+                      </Box>
+
+                      {/* Last Login */}
+                      {user.lastLogin && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <Typography
                             variant="body2"
                             sx={{
-                              fontSize: '14px',
                               color: 'var(--md-sys-color-on-surface-variant)',
-                              mb: 0.5,
-                            }}
-                          >
-                            {user.email}
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            sx={{
                               fontSize: '12px',
-                              color: 'var(--md-sys-color-on-surface-variant)',
+                              fontWeight: 500,
                             }}
                           >
-                            Created: {new Date(user.createdAt).toLocaleDateString()}
+                            Last login: {formatDate(user.lastLogin)}
                           </Typography>
                         </Box>
-                      }
-                    />
-                    <ListItemSecondaryAction>
-                      <Box sx={{ display: 'flex', gap: 0.5 }}>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleEdit(user.username)}
-                          sx={{
-                            opacity: 0.7,
-                            '&:hover': { opacity: 1 },
-                          }}
-                        >
-                          <Edit />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleDelete(user.username)}
-                          sx={{
-                            opacity: 0.7,
-                            '&:hover': { opacity: 1 },
-                          }}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </Box>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
-            </Card>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              ))}
+            </Box>
           )}
-
-          {/* Add User FAB */}
-          <Fab
-            color="primary"
-            aria-label="add user"
-            sx={{
-              position: 'fixed',
-              bottom: 24,
-              right: 24,
-              bgcolor: 'var(--md-sys-color-primary)',
-              color: 'var(--md-sys-color-on-primary)',
-              '&:hover': {
-                bgcolor: 'var(--md-sys-color-primary)',
-                opacity: 0.9,
-              },
-            }}
-            onClick={() => router.push('/users/new')}
-          >
-            <Add />
-          </Fab>
         </Box>
       </AppShell>
     </ThemeProvider>

@@ -5,51 +5,47 @@ import { useRouter } from 'next/navigation'
 import {
   Box,
   Typography,
-  TextField,
-  InputAdornment,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  Chip,
   Card,
   CardContent,
   CircularProgress,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Chip,
   ThemeProvider,
   CssBaseline,
 } from '@mui/material'
 import {
-  Search,
-  Add,
-  Edit,
-  Delete,
-  Person,
-  Place,
-  Business,
+  Search as SearchIcon,
+  Clear as ClearIcon,
+  Business as BusinessIcon,
 } from '@mui/icons-material'
 import AppShell from '@/components/AppShell'
 import m3Theme from '@/theme/m3-theme'
 
 interface Reference {
   id: string
-  type: string
-  canonicalName: string
-  notes: string
-  variants: string[]
-  documentCount: number
-  createdAt: string
+  name: string
+  aliases?: string[]
+  documentCount?: number
+  firstMentioned?: string
+  type?: string
 }
 
 export default function ReferencesPage() {
   const router = useRouter()
   const [references, setReferences] = useState<Reference[]>([])
+  const [filteredReferences, setFilteredReferences] = useState<Reference[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     loadReferences()
   }, [])
+
+  useEffect(() => {
+    filterReferences()
+  }, [references, searchQuery])
 
   const loadReferences = async () => {
     try {
@@ -95,45 +91,44 @@ export default function ReferencesPage() {
     }
   }
 
-  const handleEdit = (referenceId: string) => {
-    router.push(`/references/${referenceId}/edit`)
+  const filterReferences = () => {
+    if (!searchQuery.trim()) {
+      setFilteredReferences(references)
+      return
+    }
+
+    const filtered = references.filter((ref) => {
+      const searchLower = searchQuery.toLowerCase()
+      return (
+        ref.name.toLowerCase().includes(searchLower) ||
+        ref.aliases?.some(alias => alias.toLowerCase().includes(searchLower)) ||
+        ref.type?.toLowerCase().includes(searchLower)
+      )
+    })
+
+    setFilteredReferences(filtered)
   }
 
-  const handleView = (referenceId: string) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value)
+  }
+
+  const handleClearSearch = () => {
+    setSearchQuery('')
+  }
+
+  const handleReferenceClick = (referenceId: string) => {
     router.push(`/references/${referenceId}`)
   }
 
-  const getTypeIcon = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'person':
-        return <Person />
-      case 'place':
-        return <Place />
-      case 'organization':
-        return <Business />
-      default:
-        return <Person />
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'Unknown'
+    try {
+      return new Date(dateString).toLocaleDateString()
+    } catch {
+      return dateString
     }
   }
-
-  const getTypeColor = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'person':
-        return 'primary'
-      case 'place':
-        return 'secondary'
-      case 'organization':
-        return 'success'
-      default:
-        return 'default'
-    }
-  }
-
-  const filteredReferences = references.filter(ref =>
-    ref.canonicalName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ref.notes.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ref.variants.some(variant => variant.toLowerCase().includes(searchQuery.toLowerCase()))
-  )
 
   if (isLoading) {
     return (
@@ -159,190 +154,246 @@ export default function ReferencesPage() {
     <ThemeProvider theme={m3Theme}>
       <CssBaseline />
       <AppShell>
-        <Box sx={{ p: 3 }}>
-          {/* Header */}
-          <Box sx={{ mb: 3 }}>
+        <Box
+          sx={{
+            padding: 'var(--md-sys-spacing-6)',
+            maxWidth: '1200px',
+            margin: '0 auto',
+          }}
+        >
+          {/* References Header */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '24px',
+            }}
+          >
             <Typography
               variant="h5"
               sx={{
+                fontSize: '20px',
+                fontWeight: 500,
+                margin: 0,
                 color: 'var(--md-sys-color-on-surface)',
               }}
             >
               References
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'var(--md-sys-color-on-surface-variant)',
-                mt: 0.5,
-              }}
-            >
-              {references.length} references
-            </Typography>
           </Box>
 
           {/* Search Bar */}
-          <Box sx={{ mb: 3, maxWidth: 600 }}>
+          <Box sx={{ marginBottom: '24px' }}>
             <TextField
               fullWidth
               placeholder="Search references..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Search />
+                    <SearchIcon sx={{ color: 'var(--md-sys-color-on-surface-variant)' }} />
+                  </InputAdornment>
+                ),
+                endAdornment: searchQuery && (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClearSearch}
+                      size="small"
+                      sx={{ color: 'var(--md-sys-color-on-surface-variant)' }}
+                    >
+                      <ClearIcon />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: 'var(--md-sys-shape-corner-medium)',
+                  borderRadius: 'var(--md-sys-shape-corner-large)',
+                  bgcolor: 'var(--md-sys-color-surface-variant)',
+                  '& fieldset': {
+                    border: 'none',
+                  },
                 },
               }}
             />
           </Box>
 
-          {/* References List */}
+          {/* References Grid */}
           {filteredReferences.length === 0 ? (
-            <Card
+            <Box
               sx={{
                 textAlign: 'center',
                 py: 8,
-                bgcolor: 'var(--md-sys-color-surface-variant)',
+                color: 'var(--md-sys-color-on-surface-variant)',
               }}
             >
-              <CardContent>
-                <Typography variant="h6" color="text.secondary">
-                  {searchQuery ? 'No matching references' : 'No references found'}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  {searchQuery ? 'Try a different search term' : 'References will appear here when documents are processed'}
-                </Typography>
-              </CardContent>
-            </Card>
+              <Typography variant="h6">
+                {searchQuery ? 'No references found matching your search' : 'No references found'}
+              </Typography>
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                {searchQuery ? 'Try adjusting your search terms' : 'References will appear here when documents are processed'}
+              </Typography>
+            </Box>
           ) : (
-            <Card>
-              <List sx={{ p: 0 }}>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                },
+                gap: '16px',
+              }}
+            >
               {filteredReferences.map((ref) => (
-                <ListItem
+                <Card
                   key={ref.id}
+                  onClick={() => handleReferenceClick(ref.id)}
                   sx={{
-                    height: '72px',
-                    px: 2,
-                    borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-                    '&:hover': {
-                      bgcolor: 'var(--md-sys-color-surface-variant)',
-                    },
                     cursor: 'pointer',
+                    borderRadius: 'var(--md-sys-shape-corner-medium)',
+                    boxShadow: 'var(--md-sys-elevation-level1)',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      boxShadow: 'var(--md-sys-elevation-level2)',
+                      transform: 'translateY(-2px)',
+                    },
                   }}
-                  onClick={() => handleView(ref.id)}
                 >
-                  <ListItemText
-                    primary={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <Chip
-                          icon={getTypeIcon(ref.type)}
-                          label={ref.type}
-                          size="small"
-                          color={getTypeColor(ref.type) as any}
-                          sx={{ height: '20px' }}
-                        />
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: 500,
-                            color: 'var(--md-sys-color-on-surface)',
-                          }}
-                        >
-                          {ref.canonicalName}
-                        </Typography>
-                      </Box>
-                    }
-                    secondary={
-                      <Box>
-                        {ref.notes && (
+                  <CardContent sx={{ p: 3 }}>
+                    {/* Reference Header */}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1.5,
+                        marginBottom: 2,
+                      }}
+                    >
+                      <BusinessIcon
+                        sx={{
+                          color: 'var(--md-sys-color-primary)',
+                          fontSize: '24px',
+                        }}
+                      />
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontSize: '18px',
+                          fontWeight: 500,
+                          color: 'var(--md-sys-color-on-surface)',
+                          flexGrow: 1,
+                        }}
+                      >
+                        {ref.name}
+                      </Typography>
+                    </Box>
+
+                    {/* Reference Details */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      {ref.type && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <Typography
                             variant="body2"
                             sx={{
-                              fontSize: '14px',
                               color: 'var(--md-sys-color-on-surface-variant)',
-                              mb: 0.5,
+                              fontSize: '12px',
+                              fontWeight: 500,
+                              textTransform: 'uppercase',
                             }}
                           >
-                            {ref.notes}
+                            Type:
                           </Typography>
-                        )}
-                        {ref.variants.length > 0 && (
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
-                            {ref.variants.slice(0, 3).map((variant, index) => (
+                          <Chip
+                            label={ref.type}
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              height: '20px',
+                              fontSize: '11px',
+                            }}
+                          />
+                        </Box>
+                      )}
+
+                      {ref.documentCount !== undefined && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: 'var(--md-sys-color-on-surface-variant)',
+                              fontSize: '12px',
+                              fontWeight: 500,
+                            }}
+                          >
+                            Documents: {ref.documentCount}
+                          </Typography>
+                        </Box>
+                      )}
+
+                      {ref.firstMentioned && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: 'var(--md-sys-color-on-surface-variant)',
+                              fontSize: '12px',
+                              fontWeight: 500,
+                            }}
+                          >
+                            First mentioned: {formatDate(ref.firstMentioned)}
+                          </Typography>
+                        </Box>
+                      )}
+
+                      {ref.aliases && ref.aliases.length > 0 && (
+                        <Box sx={{ mt: 1 }}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: 'var(--md-sys-color-on-surface-variant)',
+                              fontSize: '12px',
+                              fontWeight: 500,
+                              marginBottom: 0.5,
+                            }}
+                          >
+                            Also known as:
+                          </Typography>
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {ref.aliases.slice(0, 3).map((alias, index) => (
                               <Chip
                                 key={index}
-                                label={variant}
+                                label={alias}
                                 size="small"
                                 variant="outlined"
-                                sx={{ height: '20px', fontSize: '11px' }}
+                                sx={{
+                                  height: '20px',
+                                  fontSize: '11px',
+                                }}
                               />
                             ))}
-                            {ref.variants.length > 3 && (
+                            {ref.aliases.length > 3 && (
                               <Chip
-                                label={`+${ref.variants.length - 3} more`}
+                                label={`+${ref.aliases.length - 3} more`}
                                 size="small"
                                 variant="outlined"
-                                sx={{ height: '20px', fontSize: '11px' }}
+                                sx={{
+                                  height: '20px',
+                                  fontSize: '11px',
+                                }}
                               />
                             )}
                           </Box>
-                        )}
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            fontSize: '12px',
-                            color: 'var(--md-sys-color-on-surface-variant)',
-                            display: 'block',
-                            mt: 0.5,
-                          }}
-                        >
-                          {ref.documentCount} document{ref.documentCount !== 1 ? 's' : ''}
-                        </Typography>
-                      </Box>
-                    }
-                  />
-                  <ListItemSecondaryAction>
-                    <Box sx={{ display: 'flex', gap: 0.5 }}>
-                      <IconButton
-                        size="small"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleEdit(ref.id)
-                        }}
-                        sx={{
-                          opacity: 0.7,
-                          '&:hover': { opacity: 1 },
-                        }}
-                      >
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          // TODO: Implement delete
-                        }}
-                        sx={{
-                          opacity: 0.7,
-                          '&:hover': { opacity: 1 },
-                        }}
-                      >
-                        <Delete />
-                      </IconButton>
+                        </Box>
+                      )}
                     </Box>
-                  </ListItemSecondaryAction>
-                </ListItem>
+                  </CardContent>
+                </Card>
               ))}
-            </List>
-          </Card>
+            </Box>
           )}
         </Box>
       </AppShell>

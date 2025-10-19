@@ -24,6 +24,7 @@ interface Document {
   sourceLanguage: string
   status: string
   pageCount: number
+  people?: Array<{ id: string; name: string }>
 }
 
 export default function DocumentsPage() {
@@ -72,22 +73,22 @@ export default function DocumentsPage() {
           console.log('Response is not JSON, trying test endpoint...')
           // Try test endpoint if response is not JSON
           const testResponse = await fetch('/api/flask/test-documents')
-            if (testResponse.ok) {
-              const data = await testResponse.json()
-              console.log('Documents loaded from test endpoint:', data)
-              console.log('Number of documents:', data.documents?.length || 0)
-              
-              // Deduplicate documents by ID
-              const uniqueDocuments = data.documents?.reduce((acc: any[], doc: any) => {
-                if (!acc.find((existingDoc: any) => existingDoc.id === doc.id)) {
-                  acc.push(doc)
-                }
-                return acc
-              }, []) || []
-              
-              console.log('Unique documents after deduplication:', uniqueDocuments.length)
-              setDocuments(uniqueDocuments)
-            }
+          if (testResponse.ok) {
+            const data = await testResponse.json()
+            console.log('Documents loaded from test endpoint:', data)
+            console.log('Number of documents:', data.documents?.length || 0)
+            
+            // Deduplicate documents by ID
+            const uniqueDocuments = data.documents?.reduce((acc: any[], doc: any) => {
+              if (!acc.find((existingDoc: any) => existingDoc.id === doc.id)) {
+                acc.push(doc)
+              }
+              return acc
+            }, []) || []
+            
+            console.log('Unique documents after deduplication:', uniqueDocuments.length)
+            setDocuments(uniqueDocuments)
+          }
         }
       } else {
         console.error('Failed to load documents, status:', response.status)
@@ -99,21 +100,61 @@ export default function DocumentsPage() {
     }
   }
 
-  const handleDocumentClick = (docId: string) => {
-    router.push(`/documents/${docId}`)
+  const handleDocumentClick = (documentId: string) => {
+    router.push(`/documents/${documentId}`)
   }
 
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'new':
+        return 'default'
+      case 'processing':
         return 'primary'
-      case 'editing':
-        return 'warning'
-      case 'final':
+      case 'completed':
         return 'success'
+      case 'error':
+        return 'error'
       default:
         return 'default'
     }
+  }
+
+  const renderPeopleList = (people: Array<{ id: string; name: string }>) => {
+    if (!people || people.length === 0) return null
+    
+    return (
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1 }}>
+        {people.slice(0, 3).map((person, index) => (
+          <Chip
+            key={index}
+            label={person.name}
+            size="small"
+            variant="outlined"
+            sx={{ 
+              height: '20px', 
+              fontSize: '11px',
+              '& .MuiChip-label': {
+                px: 1
+              }
+            }}
+          />
+        ))}
+        {people.length > 3 && (
+          <Chip
+            label={`+${people.length - 3} more`}
+            size="small"
+            variant="outlined"
+            sx={{ 
+              height: '20px', 
+              fontSize: '11px',
+              '& .MuiChip-label': {
+                px: 1
+              }
+            }}
+          />
+        )}
+      </Box>
+    )
   }
 
   if (isLoading) {
@@ -140,26 +181,44 @@ export default function DocumentsPage() {
     <ThemeProvider theme={m3Theme}>
       <CssBaseline />
       <AppShell>
-        <Box sx={{ p: 3 }}>
-          {/* Header */}
-          <Box sx={{ mb: 3 }}>
-            <Typography
-              variant="h5"
-              sx={{
-                color: 'var(--md-sys-color-on-surface)',
-              }}
-            >
-              Documents
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'var(--md-sys-color-on-surface-variant)',
-                mt: 0.5,
-              }}
-            >
-              {documents.length} documents
-            </Typography>
+        <Box
+          sx={{
+            padding: 'var(--md-sys-spacing-6)',
+            maxWidth: '1200px',
+            margin: '0 auto',
+          }}
+        >
+          {/* Documents Header */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
+              marginBottom: '16px',
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5 }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontSize: '16px',
+                  fontWeight: 500,
+                  margin: 0,
+                  color: 'var(--md-sys-color-on-surface)',
+                }}
+              >
+                Documents
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  fontSize: '14px',
+                }}
+              >
+                {documents.length} documents
+              </Typography>
+            </Box>
           </Box>
 
           {/* Documents Grid */}
@@ -180,7 +239,12 @@ export default function DocumentsPage() {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gridTemplateColumns: {
+                  xs: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                  lg: 'repeat(4, 1fr)',
+                },
                 gap: '24px',
               }}
             >
@@ -191,31 +255,84 @@ export default function DocumentsPage() {
                   sx={{
                     cursor: 'pointer',
                     borderRadius: 'var(--md-sys-shape-corner-medium)',
-                    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: 'var(--md-sys-elevation-level1)',
+                    transition: 'all 0.2s ease',
+                    minHeight: '200px',
+                    display: 'flex',
+                    flexDirection: 'column',
                     '&:hover': {
-                      transform: 'scale(1.02)',
+                      transform: 'translateY(-2px)',
                       boxShadow: 'var(--md-sys-elevation-level2)',
+                    },
+                    '&:active': {
+                      transform: 'translateY(0)',
+                      boxShadow: 'var(--md-sys-elevation-level1)',
                     },
                   }}
                 >
-                  {/* Thumbnail */}
-                  <CardMedia
-                    component="img"
-                    height="180"
-                    image={`http://localhost:5001/documents/${doc.id}/images/1`}
-                    alt={doc.title}
+                  {/* Document Thumbnail */}
+                  <Box
                     sx={{
-                      objectFit: 'cover',
-                      bgcolor: 'var(--md-sys-color-surface-variant)',
+                      width: '100%',
+                      height: '160px',
+                      borderRadius: 'var(--md-sys-shape-corner-small)',
+                      bgcolor: 'var(--md-sys-color-surface-container)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                      marginBottom: '12px',
+                      position: 'relative',
                     }}
-                    onError={(e) => {
-                      // Fallback if image fails to load
-                      (e.target as HTMLImageElement).style.display = 'none'
-                    }}
-                  />
+                  >
+                    {doc.pageCount > 0 ? (
+                      <CardMedia
+                        component="img"
+                        height="160"
+                        image={`http://localhost:5001/documents/${doc.id}/images/1`}
+                        alt={doc.title}
+                        sx={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                        onError={(e) => {
+                          // Fallback if image fails to load
+                          (e.target as HTMLImageElement).style.display = 'none'
+                        }}
+                      />
+                    ) : (
+                      <Typography
+                        sx={{
+                          color: 'var(--md-sys-color-on-surface-variant)',
+                          fontSize: '24px',
+                        }}
+                      >
+                        📄
+                      </Typography>
+                    )}
+                    
+                    {/* Page Count Badge */}
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        bgcolor: 'var(--md-sys-color-surface-container-highest)',
+                        color: 'var(--md-sys-color-on-surface)',
+                        borderRadius: '12px',
+                        px: 1,
+                        py: 0.5,
+                        fontSize: '12px',
+                        fontWeight: 500,
+                      }}
+                    >
+                      {doc.pageCount || 0}
+                    </Box>
+                  </Box>
 
-                  <CardContent sx={{ p: 2 }}>
-                    {/* Title */}
+                  <CardContent sx={{ p: 2, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                    {/* Document Title */}
                     <Typography
                       variant="h6"
                       sx={{
@@ -227,12 +344,13 @@ export default function DocumentsPage() {
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden',
+                        color: 'var(--md-sys-color-on-surface)',
                       }}
                     >
-                      {doc.title}
+                      {doc.title || doc.id || 'Untitled Document'}
                     </Typography>
 
-                    {/* Summary */}
+                    {/* Document Summary */}
                     <Typography
                       variant="body2"
                       sx={{
@@ -243,18 +361,30 @@ export default function DocumentsPage() {
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden',
+                        flexGrow: 1,
                       }}
                     >
-                      {doc.summary}
+                      {doc.summary ? 
+                        (doc.summary.length > 100 ? doc.summary.substring(0, 100) + '...' : doc.summary) : 
+                        'No summary available'
+                      }
                     </Typography>
 
-                    {/* Metadata */}
+                    {/* People */}
+                    {doc.people && doc.people.length > 0 && (
+                      <Box sx={{ mt: 'auto' }}>
+                        {renderPeopleList(doc.people)}
+                      </Box>
+                    )}
+
+                    {/* Status and Metadata */}
                     <Box
                       sx={{
                         display: 'flex',
                         gap: 0.5,
                         flexWrap: 'wrap',
                         alignItems: 'center',
+                        mt: 1,
                       }}
                     >
                       {doc.status && (
@@ -270,25 +400,16 @@ export default function DocumentsPage() {
                           }}
                         />
                       )}
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          fontSize: '12px',
-                          color: 'var(--md-sys-color-on-surface-variant)',
-                        }}
-                      >
-                        {doc.pageCount} page{doc.pageCount !== 1 ? 's' : ''}
-                      </Typography>
                       {doc.sourceLanguage && (
-                        <Typography
-                          variant="caption"
+                        <Chip
+                          label={doc.sourceLanguage.toUpperCase()}
+                          size="small"
+                          variant="outlined"
                           sx={{
-                            fontSize: '12px',
-                            color: 'var(--md-sys-color-on-surface-variant)',
+                            height: '20px',
+                            fontSize: '11px',
                           }}
-                        >
-                          · {doc.sourceLanguage}
-                        </Typography>
+                        />
                       )}
                     </Box>
                   </CardContent>
