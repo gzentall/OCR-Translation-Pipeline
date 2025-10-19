@@ -343,7 +343,6 @@ export default function ReferencesPage() {
               ))}
             </List>
           </Card>
-          )}
         </Box>
       </AppShell>
     </ThemeProvider>

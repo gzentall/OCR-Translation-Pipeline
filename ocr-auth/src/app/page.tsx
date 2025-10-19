@@ -57,17 +57,37 @@ export default function DocumentsPage() {
           const data = await response.json()
           console.log('Documents loaded:', data)
           console.log('Number of documents:', data.documents?.length || 0)
-          setDocuments(data.documents || [])
+          
+          // Deduplicate documents by ID
+          const uniqueDocuments = data.documents?.reduce((acc: any[], doc: any) => {
+            if (!acc.find((existingDoc: any) => existingDoc.id === doc.id)) {
+              acc.push(doc)
+            }
+            return acc
+          }, []) || []
+          
+          console.log('Unique documents after deduplication:', uniqueDocuments.length)
+          setDocuments(uniqueDocuments)
         } else {
           console.log('Response is not JSON, trying test endpoint...')
           // Try test endpoint if response is not JSON
           const testResponse = await fetch('/api/flask/test-documents')
-          if (testResponse.ok) {
-            const data = await testResponse.json()
-            console.log('Documents loaded from test endpoint:', data)
-            console.log('Number of documents:', data.documents?.length || 0)
-            setDocuments(data.documents || [])
-          }
+            if (testResponse.ok) {
+              const data = await testResponse.json()
+              console.log('Documents loaded from test endpoint:', data)
+              console.log('Number of documents:', data.documents?.length || 0)
+              
+              // Deduplicate documents by ID
+              const uniqueDocuments = data.documents?.reduce((acc: any[], doc: any) => {
+                if (!acc.find((existingDoc: any) => existingDoc.id === doc.id)) {
+                  acc.push(doc)
+                }
+                return acc
+              }, []) || []
+              
+              console.log('Unique documents after deduplication:', uniqueDocuments.length)
+              setDocuments(uniqueDocuments)
+            }
         }
       } else {
         console.error('Failed to load documents, status:', response.status)
