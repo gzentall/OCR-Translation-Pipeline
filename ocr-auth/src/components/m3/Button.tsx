@@ -46,15 +46,15 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
       return (
         <md-filled-button {...commonProps}>
           {icon && !trailingIcon && (
-            <span suppressHydrationWarning>
-              <md-icon slot="icon">{icon}</md-icon>
-            </span>
+            <md-icon slot="icon" suppressHydrationWarning>
+              {icon}
+            </md-icon>
           )}
           {children}
           {icon && trailingIcon && (
-            <span suppressHydrationWarning>
-              <md-icon slot="icon">{icon}</md-icon>
-            </span>
+            <md-icon slot="icon" suppressHydrationWarning>
+              {icon}
+            </md-icon>
           )}
         </md-filled-button>
       )
@@ -64,15 +64,15 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
       return (
         <md-outlined-button {...commonProps}>
           {icon && !trailingIcon && (
-            <span suppressHydrationWarning>
-              <md-icon slot="icon">{icon}</md-icon>
-            </span>
+            <md-icon slot="icon" suppressHydrationWarning>
+              {icon}
+            </md-icon>
           )}
           {children}
           {icon && trailingIcon && (
-            <span suppressHydrationWarning>
-              <md-icon slot="icon">{icon}</md-icon>
-            </span>
+            <md-icon slot="icon" suppressHydrationWarning>
+              {icon}
+            </md-icon>
           )}
         </md-outlined-button>
       )
@@ -81,15 +81,15 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
     return (
       <md-text-button {...commonProps}>
         {icon && !trailingIcon && (
-          <span suppressHydrationWarning>
-            <md-icon slot="icon">{icon}</md-icon>
-          </span>
+          <md-icon slot="icon" suppressHydrationWarning>
+            {icon}
+          </md-icon>
         )}
         {children}
         {icon && trailingIcon && (
-          <span suppressHydrationWarning>
-            <md-icon slot="icon">{icon}</md-icon>
-          </span>
+          <md-icon slot="icon" suppressHydrationWarning>
+            {icon}
+          </md-icon>
         )}
       </md-text-button>
     )

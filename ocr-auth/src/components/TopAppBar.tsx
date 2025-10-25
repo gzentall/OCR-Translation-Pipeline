@@ -84,11 +84,9 @@ export default function TopAppBar() {
       >
         {/* Logo and Title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span suppressHydrationWarning>
-            <md-icon style={{ color: 'var(--md-sys-color-primary)', fontSize: '28px' }}>
-              local_post_office
-            </md-icon>
-          </span>
+          <md-icon style={{ color: 'var(--md-sys-color-primary)', fontSize: '28px' }} suppressHydrationWarning>
+            local_post_office
+          </md-icon>
           <h1
             style={{
               fontFamily: 'var(--md-sys-typescale-headline-small-font)',
@@ -133,9 +131,9 @@ export default function TopAppBar() {
                 transition: 'all 200ms',
               }}
             >
-              <span suppressHydrationWarning>
-                <md-icon style={{ fontSize: '24px' }}>{tab.icon}</md-icon>
-              </span>
+              <md-icon style={{ fontSize: '24px' }} suppressHydrationWarning>
+                {tab.icon}
+              </md-icon>
               <span
                 style={{
                   fontSize: '14px',
@@ -240,20 +238,19 @@ export default function TopAppBar() {
               alignItems: 'center',
             }}
           >
-            <span suppressHydrationWarning>
-              <md-icon
-                style={{
-                  position: 'absolute',
-                  left: '12px',
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  fontSize: '20px',
-                  pointerEvents: 'none',
-                  zIndex: 1,
-                }}
-              >
-                search
-              </md-icon>
-            </span>
+            <md-icon
+              style={{
+                position: 'absolute',
+                left: '12px',
+                color: 'var(--md-sys-color-on-surface-variant)',
+                fontSize: '20px',
+                pointerEvents: 'none',
+                zIndex: 1,
+              }}
+              suppressHydrationWarning
+            >
+              search
+            </md-icon>
             <input
               type="text"
               value={searchQuery}

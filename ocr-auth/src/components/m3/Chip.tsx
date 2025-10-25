@@ -65,9 +65,9 @@ export const Chip = forwardRef<HTMLElement, ChipProps>(
           className={className}
         >
           {icon && (
-            <span suppressHydrationWarning>
-              <md-icon slot="icon">{icon}</md-icon>
-            </span>
+            <md-icon slot="icon" suppressHydrationWarning>
+              {icon}
+            </md-icon>
           )}
         </md-filter-chip>
       )
@@ -84,9 +84,9 @@ export const Chip = forwardRef<HTMLElement, ChipProps>(
         className={className}
       >
         {icon && (
-          <span suppressHydrationWarning>
-            <md-icon slot="icon">{icon}</md-icon>
-          </span>
+          <md-icon slot="icon" suppressHydrationWarning>
+            {icon}
+          </md-icon>
         )}
       </md-input-chip>
     )
