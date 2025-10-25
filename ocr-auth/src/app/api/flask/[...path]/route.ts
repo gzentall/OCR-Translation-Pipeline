@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const resolvedParams = await params
   const path = resolvedParams.path.join('/')
-  const url = new URL(`${FLASK_URL}/${path}`)
+  const url = new URL(`${FLASK_URL}/api/${path}`)
   
   // Forward query parameters
   request.nextUrl.searchParams.forEach((value, key) => {
@@ -65,7 +65,7 @@ export async function POST(
 ) {
   const resolvedParams = await params
   const path = resolvedParams.path.join('/')
-  const url = new URL(`${FLASK_URL}/${path}`)
+  const url = new URL(`${FLASK_URL}/api/${path}`)
   
   // Forward query parameters
   request.nextUrl.searchParams.forEach((value, key) => {
@@ -108,7 +108,7 @@ export async function PUT(
 ) {
   const resolvedParams = await params
   const path = resolvedParams.path.join('/')
-  const url = new URL(`${FLASK_URL}/${path}`)
+  const url = new URL(`${FLASK_URL}/api/${path}`)
   
   // Forward query parameters
   request.nextUrl.searchParams.forEach((value, key) => {
