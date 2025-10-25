@@ -44,7 +44,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
 
     if (variant === 'filled') {
       return (
-        <md-filled-button {...commonProps}>
+        <md-filled-button {...commonProps} suppressHydrationWarning>
           {icon && !trailingIcon && <md-icon slot="icon">{icon}</md-icon>}
           {children}
           {icon && trailingIcon && <md-icon slot="icon">{icon}</md-icon>}
@@ -54,7 +54,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
 
     if (variant === 'outlined') {
       return (
-        <md-outlined-button {...commonProps}>
+        <md-outlined-button {...commonProps} suppressHydrationWarning>
           {icon && !trailingIcon && <md-icon slot="icon">{icon}</md-icon>}
           {children}
           {icon && trailingIcon && <md-icon slot="icon">{icon}</md-icon>}
@@ -63,7 +63,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
     }
 
     return (
-      <md-text-button {...commonProps}>
+      <md-text-button {...commonProps} suppressHydrationWarning>
         {icon && !trailingIcon && <md-icon slot="icon">{icon}</md-icon>}
         {children}
         {icon && trailingIcon && <md-icon slot="icon">{icon}</md-icon>}

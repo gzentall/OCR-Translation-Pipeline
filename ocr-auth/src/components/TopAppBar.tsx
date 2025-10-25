@@ -83,7 +83,7 @@ export default function TopAppBar() {
         }}
       >
         {/* Logo and Title */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} suppressHydrationWarning>
           <md-icon style={{ color: 'var(--md-sys-color-primary)', fontSize: '28px' }}>
             local_post_office
           </md-icon>
@@ -130,6 +130,7 @@ export default function TopAppBar() {
                     : '2px solid transparent',
                 transition: 'all 200ms',
               }}
+              suppressHydrationWarning
             >
               <md-icon style={{ fontSize: '24px' }}>{tab.icon}</md-icon>
               <span
@@ -235,6 +236,7 @@ export default function TopAppBar() {
               display: 'flex',
               alignItems: 'center',
             }}
+            suppressHydrationWarning
           >
             <md-icon
               style={{
