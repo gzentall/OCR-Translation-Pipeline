@@ -408,13 +408,7 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
               >
                 <TabsPanel
                   document={document}
-                  setDocument={setDocument}
-                  isEditing={isEditing}
-                  people={people}
-                  showOriginalText={showOriginalText}
-                  setShowOriginalText={setShowOriginalText}
-                  activeTab={activeTab}
-                  handleTabChange={handleTabChange}
+                  onDocumentChange={setDocument}
                 />
               </Box>
 
