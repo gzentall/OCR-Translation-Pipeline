@@ -195,7 +195,7 @@ export default function TabsPanel({ document, onDocumentChange }: TabsPanelProps
               <FormControl fullWidth>
                 <InputLabel>Sender</InputLabel>
                 <Select
-                  value={document.sender}
+                  value={document.sender || ''}
                   onChange={(e) => handleFieldChange('sender', e.target.value)}
                   label="Sender"
                 >
@@ -211,7 +211,7 @@ export default function TabsPanel({ document, onDocumentChange }: TabsPanelProps
               <FormControl fullWidth>
                 <InputLabel>Recipient</InputLabel>
                 <Select
-                  value={document.recipient}
+                  value={document.recipient || ''}
                   onChange={(e) => handleFieldChange('recipient', e.target.value)}
                   label="Recipient"
                 >
@@ -226,7 +226,7 @@ export default function TabsPanel({ document, onDocumentChange }: TabsPanelProps
               {/* From Location */}
               <TextField
                 label="From"
-                value={document.fromLocation}
+                value={document.fromLocation || ''}
                 onChange={(e) => handleFieldChange('fromLocation', e.target.value)}
                 fullWidth
                 InputProps={{
@@ -237,7 +237,7 @@ export default function TabsPanel({ document, onDocumentChange }: TabsPanelProps
               {/* To Location */}
               <TextField
                 label="To"
-                value={document.toLocation}
+                value={document.toLocation || ''}
                 onChange={(e) => handleFieldChange('toLocation', e.target.value)}
                 fullWidth
                 InputProps={{
