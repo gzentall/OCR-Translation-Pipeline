@@ -40,7 +40,8 @@ export default function ImageViewer({ documentId, pageCount }: ImageViewerProps)
       setImageLoading(true)
       setImageError(null)
 
-      const response = await fetch(`http://localhost:5001/api/test-documents/${documentId}/images/${currentPage}`)
+      // Use Next.js proxy to fetch image
+      const response = await fetch(`/api/flask/test-documents/${documentId}/images/${currentPage}`)
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
