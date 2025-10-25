@@ -63,6 +63,7 @@ export const Chip = forwardRef<HTMLElement, ChipProps>(
           disabled={disabled}
           onClick={handleClick}
           className={className}
+          suppressHydrationWarning
         >
           {icon && (
             <md-icon slot="icon" suppressHydrationWarning>
@@ -82,6 +83,7 @@ export const Chip = forwardRef<HTMLElement, ChipProps>(
         onClick={handleClick}
         onRemove={handleRemove}
         className={className}
+        suppressHydrationWarning
       >
         {icon && (
           <md-icon slot="icon" suppressHydrationWarning>
