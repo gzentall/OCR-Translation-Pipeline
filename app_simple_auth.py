@@ -405,11 +405,11 @@ def api_references():
             references.append({
                 'id': person_name,
                 'type': 'PERSON',
-                'canonicalName': person_name,
+                'name': person_name,  # Changed from canonicalName
                 'notes': person_data.get('context', ''),
-                'variants': person_data.get('aliases', []),
+                'aliases': person_data.get('aliases', []),  # Changed from variants
                 'documentCount': len(person_data.get('documents', [])),
-                'createdAt': person_data.get('first_mentioned', ''),
+                'firstMentioned': person_data.get('first_mentioned', ''),  # Changed from createdAt
             })
         
         return jsonify({'references': references})
@@ -429,11 +429,11 @@ def api_test_references():
             references.append({
                 'id': person_name,
                 'type': 'PERSON',
-                'canonicalName': person_name,
+                'name': person_name,  # Changed from canonicalName
                 'notes': person_data.get('context', ''),
-                'variants': person_data.get('aliases', []),
+                'aliases': person_data.get('aliases', []),  # Changed from variants
                 'documentCount': len(person_data.get('documents', [])),
-                'createdAt': person_data.get('first_mentioned', ''),
+                'firstMentioned': person_data.get('first_mentioned', ''),  # Changed from createdAt
             })
         
         return jsonify({'references': references})
@@ -2554,128 +2554,128 @@ def api_delete_user(username):
 
 
 # -----------------------------
-# References (with stable IDs)
+# References (with stable IDs) - COMMENTED OUT DUE TO DUPLICATE ROUTE
 # -----------------------------
 
-@app.route('/api/references', methods=['GET'])
-async def list_references():
-    """List all references with optional filtering."""
-    try:
-        ref_type = request.args.get('type')
-        query = request.args.get('q') or request.args.get('query')
-        
-        references = await simple_reference_service.search_references(query=query, ref_type=ref_type)
-        return jsonify({
-            'success': True,
-            'references': references,
-            'total': len(references)
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+# @app.route('/api/references', methods=['GET'])
+# async def list_references():
+#     """List all references with optional filtering."""
+#     try:
+#         ref_type = request.args.get('type')
+#         query = request.args.get('q') or request.args.get('query')
+#         
+#         references = await simple_reference_service.search_references(query=query, ref_type=ref_type)
+#         return jsonify({
+#             'success': True,
+#             'references': references,
+#             'total': len(references)
+#         })
+#     except Exception as e:
+#         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-@app.route('/api/references/<ref_id>', methods=['GET'])
-def get_reference(ref_id):
-    """Get a specific reference by ID."""
-    try:
-        reference = local_storage.get_reference(ref_id)
-        if not reference:
-            return jsonify({'success': False, 'error': 'Reference not found'}), 404
-        
-        return jsonify({
-            'success': True,
-            'reference': reference
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+# @app.route('/api/references/<ref_id>', methods=['GET'])
+# def get_reference(ref_id):
+#     """Get a specific reference by ID."""
+#     try:
+#         reference = local_storage.get_reference(ref_id)
+#         if not reference:
+#             return jsonify({'success': False, 'error': 'Reference not found'}), 404
+#         
+#         return jsonify({
+#             'success': True,
+#             'reference': reference
+#         })
+#     except Exception as e:
+#         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-@app.route('/api/references', methods=['POST'])
-def create_reference():
-    """Create a new reference."""
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'success': False, 'error': 'No data provided'}), 400
-        
-        ref_type = data.get('type')
-        name = data.get('name')
-        aliases = data.get('aliases', [])
-        notes = data.get('notes', '')
-        
-        if not ref_type or not name:
-            return jsonify({'success': False, 'error': 'Type and name are required'}), 400
-        
-        reference = local_storage.add_reference(ref_type, name, aliases, notes)
-        if not reference:
-            return jsonify({'success': False, 'error': 'Failed to create reference'}), 400
-        
-        return jsonify({
-            'success': True,
-            'reference': reference
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+# @app.route('/api/references', methods=['POST'])
+# def create_reference():
+#     """Create a new reference."""
+#     try:
+#         data = request.get_json()
+#         if not data:
+#             return jsonify({'success': False, 'error': 'No data provided'}), 400
+#         
+#         ref_type = data.get('type')
+#         name = data.get('name')
+#         aliases = data.get('aliases', [])
+#         notes = data.get('notes', '')
+#         
+#         if not ref_type or not name:
+#             return jsonify({'success': False, 'error': 'Type and name are required'}), 400
+#         
+#         reference = local_storage.add_reference(ref_type, name, aliases, notes)
+#         if not reference:
+#             return jsonify({'success': False, 'error': 'Failed to create reference'}), 400
+#         
+#         return jsonify({
+#             'success': True,
+#             'reference': reference
+#         })
+#     except Exception as e:
+#         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-@app.route('/api/references/<ref_id>', methods=['PUT'])
-def update_reference(ref_id):
-    """Update a reference."""
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({'success': False, 'error': 'No data provided'}), 400
-        
-        name = data.get('name')
-        aliases = data.get('aliases')
-        notes = data.get('notes')
-        
-        reference = local_storage.update_reference(ref_id, name, aliases, notes)
-        if not reference:
-            return jsonify({'success': False, 'error': 'Reference not found'}), 404
-        
-        return jsonify({
-            'success': True,
-            'reference': reference
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+# @app.route('/api/references/<ref_id>', methods=['PUT'])
+# def update_reference(ref_id):
+#     """Update a reference."""
+#     try:
+#         data = request.get_json()
+#         if not data:
+#             return jsonify({'success': False, 'error': 'No data provided'}), 400
+#         
+#         name = data.get('name')
+#         aliases = data.get('aliases')
+#         notes = data.get('notes')
+#         
+#         reference = local_storage.update_reference(ref_id, name, aliases, notes)
+#         if not reference:
+#             return jsonify({'success': False, 'error': 'Reference not found'}), 404
+#         
+#         return jsonify({
+#             'success': True,
+#             'reference': reference
+#         })
+#     except Exception as e:
+#         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-@app.route('/api/references/<ref_id>', methods=['DELETE'])
-def delete_reference(ref_id):
-    """Delete a reference."""
-    try:
-        success = local_storage.delete_reference(ref_id)
-        if not success:
-            return jsonify({'success': False, 'error': 'Reference not found'}), 404
-        
-        return jsonify({
-            'success': True,
-            'message': 'Reference deleted successfully'
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+# @app.route('/api/references/<ref_id>', methods=['DELETE'])
+# def delete_reference(ref_id):
+#     """Delete a reference."""
+#     try:
+#         success = local_storage.delete_reference(ref_id)
+#         if not success:
+#             return jsonify({'success': False, 'error': 'Reference not found'}), 404
+#         
+#         return jsonify({
+#             'success': True,
+#             'message': 'Reference deleted successfully'
+#         })
+#     except Exception as e:
+#         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-@app.route('/api/references/<source_id>/merge', methods=['POST'])
-def merge_references(source_id):
-    """Merge a source reference into a target reference."""
-    try:
-        data = request.get_json()
-        if not data or not data.get('targetId'):
-            return jsonify({'success': False, 'error': 'targetId is required'}), 400
-        
-        success = local_storage.merge_references(source_id, data['targetId'])
-        if not success:
-            return jsonify({'success': False, 'error': 'Merge failed'}), 400
-        
-        return jsonify({
-            'success': True,
-            'message': f'Reference {source_id} merged into {data["targetId"]}'
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+# @app.route('/api/references/<source_id>/merge', methods=['POST'])
+# def merge_references(source_id):
+#     """Merge a source reference into a target reference."""
+#     try:
+#         data = request.get_json()
+#         if not data or not data.get('targetId'):
+#             return jsonify({'success': False, 'error': 'targetId is required'}), 400
+#         
+#         success = local_storage.merge_references(source_id, data['targetId'])
+#         if not success:
+#             return jsonify({'success': False, 'error': 'Merge failed'}), 400
+#         
+#         return jsonify({
+#             'success': True,
+#             'message': f'Reference {source_id} merged into {data["targetId"]}'
+#         })
+#     except Exception as e:
+#         return jsonify({'success': False, 'error': str(e)}), 500
 
 
 # -----------------------------
