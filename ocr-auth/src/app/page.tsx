@@ -96,7 +96,7 @@ export default function DocumentsPage() {
           }}
         >
           <div className="loading-spinner">Loading...</div>
-        </div>
+      </div>
       </AppShell>
     )
   }
@@ -105,9 +105,10 @@ export default function DocumentsPage() {
     <AppShell>
       <div
         style={{
-          padding: '24px',
-          maxWidth: '1200px',
-          margin: '0 auto',
+          padding: 'var(--md-sys-spacing-6)',
+          width: '100%',
+          maxWidth: '100%',
+          margin: '0',
         }}
       >
         {/* Documents Info */}
@@ -116,10 +117,10 @@ export default function DocumentsPage() {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'baseline',
-            marginBottom: '24px',
+            marginBottom: 'var(--md-sys-spacing-6)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--md-sys-spacing-3)' }}>
             <h2
               style={{
                 fontFamily: 'var(--md-sys-typescale-title-large-font)',
@@ -142,24 +143,6 @@ export default function DocumentsPage() {
               {documents.length} documents
             </span>
           </div>
-          <button
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--md-sys-color-primary)',
-              fontSize: '14px',
-              cursor: 'pointer',
-              fontWeight: 500,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.textDecoration = 'underline'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.textDecoration = 'none'
-            }}
-          >
-            show all
-          </button>
         </div>
 
         {/* Documents Grid */}
@@ -178,8 +161,8 @@ export default function DocumentsPage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-              gap: '24px',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+              gap: 'var(--md-sys-spacing-4)',
             }}
           >
             {documents.map((doc) => (
@@ -188,13 +171,14 @@ export default function DocumentsPage() {
                 onClick={() => handleDocumentClick(doc.id)}
                 style={{
                   cursor: 'pointer',
-                  borderRadius: 'var(--md-sys-shape-corner-medium)',
-                  backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                  borderRadius: '12px',
+                  backgroundColor: 'var(--md-sys-color-surface)',
                   boxShadow: 'var(--md-sys-elevation-level1)',
-                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-                  overflow: 'hidden',
+                  transition: 'box-shadow 0.2s ease, transform 0.2s ease',
                   display: 'flex',
                   flexDirection: 'column',
+                  minHeight: '120px',
+                  padding: 'var(--md-sys-spacing-4)',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)'
@@ -209,13 +193,15 @@ export default function DocumentsPage() {
                 <div
                   style={{
                     width: '100%',
-                    height: '180px',
+                    height: '120px',
+                    borderRadius: '8px',
                     backgroundColor: 'var(--md-sys-color-surface-container)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     overflow: 'hidden',
                     position: 'relative',
+                    marginBottom: 'var(--md-sys-spacing-3)',
                   }}
                 >
                   {doc.pageCount > 0 ? (
@@ -257,7 +243,7 @@ export default function DocumentsPage() {
                 </div>
 
                 {/* Card Content */}
-                <div style={{ padding: '16px' }}>
+                <div>
                   {/* Title */}
                   <h3
                     style={{
@@ -265,7 +251,7 @@ export default function DocumentsPage() {
                       fontSize: 'var(--md-sys-typescale-title-medium-size)',
                       fontWeight: 'var(--md-sys-typescale-title-medium-weight)',
                       lineHeight: 'var(--md-sys-typescale-title-medium-line-height)',
-                      margin: '0 0 8px 0',
+                      margin: '0 0 var(--md-sys-spacing-2) 0',
                       color: 'var(--md-sys-color-on-surface)',
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
@@ -357,12 +343,12 @@ export default function DocumentsPage() {
                       {doc.sourceLanguage.toUpperCase()}
                     </span>
                   </div>
-                </div>
+              </div>
               </div>
             ))}
           </div>
         )}
-      </div>
+        </div>
     </AppShell>
   )
 }
