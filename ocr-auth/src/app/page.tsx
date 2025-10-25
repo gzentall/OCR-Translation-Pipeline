@@ -206,7 +206,7 @@ export default function DocumentsPage() {
                 >
                   {doc.pageCount > 0 ? (
                     <img
-                      src={`http://localhost:5001/api/test-documents/${doc.id}/images/1`}
+                      src={`/api/flask/test-documents/${doc.id}/images/1`}
                       alt="Document thumbnail"
                       style={{
                         width: '100%',
