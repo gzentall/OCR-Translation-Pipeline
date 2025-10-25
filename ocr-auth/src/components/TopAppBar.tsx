@@ -83,10 +83,12 @@ export default function TopAppBar() {
         }}
       >
         {/* Logo and Title */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} suppressHydrationWarning>
-          <md-icon style={{ color: 'var(--md-sys-color-primary)', fontSize: '28px' }}>
-            local_post_office
-          </md-icon>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span suppressHydrationWarning>
+            <md-icon style={{ color: 'var(--md-sys-color-primary)', fontSize: '28px' }}>
+              local_post_office
+            </md-icon>
+          </span>
           <h1
             style={{
               fontFamily: 'var(--md-sys-typescale-headline-small-font)',
@@ -130,9 +132,10 @@ export default function TopAppBar() {
                     : '2px solid transparent',
                 transition: 'all 200ms',
               }}
-              suppressHydrationWarning
             >
-              <md-icon style={{ fontSize: '24px' }}>{tab.icon}</md-icon>
+              <span suppressHydrationWarning>
+                <md-icon style={{ fontSize: '24px' }}>{tab.icon}</md-icon>
+              </span>
               <span
                 style={{
                   fontSize: '14px',
@@ -236,20 +239,21 @@ export default function TopAppBar() {
               display: 'flex',
               alignItems: 'center',
             }}
-            suppressHydrationWarning
           >
-            <md-icon
-              style={{
-                position: 'absolute',
-                left: '12px',
-                color: 'var(--md-sys-color-on-surface-variant)',
-                fontSize: '20px',
-                pointerEvents: 'none',
-                zIndex: 1,
-              }}
-            >
-              search
-            </md-icon>
+            <span suppressHydrationWarning>
+              <md-icon
+                style={{
+                  position: 'absolute',
+                  left: '12px',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  fontSize: '20px',
+                  pointerEvents: 'none',
+                  zIndex: 1,
+                }}
+              >
+                search
+              </md-icon>
+            </span>
             <input
               type="text"
               value={searchQuery}
