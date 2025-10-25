@@ -1,24 +1,9 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  CircularProgress,
-  Chip,
-  IconButton,
-  ThemeProvider,
-  CssBaseline,
-} from '@mui/material'
-import {
-  Edit as EditIcon,
-  Person as PersonIcon,
-} from '@mui/icons-material'
 import AppShell from '@/components/AppShell'
-import m3Theme from '@/theme/m3-theme'
+import '@material/web/icon/icon.js'
 
 interface User {
   id: string
@@ -51,7 +36,6 @@ export default function UsersPage() {
 
       if (!response.ok) {
         console.log('Authenticated endpoint failed, trying test endpoint...')
-        // Fallback to test endpoint
         response = await fetch('/api/flask/test-users')
       }
 
@@ -60,21 +44,16 @@ export default function UsersPage() {
         if (contentType && contentType.includes('application/json')) {
           const data = await response.json()
           console.log('Users loaded:', data)
-          console.log('Number of users:', data.users?.length || 0)
           setUsers(data.users || [])
         } else {
           console.log('Response is not JSON, trying test endpoint...')
-          // Try test endpoint if response is not JSON
           const testResponse = await fetch('/api/flask/test-users')
           if (testResponse.ok) {
             const data = await testResponse.json()
             console.log('Users loaded from test endpoint:', data)
-            console.log('Number of users:', data.users?.length || 0)
             setUsers(data.users || [])
           }
         }
-      } else {
-        console.error('Failed to load users, status:', response.status)
       }
     } catch (error) {
       console.error('Failed to load users:', error)
@@ -87,212 +66,202 @@ export default function UsersPage() {
     router.push(`/users/${username}/edit`)
   }
 
-  const getRoleColor = (role: string) => {
-    switch (role?.toLowerCase()) {
-      case 'admin':
-        return 'error'
-      case 'user':
-        return 'primary'
-      case 'viewer':
-        return 'default'
-      default:
-        return 'default'
-    }
-  }
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) return 'Never'
-    try {
-      return new Date(dateString).toLocaleDateString()
-    } catch {
-      return dateString
-    }
-  }
-
   if (isLoading) {
     return (
-      <ThemeProvider theme={m3Theme}>
-        <CssBaseline />
-        <AppShell>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '50vh',
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        </AppShell>
-      </ThemeProvider>
+      <AppShell>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '50vh',
+          }}
+        >
+          <div className="loading-spinner">Loading...</div>
+        </div>
+      </AppShell>
     )
   }
 
   return (
-    <ThemeProvider theme={m3Theme}>
-      <CssBaseline />
-      <AppShell>
-        <Box
-          sx={{
-            padding: 'var(--md-sys-spacing-6)',
-            maxWidth: '1200px',
-            margin: '0 auto',
+    <AppShell>
+      <div
+        style={{
+          padding: '24px',
+          maxWidth: '1200px',
+          margin: '0 auto',
+        }}
+      >
+        {/* Users Info */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            marginBottom: '24px',
           }}
         >
-
-          {/* Users List */}
-          {users.length === 0 ? (
-            <Box
-              sx={{
-                textAlign: 'center',
-                py: 8,
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+            <h2
+              style={{
+                fontFamily: 'var(--md-sys-typescale-title-large-font)',
+                fontSize: 'var(--md-sys-typescale-title-large-size)',
+                fontWeight: 'var(--md-sys-typescale-title-large-weight)',
+                lineHeight: 'var(--md-sys-typescale-title-large-line-height)',
+                margin: 0,
+                color: 'var(--md-sys-color-on-surface)',
+              }}
+            >
+              Users
+            </h2>
+            <span
+              style={{
+                fontFamily: 'var(--md-sys-typescale-body-medium-font)',
+                fontSize: 'var(--md-sys-typescale-body-medium-size)',
                 color: 'var(--md-sys-color-on-surface-variant)',
               }}
             >
-              <Typography variant="h6">No users found</Typography>
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                Users will appear here when they are added to the system
-              </Typography>
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: {
-                  xs: 'repeat(1, 1fr)',
-                  sm: 'repeat(2, 1fr)',
-                  md: 'repeat(3, 1fr)',
-                },
-                gap: '16px',
-              }}
-            >
-              {users.map((user) => (
-                <Card
-                  key={user.id}
-                  sx={{
-                    borderRadius: 'var(--md-sys-shape-corner-medium)',
-                    boxShadow: 'var(--md-sys-elevation-level1)',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      boxShadow: 'var(--md-sys-elevation-level2)',
-                      transform: 'translateY(-2px)',
-                    },
-                  }}
-                >
-                  <CardContent sx={{ p: 3 }}>
-                    {/* User Header */}
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1.5,
-                        marginBottom: 2,
+              {users.length} users
+            </span>
+          </div>
+        </div>
+
+        {/* Users Grid */}
+        {users.length === 0 ? (
+          <div
+            style={{
+              textAlign: 'center',
+              padding: '64px 0',
+              color: 'var(--md-sys-color-on-surface-variant)',
+            }}
+          >
+            <h3>No users found</h3>
+            <p>Add a user to get started</p>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+              gap: '24px',
+            }}
+          >
+            {users.map((user) => (
+              <div
+                key={user.id}
+                onClick={() => handleUserClick(user.username)}
+                style={{
+                  cursor: 'pointer',
+                  borderRadius: 'var(--md-sys-shape-corner-medium)',
+                  backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                  boxShadow: 'var(--md-sys-elevation-level1)',
+                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  padding: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)'
+                  e.currentTarget.style.boxShadow = 'var(--md-sys-elevation-level2)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = 'var(--md-sys-elevation-level1)'
+                }}
+              >
+                {/* Header with Avatar and Name */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--md-sys-color-primary)',
+                      color: 'var(--md-sys-color-on-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {user.username ? user.username[0].toUpperCase() : 'U'}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h3
+                      style={{
+                        fontFamily: 'var(--md-sys-typescale-title-medium-font)',
+                        fontSize: 'var(--md-sys-typescale-title-medium-size)',
+                        fontWeight: 'var(--md-sys-typescale-title-medium-weight)',
+                        lineHeight: 'var(--md-sys-typescale-title-medium-line-height)',
+                        margin: 0,
+                        color: 'var(--md-sys-color-on-surface)',
                       }}
                     >
-                      <PersonIcon
-                        sx={{
-                          color: 'var(--md-sys-color-primary)',
-                          fontSize: '24px',
-                        }}
-                      />
-                      <Box sx={{ flexGrow: 1 }}>
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            fontSize: '18px',
-                            fontWeight: 500,
-                            color: 'var(--md-sys-color-on-surface)',
-                            margin: 0,
-                          }}
-                        >
-                          {user.username}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: 'var(--md-sys-color-on-surface-variant)',
-                            fontSize: '14px',
-                          }}
-                        >
-                          {user.email}
-                        </Typography>
-                      </Box>
-                      <IconButton
-                        onClick={() => handleUserClick(user.username)}
-                        size="small"
-                        sx={{
-                          color: 'var(--md-sys-color-on-surface-variant)',
-                        }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </Box>
+                      {user.username}
+                    </h3>
+                    <span
+                      style={{
+                        backgroundColor:
+                          user.role === 'ADMIN'
+                            ? 'var(--md-sys-color-tertiary-container)'
+                            : 'var(--md-sys-color-secondary-container)',
+                        color:
+                          user.role === 'ADMIN'
+                            ? 'var(--md-sys-color-on-tertiary-container)'
+                            : 'var(--md-sys-color-on-secondary-container)',
+                        padding: '2px 8px',
+                        borderRadius: 'var(--md-sys-shape-corner-full)',
+                        fontSize: '10px',
+                        fontWeight: 500,
+                        marginTop: '4px',
+                        display: 'inline-block',
+                      }}
+                    >
+                      {user.role}
+                    </span>
+                  </div>
+                </div>
 
-                    {/* User Details */}
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                      {/* Role and Status */}
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-                        <Chip
-                          label={user.role}
-                          size="small"
-                          color={getRoleColor(user.role) as any}
-                          sx={{
-                            height: '24px',
-                            fontSize: '12px',
-                            fontWeight: 500,
-                            textTransform: 'uppercase',
-                          }}
-                        />
-                        <Chip
-                          label={user.isActive ? 'Active' : 'Inactive'}
-                          size="small"
-                          variant="outlined"
-                          color={user.isActive ? 'success' : 'default'}
-                          sx={{
-                            height: '24px',
-                            fontSize: '12px',
-                          }}
-                        />
-                      </Box>
-
-                      {/* Created Date */}
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: 'var(--md-sys-color-on-surface-variant)',
-                            fontSize: '12px',
-                            fontWeight: 500,
-                          }}
-                        >
-                          Created: {formatDate(user.createdAt)}
-                        </Typography>
-                      </Box>
-
-                      {/* Last Login */}
-                      {user.lastLogin && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: 'var(--md-sys-color-on-surface-variant)',
-                              fontSize: '12px',
-                              fontWeight: 500,
-                            }}
-                          >
-                            Last login: {formatDate(user.lastLogin)}
-                          </Typography>
-                        </Box>
-                      )}
-                    </Box>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
-          )}
-        </Box>
-      </AppShell>
-    </ThemeProvider>
+                {/* User Details */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <p
+                    style={{
+                      fontFamily: 'var(--md-sys-typescale-body-small-font)',
+                      fontSize: 'var(--md-sys-typescale-body-small-size)',
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      margin: 0,
+                    }}
+                  >
+                    Email: {user.email}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: 'var(--md-sys-typescale-body-small-font)',
+                      fontSize: 'var(--md-sys-typescale-body-small-size)',
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      margin: 0,
+                    }}
+                  >
+                    Status: {user.isActive ? 'Active' : 'Inactive'}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: 'var(--md-sys-typescale-body-small-font)',
+                      fontSize: 'var(--md-sys-typescale-body-small-size)',
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      margin: 0,
+                    }}
+                  >
+                    Created: {new Date(user.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </AppShell>
   )
 }

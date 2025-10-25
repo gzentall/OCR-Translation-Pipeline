@@ -1,20 +1,9 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  CardMedia,
-  Chip,
-  CircularProgress,
-  ThemeProvider,
-  CssBaseline,
-} from '@mui/material'
 import AppShell from '@/components/AppShell'
-import m3Theme from '@/theme/m3-theme'
+import '@material/web/icon/icon.js'
 
 interface Document {
   id: string
@@ -24,7 +13,7 @@ interface Document {
   sourceLanguage: string
   status: string
   pageCount: number
-  people?: Array<{ id: string; name: string }>
+  people?: string[]
 }
 
 export default function DocumentsPage() {
@@ -48,7 +37,6 @@ export default function DocumentsPage() {
 
       if (!response.ok) {
         console.log('Authenticated endpoint failed, trying test endpoint...')
-        // Fallback to test endpoint
         response = await fetch('/api/flask/test-documents')
       }
 
@@ -57,41 +45,33 @@ export default function DocumentsPage() {
         if (contentType && contentType.includes('application/json')) {
           const data = await response.json()
           console.log('Documents loaded:', data)
-          console.log('Number of documents:', data.documents?.length || 0)
-          
+
           // Deduplicate documents by ID
-          const uniqueDocuments = data.documents?.reduce((acc: any[], doc: any) => {
-            if (!acc.find((existingDoc: any) => existingDoc.id === doc.id)) {
-              acc.push(doc)
-            }
-            return acc
-          }, []) || []
-          
-          console.log('Unique documents after deduplication:', uniqueDocuments.length)
-          setDocuments(uniqueDocuments)
-        } else {
-          console.log('Response is not JSON, trying test endpoint...')
-          // Try test endpoint if response is not JSON
-          const testResponse = await fetch('/api/flask/test-documents')
-          if (testResponse.ok) {
-            const data = await testResponse.json()
-            console.log('Documents loaded from test endpoint:', data)
-            console.log('Number of documents:', data.documents?.length || 0)
-            
-            // Deduplicate documents by ID
-            const uniqueDocuments = data.documents?.reduce((acc: any[], doc: any) => {
+          const uniqueDocuments =
+            data.documents?.reduce((acc: any[], doc: any) => {
               if (!acc.find((existingDoc: any) => existingDoc.id === doc.id)) {
                 acc.push(doc)
               }
               return acc
             }, []) || []
-            
-            console.log('Unique documents after deduplication:', uniqueDocuments.length)
+
+          console.log('Unique documents after deduplication:', uniqueDocuments.length)
+          setDocuments(uniqueDocuments)
+        } else {
+          console.log('Response is not JSON, trying test endpoint...')
+          const testResponse = await fetch('/api/flask/test-documents')
+          if (testResponse.ok) {
+            const data = await testResponse.json()
+            const uniqueDocuments =
+              data.documents?.reduce((acc: any[], doc: any) => {
+                if (!acc.find((existingDoc: any) => existingDoc.id === doc.id)) {
+                  acc.push(doc)
+                }
+                return acc
+              }, []) || []
             setDocuments(uniqueDocuments)
           }
         }
-      } else {
-        console.error('Failed to load documents, status:', response.status)
       }
     } catch (error) {
       console.error('Failed to load documents:', error)
@@ -104,334 +84,285 @@ export default function DocumentsPage() {
     router.push(`/documents/${documentId}`)
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case 'new':
-        return 'default'
-      case 'processing':
-        return 'primary'
-      case 'completed':
-        return 'success'
-      case 'error':
-        return 'error'
-      default:
-        return 'default'
-    }
-  }
-
-  const renderPeopleList = (people: Array<{ id: string; name: string }>) => {
-    if (!people || people.length === 0) return null
-    
-    return (
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1 }}>
-        {people.slice(0, 3).map((person, index) => (
-          <Chip
-            key={index}
-            label={person.name}
-            size="small"
-            variant="outlined"
-            sx={{ 
-              height: '20px', 
-              fontSize: '11px',
-              '& .MuiChip-label': {
-                px: 1
-              }
-            }}
-          />
-        ))}
-        {people.length > 3 && (
-          <Chip
-            label={`+${people.length - 3} more`}
-            size="small"
-            variant="outlined"
-            sx={{ 
-              height: '20px', 
-              fontSize: '11px',
-              '& .MuiChip-label': {
-                px: 1
-              }
-            }}
-          />
-        )}
-      </Box>
-    )
-  }
-
   if (isLoading) {
     return (
-      <ThemeProvider theme={m3Theme}>
-        <CssBaseline />
-        <AppShell>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '50vh',
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        </AppShell>
-      </ThemeProvider>
+      <AppShell>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '50vh',
+          }}
+        >
+          <div className="loading-spinner">Loading...</div>
+        </div>
+      </AppShell>
     )
   }
 
   return (
-    <ThemeProvider theme={m3Theme}>
-      <CssBaseline />
-      <AppShell>
-        <Box
-          sx={{
-            padding: 'var(--md-sys-spacing-6)',
-            maxWidth: '1200px',
-            margin: '0 auto',
+    <AppShell>
+      <div
+        style={{
+          padding: '24px',
+          maxWidth: '1200px',
+          margin: '0 auto',
+        }}
+      >
+        {/* Documents Info */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            marginBottom: '24px',
           }}
         >
-          {/* Documents Info */}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'baseline',
-              marginBottom: '24px',
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontSize: '16px',
-                  fontWeight: 500,
-                  margin: 0,
-                  color: 'var(--md-sys-color-on-surface)',
-                }}
-              >
-                Documents
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: 'var(--md-sys-color-on-surface-variant)',
-                  fontSize: '14px',
-                }}
-              >
-                {documents.length} documents
-              </Typography>
-            </Box>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'var(--md-sys-color-primary)',
-                fontSize: '14px',
-                cursor: 'pointer',
-                '&:hover': {
-                  textDecoration: 'underline',
-                },
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+            <h2
+              style={{
+                fontFamily: 'var(--md-sys-typescale-title-large-font)',
+                fontSize: 'var(--md-sys-typescale-title-large-size)',
+                fontWeight: 'var(--md-sys-typescale-title-large-weight)',
+                lineHeight: 'var(--md-sys-typescale-title-large-line-height)',
+                margin: 0,
+                color: 'var(--md-sys-color-on-surface)',
               }}
             >
-              show all
-            </Typography>
-          </Box>
-
-          {/* Documents Grid */}
-          {documents.length === 0 ? (
-            <Box
-              sx={{
-                textAlign: 'center',
-                py: 8,
+              Documents
+            </h2>
+            <span
+              style={{
+                fontFamily: 'var(--md-sys-typescale-body-medium-font)',
+                fontSize: 'var(--md-sys-typescale-body-medium-size)',
                 color: 'var(--md-sys-color-on-surface-variant)',
               }}
             >
-              <Typography variant="h6">No documents found</Typography>
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                Upload a document to get started
-              </Typography>
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: {
-                  xs: 'repeat(1, 1fr)',
-                  sm: 'repeat(2, 1fr)',
-                  md: 'repeat(3, 1fr)',
-                  lg: 'repeat(4, 1fr)',
-                },
-                gap: '24px',
-              }}
-            >
-              {documents.map((doc) => (
-                <Card
-                  key={doc.id}
-                  onClick={() => handleDocumentClick(doc.id)}
-                  sx={{
-                    cursor: 'pointer',
-                    borderRadius: 'var(--md-sys-shape-corner-medium)',
-                    boxShadow: 'var(--md-sys-elevation-level1)',
-                    transition: 'all 0.2s ease',
-                    minHeight: '200px',
+              {documents.length} documents
+            </span>
+          </div>
+          <button
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--md-sys-color-primary)',
+              fontSize: '14px',
+              cursor: 'pointer',
+              fontWeight: 500,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.textDecoration = 'underline'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.textDecoration = 'none'
+            }}
+          >
+            show all
+          </button>
+        </div>
+
+        {/* Documents Grid */}
+        {documents.length === 0 ? (
+          <div
+            style={{
+              textAlign: 'center',
+              padding: '64px 0',
+              color: 'var(--md-sys-color-on-surface-variant)',
+            }}
+          >
+            <h3>No documents found</h3>
+            <p>Upload a document to get started</p>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+              gap: '24px',
+            }}
+          >
+            {documents.map((doc) => (
+              <div
+                key={doc.id}
+                onClick={() => handleDocumentClick(doc.id)}
+                style={{
+                  cursor: 'pointer',
+                  borderRadius: 'var(--md-sys-shape-corner-medium)',
+                  backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                  boxShadow: 'var(--md-sys-elevation-level1)',
+                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)'
+                  e.currentTarget.style.boxShadow = 'var(--md-sys-elevation-level2)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = 'var(--md-sys-elevation-level1)'
+                }}
+              >
+                {/* Document Thumbnail */}
+                <div
+                  style={{
+                    width: '100%',
+                    height: '180px',
+                    backgroundColor: 'var(--md-sys-color-surface-container)',
                     display: 'flex',
-                    flexDirection: 'column',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: 'var(--md-sys-elevation-level2)',
-                    },
-                    '&:active': {
-                      transform: 'translateY(0)',
-                      boxShadow: 'var(--md-sys-elevation-level1)',
-                    },
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    position: 'relative',
                   }}
                 >
-                  {/* Document Thumbnail */}
-                  <Box
-                    sx={{
-                      width: '100%',
-                      height: '160px',
-                      borderRadius: 'var(--md-sys-shape-corner-small)',
-                      bgcolor: 'var(--md-sys-color-surface-container)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      overflow: 'hidden',
-                      marginBottom: '12px',
-                      position: 'relative',
+                  {doc.pageCount > 0 ? (
+                    <img
+                      src={`http://localhost:5001/api/test-documents/${doc.id}/images/1`}
+                      alt="Document thumbnail"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                        const parent = e.currentTarget.parentElement
+                        if (parent) {
+                          parent.innerHTML = '<span style="font-size: 48px;">📄</span>'
+                        }
+                      }}
+                    />
+                  ) : (
+                    <span style={{ fontSize: '48px' }}>📄</span>
+                  )}
+                  {/* Page Count Badge */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '8px',
+                      right: '8px',
+                      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                      color: 'white',
+                      padding: '2px 8px',
+                      borderRadius: 'var(--md-sys-shape-corner-full)',
+                      fontSize: '10px',
+                      fontWeight: 500,
                     }}
                   >
-                    {doc.pageCount > 0 ? (
-                      <CardMedia
-                        component="img"
-                        height="160"
-                        image={`http://localhost:5001/documents/${doc.id}/images/1`}
-                        alt={doc.title}
-                        sx={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                        }}
-                        onError={(e) => {
-                          // Fallback if image fails to load
-                          (e.target as HTMLImageElement).style.display = 'none'
-                        }}
-                      />
-                    ) : (
-                      <Typography
-                        sx={{
-                          color: 'var(--md-sys-color-on-surface-variant)',
-                          fontSize: '24px',
-                        }}
-                      >
-                        📄
-                      </Typography>
-                    )}
-                    
-                    {/* Page Count Badge */}
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        bgcolor: 'var(--md-sys-color-surface-container-highest)',
-                        color: 'var(--md-sys-color-on-surface)',
-                        borderRadius: '12px',
-                        px: 1,
-                        py: 0.5,
-                        fontSize: '12px',
-                        fontWeight: 500,
-                      }}
-                    >
-                      {doc.pageCount || 0}
-                    </Box>
-                  </Box>
+                    {doc.pageCount || 0}
+                  </div>
+                </div>
 
-                  <CardContent sx={{ p: 2, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                    {/* Document Title */}
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: 500,
-                        lineHeight: '24px',
-                        mb: 1,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        color: 'var(--md-sys-color-on-surface)',
-                      }}
-                    >
-                      {doc.title || doc.id || 'Untitled Document'}
-                    </Typography>
+                {/* Card Content */}
+                <div style={{ padding: '16px' }}>
+                  {/* Title */}
+                  <h3
+                    style={{
+                      fontFamily: 'var(--md-sys-typescale-title-medium-font)',
+                      fontSize: 'var(--md-sys-typescale-title-medium-size)',
+                      fontWeight: 'var(--md-sys-typescale-title-medium-weight)',
+                      lineHeight: 'var(--md-sys-typescale-title-medium-line-height)',
+                      margin: '0 0 8px 0',
+                      color: 'var(--md-sys-color-on-surface)',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {doc.title}
+                  </h3>
 
-                    {/* Document Summary */}
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontSize: '12px',
-                        color: 'var(--md-sys-color-on-surface-variant)',
-                        mb: 1.5,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        flexGrow: 1,
-                      }}
-                    >
-                      {doc.summary ? 
-                        (doc.summary.length > 100 ? doc.summary.substring(0, 100) + '...' : doc.summary) : 
-                        'No summary available'
-                      }
-                    </Typography>
+                  {/* Summary */}
+                  <p
+                    style={{
+                      fontFamily: 'var(--md-sys-typescale-body-small-font)',
+                      fontSize: 'var(--md-sys-typescale-body-small-size)',
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      margin: '0 0 12px 0',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {doc.summary}
+                  </p>
 
-                    {/* People */}
-                    {doc.people && doc.people.length > 0 && (
-                      <Box sx={{ mt: 'auto' }}>
-                        {renderPeopleList(doc.people)}
-                      </Box>
-                    )}
-
-                    {/* Status and Metadata */}
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        gap: 0.5,
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        mt: 1,
-                      }}
-                    >
-                      {doc.status && (
-                        <Chip
-                          label={doc.status}
-                          size="small"
-                          color={getStatusColor(doc.status) as any}
-                          sx={{
-                            height: '20px',
-                            fontSize: '11px',
+                  {/* People Chips */}
+                  {doc.people && doc.people.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '8px' }}>
+                      {doc.people.slice(0, 2).map((person, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            backgroundColor: 'var(--md-sys-color-secondary-container)',
+                            color: 'var(--md-sys-color-on-secondary-container)',
+                            padding: '2px 8px',
+                            borderRadius: 'var(--md-sys-shape-corner-full)',
+                            fontSize: '10px',
                             fontWeight: 500,
-                            textTransform: 'uppercase',
                           }}
-                        />
-                      )}
-                      {doc.sourceLanguage && (
-                        <Chip
-                          label={doc.sourceLanguage.toUpperCase()}
-                          size="small"
-                          variant="outlined"
-                          sx={{
-                            height: '20px',
-                            fontSize: '11px',
+                        >
+                          {person}
+                        </span>
+                      ))}
+                      {doc.people.length > 2 && (
+                        <span
+                          style={{
+                            backgroundColor: 'var(--md-sys-color-secondary-container)',
+                            color: 'var(--md-sys-color-on-secondary-container)',
+                            padding: '2px 8px',
+                            borderRadius: 'var(--md-sys-shape-corner-full)',
+                            fontSize: '10px',
+                            fontWeight: 500,
                           }}
-                        />
+                        >
+                          +{doc.people.length - 2}
+                        </span>
                       )}
-                    </Box>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
-          )}
-        </Box>
-      </AppShell>
-    </ThemeProvider>
+                    </div>
+                  )}
+
+                  {/* Status and Language */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <span
+                      style={{
+                        backgroundColor: 'var(--md-sys-color-tertiary-container)',
+                        color: 'var(--md-sys-color-on-tertiary-container)',
+                        padding: '2px 8px',
+                        borderRadius: 'var(--md-sys-shape-corner-full)',
+                        fontSize: '10px',
+                        fontWeight: 500,
+                      }}
+                    >
+                      {doc.status}
+                    </span>
+                    <span
+                      style={{
+                        color: 'var(--md-sys-color-on-surface-variant)',
+                        fontSize: '10px',
+                        fontWeight: 500,
+                      }}
+                    >
+                      {doc.sourceLanguage.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </AppShell>
   )
 }
