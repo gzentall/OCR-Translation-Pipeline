@@ -1,7 +1,6 @@
 "use client"
 
 import { ReactNode } from 'react'
-import { Box } from '@mui/material'
 import TopAppBar from './TopAppBar'
 
 interface AppShellProps {
@@ -10,26 +9,25 @@ interface AppShellProps {
 
 export default function AppShell({ children }: AppShellProps) {
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
-        bgcolor: 'var(--md-sys-color-background)',
+        backgroundColor: 'var(--md-sys-color-background)',
       }}
     >
       <TopAppBar />
-      <Box
-        component="main"
-        sx={{
+      <main
+        style={{
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
         }}
       >
         {children}
-      </Box>
-    </Box>
+      </main>
+    </div>
   )
 }
 
