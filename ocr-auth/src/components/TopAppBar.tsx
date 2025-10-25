@@ -1,42 +1,17 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Box,
-  TextField,
-  InputAdornment,
-  IconButton,
-  Avatar,
-  Menu,
-  MenuItem,
-  Tabs,
-  Tab,
-  Button,
-  Chip,
-  Select,
-  FormControl,
-  InputLabel,
-} from '@mui/material'
-import {
-  Search as SearchIcon,
-  LocalPostOffice,
-  AccountCircle,
-  Sort as SortIcon,
-  FilterList as FilterIcon,
-  Upload as UploadIcon,
-} from '@mui/icons-material'
+import { Button, TextField, IconButton, Chip, ChipSet } from './m3'
+import '@material/web/icon/icon.js'
 
 export default function TopAppBar() {
   const router = useRouter()
   const pathname = usePathname()
   const [searchQuery, setSearchQuery] = useState('')
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [sortBy, setSortBy] = useState('date_added')
-  const [sortDirection, setSortDirection] = useState('desc')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
 
   // Determine active tab based on current path
   const getActiveTab = () => {
@@ -46,8 +21,8 @@ export default function TopAppBar() {
     return 0
   }
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    switch (newValue) {
+  const handleTabClick = (index: number) => {
+    switch (index) {
       case 0:
         router.push('/')
         break
@@ -60,288 +35,294 @@ export default function TopAppBar() {
     }
   }
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
-
   const handleLogout = async () => {
-    // Logout via Flask backend
     await fetch('http://localhost:5001/logout', {
       method: 'GET',
       credentials: 'include',
     })
     router.push('/login')
-    handleMenuClose()
+    setProfileMenuOpen(false)
   }
 
   const handleUpload = () => {
-    // TODO: Implement upload functionality
     console.log('Upload clicked')
   }
 
-  const handleSortChange = (event: any) => {
-    setSortBy(event.target.value)
-  }
-
   const handleSortDirectionToggle = () => {
-    setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')
+    setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))
   }
 
-  const getSortLabel = () => {
-    const labels: { [key: string]: string } = {
-      'date_added': 'Added',
-      'title': 'Title',
-      'status': 'Status',
-      'date_processed': 'Processed',
-    }
-    const direction = sortDirection === 'asc' ? ' (a)' : ' (d)'
-    return `${labels[sortBy] || 'Added'}${direction}`
+  const handleClearSearch = () => {
+    setSearchQuery('')
   }
+
+  const tabs = [
+    { label: 'Documents', icon: 'description' },
+    { label: 'References', icon: 'people' },
+    { label: 'Users', icon: 'manage_accounts' },
+  ]
+
+  const activeTab = getActiveTab()
 
   return (
     <>
-      {/* Main App Bar with Logo, Search, and User Menu */}
-      <AppBar
-        position="sticky"
-        elevation={2}
-        sx={{
+      {/* Main App Bar */}
+      <div
+        style={{
           height: '64px',
-          bgcolor: 'var(--md-sys-color-surface)',
+          backgroundColor: 'var(--md-sys-color-surface)',
           color: 'var(--md-sys-color-on-surface)',
           borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-        }}
-      >
-        <Toolbar sx={{ height: '64px', px: 3 }}>
-          {/* Logo and Title */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <LocalPostOffice sx={{ color: 'var(--md-sys-color-primary)', fontSize: '28px' }} />
-            <Typography
-              variant="h6"
-              sx={{
-                color: 'var(--md-sys-color-on-surface)',
-                fontWeight: 500,
-              }}
-            >
-              Postmark
-            </Typography>
-          </Box>
-
-          {/* Search Bar */}
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', px: 4 }}>
-            <TextField
-              size="small"
-              placeholder="Search documents..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: 'var(--md-sys-color-on-surface-variant)' }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                width: '360px',
-                '& .MuiOutlinedInput-root': {
-                  height: '40px',
-                  borderRadius: '20px',
-                  bgcolor: 'var(--md-sys-color-surface-variant)',
-                  '& fieldset': {
-                    border: 'none',
-                  },
-                },
-              }}
-            />
-          </Box>
-
-          {/* Upload Button */}
-          <Button
-            variant="contained"
-            startIcon={<UploadIcon />}
-            onClick={handleUpload}
-            sx={{
-              mr: 2,
-              bgcolor: 'var(--md-sys-color-primary)',
-              color: 'var(--md-sys-color-on-primary)',
-              borderRadius: '20px',
-              px: 3,
-              py: 1,
-              textTransform: 'none',
-              fontWeight: 500,
-              '&:hover': {
-                bgcolor: 'var(--md-sys-color-primary-container)',
-                color: 'var(--md-sys-color-on-primary-container)',
-              },
-            }}
-          >
-            Upload
-          </Button>
-
-          {/* User Menu */}
-          <Box>
-            <IconButton
-              onClick={handleMenuOpen}
-              sx={{ p: 0.5 }}
-            >
-              <Avatar
-                sx={{
-                  width: 36,
-                  height: 36,
-                  bgcolor: 'var(--md-sys-color-primary)',
-                }}
-              >
-                <AccountCircle />
-              </Avatar>
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-            >
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      {/* Navigation Tabs */}
-      <Box
-        sx={{
-          bgcolor: 'var(--md-sys-color-surface)',
-          borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-        }}
-      >
-        <Tabs
-          value={getActiveTab()}
-          onChange={handleTabChange}
-          sx={{
-            height: '48px',
-            minHeight: '48px',
-            px: 3,
-            '& .MuiTab-root': {
-              minHeight: '48px',
-              minWidth: '90px',
-              textTransform: 'none',
-              fontSize: '14px',
-              fontWeight: 500,
-              color: 'var(--md-sys-color-on-surface-variant)',
-            },
-            '& .Mui-selected': {
-              color: 'var(--md-sys-color-primary)',
-            },
-            '& .MuiTabs-indicator': {
-              height: '2px',
-              bgcolor: 'var(--md-sys-color-primary)',
-            },
-          }}
-        >
-          <Tab label="Documents" />
-          <Tab label="References" />
-          <Tab label="Users" />
-        </Tabs>
-      </Box>
-
-      {/* Toolbar with Sort and Filter Controls */}
-      <Box
-        sx={{
-          bgcolor: 'var(--md-sys-color-surface-container-lowest)',
-          borderBottom: '1px solid var(--md-sys-color-outline-variant)',
-          px: 3,
-          py: 1.5,
           display: 'flex',
           alignItems: 'center',
-          gap: 2,
-          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          padding: '0 24px',
+          position: 'sticky',
+          top: 0,
+          zIndex: 3,
         }}
       >
+        {/* Logo and Title */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <md-icon style={{ color: 'var(--md-sys-color-primary)', fontSize: '28px' }}>
+            local_post_office
+          </md-icon>
+          <h1
+            style={{
+              fontFamily: 'var(--md-sys-typescale-headline-small-font)',
+              fontSize: 'var(--md-sys-typescale-headline-small-size)',
+              fontWeight: 'var(--md-sys-typescale-headline-small-weight)',
+              lineHeight: 'var(--md-sys-typescale-headline-small-line-height)',
+              letterSpacing: 'var(--md-sys-typescale-headline-small-tracking)',
+              margin: 0,
+              color: 'var(--md-sys-color-on-surface)',
+            }}
+          >
+            Postmark
+          </h1>
+        </div>
+
+        {/* Navigation Tabs */}
+        <div style={{ display: 'flex', gap: '4px', height: '64px' }}>
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              onClick={() => handleTabClick(index)}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '4px',
+                minWidth: '90px',
+                height: '64px',
+                padding: '0 16px',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                color:
+                  activeTab === index
+                    ? 'var(--md-sys-color-primary)'
+                    : 'var(--md-sys-color-on-surface-variant)',
+                borderBottom:
+                  activeTab === index
+                    ? '2px solid var(--md-sys-color-primary)'
+                    : '2px solid transparent',
+                transition: 'all 200ms',
+              }}
+            >
+              <md-icon style={{ fontSize: '24px' }}>{tab.icon}</md-icon>
+              <span
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  textTransform: 'none',
+                }}
+              >
+                {tab.label}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Actions (Upload & User Menu) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <Button variant="filled" onClick={handleUpload} icon="upload">
+            Upload
+          </Button>
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--md-sys-color-primary)',
+                color: 'var(--md-sys-color-on-primary)',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              GZ
+            </button>
+            {profileMenuOpen && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '44px',
+                  right: 0,
+                  backgroundColor: 'var(--md-sys-color-surface-container)',
+                  borderRadius: 'var(--md-sys-shape-corner-medium)',
+                  boxShadow: 'var(--md-sys-elevation-level2)',
+                  minWidth: '120px',
+                  padding: '8px 0',
+                  zIndex: 1000,
+                }}
+              >
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: 'none',
+                    background: 'transparent',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    color: 'var(--md-sys-color-on-surface)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      'var(--md-sys-color-surface-container-highest)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Compact Search, Sort, Filter Bar */}
+      <div
+        style={{
+          backgroundColor: 'var(--md-sys-color-surface-container-lowest)',
+          borderBottom: '1px solid var(--md-sys-color-outline-variant)',
+          padding: '12px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          flexWrap: 'nowrap',
+          minHeight: '48px',
+          width: '100%',
+          zIndex: 2,
+        }}
+      >
+        {/* Search Input */}
+        <div style={{ position: 'relative', flexGrow: 1, maxWidth: '360px' }}>
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <md-icon
+              style={{
+                position: 'absolute',
+                left: '12px',
+                color: 'var(--md-sys-color-on-surface-variant)',
+                fontSize: '20px',
+                pointerEvents: 'none',
+                zIndex: 1,
+              }}
+            >
+              search
+            </md-icon>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search documents..."
+              style={{
+                width: '100%',
+                height: '40px',
+                padding: '0 40px 0 40px',
+                border: 'none',
+                borderRadius: '20px',
+                fontSize: '14px',
+                backgroundColor: 'var(--md-sys-color-surface-variant)',
+                color: 'var(--md-sys-color-on-surface)',
+                outline: 'none',
+              }}
+            />
+            {searchQuery && (
+              <md-icon
+                onClick={handleClearSearch}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  color: 'var(--md-sys-color-on-surface-variant)',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  zIndex: 1,
+                }}
+              >
+                close
+              </md-icon>
+            )}
+          </div>
+        </div>
+
+        {/* Filter Chips Container */}
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Chip
+            label="Sender"
+            variant="filter"
+            icon="filter_list"
+            onClick={() => console.log('Open Sender Filter')}
+          />
+          <Chip
+            label="Recipient"
+            variant="filter"
+            icon="filter_list"
+            onClick={() => console.log('Open Recipient Filter')}
+          />
+          <Chip
+            label="Date"
+            variant="filter"
+            icon="filter_list"
+            onClick={() => console.log('Open Date Filter')}
+          />
+        </div>
+
         {/* Sort Controls */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography
-            variant="body2"
-            sx={{
-              color: 'var(--md-sys-color-on-surface-variant)',
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span
+            style={{
               fontSize: '14px',
-              fontWeight: 500,
+              color: 'var(--md-sys-color-on-surface-variant)',
             }}
           >
             Sort:
-          </Typography>
+          </span>
           <Chip
-            label={getSortLabel()}
-            icon={<SortIcon />}
+            label={`Added (${sortDirection === 'asc' ? 'a' : 'd'})`}
+            variant="filter"
+            icon="sort"
             onClick={handleSortDirectionToggle}
-            sx={{
-              height: '32px',
-              borderRadius: '16px',
-              bgcolor: 'var(--md-sys-color-surface-container)',
-              color: 'var(--md-sys-color-on-surface)',
-              '&:hover': {
-                bgcolor: 'var(--md-sys-color-surface-container-high)',
-              },
-            }}
           />
-        </Box>
-
-        {/* Filter Controls */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography
-            variant="body2"
-            sx={{
-              color: 'var(--md-sys-color-on-surface-variant)',
-              fontSize: '14px',
-              fontWeight: 500,
-            }}
-          >
-            Filter:
-          </Typography>
-          <Chip
-            label="All"
-            icon={<FilterIcon />}
-            sx={{
-              height: '32px',
-              borderRadius: '16px',
-              bgcolor: 'var(--md-sys-color-surface-container)',
-              color: 'var(--md-sys-color-on-surface)',
-              '&:hover': {
-                bgcolor: 'var(--md-sys-color-surface-container-high)',
-              },
-            }}
-          />
-        </Box>
-
-        {/* Sort Dropdown */}
-        <FormControl size="small" sx={{ minWidth: 120 }}>
-          <InputLabel>Sort by</InputLabel>
-          <Select
-            value={sortBy}
-            onChange={handleSortChange}
-            label="Sort by"
-            sx={{
-              height: '32px',
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'var(--md-sys-color-outline-variant)',
-              },
-            }}
-          >
-            <MenuItem value="date_added">Date Added</MenuItem>
-            <MenuItem value="title">Title</MenuItem>
-            <MenuItem value="status">Status</MenuItem>
-            <MenuItem value="date_processed">Date Processed</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+        </div>
+      </div>
     </>
   )
 }

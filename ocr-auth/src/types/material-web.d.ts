@@ -18,6 +18,9 @@ declare namespace JSX {
     'md-list': any
     'md-list-item': any
     'md-dialog': any
+    'md-elevated-card': any
+    'md-filled-card': any
+    'md-outlined-card': any
   }
 }
 
