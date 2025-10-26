@@ -182,6 +182,7 @@ export default function ReferencesPage() {
                       fontSize: '40px',
                       color: 'var(--md-sys-color-primary)',
                     }}
+                    suppressHydrationWarning
                   >
                     business
                   </md-icon>
