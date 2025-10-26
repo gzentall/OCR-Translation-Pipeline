@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import {
   Box,
   Typography,
-  Button,
   TextField,
   Select,
   MenuItem,
@@ -20,17 +19,12 @@ import {
   Paper,
   Tabs,
   Tab,
-  IconButton,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from '@mui/material'
-import {
-  Close as CloseIcon,
-  Save as SaveIcon,
-  ArrowBack as ArrowBackIcon,
-} from '@mui/icons-material'
+import { Button } from '@/components/m3'
 import AppShell from '@/components/AppShell'
 import m3Theme from '@/theme/m3-theme'
 import ImageViewer from '@/components/DocumentEditor/ImageViewer'
@@ -345,16 +339,60 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <IconButton onClick={handleBack} size="small">
-                <ArrowBackIcon />
-              </IconButton>
+              <button
+                onClick={handleBack}
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  border: 'none',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background-color 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-highest)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                }}
+              >
+                <span className="material-icons" style={{ fontSize: '24px', color: 'var(--md-sys-color-on-surface)' }}>
+                  arrow_back
+                </span>
+              </button>
               <Typography variant="h6" sx={{ fontWeight: 500 }}>
                 {document.title || document.id || 'Untitled Document'}
               </Typography>
             </Box>
-            <IconButton onClick={handleBack} size="small">
-              <CloseIcon />
-            </IconButton>
+            <button
+              onClick={handleBack}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-highest)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }}
+            >
+              <span className="material-icons" style={{ fontSize: '24px', color: 'var(--md-sys-color-on-surface)' }}>
+                close
+              </span>
+            </button>
           </DialogTitle>
 
           {/* Dialog Content - 3-Column Layout */}
@@ -435,19 +473,19 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
               padding: 'var(--md-sys-spacing-4)',
               borderTop: '1px solid var(--md-sys-color-outline-variant)',
               flexShrink: 0,
+              gap: 2,
             }}
           >
             <Button
               onClick={handleBack}
               variant="outlined"
-              sx={{ mr: 1 }}
             >
               Cancel
             </Button>
             <Button
               onClick={handleSave}
-              variant="contained"
-              startIcon={<SaveIcon />}
+              variant="filled"
+              icon="save"
               disabled={isSaving}
             >
               {isSaving ? 'Saving...' : 'Save'}

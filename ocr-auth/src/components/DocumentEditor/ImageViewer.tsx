@@ -3,17 +3,10 @@
 import { useState, useEffect } from 'react'
 import {
   Box,
-  IconButton,
   Slider,
   Typography,
-  Button,
 } from '@mui/material'
-import {
-  ZoomIn,
-  ZoomOut,
-  ChevronLeft,
-  ChevronRight,
-} from '@mui/icons-material'
+import { Button } from '@/components/m3'
 
 interface ImageViewerProps {
   documentId: string
@@ -115,17 +108,33 @@ export default function ImageViewer({ documentId, pageCount }: ImageViewerProps)
           zIndex: 2,
         }}
       >
-        <IconButton
-          size="small"
+        <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          sx={{
-            bgcolor: 'rgba(255, 255, 255, 0.9)',
-            '&:hover': { bgcolor: 'rgba(255, 255, 255, 1)' },
+          style={{
+            width: '36px',
+            height: '36px',
+            borderRadius: '50%',
+            border: 'none',
+            background: 'rgba(255, 255, 255, 0.9)',
+            cursor: currentPage <= 1 ? 'not-allowed' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'background-color 0.2s',
+            opacity: currentPage <= 1 ? 0.4 : 1,
+          }}
+          onMouseEnter={(e) => {
+            if (currentPage > 1) e.currentTarget.style.background = 'rgba(255, 255, 255, 1)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)'
           }}
         >
-          <ChevronLeft />
-        </IconButton>
+          <span className="material-icons" style={{ fontSize: '20px' }}>
+            chevron_left
+          </span>
+        </button>
       </Box>
 
       <Box
@@ -137,17 +146,33 @@ export default function ImageViewer({ documentId, pageCount }: ImageViewerProps)
           zIndex: 2,
         }}
       >
-        <IconButton
-          size="small"
+        <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage >= pageCount}
-          sx={{
-            bgcolor: 'rgba(255, 255, 255, 0.9)',
-            '&:hover': { bgcolor: 'rgba(255, 255, 255, 1)' },
+          style={{
+            width: '36px',
+            height: '36px',
+            borderRadius: '50%',
+            border: 'none',
+            background: 'rgba(255, 255, 255, 0.9)',
+            cursor: currentPage >= pageCount ? 'not-allowed' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'background-color 0.2s',
+            opacity: currentPage >= pageCount ? 0.4 : 1,
+          }}
+          onMouseEnter={(e) => {
+            if (currentPage < pageCount) e.currentTarget.style.background = 'rgba(255, 255, 255, 1)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)'
           }}
         >
-          <ChevronRight />
-        </IconButton>
+          <span className="material-icons" style={{ fontSize: '20px' }}>
+            chevron_right
+          </span>
+        </button>
       </Box>
 
       {/* Image Container */}
@@ -182,7 +207,6 @@ export default function ImageViewer({ documentId, pageCount }: ImageViewerProps)
               Failed to load image
             </Typography>
             <Button
-              size="small"
               variant="outlined"
               onClick={loadImage}
             >
@@ -217,19 +241,14 @@ export default function ImageViewer({ documentId, pageCount }: ImageViewerProps)
 
         {/* Reset View Button */}
         {(panX !== 0 || panY !== 0) && (
-          <Button
-            variant="contained"
-            size="small"
-            onClick={resetPan}
-            sx={{
-              position: 'absolute',
-              top: 8,
-              right: 8,
-              zIndex: 1,
-            }}
-          >
-            Reset View
-          </Button>
+          <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}>
+            <Button
+              variant="filled"
+              onClick={resetPan}
+            >
+              Reset View
+            </Button>
+          </div>
         )}
       </Box>
 
@@ -268,12 +287,31 @@ export default function ImageViewer({ documentId, pageCount }: ImageViewerProps)
           py: 1,
         }}
       >
-        <IconButton
-          size="small"
+        <button
           onClick={() => setZoom(prev => Math.max(50, prev - 10))}
+          style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            border: 'none',
+            background: 'transparent',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'background-color 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.08)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent'
+          }}
         >
-          <ZoomOut />
-        </IconButton>
+          <span className="material-icons" style={{ fontSize: '20px' }}>
+            zoom_out
+          </span>
+        </button>
         
         <Slider
           value={zoom}
@@ -283,12 +321,31 @@ export default function ImageViewer({ documentId, pageCount }: ImageViewerProps)
           sx={{ width: 120 }}
         />
         
-        <IconButton
-          size="small"
+        <button
           onClick={() => setZoom(prev => Math.min(200, prev + 10))}
+          style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            border: 'none',
+            background: 'transparent',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'background-color 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.08)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent'
+          }}
         >
-          <ZoomIn />
-        </IconButton>
+          <span className="material-icons" style={{ fontSize: '20px' }}>
+            zoom_in
+          </span>
+        </button>
         
         <Typography variant="body2" sx={{ minWidth: 40 }}>
           {zoom}%
