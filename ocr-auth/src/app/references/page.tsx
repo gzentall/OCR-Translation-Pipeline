@@ -219,7 +219,7 @@ export default function ReferencesPage() {
                 </div>
 
                 {/* Aliases */}
-                {ref.aliases && ref.aliases.length > 0 && (
+                {ref.aliases && Array.isArray(ref.aliases) && ref.aliases.length > 0 && (
                   <div>
                     <p
                       style={{
