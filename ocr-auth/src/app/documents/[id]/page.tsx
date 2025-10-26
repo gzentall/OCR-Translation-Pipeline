@@ -445,8 +445,8 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
                 }}
               >
                 <TabsPanel
-                  document={document}
-                  onDocumentChange={setDocument}
+                  document={document as any}
+                  onDocumentChange={setDocument as any}
                 />
               </Box>
 
@@ -460,8 +460,9 @@ export default function DocumentDetailPage({ params }: { params: Promise<{ id: s
                 }}
               >
                 <CommentsPanel
+                  documentId={document?.id || ''}
                   comments={comments}
-                  onAddComment={handleAddComment}
+                  onCommentsChange={setComments}
                 />
               </Box>
             </Box>

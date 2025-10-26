@@ -39,7 +39,7 @@ interface Document {
   translatedText: string
   status: string
   pageCount: number
-  people: string[]
+  people?: Array<{ id: string; name: string }> | string[]
 }
 
 interface TabsPanelProps {
