@@ -1,98 +1,117 @@
 'use client'
 
-import { useEffect, useRef, forwardRef } from 'react'
-import '@material/web/button/filled-button.js'
-import '@material/web/button/outlined-button.js'
-import '@material/web/button/text-button.js'
-import '@material/web/icon/icon.js'
+import { forwardRef } from 'react'
 
 interface ButtonProps {
   variant?: 'filled' | 'outlined' | 'text'
   disabled?: boolean
   type?: 'button' | 'submit' | 'reset'
-  onClick?: (e: React.MouseEvent) => void
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
   children: React.ReactNode
   className?: string
   icon?: string
   trailingIcon?: boolean
 }
 
-export const Button = forwardRef<HTMLElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'filled', disabled = false, type = 'button', onClick, children, className, icon, trailingIcon }, ref) => {
-    const buttonRef = useRef<any>(null)
-
-    useEffect(() => {
-      if (ref && typeof ref === 'function') {
-        ref(buttonRef.current)
-      } else if (ref) {
-        (ref as any).current = buttonRef.current
+    const getButtonStyles = () => {
+      const baseStyles = {
+        minWidth: '64px',
+        height: '40px',
+        borderRadius: '20px',
+        fontFamily: 'var(--md-sys-typescale-label-large-font)',
+        fontSize: 'var(--md-sys-typescale-label-large-size)',
+        fontWeight: 'var(--md-sys-typescale-label-large-weight)',
+        lineHeight: 'var(--md-sys-typescale-label-large-line-height)',
+        letterSpacing: 'var(--md-sys-typescale-label-large-tracking)',
+        textTransform: 'none' as const,
+        transition: 'all 0.2s cubic-bezier(0.2, 0, 0, 1)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '8px',
+        padding: '0 24px',
+        border: 'none',
+        outline: 'none',
       }
-    }, [ref])
 
-    const handleClick = (e: any) => {
-      if (onClick) {
-        onClick(e as React.MouseEvent)
+      if (variant === 'filled') {
+        return {
+          ...baseStyles,
+          background: disabled ? 'var(--md-sys-color-surface-variant)' : 'var(--md-sys-color-primary)',
+          color: disabled ? 'var(--md-sys-color-on-surface-variant)' : 'var(--md-sys-color-on-primary)',
+        }
+      }
+
+      if (variant === 'outlined') {
+        return {
+          ...baseStyles,
+          border: '1px solid var(--md-sys-color-outline)',
+          background: 'transparent',
+          color: disabled ? 'var(--md-sys-color-on-surface-variant)' : 'var(--md-sys-color-primary)',
+        }
+      }
+
+      // text variant
+      return {
+        ...baseStyles,
+        background: 'transparent',
+        color: disabled ? 'var(--md-sys-color-on-surface-variant)' : 'var(--md-sys-color-primary)',
+        padding: '0 12px',
       }
     }
 
-    const commonProps = {
-      ref: buttonRef,
-      disabled,
-      type,
-      onClick: handleClick,
-      className,
+    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (disabled) return
+      
+      if (variant === 'filled') {
+        e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.12)'
+      } else if (variant === 'outlined') {
+        e.currentTarget.style.background = 'var(--md-sys-color-primary-container)'
+        e.currentTarget.style.color = 'var(--md-sys-color-on-primary-container)'
+      } else {
+        e.currentTarget.style.background = 'var(--md-sys-color-primary-container)'
+      }
     }
 
-    if (variant === 'filled') {
-      return (
-        <md-filled-button {...commonProps} suppressHydrationWarning>
-          {icon && !trailingIcon && (
-            <md-icon slot="icon" suppressHydrationWarning>
-              {icon}
-            </md-icon>
-          )}
-          {children}
-          {icon && trailingIcon && (
-            <md-icon slot="icon" suppressHydrationWarning>
-              {icon}
-            </md-icon>
-          )}
-        </md-filled-button>
-      )
-    }
-
-    if (variant === 'outlined') {
-      return (
-        <md-outlined-button {...commonProps} suppressHydrationWarning>
-          {icon && !trailingIcon && (
-            <md-icon slot="icon" suppressHydrationWarning>
-              {icon}
-            </md-icon>
-          )}
-          {children}
-          {icon && trailingIcon && (
-            <md-icon slot="icon" suppressHydrationWarning>
-              {icon}
-            </md-icon>
-          )}
-        </md-outlined-button>
-      )
+    const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (disabled) return
+      
+      if (variant === 'filled') {
+        e.currentTarget.style.boxShadow = 'none'
+      } else if (variant === 'outlined') {
+        e.currentTarget.style.background = 'transparent'
+        e.currentTarget.style.color = 'var(--md-sys-color-primary)'
+      } else {
+        e.currentTarget.style.background = 'transparent'
+      }
     }
 
     return (
-      <md-text-button {...commonProps} suppressHydrationWarning>
+      <button
+        ref={ref}
+        type={type}
+        disabled={disabled}
+        onClick={onClick}
+        className={className}
+        style={getButtonStyles()}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {icon && !trailingIcon && (
-          <md-icon slot="icon" suppressHydrationWarning>
+          <span className="material-icons" style={{ fontSize: '18px' }}>
             {icon}
-          </md-icon>
+          </span>
         )}
         {children}
         {icon && trailingIcon && (
-          <md-icon slot="icon" suppressHydrationWarning>
+          <span className="material-icons" style={{ fontSize: '18px' }}>
             {icon}
-          </md-icon>
+          </span>
         )}
-      </md-text-button>
+      </button>
     )
   }
 )
