@@ -4,6 +4,7 @@ import { useEffect, useRef, forwardRef } from 'react'
 import '@material/web/chips/chip-set.js'
 import '@material/web/chips/filter-chip.js'
 import '@material/web/chips/input-chip.js'
+import '@material/web/icon/icon.js'
 
 interface ChipProps {
   label: string

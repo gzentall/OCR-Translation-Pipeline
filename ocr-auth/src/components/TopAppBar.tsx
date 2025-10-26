@@ -287,25 +287,102 @@ export default function TopAppBar() {
         </div>
 
         {/* Filter Chips Container */}
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <Chip
-            label="Sender"
-            variant="filter"
-            icon="filter_list"
+        <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+          <button
             onClick={() => console.log('Open Sender Filter')}
-          />
-          <Chip
-            label="Recipient"
-            variant="filter"
-            icon="filter_list"
+            style={{
+              background: 'var(--md-sys-color-surface)',
+              color: 'var(--md-sys-color-on-surface)',
+              border: '1px solid var(--md-sys-color-outline)',
+              borderRadius: 'var(--md-sys-shape-corner-small)',
+              padding: '0 16px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+              fontFamily: 'var(--md-sys-typescale-label-large-font)',
+              transition: 'all 0.2s cubic-bezier(0.2, 0, 0, 1)',
+              minWidth: '80px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--md-sys-color-surface-container-high)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'var(--md-sys-color-surface)'
+            }}
+          >
+            <span>Sender</span>
+            <span className="material-icons" style={{ fontSize: '18px' }}>
+              keyboard_arrow_down
+            </span>
+          </button>
+
+          <button
             onClick={() => console.log('Open Recipient Filter')}
-          />
-          <Chip
-            label="Date"
-            variant="filter"
-            icon="filter_list"
+            style={{
+              background: 'var(--md-sys-color-surface)',
+              color: 'var(--md-sys-color-on-surface)',
+              border: '1px solid var(--md-sys-color-outline)',
+              borderRadius: 'var(--md-sys-shape-corner-small)',
+              padding: '0 16px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+              fontFamily: 'var(--md-sys-typescale-label-large-font)',
+              transition: 'all 0.2s cubic-bezier(0.2, 0, 0, 1)',
+              minWidth: '80px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--md-sys-color-surface-container-high)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'var(--md-sys-color-surface)'
+            }}
+          >
+            <span>Recipient</span>
+            <span className="material-icons" style={{ fontSize: '18px' }}>
+              keyboard_arrow_down
+            </span>
+          </button>
+
+          <button
             onClick={() => console.log('Open Date Filter')}
-          />
+            style={{
+              background: 'var(--md-sys-color-surface)',
+              color: 'var(--md-sys-color-on-surface)',
+              border: '1px solid var(--md-sys-color-outline)',
+              borderRadius: 'var(--md-sys-shape-corner-small)',
+              padding: '0 16px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+              fontFamily: 'var(--md-sys-typescale-label-large-font)',
+              transition: 'all 0.2s cubic-bezier(0.2, 0, 0, 1)',
+              minWidth: '80px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--md-sys-color-surface-container-high)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'var(--md-sys-color-surface)'
+            }}
+          >
+            <span>Date</span>
+            <span className="material-icons" style={{ fontSize: '18px' }}>
+              keyboard_arrow_down
+            </span>
+          </button>
         </div>
 
         {/* Sort Controls */}
@@ -314,16 +391,42 @@ export default function TopAppBar() {
             style={{
               fontSize: '14px',
               color: 'var(--md-sys-color-on-surface-variant)',
+              fontFamily: 'var(--md-sys-typescale-body-medium-font)',
             }}
           >
             Sort:
           </span>
-          <Chip
-            label={`Added (${sortDirection === 'asc' ? 'a' : 'd'})`}
-            variant="filter"
-            icon="sort"
+          <button
             onClick={handleSortDirectionToggle}
-          />
+            style={{
+              background: 'var(--md-sys-color-surface)',
+              color: 'var(--md-sys-color-on-surface)',
+              border: '1px solid var(--md-sys-color-outline)',
+              borderRadius: 'var(--md-sys-shape-corner-small)',
+              padding: '0 16px',
+              height: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: 500,
+              fontFamily: 'var(--md-sys-typescale-label-large-font)',
+              transition: 'all 0.2s cubic-bezier(0.2, 0, 0, 1)',
+              minWidth: '80px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--md-sys-color-surface-container-high)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'var(--md-sys-color-surface)'
+            }}
+          >
+            <span>Added ({sortDirection === 'asc' ? 'a' : 'd'})</span>
+            <span className="material-icons" style={{ fontSize: '18px' }}>
+              {sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}
+            </span>
+          </button>
         </div>
       </div>
     </>

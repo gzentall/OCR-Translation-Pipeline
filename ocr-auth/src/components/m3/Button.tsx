@@ -4,6 +4,7 @@ import { useEffect, useRef, forwardRef } from 'react'
 import '@material/web/button/filled-button.js'
 import '@material/web/button/outlined-button.js'
 import '@material/web/button/text-button.js'
+import '@material/web/icon/icon.js'
 
 interface ButtonProps {
   variant?: 'filled' | 'outlined' | 'text'
