@@ -252,16 +252,19 @@ export default function TabsPanel({ document, onDocumentChange }: TabsPanelProps
                     References
                   </Typography>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {document.people.map((person, index) => (
-                      <Chip
-                        key={index}
-                        label={person}
-                        size="small"
-                        icon={<Person />}
-                        color="primary"
-                        variant="outlined"
-                      />
-                    ))}
+                    {document.people.map((person, index) => {
+                      const personName = typeof person === 'string' ? person : person.name
+                      return (
+                        <Chip
+                          key={index}
+                          label={personName}
+                          size="small"
+                          icon={<Person />}
+                          color="primary"
+                          variant="outlined"
+                        />
+                      )
+                    })}
                   </Box>
                 </Box>
               )}
