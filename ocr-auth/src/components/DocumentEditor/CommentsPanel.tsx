@@ -255,3 +255,4 @@ export default function CommentsPanel({ documentId, comments, onCommentsChange }
     </Box>
   )
 }
+

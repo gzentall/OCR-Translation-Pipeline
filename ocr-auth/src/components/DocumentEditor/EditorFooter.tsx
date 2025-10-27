@@ -120,3 +120,4 @@ export default function EditorFooter({ document, onDocumentChange, onSave, isSav
     </Box>
   )
 }
+

@@ -188,3 +188,4 @@
 7. Modals/Dialogs: `2000`
 8. Snackbars: `4000`
 
+

@@ -13,7 +13,7 @@ interface Document {
   sourceLanguage: string
   status: string
   pageCount: number
-  people?: string[]
+  people?: Array<string | { id: string; name: string; aliases?: string[] }>
 }
 
 export default function DocumentsPage() {
@@ -281,33 +281,36 @@ export default function DocumentsPage() {
                   {/* People Chips */}
                   {doc.people && doc.people.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '8px' }}>
-                      {doc.people.slice(0, 2).map((person, index) => (
-                        <span
-                          key={index}
-                          style={{
-                            backgroundColor: 'var(--md-sys-color-secondary-container)',
-                            color: 'var(--md-sys-color-on-secondary-container)',
-                            padding: '2px 8px',
-                            borderRadius: 'var(--md-sys-shape-corner-full)',
-                            fontSize: '10px',
-                            fontWeight: 500,
-                          }}
-                        >
-                          {person}
-                        </span>
-                      ))}
+                      {doc.people.slice(0, 2).map((person, index) => {
+                        const personName = typeof person === 'string' ? person : person.name
+                        return (
+                          <span
+                            key={index}
+                            style={{
+                              backgroundColor: 'var(--md-sys-color-secondary-container)',
+                              color: 'var(--md-sys-color-on-secondary-container)',
+                              padding: '2px 8px',
+                              borderRadius: 'var(--md-sys-shape-corner-full)',
+                              fontSize: '10px',
+                              fontWeight: 500,
+                            }}
+                          >
+                            {personName}
+                          </span>
+                        )
+                      })}
                       {doc.people.length > 2 && (
                         <span
                           style={{
-                            backgroundColor: 'var(--md-sys-color-secondary-container)',
-                            color: 'var(--md-sys-color-on-secondary-container)',
+                            backgroundColor: 'var(--md-sys-color-tertiary-container)',
+                            color: 'var(--md-sys-color-on-tertiary-container)',
                             padding: '2px 8px',
                             borderRadius: 'var(--md-sys-shape-corner-full)',
                             fontSize: '10px',
                             fontWeight: 500,
                           }}
                         >
-                          +{doc.people.length - 2}
+                          +{doc.people.length - 2} more
                         </span>
                       )}
                     </div>
