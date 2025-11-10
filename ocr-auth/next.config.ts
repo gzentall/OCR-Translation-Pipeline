@@ -1,6 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '5001',
+        pathname: '/api/**',
+      },
+    ],
+    unoptimized: true, // Disable image optimization for proxied images
+  },
   async rewrites() {
     return [
       {

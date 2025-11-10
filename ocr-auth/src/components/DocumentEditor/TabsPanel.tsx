@@ -338,11 +338,11 @@ export default function TabsPanel({ document, onDocumentChange }: TabsPanelProps
                     <ListItemText
                       primary={event.action}
                       secondary={
-                        <Box>
-                          <Typography variant="body2" color="text.secondary">
+                        <Box component="span" sx={{ display: 'block' }}>
+                          <Typography variant="body2" color="text.secondary" component="span" sx={{ display: 'block' }}>
                             {event.description}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" color="text.secondary" component="span" sx={{ display: 'block' }}>
                             {new Date(event.timestamp).toLocaleString()}
                           </Typography>
                         </Box>

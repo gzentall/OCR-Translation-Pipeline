@@ -126,7 +126,7 @@ export default function UsersPage() {
           </div>
         </div>
 
-        {/* Users Grid */}
+        {/* Users List */}
         {users.length === 0 ? (
           <div
             style={{
@@ -139,56 +139,53 @@ export default function UsersPage() {
             <p>Add a user to get started</p>
           </div>
         ) : (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '24px',
-            }}
-          >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {users.map((user) => (
               <div
                 key={user.id}
                 onClick={() => handleUserClick(user.username)}
                 style={{
                   cursor: 'pointer',
-                  borderRadius: 'var(--md-sys-shape-corner-medium)',
+                  borderRadius: '8px',
                   backgroundColor: 'var(--md-sys-color-surface-container-low)',
-                  boxShadow: 'var(--md-sys-elevation-level1)',
-                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                   padding: '16px',
+                  transition: 'background-color 0.2s, box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
+                  alignItems: 'center',
+                  gap: '16px',
+                  boxShadow: 'none',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)'
-                  e.currentTarget.style.boxShadow = 'var(--md-sys-elevation-level2)'
+                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container)'
+                  e.currentTarget.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.08)'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = 'var(--md-sys-elevation-level1)'
+                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-low)'
+                  e.currentTarget.style.boxShadow = 'none'
                 }}
               >
-                {/* Header with Avatar and Name */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <div
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--md-sys-color-primary)',
-                      color: 'var(--md-sys-color-on-primary)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '14px',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {user.username ? user.username[0].toUpperCase() : 'U'}
-                  </div>
-                  <div style={{ flex: 1 }}>
+                {/* Avatar */}
+                <div
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--md-sys-color-primary)',
+                    color: 'var(--md-sys-color-on-primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '18px',
+                    fontWeight: 500,
+                    flexShrink: 0,
+                  }}
+                >
+                  {user.username ? user.username[0].toUpperCase() : 'U'}
+                </div>
+
+                {/* User Info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                     <h3
                       style={{
                         fontFamily: 'var(--md-sys-typescale-title-medium-font)',
@@ -211,51 +208,60 @@ export default function UsersPage() {
                           user.role === 'ADMIN'
                             ? 'var(--md-sys-color-on-tertiary-container)'
                             : 'var(--md-sys-color-on-secondary-container)',
-                        padding: '2px 8px',
+                        padding: '4px 12px',
                         borderRadius: 'var(--md-sys-shape-corner-full)',
-                        fontSize: '10px',
+                        fontSize: '12px',
                         fontWeight: 500,
-                        marginTop: '4px',
-                        display: 'inline-block',
+                        lineHeight: '16px',
                       }}
                     >
                       {user.role}
                     </span>
                   </div>
+                  <p
+                    style={{
+                      fontFamily: 'var(--md-sys-typescale-body-small-font)',
+                      fontSize: 'var(--md-sys-typescale-body-small-size)',
+                      lineHeight: 'var(--md-sys-typescale-body-small-line-height)',
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      margin: 0,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {user.email}
+                  </p>
                 </div>
 
-                {/* User Details */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <p
+                {/* Status and Date */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-end' }}>
+                  <span
+                    style={{
+                      backgroundColor: user.isActive
+                        ? 'var(--md-sys-color-tertiary-container)'
+                        : 'var(--md-sys-color-error-container)',
+                      color: user.isActive
+                        ? 'var(--md-sys-color-on-tertiary-container)'
+                        : 'var(--md-sys-color-on-error-container)',
+                      padding: '4px 12px',
+                      borderRadius: 'var(--md-sys-shape-corner-full)',
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      lineHeight: '16px',
+                    }}
+                  >
+                    {user.isActive ? 'Active' : 'Inactive'}
+                  </span>
+                  <span
                     style={{
                       fontFamily: 'var(--md-sys-typescale-body-small-font)',
                       fontSize: 'var(--md-sys-typescale-body-small-size)',
                       color: 'var(--md-sys-color-on-surface-variant)',
-                      margin: 0,
                     }}
                   >
-                    Email: {user.email}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--md-sys-typescale-body-small-font)',
-                      fontSize: 'var(--md-sys-typescale-body-small-size)',
-                      color: 'var(--md-sys-color-on-surface-variant)',
-                      margin: 0,
-                    }}
-                  >
-                    Status: {user.isActive ? 'Active' : 'Inactive'}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--md-sys-typescale-body-small-font)',
-                      fontSize: 'var(--md-sys-typescale-body-small-size)',
-                      color: 'var(--md-sys-color-on-surface-variant)',
-                      margin: 0,
-                    }}
-                  >
-                    Created: {new Date(user.createdAt).toLocaleDateString()}
-                  </p>
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </span>
                 </div>
               </div>
             ))}

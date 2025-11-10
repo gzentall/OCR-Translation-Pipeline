@@ -20,6 +20,7 @@ export default function DocumentsPage() {
   const router = useRouter()
   const [documents, setDocuments] = useState<Document[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [viewMode, setViewMode] = useState<'card' | 'list'>('card')
 
   useEffect(() => {
     loadDocuments()
@@ -116,7 +117,7 @@ export default function DocumentsPage() {
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'baseline',
+            alignItems: 'center',
             marginBottom: 'var(--md-sys-spacing-6)',
           }}
         >
@@ -143,9 +144,53 @@ export default function DocumentsPage() {
               {documents.length} documents
             </span>
           </div>
+          
+          {/* View Toggle */}
+          <div style={{ display: 'flex', gap: '8px', backgroundColor: 'var(--md-sys-color-surface-container)', borderRadius: '20px', padding: '4px' }}>
+            <button
+              onClick={() => setViewMode('card')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '16px',
+                border: 'none',
+                backgroundColor: viewMode === 'card' ? 'var(--md-sys-color-secondary-container)' : 'transparent',
+                color: viewMode === 'card' ? 'var(--md-sys-color-on-secondary-container)' : 'var(--md-sys-color-on-surface-variant)',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 500,
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>grid_view</span>
+              Cards
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '16px',
+                border: 'none',
+                backgroundColor: viewMode === 'list' ? 'var(--md-sys-color-secondary-container)' : 'transparent',
+                color: viewMode === 'list' ? 'var(--md-sys-color-on-secondary-container)' : 'var(--md-sys-color-on-surface-variant)',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 500,
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>view_list</span>
+              List
+            </button>
+          </div>
         </div>
 
-        {/* Documents Grid */}
+        {/* Documents View */}
         {documents.length === 0 ? (
           <div
             style={{
@@ -157,12 +202,12 @@ export default function DocumentsPage() {
             <h3>No documents found</h3>
             <p>Upload a document to get started</p>
           </div>
-        ) : (
+        ) : viewMode === 'card' ? (
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: 'var(--md-sys-spacing-4)',
+              gap: '16px',
             }}
           >
             {documents.map((doc) => (
@@ -172,36 +217,33 @@ export default function DocumentsPage() {
                 style={{
                   cursor: 'pointer',
                   borderRadius: '12px',
-                  backgroundColor: 'var(--md-sys-color-surface)',
-                  boxShadow: 'var(--md-sys-elevation-level1)',
-                  transition: 'box-shadow 0.2s ease, transform 0.2s ease',
+                  backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                  boxShadow: 'none',
+                  transition: 'box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   display: 'flex',
                   flexDirection: 'column',
-                  minHeight: '120px',
-                  padding: 'var(--md-sys-spacing-4)',
+                  overflow: 'hidden',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)'
-                  e.currentTarget.style.boxShadow = 'var(--md-sys-elevation-level2)'
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                  e.currentTarget.style.boxShadow = '0px 4px 8px rgba(0, 0, 0, 0.12), 0px 2px 4px rgba(0, 0, 0, 0.08)'
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = 'var(--md-sys-elevation-level1)'
+                  e.currentTarget.style.boxShadow = 'none'
                 }}
               >
-                {/* Document Thumbnail */}
+                {/* Document Thumbnail - Full width media at top */}
                 <div
                   style={{
                     width: '100%',
-                    height: '120px',
-                    borderRadius: '8px',
+                    height: '140px',
                     backgroundColor: 'var(--md-sys-color-surface-container)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     overflow: 'hidden',
                     position: 'relative',
-                    marginBottom: 'var(--md-sys-spacing-3)',
                   }}
                 >
                   {doc.pageCount > 0 ? (
@@ -242,8 +284,8 @@ export default function DocumentsPage() {
                   </div>
                 </div>
 
-                {/* Card Content */}
-                <div>
+                {/* Card Content - 16dp padding as per M3 specs */}
+                <div style={{ padding: '16px' }}>
                   {/* Title */}
                   <h3
                     style={{
@@ -251,7 +293,7 @@ export default function DocumentsPage() {
                       fontSize: 'var(--md-sys-typescale-title-medium-size)',
                       fontWeight: 'var(--md-sys-typescale-title-medium-weight)',
                       lineHeight: 'var(--md-sys-typescale-title-medium-line-height)',
-                      margin: '0 0 var(--md-sys-spacing-2) 0',
+                      margin: '0 0 8px 0',
                       color: 'var(--md-sys-color-on-surface)',
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
@@ -262,11 +304,12 @@ export default function DocumentsPage() {
                     {doc.title}
                   </h3>
 
-                  {/* Summary */}
+                  {/* Summary - 8dp spacing between elements */}
                   <p
                     style={{
                       fontFamily: 'var(--md-sys-typescale-body-small-font)',
                       fontSize: 'var(--md-sys-typescale-body-small-size)',
+                      lineHeight: 'var(--md-sys-typescale-body-small-line-height)',
                       color: 'var(--md-sys-color-on-surface-variant)',
                       margin: '0 0 12px 0',
                       display: '-webkit-box',
@@ -278,9 +321,9 @@ export default function DocumentsPage() {
                     {doc.summary}
                   </p>
 
-                  {/* People Chips */}
+                  {/* People Chips - 8dp spacing */}
                   {doc.people && doc.people.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
                       {doc.people.slice(0, 2).map((person, index) => {
                         const personName = typeof person === 'string' ? person : person.name
                         return (
@@ -289,10 +332,11 @@ export default function DocumentsPage() {
                             style={{
                               backgroundColor: 'var(--md-sys-color-secondary-container)',
                               color: 'var(--md-sys-color-on-secondary-container)',
-                              padding: '2px 8px',
+                              padding: '4px 12px',
                               borderRadius: 'var(--md-sys-shape-corner-full)',
-                              fontSize: '10px',
+                              fontSize: '12px',
                               fontWeight: 500,
+                              lineHeight: '16px',
                             }}
                           >
                             {personName}
@@ -304,10 +348,11 @@ export default function DocumentsPage() {
                           style={{
                             backgroundColor: 'var(--md-sys-color-tertiary-container)',
                             color: 'var(--md-sys-color-on-tertiary-container)',
-                            padding: '2px 8px',
+                            padding: '4px 12px',
                             borderRadius: 'var(--md-sys-shape-corner-full)',
-                            fontSize: '10px',
+                            fontSize: '12px',
                             fontWeight: 500,
+                            lineHeight: '16px',
                           }}
                         >
                           +{doc.people.length - 2} more
@@ -322,16 +367,18 @@ export default function DocumentsPage() {
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
+                      gap: '8px',
                     }}
                   >
                     <span
                       style={{
                         backgroundColor: 'var(--md-sys-color-tertiary-container)',
                         color: 'var(--md-sys-color-on-tertiary-container)',
-                        padding: '2px 8px',
+                        padding: '4px 12px',
                         borderRadius: 'var(--md-sys-shape-corner-full)',
-                        fontSize: '10px',
+                        fontSize: '12px',
                         fontWeight: 500,
+                        lineHeight: '16px',
                       }}
                     >
                       {doc.status}
@@ -339,14 +386,196 @@ export default function DocumentsPage() {
                     <span
                       style={{
                         color: 'var(--md-sys-color-on-surface-variant)',
-                        fontSize: '10px',
+                        fontSize: '12px',
                         fontWeight: 500,
+                        lineHeight: '16px',
                       }}
                     >
                       {doc.sourceLanguage.toUpperCase()}
                     </span>
                   </div>
               </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* List View */
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {documents.map((doc) => (
+              <div
+                key={doc.id}
+                onClick={() => handleDocumentClick(doc.id)}
+                style={{
+                  cursor: 'pointer',
+                  borderRadius: '8px',
+                  backgroundColor: 'var(--md-sys-color-surface-container-low)',
+                  padding: '16px',
+                  transition: 'background-color 0.2s, box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  boxShadow: 'none',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container)'
+                  e.currentTarget.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.08)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-low)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+              >
+                {/* Thumbnail */}
+                <div
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '8px',
+                    backgroundColor: 'var(--md-sys-color-surface-container)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    flexShrink: 0,
+                    position: 'relative',
+                  }}
+                >
+                  {doc.pageCount > 0 ? (
+                    <img
+                      src={`/api/flask/test-documents/${doc.id}/images/1`}
+                      alt="Document thumbnail"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                        const parent = e.currentTarget.parentElement
+                        if (parent) {
+                          parent.innerHTML = '<span style="font-size: 32px;">📄</span>'
+                        }
+                      }}
+                    />
+                  ) : (
+                    <span style={{ fontSize: '32px' }}>📄</span>
+                  )}
+                  {/* Page Count Badge */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '4px',
+                      right: '4px',
+                      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                      color: 'white',
+                      padding: '2px 6px',
+                      borderRadius: '12px',
+                      fontSize: '10px',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {doc.pageCount || 0}
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h3
+                    style={{
+                      fontFamily: 'var(--md-sys-typescale-title-medium-font)',
+                      fontSize: 'var(--md-sys-typescale-title-medium-size)',
+                      fontWeight: 'var(--md-sys-typescale-title-medium-weight)',
+                      lineHeight: 'var(--md-sys-typescale-title-medium-line-height)',
+                      margin: '0 0 4px 0',
+                      color: 'var(--md-sys-color-on-surface)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {doc.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontFamily: 'var(--md-sys-typescale-body-small-font)',
+                      fontSize: 'var(--md-sys-typescale-body-small-size)',
+                      lineHeight: 'var(--md-sys-typescale-body-small-line-height)',
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      margin: '0 0 8px 0',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {doc.summary}
+                  </p>
+                  {/* People Chips */}
+                  {doc.people && doc.people.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {doc.people.slice(0, 3).map((person, index) => {
+                        const personName = typeof person === 'string' ? person : person.name
+                        return (
+                          <span
+                            key={index}
+                            style={{
+                              backgroundColor: 'var(--md-sys-color-secondary-container)',
+                              color: 'var(--md-sys-color-on-secondary-container)',
+                              padding: '4px 12px',
+                              borderRadius: 'var(--md-sys-shape-corner-full)',
+                              fontSize: '12px',
+                              fontWeight: 500,
+                              lineHeight: '16px',
+                            }}
+                          >
+                            {personName}
+                          </span>
+                        )
+                      })}
+                      {doc.people.length > 3 && (
+                        <span
+                          style={{
+                            backgroundColor: 'var(--md-sys-color-tertiary-container)',
+                            color: 'var(--md-sys-color-on-tertiary-container)',
+                            padding: '4px 12px',
+                            borderRadius: 'var(--md-sys-shape-corner-full)',
+                            fontSize: '12px',
+                            fontWeight: 500,
+                            lineHeight: '16px',
+                          }}
+                        >
+                          +{doc.people.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Status and Language */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+                  <span
+                    style={{
+                      backgroundColor: 'var(--md-sys-color-tertiary-container)',
+                      color: 'var(--md-sys-color-on-tertiary-container)',
+                      padding: '4px 12px',
+                      borderRadius: 'var(--md-sys-shape-corner-full)',
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      lineHeight: '16px',
+                    }}
+                  >
+                    {doc.status}
+                  </span>
+                  <span
+                    style={{
+                      color: 'var(--md-sys-color-on-surface-variant)',
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      lineHeight: '16px',
+                    }}
+                  >
+                    {doc.sourceLanguage.toUpperCase()}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

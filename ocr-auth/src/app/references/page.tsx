@@ -131,7 +131,7 @@ export default function ReferencesPage() {
           </div>
         </div>
 
-        {/* References Grid */}
+        {/* References List */}
         {filteredReferences.length === 0 ? (
           <div
             style={{
@@ -144,49 +144,46 @@ export default function ReferencesPage() {
             <p>Add a reference to get started</p>
           </div>
         ) : (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '24px',
-            }}
-          >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {filteredReferences.map((ref) => (
               <div
                 key={ref.id}
                 onClick={() => handleReferenceClick(ref.id)}
                 style={{
                   cursor: 'pointer',
-                  borderRadius: 'var(--md-sys-shape-corner-medium)',
+                  borderRadius: '8px',
                   backgroundColor: 'var(--md-sys-color-surface-container-low)',
-                  boxShadow: 'var(--md-sys-elevation-level1)',
-                  transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
                   padding: '16px',
+                  transition: 'background-color 0.2s, box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
+                  alignItems: 'center',
+                  gap: '16px',
+                  boxShadow: 'none',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)'
-                  e.currentTarget.style.boxShadow = 'var(--md-sys-elevation-level2)'
+                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container)'
+                  e.currentTarget.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.08)'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = 'var(--md-sys-elevation-level1)'
+                  e.currentTarget.style.backgroundColor = 'var(--md-sys-color-surface-container-low)'
+                  e.currentTarget.style.boxShadow = 'none'
                 }}
               >
-                {/* Header with Icon and Name */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <md-icon
-                    style={{
-                      fontSize: '40px',
-                      color: 'var(--md-sys-color-primary)',
-                    }}
-                    suppressHydrationWarning
-                  >
-                    business
-                  </md-icon>
-                  <div style={{ flex: 1 }}>
+                {/* Icon */}
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: '48px',
+                    color: 'var(--md-sys-color-primary)',
+                    flexShrink: 0,
+                  }}
+                >
+                  {ref.type === 'person' ? 'person' : ref.type === 'location' ? 'place' : 'business'}
+                </span>
+
+                {/* Reference Info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                     <h3
                       style={{
                         fontFamily: 'var(--md-sys-typescale-title-medium-font)',
@@ -204,66 +201,68 @@ export default function ReferencesPage() {
                         style={{
                           backgroundColor: 'var(--md-sys-color-secondary-container)',
                           color: 'var(--md-sys-color-on-secondary-container)',
-                          padding: '2px 8px',
+                          padding: '4px 12px',
                           borderRadius: 'var(--md-sys-shape-corner-full)',
-                          fontSize: '10px',
+                          fontSize: '12px',
                           fontWeight: 500,
-                          marginTop: '4px',
-                          display: 'inline-block',
+                          lineHeight: '16px',
                         }}
                       >
                         {ref.type}
                       </span>
                     )}
                   </div>
-                </div>
-
-                {/* Aliases */}
-                {ref.aliases && Array.isArray(ref.aliases) && ref.aliases.length > 0 && (
-                  <div>
+                  
+                  {/* Aliases */}
+                  {ref.aliases && Array.isArray(ref.aliases) && ref.aliases.length > 0 && (
                     <p
                       style={{
                         fontFamily: 'var(--md-sys-typescale-body-small-font)',
                         fontSize: 'var(--md-sys-typescale-body-small-size)',
+                        lineHeight: 'var(--md-sys-typescale-body-small-line-height)',
                         color: 'var(--md-sys-color-on-surface-variant)',
-                        margin: 0,
+                        margin: '0 0 4px 0',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
                       }}
                     >
                       Aliases: {ref.aliases.join(', ')}
                     </p>
-                  </div>
-                )}
-
-                {/* First Mentioned */}
-                {ref.firstMentioned && (
-                  <div>
+                  )}
+                  
+                  {/* First Mentioned */}
+                  {ref.firstMentioned && (
                     <p
                       style={{
                         fontFamily: 'var(--md-sys-typescale-body-small-font)',
                         fontSize: 'var(--md-sys-typescale-body-small-size)',
+                        lineHeight: 'var(--md-sys-typescale-body-small-line-height)',
                         color: 'var(--md-sys-color-on-surface-variant)',
                         margin: 0,
                       }}
                     >
-                      First Mentioned: {new Date(ref.firstMentioned).toLocaleDateString()}
+                      First mentioned: {new Date(ref.firstMentioned).toLocaleDateString()}
                     </p>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 {/* Document Count */}
                 {ref.documentCount !== undefined && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <p
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                    <span
                       style={{
-                        fontFamily: 'var(--md-sys-typescale-body-small-font)',
-                        fontSize: 'var(--md-sys-typescale-body-small-size)',
-                        color: 'var(--md-sys-color-on-surface-variant)',
-                        margin: 0,
+                        backgroundColor: 'var(--md-sys-color-tertiary-container)',
+                        color: 'var(--md-sys-color-on-tertiary-container)',
+                        padding: '4px 12px',
+                        borderRadius: 'var(--md-sys-shape-corner-full)',
+                        fontSize: '12px',
                         fontWeight: 500,
+                        lineHeight: '16px',
                       }}
                     >
-                      Documents: {ref.documentCount}
-                    </p>
+                      {ref.documentCount} docs
+                    </span>
                   </div>
                 )}
               </div>

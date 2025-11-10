@@ -84,9 +84,9 @@ export default function TopAppBar() {
       >
         {/* Logo and Title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <md-icon style={{ color: 'var(--md-sys-color-primary)', fontSize: '28px' }} suppressHydrationWarning>
+          <span className="material-symbols-outlined" style={{ color: 'var(--md-sys-color-primary)', fontSize: '28px' }}>
             local_post_office
-          </md-icon>
+          </span>
           <h1
             style={{
               fontFamily: 'var(--md-sys-typescale-headline-small-font)',
@@ -131,9 +131,9 @@ export default function TopAppBar() {
                 transition: 'all 200ms',
               }}
             >
-              <md-icon style={{ fontSize: '24px' }} suppressHydrationWarning>
+              <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>
                 {tab.icon}
-              </md-icon>
+              </span>
               <span
                 style={{
                   fontSize: '14px',
@@ -238,7 +238,8 @@ export default function TopAppBar() {
               alignItems: 'center',
             }}
           >
-            <md-icon
+            <span
+              className="material-symbols-outlined"
               style={{
                 position: 'absolute',
                 left: '12px',
@@ -247,10 +248,9 @@ export default function TopAppBar() {
                 pointerEvents: 'none',
                 zIndex: 1,
               }}
-              suppressHydrationWarning
             >
               search
-            </md-icon>
+            </span>
             <input
               type="text"
               value={searchQuery}
@@ -269,7 +269,8 @@ export default function TopAppBar() {
               }}
             />
             {searchQuery && (
-              <md-icon
+              <span
+                className="material-symbols-outlined"
                 onClick={handleClearSearch}
                 style={{
                   position: 'absolute',
@@ -281,7 +282,7 @@ export default function TopAppBar() {
                 }}
               >
                 close
-              </md-icon>
+              </span>
             )}
           </div>
         </div>
