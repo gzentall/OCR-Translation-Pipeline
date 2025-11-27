@@ -1,0 +1,36 @@
+{
+  "pdf_file": "043-1940-fre.pdf",
+  "date_processed": "2025-11-16T17:33:05.436931",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Contr\u00f4le Postal Militaire\nVelit.\u00e1 roz\nD'INF.\nLe Voc\nCHECOSLO\nMadanie\nF.M\nE. Zweigentlia\n69 bis rue\nSV\n3. bg\npenthal I. reg. Vec. kota P\u00e9zenas\n\nVOJENSK\u00c1 CENSURA\n\n",
+  "corrected_text": "Contr\u00f4le Postal Militaire\nVelit.\u00e1 roz\nD'INF.\nLe Voc\nCHECOSLO\nMadame\nF.M\nE. Zweigenthal\n69 bis rue\nSV\n3. bg\npenthal I. reg. Vec. kota P\u00e9zenas\n\nVOJENSK\u00c1 CENSURA\n",
+  "translated_text": "Contr\u00f4le Postal Militaire Velit.\u00e1 pink D&#39;INF. Le Voc CHECOSLO Madame FM E. Zweigenthal 69 bis rue SV 3. bg penthal I. reg. Vec. city of P\u00e9zenas MILITARY CENSORSHIP\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Madanie",
+      "corrected": "Madame",
+      "reason": "Corrected based on known names and common titles."
+    },
+    {
+      "original": "E. Zweigentlia",
+      "corrected": "E. Zweigenthal",
+      "reason": "Corrected based on known family names."
+    },
+    {
+      "original": "penthal I. reg. Vec. kota P\u00e9zenas",
+      "corrected": "penthal I. reg. Vec. kota P\u00e9zenas",
+      "reason": "No correction needed; assumed to be a location or military unit designation."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 27,
+  "corrected_word_count": 27,
+  "corrections_count": 3
+}

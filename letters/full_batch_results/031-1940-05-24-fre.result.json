@@ -1,0 +1,96 @@
+{
+  "pdf_file": "031-1940-05-24-fre.pdf",
+  "date_processed": "2025-11-16T17:20:25.611406",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "5\nRobert Freisenthal\nfor R. J. Vel Rotor\nP\nP\u00e9roult\nCHECOS\nLe Vaguemestre\nREGIMENT\n231\n*\n-\n24. V.40\n132\nmon jelit, nous partons\ndans une leure et si Lout\nya bien je suis de bos ti mandle\non lundi - Je vain bout\ncez for\nte\nraconter of expliques a\nvive voix. I cspire que je\nte houverai encore to more\n\u0441\u0438\u0441\u0442\u0435\nce serait terrible\nSi an bout dr, a long-\ntoyage\nlu n\ncan\nEnfin - cip\u00e9rous\nDice l\u00ea se t'ambrasse\nta Baby\n\nA. C. 59 - PARIS - Mus\u00e9e municipal d'Art moderne\n\n",
+  "corrected_text": "5\nRobert Zweigenthal\nfor R. J. Vel Rotor\nP\nPrague\nCHECOS\nLe Vaguemestre\nREGIMENT\n231\n*\n-\n24. V.40\n132\nmon ch\u00e9ri, nous partons\ndans une heure et si tout\nva bien je suis de retour\non lundi - Je viens pour\nte\nraconter et expliquer \u00e0\nvive voix. J'esp\u00e8re que je\nte trouverai encore l\u00e0 mon\nch\u00e9ri\nce serait terrible\nsi en bout de, un long-\nvoyage\nlu n\ncan\nEnfin - ch\u00e9rie\nDis-le je t'embrasse\nta Betty\n\nA. C. 59 - PARIS - Mus\u00e9e municipal d'Art moderne\n",
+  "translated_text": "5 Robert Zweigenthal for RJ Vel Rotor P Prague CHECOS The Postmaster REGIMENT 231 * - 24. V.40 132 My darling, we&#39;re leaving in an hour and if all goes well I&#39;ll be back on Monday - I&#39;ve come to tell you and explain in person. I hope I&#39;ll still find you here, my darling, it would be terrible if at the end of a long journey... Finally - darling, tell me, I kiss you, your Betty AC 59 - PARIS - Municipal Museum of Modern Art\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Freisenthal",
+      "corrected": "Zweigenthal",
+      "reason": "Known family name"
+    },
+    {
+      "original": "P\u00e9roult",
+      "corrected": "Prague",
+      "reason": "Known location"
+    },
+    {
+      "original": "mon jelit",
+      "corrected": "mon ch\u00e9ri",
+      "reason": "Common greeting"
+    },
+    {
+      "original": "leure",
+      "corrected": "heure",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "Lout",
+      "corrected": "tout",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "bos ti mandle",
+      "corrected": "de retour",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "Je vain bout",
+      "corrected": "Je viens pour",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "of expliques a",
+      "corrected": "et expliquer \u00e0",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "I cspire que je",
+      "corrected": "J'esp\u00e8re que je",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "te houverai encore to more",
+      "corrected": "te trouverai encore l\u00e0 mon",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "\u0441\u0438\u0441\u0442\u0435",
+      "corrected": "ch\u00e9ri",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "Si an bout dr, a long-",
+      "corrected": "si en bout de, un long-",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "cip\u00e9rous",
+      "corrected": "ch\u00e9rie",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "Dice l\u00ea se t'ambrasse",
+      "corrected": "Dis-le je t'embrasse",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "ta Baby",
+      "corrected": "ta Betty",
+      "reason": "Known family name"
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 95,
+  "corrected_word_count": 89,
+  "corrections_count": 15
+}

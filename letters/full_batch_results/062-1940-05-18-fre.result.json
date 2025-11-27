@@ -1,0 +1,71 @@
+{
+  "pdf_file": "062-1940-05-18-fre.pdf",
+  "date_processed": "2025-11-16T17:14:47.802735",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Non dan\nJ'ai\nnitzle\nJuleh\nCerit entrete\nAnjand\n\u0439\n\u0441\u0438\u0439 \u0434\u0435\n+\n\u0436\na\ntemp di t'cui\n\u043d\ne\n\u0435\u0434\u0438\nan\n\n\u0421\u0435\u0440\u0438\n2\n\u041e\u043d \u0446\u0432\u0435\n\u0437\u0438\nJe endors\nBer\n\nTENTE? LA CHAN\nLITEGIE\nNATIONALE\nth\nRUE\nPARIS\n18 Ht\nMAI\n40\nDE\nES\n81\nCAPUCINES\nTENTEZACHANT\nTENTEZ: A CHANCE\nNATULALE\nfer R. 1. This\nVil Rate\nHerault\nRe\nREGIMENT\nJER\n\u0580\nLe Vagusmashe\n*\nCHECOS\ne\u00f1as\n\u0442\u0430\n\n\n\n",
+  "corrected_text": "Non dan\nJ'ai\nnuit le\nJules\nCerit entrete\nAnjand\n\u0439\n\u0441\u0438\u0439 de\n+\n\u0436\na\ntemps de t'cui\n\u043d\ne\n\u0435\u0434\u0438\nan\n\n\u0421\u0435\u0440\u0438\n2\n\u041e\u043d \u0446\u0432\u0435\n\u0437\u0438\nJe endors\nBer\n\nTENTEZ LA CHANCE\nLITIGE\nNATIONALE\nth\nRUE\nPARIS\n18 Ht\nMAI\n40\nDE\nES\n81\nCAPUCINES\nTENTEZ LA CHANCE\nTENTEZ: A CHANCE\nNATIONALE\nfer R. 1. This\nVil Rate\nHerault\nRe\nREGIMENT\nJER\n\u0580\nLe Vagusmashe\n*\nCHECOS\n\u0435\u00f1as\n\u0442\u0430\n\n",
+  "translated_text": "Not dan J&#39;ai nuit le Jules Cerit enters Anjand y siy of + \u017e a time of t&#39;cui n e edi an Series 2 Only recently Je endors Ber TENTEZ LA CHANCE LITIGE NATIONAL th RUE PARIS 18 Ht May 40 AAPZE CHENT DE LAUCES CAN CHANCE NATIONALE fer R. 1. This Vil Rate Herault Re REGIMENT JER \u0580 The Vagusmashe * Czechs have more\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "nitzle",
+      "corrected": "nuit le",
+      "reason": "Corrected based on common French phrase 'nuit le'."
+    },
+    {
+      "original": "Juleh",
+      "corrected": "Jules",
+      "reason": "Jules is a common name, likely intended here."
+    },
+    {
+      "original": "temp di t'cui",
+      "corrected": "temps de t'cui",
+      "reason": "Corrected to 'temps de t'cui' for grammatical consistency in French."
+    },
+    {
+      "original": "TENTE? LA CHAN",
+      "corrected": "TENTEZ LA CHANCE",
+      "reason": "Corrected to 'TENTEZ LA CHANCE', a common French phrase."
+    },
+    {
+      "original": "LITEGIE",
+      "corrected": "LITIGE",
+      "reason": "Corrected to 'LITIGE', a French word meaning 'dispute'."
+    },
+    {
+      "original": "NATULALE",
+      "corrected": "NATIONALE",
+      "reason": "Corrected to 'NATIONALE', a common French word."
+    },
+    {
+      "original": "Vil Rate",
+      "corrected": "Vil Rate",
+      "reason": "No correction needed, possibly a name or location."
+    },
+    {
+      "original": "Le Vagusmashe",
+      "corrected": "Le Vagusmashe",
+      "reason": "No correction needed, possibly a name or term."
+    },
+    {
+      "original": "CHECOS",
+      "corrected": "CHECOS",
+      "reason": "No correction needed, possibly a name or term."
+    }
+  ],
+  "uncertain_segments": [
+    "temps de t'cui",
+    "Vil Rate",
+    "Le Vagusmashe",
+    "CHECOS"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 67,
+  "corrected_word_count": 70,
+  "corrections_count": 9
+}

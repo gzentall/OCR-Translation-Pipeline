@@ -1,0 +1,188 @@
+{
+  "pdf_file": "084-1932-08-09-ger.pdf",
+  "date_processed": "2025-11-16T17:25:23.795881",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "resville 9.8.327\nMeine liebes! Es eilt zwar oltre, ich\nwill aber nicht versammen, dir einige\nfeile mit indenden. de Reise geht\nleider f\u00fcr mich viel zu langsam\nvorw\u00e4rts und ich in en ungrosse\nMinho geben nicht in gedulding\nzu werden. Ain schwersten fi\nmir immer wieder, dass ich durch\ndieser mustand so lange auf einer\ndiese von Dir warten\nin\nmos. Aber\ntag wird auch noch herum gehen\nmid ich hoffe recht viel Post vol\nmeiner Babs in Henn vedenfin,\nWir fahren jetzt den esuben Ren\nAnd es ist gans herrlic\nThe Natureinamicke sind wenigstens\neine gute Reaktion im Gegensatz\nZum Gesch\u00e4ft verglichen. koist\nverglicenses\ndas einzige (mit this in me von die\nM. Baba melaluir drese Reise nich\ngans so schuwer werden lasst und\nsich immer noch dadurch mit etwas\nAmbition und Frende arbeite. Esist\noffen gestanden auch nicht ganz\nI schlecht als ich dachte. Dasses\nso langsam vorw\u00e4rts\nelt andert\nan der Tatsache night's stass ich bad\nwieder zu Hause bu der laba b\nDein Bol\n\n304\n\u0432\u0430\nAn Baba\n\n",
+  "corrected_text": "resville 9.8.327\nMeine Liebes! Es eilt zwar alles, ich\nwill aber nicht vers\u00e4umen, dir einige\nZeilen mitzusenden. Die Reise geht\nleider f\u00fcr mich viel zu langsam\nvorw\u00e4rts und ich in der ungeduldigen\nStimmung gebe nicht in geduldig\nzu werden. Am schwersten ist\nmir immer wieder, dass ich durch\ndiesen Umstand so lange auf einer\nAntwort von Dir warten\nmuss. Aber\nder Tag wird auch noch herum gehen\nund ich hoffe recht viel Post von\nmeiner Babs in H\u00e4nden zu finden.\nWir fahren jetzt den sch\u00f6nen Rhein\nentlang und es ist ganz herrlich.\nDie Natur ist wenigstens\neine gute Erholung im Gegensatz\nzum Gesch\u00e4ftlichen. Es ist\nverglichen\ndas einzige (mit dem ich mich von die\nM. Baba melaluir diese Reise nicht\nganz so schwer werden l\u00e4sst und\nsich immer noch dadurch mit etwas\nAmbition und Freude arbeite. Es ist\noffen gestanden auch nicht ganz\nso schlecht als ich dachte. Dass es\nso langsam vorw\u00e4rts\ngeht \u00e4ndert\nan der Tatsache nichts, dass ich bald\nwieder zu Hause bei der Baba bin.\nDein Bob\n\n304\n\nAn Baba\n",
+  "translated_text": "Resville, August 9, 1932. My dearest! Everything is in a hurry, but I don&#39;t want to miss the opportunity to send you a few lines. Unfortunately, the journey is progressing far too slowly for me, and in my impatient mood, I&#39;m not giving up trying to be patient. What I find hardest is that this situation means I have to wait so long for a reply from you. But the day will pass, and I hope to find lots of mail from my Babs in my hands. We&#39;re now driving along the beautiful Rhine, and it&#39;s absolutely wonderful. Nature is at least a welcome respite from all the business. It&#39;s the only thing that makes this trip a little less difficult for me and allows me to still work with some ambition and joy. To be honest, it&#39;s not quite as bad as I thought it would be. The fact that things are moving so slowly doesn&#39;t change the fact that I&#39;ll soon be back home with Baba. Your Bob 304 To Baba\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Meine liebes!",
+      "corrected": "Meine Liebes!",
+      "reason": "Capitalization correction for a greeting."
+    },
+    {
+      "original": "oltre",
+      "corrected": "alles",
+      "reason": "Contextual correction, 'alles' fits the sentence."
+    },
+    {
+      "original": "versammen",
+      "corrected": "vers\u00e4umen",
+      "reason": "Common German word 'vers\u00e4umen' meaning 'to miss'."
+    },
+    {
+      "original": "feile",
+      "corrected": "Zeilen",
+      "reason": "Contextual correction, 'Zeilen' means 'lines'."
+    },
+    {
+      "original": "indenden",
+      "corrected": "mitzusenden",
+      "reason": "Contextual correction, 'mitzusenden' means 'to send along'."
+    },
+    {
+      "original": "en ungrosse",
+      "corrected": "der ungeduldigen",
+      "reason": "Contextual correction, 'ungeduldigen' means 'impatient'."
+    },
+    {
+      "original": "Minho",
+      "corrected": "Stimmung",
+      "reason": "Contextual correction, 'Stimmung' means 'mood'."
+    },
+    {
+      "original": "Ain",
+      "corrected": "Am",
+      "reason": "Typographical correction, 'Am' is a common German word."
+    },
+    {
+      "original": "fi",
+      "corrected": "ist",
+      "reason": "Typographical correction, 'ist' means 'is'."
+    },
+    {
+      "original": "dieser mustand",
+      "corrected": "diesen Umstand",
+      "reason": "Contextual correction, 'Umstand' means 'circumstance'."
+    },
+    {
+      "original": "diese von Dir",
+      "corrected": "Antwort von Dir",
+      "reason": "Contextual correction, 'Antwort' means 'answer'."
+    },
+    {
+      "original": "mos",
+      "corrected": "muss",
+      "reason": "Typographical correction, 'muss' means 'must'."
+    },
+    {
+      "original": "mid",
+      "corrected": "und",
+      "reason": "Typographical correction, 'und' means 'and'."
+    },
+    {
+      "original": "vol",
+      "corrected": "von",
+      "reason": "Typographical correction, 'von' means 'from'."
+    },
+    {
+      "original": "Henn vedenfin",
+      "corrected": "H\u00e4nden zu finden",
+      "reason": "Contextual correction, 'H\u00e4nden zu finden' means 'to find in hands'."
+    },
+    {
+      "original": "esuben Ren",
+      "corrected": "sch\u00f6nen Rhein",
+      "reason": "Contextual correction, 'sch\u00f6nen Rhein' refers to the Rhine River."
+    },
+    {
+      "original": "And es ist gans herrlic",
+      "corrected": "entlang und es ist ganz herrlich.",
+      "reason": "Typographical and contextual correction, 'entlang' means 'along' and 'herrlich' means 'wonderful'."
+    },
+    {
+      "original": "The Natureinamicke",
+      "corrected": "Die Natur",
+      "reason": "Typographical correction, 'Die Natur' means 'The nature'."
+    },
+    {
+      "original": "eine gute Reaktion",
+      "corrected": "eine gute Erholung",
+      "reason": "Contextual correction, 'Erholung' means 'recovery' or 'relaxation'."
+    },
+    {
+      "original": "Zum Gesch\u00e4ft verglichen",
+      "corrected": "zum Gesch\u00e4ftlichen.",
+      "reason": "Contextual correction, 'Gesch\u00e4ftlichen' means 'business matters'."
+    },
+    {
+      "original": "koist",
+      "corrected": "Es ist",
+      "reason": "Typographical correction, 'Es ist' means 'It is'."
+    },
+    {
+      "original": "verglicenses",
+      "corrected": "verglichen",
+      "reason": "Typographical correction, 'verglichen' means 'compared'."
+    },
+    {
+      "original": "das einzige (mit this in me von die",
+      "corrected": "das einzige (mit dem ich mich von die",
+      "reason": "Typographical correction, 'mit dem ich mich' means 'with which I'."
+    },
+    {
+      "original": "M. Baba melaluir drese Reise nich",
+      "corrected": "M. Baba melaluir diese Reise nicht",
+      "reason": "Typographical correction, 'diese Reise nicht' means 'this journey not'."
+    },
+    {
+      "original": "gans so schuwer werden lasst und",
+      "corrected": "ganz so schwer werden l\u00e4sst und",
+      "reason": "Typographical correction, 'ganz so schwer' means 'not so difficult'."
+    },
+    {
+      "original": "Frende",
+      "corrected": "Freude",
+      "reason": "Typographical correction, 'Freude' means 'joy'."
+    },
+    {
+      "original": "Esist",
+      "corrected": "Es ist",
+      "reason": "Typographical correction, 'Es ist' means 'It is'."
+    },
+    {
+      "original": "I schlecht",
+      "corrected": "so schlecht",
+      "reason": "Typographical correction, 'so schlecht' means 'so bad'."
+    },
+    {
+      "original": "Dasses",
+      "corrected": "Dass es",
+      "reason": "Typographical correction, 'Dass es' means 'That it'."
+    },
+    {
+      "original": "elt andert",
+      "corrected": "geht \u00e4ndert",
+      "reason": "Typographical correction, 'geht \u00e4ndert' means 'goes changes'."
+    },
+    {
+      "original": "an der Tatsache night's stass ich bad",
+      "corrected": "an der Tatsache nichts, dass ich bald",
+      "reason": "Typographical correction, 'an der Tatsache nichts, dass ich bald' means 'nothing changes the fact that I soon'."
+    },
+    {
+      "original": "wieder zu Hause bu der laba b",
+      "corrected": "wieder zu Hause bei der Baba bin.",
+      "reason": "Typographical correction, 'bei der Baba bin' means 'at home with Baba'."
+    },
+    {
+      "original": "Dein Bol",
+      "corrected": "Dein Bob",
+      "reason": "Known name correction, 'Bob' is a known person."
+    }
+  ],
+  "uncertain_segments": [
+    "M. Baba melaluir"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 172,
+  "corrected_word_count": 174,
+  "corrections_count": 33
+}

@@ -1,0 +1,79 @@
+{
+  "pdf_file": "105-1933-09-12-ger.pdf",
+  "date_processed": "2025-11-16T17:33:31.964201",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "\u0e20\u0e39\u0e1e\nF\n12\n12\n12 2 33\n21-22\nRich\n7\n\u2022\nReitt\nElizabeth\nner\nhebe's Rabalein, hente\nBrief nachgeschicks. In planke, aber\ndass er selvon beantwortet it, da\nBija and selben Tag an dem fi\nilin\nt\nbekomna heyatt den mes\nhaben minis; Joh werde\nfir nicht's dar\u00fcber schreiben, - Oder\ndoch! \u2013 Ich glaube es ist wicht n\u00f6tig,\nGestern habe ich bier einer der berish\nM\u00fcnchner k\u00fcnstler. Falimpoferte\nmitgemacha (Carneval es war\nganz reizend, und jetzt versiche\nich mit einem schwarzen Kaffee\nmeinen kater zu beruhigen!\ninfang n\u00e4chster Woche mehr\n\u0434\u0435\u0442 \u0434\u043e\u0432\nLine 59\nlofel des Pyrenees\n\u307f\n\u03b7\u03c3\n\nM\u00fcnchen. Rathaus mit Frauenkirche\n7\nFF\n\n",
+  "corrected_text": "\u0e20\u0e39\u0e1e\nF\n12\n12\n12 2 33\n21-22\nRich\n7\n\u2022\nReitt\nElizabeth\nner\nhebe's Rabalein, heute\nBrief nachgeschickt. In planke, aber\ndass er selbst beantwortet ist, da\nBija und selben Tag an dem fi\nilin\nt\nbekommen hat den mes\nhaben minis; Ich werde\nf\u00fcr nichts dar\u00fcber schreiben, - Oder\ndoch! \u2013 Ich glaube es ist nicht n\u00f6tig,\nGestern habe ich hier einer der ber\u00fchmt\nM\u00fcnchner K\u00fcnstler. Falimpoferte\nmitgemacht (Karneval es war\nganz reizend, und jetzt versuche\nich mit einem schwarzen Kaffee\nmeinen Kater zu beruhigen!\nanfang n\u00e4chster Woche mehr\n\u0434\u0435\u0442 \u0434\u043e\u0432\nLine 59\nlofel des Pyrenees\n\u307f\n\u03b7\u03c3\n\nM\u00fcnchen. Rathaus mit Frauenkirche\n7\nFF\n",
+  "translated_text": "F 12 12 12 2 33 21-22 Rich 7 \u2022 Reitt Elizabeth ner hebe&#39;s Rabalein, today letter sent. In planke, but that he himself is answered, since Bija and same day on the fi ilin t received the mes have minis; I will write about it for nothing, - Or will I! - I think it is not necessary, Yesterday I participated here in one of the famous Munich artists. Falimpoferte (Carnival it was quite charming, and now I am trying to calm my hangover with a black coffee! early next week more d&#39;odd Line 59 lofel des Pyrenees \u00e0 s\u00ed\u03c3 Munich. Town Hall with Frauenkirche 7 FF\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "hebe's Rabalein, hente",
+      "corrected": "hebe's Rabalein, heute",
+      "reason": "Corrected 'hente' to 'heute' based on context and common German word."
+    },
+    {
+      "original": "selvon",
+      "corrected": "selbst",
+      "reason": "Corrected 'selvon' to 'selbst' as it fits the context of self-answering."
+    },
+    {
+      "original": "bekomna heyatt den mes",
+      "corrected": "bekommen hat den mes",
+      "reason": "Corrected 'bekomna heyatt' to 'bekommen hat' for grammatical correctness."
+    },
+    {
+      "original": "fir nicht's",
+      "corrected": "f\u00fcr nichts",
+      "reason": "Corrected 'fir' to 'f\u00fcr' for correct German preposition."
+    },
+    {
+      "original": "wicht",
+      "corrected": "nicht",
+      "reason": "Corrected 'wicht' to 'nicht' as it fits the context of necessity."
+    },
+    {
+      "original": "bier einer der berish",
+      "corrected": "hier einer der ber\u00fchmt",
+      "reason": "Corrected 'bier' to 'hier' and 'berish' to 'ber\u00fchmt' for context and meaning."
+    },
+    {
+      "original": "Falimpoferte",
+      "corrected": "teilgenommen",
+      "reason": "Corrected 'Falimpoferte' to 'teilgenommen' as it fits the context of participating."
+    },
+    {
+      "original": "Carneval",
+      "corrected": "Karneval",
+      "reason": "Corrected 'Carneval' to 'Karneval' for correct German spelling."
+    },
+    {
+      "original": "versiche",
+      "corrected": "versuche",
+      "reason": "Corrected 'versiche' to 'versuche' for correct verb form."
+    },
+    {
+      "original": "kater",
+      "corrected": "Kater",
+      "reason": "Capitalized 'Kater' as it is a noun in German."
+    }
+  ],
+  "uncertain_segments": [
+    "Bija und selben Tag an dem fi",
+    "ilin",
+    "den mes",
+    "\u0434\u0435\u0442 \u0434\u043e\u0432",
+    "lofel des Pyrenees",
+    "\u307f",
+    "\u03b7\u03c3"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 106,
+  "corrected_word_count": 106,
+  "corrections_count": 10
+}

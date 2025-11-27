@@ -1,0 +1,51 @@
+{
+  "pdf_file": "100-1933-xx-ger.pdf",
+  "date_processed": "2025-11-16T17:30:00.576599",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "SBOLL\nSTRA\nPE\n1933\nBAS\nm\nFre\nverh\u00e4lt die\ntuk\u00fcnft\ntelegraphisch.\nAuf Wiedersehen\nT\nATHE\nGARE\nVISITEZ LA FOIRE\nPOSTES\n40\u20ac\nEXPOS STRASBOUUBLIQUE FRAN\u00c7AISE\nEN SEPTEMBRE\nElisabet Aigner\nParis 15e\n7. Fine Jean Picard\nAlsacienne des Arts Photom\u00e9can\nbin bereits m\n\nHOTEL DU RHIN\nHOTEL DU RHIN\nHOTEL DU RHIN\nHOTEL DURHIN\nRESTAURANT\nCOFEUR ver\nCUIFFEUR\n\u0b89\nHOTEL DU RHIN\n7, Place de la Gare\nSTRASBOURG\nT\u00c9L\u00c9PHONE 13,75\nConfort moderne\nEau courante chaude et\nfroide\nChauffage central\nRestaurant Jer Ordre\nPrix mod\u00e9r\u00e9s\n\n",
+  "corrected_text": "SBOLL\nSTRA\nPE\n1933\nBAS\nm\nFre\nverh\u00e4lt die\ntuk\u00fcnft\ntelegraphisch.\nAuf Wiedersehen\nT\nATHE\nGARE\nVISITEZ LA FOIRE\nPOSTES\n40\u20ac\nEXPOS STRASBOURG R\u00c9PUBLIQUE FRAN\u00c7AISE\nEN SEPTEMBRE\nElisabeth Aigner\nParis 15e\n7. Rue Jean Picard\nAlsacienne des Arts Photom\u00e9caniques\nbin bereits m\n\nHOTEL DU RHIN\nHOTEL DU RHIN\nHOTEL DU RHIN\nHOTEL DU RHIN\nRESTAURANT\nCOIFFEUR ver\nCOIFFEUR\n\u0b89\nHOTEL DU RHIN\n7, Place de la Gare\nSTRASBOURG\nT\u00c9L\u00c9PHONE 13,75\nConfort moderne\nEau courante chaude et\nfroide\nChauffage central\nRestaurant Jer Ordre\nPrix mod\u00e9r\u00e9s\n",
+  "translated_text": "SBOLL STRA PE 1933 BAS m Fre verh\u00e4lt die tuk\u00fcnft telegraphisch. Auf Wiedersehen T ATHE GARE VISIT THE FAIR POST OFFICE 40\u20ac EXHIBITIONS STRASBOURG FRENCH REPUBLIC IN SEPTEMBER Elisabeth Aigner Paris 15th 7. Rue Jean Picard Alsacienne des Arts Photom\u00e9caniques bin bereits m HOTEL DU RHIN HOTEL DU RHIN HOTEL DU RHIN HOTEL DU RHIN RESTAURANT HAIRDRESSER ver HAIRDRESSER \u0b89 HOTEL DU RHIN 7, Place de la Gare STRASBOURG TELEPHONE 13.75 Modern comfort Hot and cold running water Central heating Restaurant Jer Order Moderate prices\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "EXPOS STRASBOUUBLIQUE FRAN\u00c7AISE",
+      "corrected": "EXPOS STRASBOURG R\u00c9PUBLIQUE FRAN\u00c7AISE",
+      "reason": "Corrected misread letters in 'STRASBOUUBLIQUE' to 'STRASBOURG R\u00c9PUBLIQUE' based on context."
+    },
+    {
+      "original": "Elisabet Aigner",
+      "corrected": "Elisabeth Aigner",
+      "reason": "Corrected 'Elisabet' to 'Elisabeth' based on known names."
+    },
+    {
+      "original": "7. Fine Jean Picard",
+      "corrected": "7. Rue Jean Picard",
+      "reason": "Corrected 'Fine' to 'Rue' based on common street naming conventions."
+    },
+    {
+      "original": "Alsacienne des Arts Photom\u00e9can",
+      "corrected": "Alsacienne des Arts Photom\u00e9caniques",
+      "reason": "Completed the word 'Photom\u00e9can' to 'Photom\u00e9caniques' for grammatical correctness."
+    },
+    {
+      "original": "COFEUR ver",
+      "corrected": "COIFFEUR ver",
+      "reason": "Corrected 'COFEUR' to 'COIFFEUR' based on context and common spelling."
+    },
+    {
+      "original": "CUIFFEUR",
+      "corrected": "COIFFEUR",
+      "reason": "Corrected 'CUIFFEUR' to 'COIFFEUR' based on context and common spelling."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 82,
+  "corrected_word_count": 84,
+  "corrections_count": 6
+}

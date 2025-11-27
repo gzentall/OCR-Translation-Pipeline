@@ -1,0 +1,199 @@
+{
+  "people": [
+    {
+      "name": "Betty Zentall",
+      "variations": [
+        "Betty",
+        "Baba",
+        "Elizabeth Aigner",
+        "Elise",
+        "Mon petit",
+        "Ma cherie",
+        "Ma petite femme",
+        "Mon amour chari",
+        "Elizabeth Zweigenthal",
+        "Madame E. Zweigenthal",
+        "Madame Zweigenthal",
+        "Betty Zweigenthal",
+        "Mme Zweigenthal"
+      ],
+      "relationship": "grandmother",
+      "notes": "Born 1915. Maiden name Aigner, married name Zweigenthal (1939), changed to Zentall after immigrating to USA in 1942. Moved from Hungary to Paris in 1929."
+    },
+    {
+      "name": "Robert Zentall",
+      "variations": [
+        "Robert",
+        "Bob",
+        "Monsieur Robert Zweigenthal",
+        "Robert Zweigenthal",
+        "M. Zweigenthal",
+        "le soldat",
+        "mon chéri"
+      ],
+      "relationship": "grandfather",
+      "notes": "Born 1908. Original surname Zweigenthal, changed to Zentall after immigrating to USA in 1942. Army photographer in Czech division of French army. Stationed in Agde, France."
+    },
+    {
+      "name": "Lucien Aigner",
+      "variations": ["Lucien", "Laci"],
+      "relationship": "Betty's brother",
+      "notes": "Lived in Paris"
+    },
+    {
+      "name": "Etienne Aigner",
+      "variations": ["Etienne", "Pista"],
+      "relationship": "Betty's brother",
+      "notes": "Lived in Paris"
+    },
+    {
+      "name": "Karola Aigner",
+      "variations": ["Karola", "Carola"],
+      "relationship": "Betty's mother"
+    },
+    {
+      "name": "Edmund Zachar",
+      "variations": ["Edmund", "Egge", "Edmund Zweigenthal"],
+      "relationship": "Robert's brother",
+      "notes": "Original surname Zweigenthal, changed to Zachar after immigrating to USA"
+    },
+    {
+      "name": "Armin Zweigenthal",
+      "variations": ["Armin"],
+      "relationship": "Robert's father"
+    },
+    {
+      "name": "Irma Zweigenthal",
+      "variations": ["Irma"],
+      "relationship": "Robert's mother"
+    },
+    {
+      "name": "Thomas Zentall",
+      "variations": ["Thomas", "Tommy"],
+      "relationship": "son (father of recipient)",
+      "notes": "Born 1940, conceived while Robert was stationed in Agde, France"
+    },
+    {
+      "name": "Sarah Roosevelt",
+      "variations": ["Sarah"],
+      "relationship": "FDR's sister",
+      "notes": "Helped Robert and Betty immigrate to the US in October 1942"
+    },
+    {
+      "name": "Gabe Zentall",
+      "variations": ["Gabe", "Gabriel", "Gabe Zentall"],
+      "relationship": "grandson (recipient of later letters)"
+    }
+  ],
+  "locations": [
+    {
+      "city": "Paris",
+      "country": "France",
+      "variations": ["Paris", "Paris, France"],
+      "notes": "Where Betty moved in 1929, where Robert and Betty reunited and married in 1939"
+    },
+    {
+      "city": "Prague",
+      "country": "Hungary",
+      "variations": ["Prague", "Praha"],
+      "notes": "Historical context - part of Austro-Hungarian Empire until 1918"
+    },
+    {
+      "city": "Agde",
+      "country": "France",
+      "variations": ["Agde", "Agde, France"],
+      "notes": "Where Robert was stationed as a soldier, where Thomas was conceived in 1940"
+    },
+    {
+      "city": "Berlin",
+      "country": "Germany",
+      "variations": ["Berlin", "Berlin, Germany"]
+    },
+    {
+      "city": "London",
+      "country": "England",
+      "variations": ["London", "London, England"],
+      "notes": "Betty spent time here at some point"
+    },
+    {
+      "country": "USA",
+      "variations": ["United States", "America", "USA", "US"],
+      "notes": "Where the family immigrated to in October 1942"
+    },
+    {
+      "address": "21 Bayberry Lane, Rye Brook, NY 10573",
+      "type": "residential",
+      "variations": ["21 Bayberry Lane", "Rye Brook", "Rye Brook, NY"],
+      "notes": "Later family residence in USA"
+    }
+  ],
+  "common_phrases": {
+    "greetings": [
+      "My darling",
+      "Mon chéri",
+      "Ma chérie",
+      "Mon petit",
+      "Ma petite femme",
+      "Dearest",
+      "My dear"
+    ],
+    "closings": [
+      "So much love",
+      "Love",
+      "With love",
+      "Your loving",
+      "Je t'adore",
+      "I adore you",
+      "All my love",
+      "Yours"
+    ],
+    "common_military_terms": [
+      "le soldat",
+      "l'armée",
+      "démobilisation",
+      "mobilization",
+      "stationed",
+      "division"
+    ],
+    "common_words": [
+      "letter",
+      "photograph",
+      "photos",
+      "army",
+      "war",
+      "soldier"
+    ]
+  },
+  "historical_period": "1929-1942 (primarily WWII era)",
+  "languages": ["French", "German", "English", "Hungarian"],
+  "document_types": ["personal letter", "military correspondence", "wartime correspondence"],
+  "historical_context": {
+    "timeline": {
+      "1908": "Robert born",
+      "1915": "Betty born",
+      "1929": "Betty moved from Hungary to Paris",
+      "1932_approx": "Betty spent summer in Germany, met Robert (she was 17)",
+      "1939": "Robert and Betty married in Paris",
+      "1939-1945": "WWII - Robert fought in Czech division of French army",
+      "1940": "Thomas (Tommy) conceived while Robert stationed in Agde",
+      "1940-1942": "Many letters written during Robert's deployment while Betty was pregnant",
+      "October 1942": "Immigrated to USA with help from FDR's sister, Sarah Roosevelt",
+      "1942": "Family name changed from Zweigenthal to Zentall"
+    },
+    "key_facts": [
+      "Robert and Betty were Jewish living in Europe during WWII",
+      "They fled Europe to escape Nazi persecution",
+      "Robert was a photographer for the Czech division of the French army",
+      "Robert fought against Axis forces, including his home country Germany",
+      "Betty was pregnant during much of the correspondence",
+      "The family was separated during the war while Robert was deployed",
+      "They eventually immigrated to the United States"
+    ],
+    "name_changes": [
+      "Zweigenthal → Zentall (after US immigration, 1942)",
+      "Zweigenthal → Zachar (Robert's brother Edmund)"
+    ]
+  },
+  "notes": "Reference data for OCR correction of WWII-era letters between Robert and Betty Zentall (originally Zweigenthal). These are primarily wartime correspondence written in French and German between 1939-1942. The letters document their courtship, marriage, Robert's military service, Betty's pregnancy, and their eventual escape from Nazi-occupied Europe to the United States."
+}
+

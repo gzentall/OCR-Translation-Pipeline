@@ -1,0 +1,59 @@
+{
+  "pdf_file": "042-xxx-fre.pdf",
+  "date_processed": "2025-11-16T17:27:00.473495",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "L\n\u043f\u0430\u0441\u043b\u044f\nJe sonsigne Herman Gouads\npropri\u00e9taire de ....\nLectars de terre dans\nla vitu de It Rapha\u00ebl\n(Var) d\u00e9clare vouloir\nM. Zweigenthal Robert\n\u0441\u043f\u0440\u0430\u0434\u0430\n\nDr. Ribar\nthef de transport.\nFinger 6 comp.\nPark. (Rock)\nPost\nmbi\u00e8res-les-Bains (Vosges)\nH\u00f4tel Windsor, Cannes.\n\n",
+  "corrected_text": "L\n\u043f\u0430\u0441\u043b\u044f\nJe soussign\u00e9 Herman Gouads\npropri\u00e9taire de ....\nHectares de terre dans\nla ville de St Rapha\u00ebl\n(Var) d\u00e9clare vouloir\nM. Zweigenthal Robert\n\u0441\u043f\u0440\u0430\u0434\u0430\n\nDr. Ribar\nthef de transport.\nFinger 6 comp.\nPark. (Rock)\nPost\nVmbi\u00e8res-les-Bains (Vosges)\nH\u00f4tel Windsor, Cannes.\n",
+  "translated_text": "I, the undersigned Herman Gouads, owner of ... hectares of land in the town of St Rapha\u00ebl (Var), declare that I wish to transport Mr. Zweigenthal Robert Sprada Dr. Ribar. Finger 6 comp. Park. (Rock) Post Vmbi\u00e8res-les-Bains (Vosges) H\u00f4tel Windsor, Cannes.\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Je sonsigne",
+      "corrected": "Je soussign\u00e9",
+      "reason": "Corrected to the French phrase 'Je soussign\u00e9' meaning 'I, the undersigned'"
+    },
+    {
+      "original": "Gouads",
+      "corrected": "Gouads",
+      "reason": "Assumed correct as it may be a name"
+    },
+    {
+      "original": "Lectars",
+      "corrected": "Hectares",
+      "reason": "Corrected to 'Hectares', a common unit of land measurement"
+    },
+    {
+      "original": "vitu",
+      "corrected": "ville",
+      "reason": "Corrected to 'ville', the French word for 'city'"
+    },
+    {
+      "original": "It Rapha\u00ebl",
+      "corrected": "St Rapha\u00ebl",
+      "reason": "Corrected to 'St Rapha\u00ebl', a known location"
+    },
+    {
+      "original": "thef",
+      "corrected": "chef",
+      "reason": "Corrected to 'chef', the French word for 'chief'"
+    },
+    {
+      "original": "Vmbi\u00e8res-les-Bains",
+      "corrected": "Vmbi\u00e8res-les-Bains",
+      "reason": "Assumed correct as it may be a location"
+    }
+  ],
+  "uncertain_segments": [
+    "Gouads",
+    "Vmbi\u00e8res-les-Bains"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 41,
+  "corrected_word_count": 41,
+  "corrections_count": 7
+}

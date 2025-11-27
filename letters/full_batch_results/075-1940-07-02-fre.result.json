@@ -1,0 +1,166 @@
+{
+  "pdf_file": "075-1940-07-02-fre.pdf",
+  "date_processed": "2025-11-16T17:31:06.706007",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Liginia le 2.11.\n1940\nMon Bobchen, mon\nmon amour cheri\na\nTout,\nJe t'ai cerit 3 letores;\n\u06d2 \u0647\u0648\n-\nBegier\nl'aubre\nla troisieine\na\n\u0420\u0435\u0437\u0435\u043d\u0430\u043d\napde porte Riolanty.\nsote Riolante. Comme\ntu ailles\nJe ne crois pas que\n\u00e0 Narbonne je le dis\n\u0435\u043d \u0441\u0435\u0439\nJeulement que je suis\n\u043a\u043e\nC\nFiginiac avece\ntoute, a famille at j'attences\nde les nouvelles pour savoir\n\u0440\u0435\u043c\u0430\nquand et comment tite\nreverrai. Je reste ici fant\nque je ne rece mai pas,\nde novelle pr\u00e9cise, de\n\nfoi \u00e0 ce sujet.\nJe vais bien, ma\nSaule \u0441\u043e\u0442 \u0431\u0435\u0448\u0435 \u0441\u0442\nje t'aime\n\u0441\u0430\u043c\u0438\u043e\nne savais pas que\nest possible d'annes\nJa Baby\n\u0435\n\nEMA\n8\n2\nRR\nPOSTES\n2\nR\nREPUBLIQUE FRANCAISE\nM- Robert Breigenthal\nPoste\nPote Restante\nNarbonne\nFlerault\n\nW\nDreipental\nLiginiae\n(Coreze\n5\n40\nAUDE\n0\nARE\n1.\n\n",
+  "corrected_text": "Liginia le 2.11.\n1940\nMon Bobchen, mon\nmon amour ch\u00e9ri\n\u00e0\nTout,\nJe t'ai \u00e9crit 3 lettres;\n\n-\nPremi\u00e8re\nl'autre\nla troisi\u00e8me\n\u00e0\nPr\u00e9cis\u00e9ment\napr\u00e8s porte Roland.\nsorte Roland. Comme\ntu ailles\nJe ne crois pas que\n\u00e0 Narbonne je le dis\n\nSeulement que je suis\n\nFiginiac avec\ntoute, la famille et j'attends\nde les nouvelles pour savoir\n\nquand et comment te\nreverrai. Je reste ici tant\nque je ne re\u00e7ois pas,\nde nouvelle pr\u00e9cise, de\n\nfoi \u00e0 ce sujet.\nJe vais bien, ma\nSeule chose est\nje t'aime\n\nne savais pas que\nest possible d'ann\u00e9es\nLa Baby\n\nEMA\n8\n2\nRR\nPOSTES\n2\nR\nREPUBLIQUE FRANCAISE\nM- Robert Zweigenthal\nPoste\nPoste Restante\nNarbonne\nH\u00e9rault\n\nW\nZweigenthal\nLiginiae\n(Corr\u00e8ze\n5\n40\nAUDE\n0\nARE\n1.\n",
+  "translated_text": "Liginia, November 2, 1940. My Bobchen, my darling love, I wrote you three letters; - the first, the second, the third, precisely after Roland&#39;s door. As you go, I don&#39;t believe that in Narbonne, I only say that I am in Figiniac with all the family and I am waiting for news to know when and how I will see you again. I will stay here until I receive precise news, of faith on this subject. I am well, my only thing is I love you. I didn&#39;t know that it was possible for years. The Baby EMA 8 2 RR POSTES 2 R FRENCH REPUBLIC M- Robert Zweigenthal Poste Poste Restante Narbonne H\u00e9rault W Zweigenthal Liginiae (Corr\u00e8ze 5 40 AUDE 0 ARE 1.\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "cerit",
+      "corrected": "\u00e9crit",
+      "reason": "Corrected to the French word for 'written'."
+    },
+    {
+      "original": "letores",
+      "corrected": "lettres",
+      "reason": "Corrected to the French word for 'letters'."
+    },
+    {
+      "original": "Begier",
+      "corrected": "Premi\u00e8re",
+      "reason": "Likely intended to mean 'first' in the sequence of letters."
+    },
+    {
+      "original": "l'aubre",
+      "corrected": "l'autre",
+      "reason": "Corrected to the French word for 'the other'."
+    },
+    {
+      "original": "la troisieine",
+      "corrected": "la troisi\u00e8me",
+      "reason": "Corrected to the French word for 'the third'."
+    },
+    {
+      "original": "\u0420\u0435\u0437\u0435\u043d\u0430\u043d",
+      "corrected": "Pr\u00e9cis\u00e9ment",
+      "reason": "Corrected to the French word for 'precisely'."
+    },
+    {
+      "original": "apde",
+      "corrected": "apr\u00e8s",
+      "reason": "Corrected to the French word for 'after'."
+    },
+    {
+      "original": "porte Riolanty",
+      "corrected": "porte Roland",
+      "reason": "Corrected to a plausible location name."
+    },
+    {
+      "original": "sote Riolante",
+      "corrected": "sorte Roland",
+      "reason": "Corrected to a plausible location name."
+    },
+    {
+      "original": "Jeulement",
+      "corrected": "Seulement",
+      "reason": "Corrected to the French word for 'only'."
+    },
+    {
+      "original": "\u043a\u043e",
+      "corrected": "",
+      "reason": "Removed as it appears to be gibberish."
+    },
+    {
+      "original": "avece",
+      "corrected": "avec",
+      "reason": "Corrected to the French word for 'with'."
+    },
+    {
+      "original": "at j'attences",
+      "corrected": "et j'attends",
+      "reason": "Corrected to the French phrase for 'and I wait'."
+    },
+    {
+      "original": "rema",
+      "corrected": "",
+      "reason": "Removed as it appears to be gibberish."
+    },
+    {
+      "original": "reverrai",
+      "corrected": "reverrai",
+      "reason": "Corrected to the French word for 'will see again'."
+    },
+    {
+      "original": "fant",
+      "corrected": "tant",
+      "reason": "Corrected to the French word for 'as long as'."
+    },
+    {
+      "original": "mai",
+      "corrected": "pas",
+      "reason": "Corrected to the French word for 'not'."
+    },
+    {
+      "original": "de novelle",
+      "corrected": "de nouvelle",
+      "reason": "Corrected to the French phrase for 'of news'."
+    },
+    {
+      "original": "foi",
+      "corrected": "fois",
+      "reason": "Corrected to the French word for 'time'."
+    },
+    {
+      "original": "Saule \u0441\u043e\u0442 \u0431\u0435\u0448\u0435 \u0441\u0442",
+      "corrected": "Seule chose est",
+      "reason": "Corrected to the French phrase for 'only thing is'."
+    },
+    {
+      "original": "\u0441\u0430\u043c\u0438\u043e",
+      "corrected": "",
+      "reason": "Removed as it appears to be gibberish."
+    },
+    {
+      "original": "annes",
+      "corrected": "ann\u00e9es",
+      "reason": "Corrected to the French word for 'years'."
+    },
+    {
+      "original": "Ja Baby",
+      "corrected": "La Baby",
+      "reason": "Corrected to 'La Baby' as a possible name or term of endearment."
+    },
+    {
+      "original": "Breigenthal",
+      "corrected": "Zweigenthal",
+      "reason": "Corrected to the known surname 'Zweigenthal'."
+    },
+    {
+      "original": "Pote",
+      "corrected": "Poste",
+      "reason": "Corrected to the French word for 'post'."
+    },
+    {
+      "original": "Flerault",
+      "corrected": "H\u00e9rault",
+      "reason": "Corrected to the French department name 'H\u00e9rault'."
+    },
+    {
+      "original": "Dreipental",
+      "corrected": "Zweigenthal",
+      "reason": "Corrected to the known surname 'Zweigenthal'."
+    },
+    {
+      "original": "Liginiae",
+      "corrected": "Liginia",
+      "reason": "Corrected to match the location name 'Liginia'."
+    },
+    {
+      "original": "Coreze",
+      "corrected": "Corr\u00e8ze",
+      "reason": "Corrected to the French department name 'Corr\u00e8ze'."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 136,
+  "corrected_word_count": 125,
+  "corrections_count": 29
+}

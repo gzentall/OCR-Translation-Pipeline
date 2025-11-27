@@ -1,0 +1,86 @@
+{
+  "pdf_file": "049-1940-05-16-fre.pdf",
+  "date_processed": "2025-11-16T17:39:51.204541",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Mon ch\u00e9ri,\nle 16 mai 1940\nTr\u00e8s vite seulement quelques lignes. Nous allons\ntous tr\u00e8s bien, somnes un peu \u00e9n\u00e9rv\u00e9s, mais ce n'est rien.\nJe suis toute la journ\u00e9e au travail et rentre tot pour que\nMaman reste seule le moins possible.\nEcris moi tous les jours sans faute, c'est\nplus important que jamais, tu sais maintenant.K... Dis\nmoi aussi comment tu vas, si tu restes o\u00f9 tu es o\u00f9 si vas\nailleurs.\nJe n'ai pas le coeur et le courage de chercher\nmaintenant les films que tu me demandes/ Peut-etre dans\nquelques jours.\nAu revoir mon amour, bon courage, nous autres.\nen avons beaucoup !\nJe t'aime infiniment.\nBaby.\n\nContr\u00f4le Postal Militaire\n181\nBAT\nJE DES\nCAPUCIN\nNATIONALE\nreip\n3.87\n8H\n8\nAUE\n81\nCAPUCINES\n40\nDES\nMr. Robert Lweisenthal\nfor Regiment d\nVel Rota\n\u043b\u0430\nPezenas\nHerault\nInfande\nREGIM\nINF.\nLe Vaguemestre\n*\nCHECUSLOVAO\n\n250\nVOJENSKA CENSUR.\n\n",
+  "corrected_text": "Mon ch\u00e9ri,\nle 16 mai 1940\nTr\u00e8s vite seulement quelques lignes. Nous allons\ntous tr\u00e8s bien, sommes un peu \u00e9nerv\u00e9s, mais ce n'est rien.\nJe suis toute la journ\u00e9e au travail et rentre t\u00f4t pour que\nMaman reste seule le moins possible.\n\u00c9cris-moi tous les jours sans faute, c'est\nplus important que jamais, tu sais maintenant. Dis\nmoi aussi comment tu vas, si tu restes o\u00f9 tu es ou si vas\nailleurs.\nJe n'ai pas le c\u0153ur et le courage de chercher\nmaintenant les films que tu me demandes. Peut-\u00eatre dans\nquelques jours.\nAu revoir mon amour, bon courage, nous autres\nen avons beaucoup !\nJe t'aime infiniment.\nBetty.\n\nContr\u00f4le Postal Militaire\n181\nBAT\nRUE DES\nCAPUCINES\nNATIONALE\nre\u00e7u\n3.87\n8H\n8\nAUE\n81\nCAPUCINES\n40\nDES\nMr. Robert Zweigenthal\n1er Regiment d\nVel Rota\nla\nPezenas\nHerault\nInfanterie\nREGIM\nINF.\nLe Vaguemestre\n*\nCHECOSLOVAQUE\n\n250\nVOJENSKA CENSUR.",
+  "translated_text": "My darling, May 16, 1940. Very quickly, just a few lines. We are all very well, a little stressed, but it&#39;s nothing. I&#39;m at work all day and come home early so that Mother is alone as little as possible. Write to me every day without fail, it&#39;s more important than ever, you know now. Tell me also how you are, if you&#39;re staying where you are or going somewhere else. I don&#39;t have the heart or the courage to look for the films you&#39;re asking for right now. Maybe in a few days. Goodbye my love, good luck, we all have plenty! I love you infinitely. Betty. Military Postal Control 181 BAT RUE DES CAPUCINES NATIONALE received 3.87 8H 8 AUE 81 CAPUCINES 40 DES Mr. Robert Zweigenthal 1st Regiment of Vel Rota la Pezenas Herault Infantry REGIM INF. The Postmaster * CZECHOSLOVAK 250 VOJENSKA CENSORSHIP.",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "somnes",
+      "corrected": "sommes",
+      "reason": "Corrected to the proper French verb form 'sommes'."
+    },
+    {
+      "original": "\u00e9n\u00e9rv\u00e9s",
+      "corrected": "\u00e9nerv\u00e9s",
+      "reason": "Removed incorrect accent on '\u00e9'."
+    },
+    {
+      "original": "tot",
+      "corrected": "t\u00f4t",
+      "reason": "Corrected to the proper French word 't\u00f4t'."
+    },
+    {
+      "original": "Ecris",
+      "corrected": "\u00c9cris",
+      "reason": "Added accent to '\u00c9' for proper French spelling."
+    },
+    {
+      "original": "coeur",
+      "corrected": "c\u0153ur",
+      "reason": "Added accent to '\u0153' for proper French spelling."
+    },
+    {
+      "original": "Peut-etre",
+      "corrected": "Peut-\u00eatre",
+      "reason": "Added accent to '\u00ea' for proper French spelling."
+    },
+    {
+      "original": "Baby",
+      "corrected": "Betty",
+      "reason": "Corrected to known name 'Betty'."
+    },
+    {
+      "original": "JE DES",
+      "corrected": "RUE DES",
+      "reason": "Corrected to 'RUE DES' based on context."
+    },
+    {
+      "original": "CAPUCIN",
+      "corrected": "CAPUCINES",
+      "reason": "Corrected to 'CAPUCINES' based on context."
+    },
+    {
+      "original": "reip",
+      "corrected": "re\u00e7u",
+      "reason": "Corrected to 're\u00e7u' based on context."
+    },
+    {
+      "original": "Mr. Robert Lweisenthal",
+      "corrected": "Mr. Robert Zweigenthal",
+      "reason": "Corrected to known name 'Robert Zweigenthal'."
+    },
+    {
+      "original": "Infande",
+      "corrected": "Infanterie",
+      "reason": "Corrected to 'Infanterie' based on context."
+    },
+    {
+      "original": "CHECUSLOVAO",
+      "corrected": "CHECOSLOVAQUE",
+      "reason": "Corrected to 'CHECOSLOVAQUE' based on context."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 149,
+  "corrected_word_count": 148,
+  "corrections_count": 13
+}

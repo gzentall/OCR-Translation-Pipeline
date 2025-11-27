@@ -1,0 +1,44 @@
+{
+  "pdf_file": "033-1941-06-13-fre.pdf",
+  "date_processed": "2025-11-16T17:33:51.750524",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "SF\nUR-MER\n13\n8H50\nJUIN 10\n41\nAR\nOVER\n3\nCON OLE\nMadame\nSF\nPOSTES\n1865\nJUIN\n4\nREPUBLIQUE FRANCAISE\nRobert ferpcnthal\ny\n32 Rue de be Republique\n(Herault)\nAGDE\n\nfair\nEleav\n\u13ed\nmer\n-\n\u0b6b\nHe formante\n\"des tabletts Val\nat 9\nth\n3\n\n",
+  "corrected_text": "SF\nUR-MER\n13\n8H50\nJUIN 10\n41\nAR\nOVER\n3\nCON OLE\nMadame\nSF\nPOSTES\n1865\nJUIN\n4\nREPUBLIQUE FRANCAISE\nRobert Zweigenthal\ny\n32 Rue de la Republique\n(Herault)\nAGDE\n\nfair\nEleav\n\u13ed\nmer\n-\n\u0b6b\nHe formante\n\"des tablettes Val\nat 9\nth\n3\n",
+  "translated_text": "SF UR-MER 13 8:50 JUNE 10 41 AR OVER 3 CON OLE Madame SF POSTES 1865 JUNE 4 FRENCH REPUBLIC Robert Zweigenthal y 32 Rue de la Republique (Herault) AGDE fair Eleav \u13ed mer - \u0b6b He formante &quot;des tablettes Val at 9 th 3\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "ferpcnthal",
+      "corrected": "Zweigenthal",
+      "reason": "Known family name"
+    },
+    {
+      "original": "be Republique",
+      "corrected": "la Republique",
+      "reason": "Common street name format"
+    },
+    {
+      "original": "He formante",
+      "corrected": "Le formante",
+      "reason": "French language correction"
+    }
+  ],
+  "uncertain_segments": [
+    "CON OLE",
+    "Eleav",
+    "\u13ed",
+    "\u0b6b",
+    "des tablettes Val",
+    "at 9",
+    "th 3"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 45,
+  "corrected_word_count": 45,
+  "corrections_count": 3
+}

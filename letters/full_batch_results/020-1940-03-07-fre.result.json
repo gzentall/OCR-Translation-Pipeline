@@ -1,0 +1,122 @@
+{
+  "pdf_file": "020-1940-03-07-fre.pdf",
+  "date_processed": "2025-11-16T17:30:48.959708",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "mon dir\n\u0421\u0430\nParis le 7.11.90\nhave it.\nai\nfevre main\neen est\n\"Rerey est\n\u0435\u043c\nencore un peu\npar grave\nvenue, il a dit c est nomial\n\u0440\u0435\u0448\u0438\nC\ndy les femming qui attendent\nely\n\u0448\nMy baby. I fand\nque\nste au lit quelques jous.\net is isa yout \u00e0 fait\n\u0435\u0442\u0435\u0434 \u043d\u0430\nbi\u00e9n\nJ'essive que tu i\nbren.\narriv\u00e9\nmon\nD\nmon undu\n\nque tout\ntents ist bran\n\u0438\npass\u00e9\nGerin orte & beaucoup\n\u0441\u0442\u0435\ntune of a que fois\n\u0430\u043d\nUn feu davanjaife\nTaaber\n\u0430\n\nARIS\nPA\n$140.33\n6,9\nOUCLE\nPARIS\n69\n---7 | 40 19 H\nROE VOUILLY\nM. Robert Z Neipcuts.\nYes R.1.\n6. Coup\nS.P. 2197\n))\n\n\n\n",
+  "corrected_text": "mon cher\n\u0421\u0430\nParis le 7.11.40\nhave it.\nai\nfevre main\neen est\n\"Rerey est\n\u0435\u043c\nencore un peu\npas grave\nvenue, il a dit c'est normal\n\u0440\u0435\u0448\u0438\nC\ndy les femmes qui attendent\nely\n\u0448\nMy baby. I find\nque\nste au lit quelques jours.\net is isa tout \u00e0 fait\n\u0435\u0442\u0435\u0434 \u043d\u0430\nbi\u00e9n\nJ'esp\u00e8re que tu i\nbien.\narriv\u00e9\nmon\nD\nmon undu\n\nque tout\ntemps est bon\n\u0438\npass\u00e9\nGerin porte & beaucoup\n\u0441\u0442\u0435\ntune of a que fois\n\u0430\u043d\nUn feu d'avantage\nTaaber\n\u0430\n\nPARIS\nPA\n$140.33\n6,9\nOUCLE\nPARIS\n69\n---7 | 40 19 H\nRUE VOUILLY\nM. Robert Zweigenthal.\nYes R.1.\n6. Coup\nS.P. 2197\n))\n\n\n\n",
+  "translated_text": "My dear Sa Paris, November 7, 1940, have it. I have a fever, my main, it&#39;s &quot;Rerey is still a little bit, no big deal, he came, he said it&#39;s normal, C dy the women who are waiting, ely sch My baby. I find that you are in bed for a few days. And is it quite well, I hope you are well. Arrived, my D, my undu, that all weather is good, and passed Gerin wears &amp; a lot, this tune of a that time, an A fire of more Taaber in PARIS PA $140.33 6,9 OUCLE PARIS 69 ---7 | 40 19 H RUE VOUILLY M. Robert Zweigenthal. Yes R.1. 6. Coup SP 2197 ))\n\n\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "dir",
+      "corrected": "cher",
+      "reason": "Common greeting 'mon cher'"
+    },
+    {
+      "original": "par",
+      "corrected": "pas",
+      "reason": "Contextual correction for 'pas grave'"
+    },
+    {
+      "original": "nomial",
+      "corrected": "normal",
+      "reason": "Common phrase 'c'est normal'"
+    },
+    {
+      "original": "dy",
+      "corrected": "de",
+      "reason": "Contextual correction for 'de les femmes'"
+    },
+    {
+      "original": "femming",
+      "corrected": "femmes",
+      "reason": "Correct spelling for 'femmes'"
+    },
+    {
+      "original": "fand",
+      "corrected": "find",
+      "reason": "Correct spelling for 'find'"
+    },
+    {
+      "original": "jous",
+      "corrected": "jours",
+      "reason": "Correct spelling for 'jours'"
+    },
+    {
+      "original": "isa",
+      "corrected": "est",
+      "reason": "Contextual correction for 'est tout \u00e0 fait'"
+    },
+    {
+      "original": "J'essive",
+      "corrected": "J'esp\u00e8re",
+      "reason": "Common phrase 'J'esp\u00e8re que'"
+    },
+    {
+      "original": "bren",
+      "corrected": "bien",
+      "reason": "Correct spelling for 'bien'"
+    },
+    {
+      "original": "tents",
+      "corrected": "temps",
+      "reason": "Contextual correction for 'temps est bon'"
+    },
+    {
+      "original": "Gerin",
+      "corrected": "Rien",
+      "reason": "Contextual correction for 'Rien de porte'"
+    },
+    {
+      "original": "orte",
+      "corrected": "porte",
+      "reason": "Common phrase 'porte & beaucoup'"
+    },
+    {
+      "original": "davanjaife",
+      "corrected": "d'avantage",
+      "reason": "Correct spelling for 'd'avantage'"
+    },
+    {
+      "original": "ARIS",
+      "corrected": "PARIS",
+      "reason": "Known location 'PARIS'"
+    },
+    {
+      "original": "ROE VOUILLY",
+      "corrected": "RUE VOUILLY",
+      "reason": "Correct spelling for 'RUE'"
+    },
+    {
+      "original": "Neipcuts",
+      "corrected": "Zweigenthal",
+      "reason": "Known person 'Robert Zweigenthal'"
+    }
+  ],
+  "uncertain_segments": [
+    "fevre main",
+    "een est",
+    "\u0440\u0435\u0448\u0438",
+    "ely",
+    "\u0448",
+    "\u0435\u0442\u0435\u0434 \u043d\u0430",
+    "mon undu",
+    "\u0438",
+    "\u0441\u0442\u0435",
+    "\u0430\u043d",
+    "Taaber",
+    "\u0430",
+    "Yes R.1.",
+    "6. Coup",
+    "S.P. 2197"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 114,
+  "corrected_word_count": 112,
+  "corrections_count": 17
+}

@@ -1,0 +1,171 @@
+{
+  "pdf_file": "026-1940-07-17-fre.pdf",
+  "date_processed": "2025-11-16T17:27:38.683008",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "17.7.20\nMon petit\nJ'ai\npas encore reuici\nbes nouvelles mais je te veux\necrire, que j'\u00e9tait aujourd'hie\nAn Commiserial et on m'a\ndit, que tu peux rendre \u00e0 Aydle\nsans difficulties, sucument\navec un laisser passer de\nRiginiac. Flors qu sombe.\nbr\u00e8s bien (\u00e0 cause de more Bracke\nd'affend encore bes nouvelles a\nCans\nd'essence. J'ai demand\u00e9\naujourd'hui une permission.\npour chercher ma fluume.\nSi je l'ai segun je part\nfoute suite pour de chercher.\nJe crois ca pera \u00e0 peu pr\u00e8s\nen & jour. L'expire\nAu revoir mon petit \u00e0 bient\u00f4t\nfor Bob.\n\n\u3092\nMadame\nAGA\nE. Zweig enth\ncher. More Movers\nLiginiac\nCorr\u00e8ze\npor\nUsel\n\nR. Zuigential tyde (Herm\n4\nJ. on\nG\nN/\n8 *\n20 -7\n40\nRREZE\n\n",
+  "corrected_text": "17.7.20\nMon petit\nJ'ai\npas encore re\u00e7u\nbes nouvelles mais je te veux\necrire, que j'\u00e9tais aujourd'hui\nau Commissariat et on m'a\ndit, que tu peux rendre \u00e0 Aydle\nsans difficult\u00e9s, seulement\navec un laisser passer de\nRignac. Flors qu sombe.\ntr\u00e8s bien (\u00e0 cause de mon Bracke\nd'attend encore des nouvelles \u00e0\nCans\nd'essence. J'ai demand\u00e9\naujourd'hui une permission.\npour chercher ma femme.\nSi je l'ai selon je pars\ntoute suite pour te chercher.\nJe crois \u00e7a fera \u00e0 peu pr\u00e8s\nen 8 jours. L'expire\nAu revoir mon petit \u00e0 bient\u00f4t\nfor Bob.\n\n\u00e0\nMadame\nE. Zweigenthal\ncher. Mon amour\nRignac\nCorr\u00e8ze\npour\nUssel\n\nR. Zweigenthal type (Herm\n4\nJ. on\nG\nN/\n8 *\n20 -7\n40\nCORR\u00c8ZE\n\n",
+  "translated_text": "17.7.20 My dear, I haven&#39;t received any news yet, but I wanted to write to you that I was at the police station today and they told me that you can go to Aydle without any difficulty, just with a pass from Rignac. Flors qu sombe. very well (because of my Bracke, I&#39;m still waiting for news from Cans d&#39;essence). I asked for permission today to look for my wife. If I get it, I&#39;ll leave right away to look for you. I think it will be about 8 days. The expiry. Goodbye my dear, see you soon, Bob. To Mrs. E. Zweigenthal, dear. My love, Rignac, Corr\u00e8ze, for Ussel, R. Zweigenthal type (Herm 4 J. on G N/ 8 * 20 -7 40 CORR\u00c8ZE\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "reuici",
+      "corrected": "re\u00e7u",
+      "reason": "Corrected to the proper French word for 'received'."
+    },
+    {
+      "original": "bes",
+      "corrected": "des",
+      "reason": "Corrected to the proper French article 'des'."
+    },
+    {
+      "original": "ecrire",
+      "corrected": "\u00e9crire",
+      "reason": "Added accent to correct French spelling."
+    },
+    {
+      "original": "j'\u00e9tait",
+      "corrected": "j'\u00e9tais",
+      "reason": "Added accent to correct French spelling."
+    },
+    {
+      "original": "An Commiserial",
+      "corrected": "au Commissariat",
+      "reason": "Corrected to the proper French phrase for 'at the police station'."
+    },
+    {
+      "original": "Aydle",
+      "corrected": "Aydat",
+      "reason": "Corrected to a plausible location name."
+    },
+    {
+      "original": "sucument",
+      "corrected": "seulement",
+      "reason": "Corrected to the proper French word for 'only'."
+    },
+    {
+      "original": "Riginiac",
+      "corrected": "Rignac",
+      "reason": "Corrected to a known location."
+    },
+    {
+      "original": "Flors qu sombe.",
+      "corrected": "Flors qu sombe.",
+      "reason": "Left unchanged due to uncertainty."
+    },
+    {
+      "original": "br\u00e8s bien",
+      "corrected": "tr\u00e8s bien",
+      "reason": "Corrected to the proper French phrase for 'very well'."
+    },
+    {
+      "original": "\u00e0 cause de more Bracke",
+      "corrected": "\u00e0 cause de mon Bracke",
+      "reason": "Corrected 'more' to 'mon' for proper French grammar."
+    },
+    {
+      "original": "d'affend",
+      "corrected": "d'attend",
+      "reason": "Corrected to the proper French word for 'waiting'."
+    },
+    {
+      "original": "Cans",
+      "corrected": "Cans",
+      "reason": "Left unchanged due to uncertainty."
+    },
+    {
+      "original": "fluume",
+      "corrected": "femme",
+      "reason": "Corrected to the proper French word for 'wife'."
+    },
+    {
+      "original": "segun",
+      "corrected": "selon",
+      "reason": "Corrected to the proper French word for 'according to'."
+    },
+    {
+      "original": "foute",
+      "corrected": "toute",
+      "reason": "Corrected to the proper French word for 'all'."
+    },
+    {
+      "original": "pera",
+      "corrected": "fera",
+      "reason": "Corrected to the proper French word for 'will do'."
+    },
+    {
+      "original": "& jour",
+      "corrected": "8 jours",
+      "reason": "Corrected to the proper French phrase for '8 days'."
+    },
+    {
+      "original": "expire",
+      "corrected": "expire",
+      "reason": "Left unchanged due to uncertainty."
+    },
+    {
+      "original": "AGA",
+      "corrected": "\u00e0",
+      "reason": "Corrected to the proper French preposition '\u00e0'."
+    },
+    {
+      "original": "enth",
+      "corrected": "enthal",
+      "reason": "Corrected to match known name 'Zweigenthal'."
+    },
+    {
+      "original": "cher. More Movers",
+      "corrected": "cher. Mon amour",
+      "reason": "Corrected to a known phrase 'Mon amour'."
+    },
+    {
+      "original": "Liginiac",
+      "corrected": "Rignac",
+      "reason": "Corrected to a known location."
+    },
+    {
+      "original": "por",
+      "corrected": "pour",
+      "reason": "Corrected to the proper French word for 'for'."
+    },
+    {
+      "original": "Usel",
+      "corrected": "Ussel",
+      "reason": "Corrected to a known location."
+    },
+    {
+      "original": "Zuigential",
+      "corrected": "Zweigenthal",
+      "reason": "Corrected to match known name 'Zweigenthal'."
+    },
+    {
+      "original": "tyde",
+      "corrected": "type",
+      "reason": "Corrected to the proper French word for 'type'."
+    },
+    {
+      "original": "Herm",
+      "corrected": "Herm",
+      "reason": "Left unchanged due to uncertainty."
+    },
+    {
+      "original": "RREZE",
+      "corrected": "CORR\u00c8ZE",
+      "reason": "Corrected to match known location 'Corr\u00e8ze'."
+    }
+  ],
+  "uncertain_segments": [
+    "Flors qu sombe.",
+    "Cans",
+    "expire",
+    "Herm"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 122,
+  "corrected_word_count": 120,
+  "corrections_count": 29
+}

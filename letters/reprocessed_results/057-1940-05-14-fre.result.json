@@ -1,0 +1,158 @@
+{
+  "pdf_file": "057-1940-05-14-fre.pdf",
+  "date_processed": "2025-11-16T18:23:03.570179",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Mon diri.\n14. V. 40\nJ'ai chi, ce water\n\u00e0 l'aveune de Lo Bur\ndonnais, Spire n'\u00e9tait\nla, mais\nai ou le lieu\npar\ntenant nettel, l'adjudant\nAu colonel Mack qui\nzu a promis le plus\nsonnellement que spirer\nre\u00e7oit des ordres pour\ncette\naire, Mais\n\u043c\u0430\u0439\nrepler, a demande\naffaire\nil m'a\nCe qui arrivera s'ils\nreglent en material\n(film a papier) alors\nj'ai dit.\nquie a\nPimpossible.\nc'\u00e9tait\nMamb\n\nnont il faut attendre\n\u0438\u044f\u0438\n\u0433\u0438\u0434\u0440\u0438\na vamedie\nyire qu'il lies\nBistal est\nmais) esp\u00e8re que\nparoll\n\u096e.\nreu aussi dans\n\u0430\u0438\u043d\n\u043b\u0435 \u0432\u0438\u0448\u0435\u0441\u0438\nen\nje\nmais\nne lui ai rien\ndemoudi, il est tellemend\nf\u00eate - Il ne m'a pas\ndit grand close mon\nplus-\nH\nJe suis toujours\nun peu in quite a\ncause de tri- la\n\u0e19\nfuerre est devenne cette\nfois-c\u00e9 vraiment me\nChose s\u00e9rieuse.\n\nPARIS\n16*45\nMAI\n40\nDES\n81\nSANIONER\nREGIMENT\nER\nDING\nTENTEZ: A CHANCE\nLUTFRE\n\u2610 NATIONALE\nTCHE\n14\n16H45\nMAI\n40\nPARIS\nQUE DES\n87\n.M.\nTENT\nMr. Robert Erreipenthal\nRep Fuf. Tchecoslitage\nLe Vaguemestre\n*\nSLOVAQUE\nVel Rotor\n(Herault) Pezenas\n\u043d\u0430\n\nthis\n15\n.5\nHE\n\n",
+  "corrected_text": "Mon ch\u00e9ri.\n14. V. 40\nJ'ai vu, ce matin\n\u00e0 l'avenue de La Bourdonnais, Spire n'\u00e9tait\nl\u00e0, mais\nai vu le lieu\npar\ntenant nettel, l'adjudant\nAu colonel Mack qui\nm'a promis le plus\npersonnellement que Spire\nre\u00e7oit des ordres pour\ncette\naffaire, Mais\nm'a\nappel\u00e9, a demand\u00e9\naffaire\nil m'a\nCe qui arrivera s'ils\nr\u00e8glent en mat\u00e9riel\n(film et papier) alors\nj'ai dit.\nque c'est\nimpossible.\nc'\u00e9tait\n\nn'ont il faut attendre\n\n\u00e0 vendredi\nvoir qu'il lise\nBistal est\nmais j'esp\u00e8re que\nparole\n\nre\u00e7u aussi dans\n\nle [illegible]\nen\nje\nmais\nne lui ai rien\ndemand\u00e9, il est tellement\nf\u00eate - Il ne m'a pas\ndit grand chose mon\nplus-\nH\nJe suis toujours\nun peu inquiet \u00e0\ncause de tri- la\n\nfuerre est devenue cette\nfois-ci vraiment une\nchose s\u00e9rieuse.\n\nPARIS\n16*45\nMAI\n40\nDES\n81\nSANIONER\nREGIMENT\nER\nDING\nTENTEZ: A CHANCE\nLUTTRE\n\u2610 NATIONALE\nTCHE\n14\n16H45\nMAI\n40\nPARIS\nQUE DES\n87\n.M.\nTENT\nMr. Robert Zweigenthal\nRep Fuf. Tch\u00e9coslovaque\nLe Vaguemestre\n*\nSLOVAQUE\nVel Rotor\n(Herault) Pezenas\n\nthis\n15\n.5\nHE\n",
+  "translated_text": "My darling. 14. V. 40 I saw, this morning on the Avenue de La Bourdonnais, Spire wasn&#39;t there, but I saw the place by the nettle, the adjutant. To Colonel Mack who promised me most personally that Spire is receiving orders for this matter, but called me, asked me what will happen if they settle in terms of equipment (film and paper), so I said. That it&#39;s impossible. It was impossible, we have to wait until Friday to see if he reads Bistal, but I hope that the word also received in the [illegible] in I but didn&#39;t ask him anything, he&#39;s so happy - He didn&#39;t tell me much, my most - I&#39;m still a little worried because of the fact that the war has become this time really a serious thing. PARIS 16:45 MAY 1940 OF THE 81ST SANIONER REGIMENT ER DING TENTEZ: A CHANCE LUTTRE \u2610 NATIONALE TCHE 14 16:45 MAY 1940 PARIS QUE DES 87 .M. TENT Mr. Robert Zweigenthal Rep Fuf. Tch\u00e9coslovaque The Postmaster * SLOVAK Vel Rotor (Herault) Pezenas this 15 .5 HE\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "diri",
+      "corrected": "ch\u00e9ri",
+      "reason": "Common greeting 'Mon ch\u00e9ri'"
+    },
+    {
+      "original": "chi",
+      "corrected": "vu",
+      "reason": "Contextual correction for 'J'ai vu'"
+    },
+    {
+      "original": "water",
+      "corrected": "matin",
+      "reason": "Contextual correction for 'ce matin'"
+    },
+    {
+      "original": "l'aveune",
+      "corrected": "l'avenue",
+      "reason": "Common location term 'avenue'"
+    },
+    {
+      "original": "Lo Bur",
+      "corrected": "La Bourdonnais",
+      "reason": "Known location 'avenue de La Bourdonnais'"
+    },
+    {
+      "original": "zu",
+      "corrected": "m'a",
+      "reason": "Contextual correction for 'm'a promis'"
+    },
+    {
+      "original": "sonnellement",
+      "corrected": "personnellement",
+      "reason": "Correct spelling 'personnellement'"
+    },
+    {
+      "original": "spirer",
+      "corrected": "Spire",
+      "reason": "Likely name 'Spire'"
+    },
+    {
+      "original": "repler",
+      "corrected": "appel\u00e9",
+      "reason": "Contextual correction for 'm'a appel\u00e9'"
+    },
+    {
+      "original": "quie",
+      "corrected": "que c'est",
+      "reason": "Contextual correction for 'que c'est impossible'"
+    },
+    {
+      "original": "Pimpossible",
+      "corrected": "impossible",
+      "reason": "Correct spelling 'impossible'"
+    },
+    {
+      "original": "Mamb",
+      "corrected": "",
+      "reason": "Gibberish, removed"
+    },
+    {
+      "original": "nont",
+      "corrected": "n'ont",
+      "reason": "Correct spelling 'n'ont'"
+    },
+    {
+      "original": "\u0438\u044f\u0438",
+      "corrected": "",
+      "reason": "Gibberish, removed"
+    },
+    {
+      "original": "\u0433\u0438\u0434\u0440\u0438",
+      "corrected": "",
+      "reason": "Gibberish, removed"
+    },
+    {
+      "original": "vamedie",
+      "corrected": "vendredi",
+      "reason": "Correct spelling 'vendredi'"
+    },
+    {
+      "original": "yire",
+      "corrected": "voir",
+      "reason": "Contextual correction for 'voir qu'il lise'"
+    },
+    {
+      "original": "paroll",
+      "corrected": "parole",
+      "reason": "Correct spelling 'parole'"
+    },
+    {
+      "original": "\u0430\u0438\u043d",
+      "corrected": "",
+      "reason": "Gibberish, removed"
+    },
+    {
+      "original": "\u043b\u0435 \u0432\u0438\u0448\u0435\u0441\u0438",
+      "corrected": "le [illegible]",
+      "reason": "Illegible text"
+    },
+    {
+      "original": "demoudi",
+      "corrected": "demand\u00e9",
+      "reason": "Correct spelling 'demand\u00e9'"
+    },
+    {
+      "original": "tellemend",
+      "corrected": "tellement",
+      "reason": "Correct spelling 'tellement'"
+    },
+    {
+      "original": "fuerre",
+      "corrected": "guerre",
+      "reason": "Correct spelling 'guerre'"
+    },
+    {
+      "original": "devenne",
+      "corrected": "devenue",
+      "reason": "Correct spelling 'devenue'"
+    },
+    {
+      "original": "me",
+      "corrected": "une",
+      "reason": "Contextual correction for 'une chose s\u00e9rieuse'"
+    },
+    {
+      "original": "Erreipenthal",
+      "corrected": "Zweigenthal",
+      "reason": "Known name 'Robert Zweigenthal'"
+    },
+    {
+      "original": "Tchecoslitage",
+      "corrected": "Tch\u00e9coslovaque",
+      "reason": "Correct spelling 'Tch\u00e9coslovaque'"
+    }
+  ],
+  "uncertain_segments": [
+    "le [illegible]"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 186,
+  "corrected_word_count": 176,
+  "corrections_count": 27
+}

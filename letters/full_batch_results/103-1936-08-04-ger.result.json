@@ -1,0 +1,110 @@
+{
+  "pdf_file": "103-1936-08-04-ger.pdf",
+  "date_processed": "2025-11-16T17:17:51.622856",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Praha 4. 8. 36.\nMein liebes gutes Zabalein! \u2013 Wie ich mich\nfrene, kann ich Sie\nzar\nnicht schreiben\nnerv\u00f6s \u2013 im\nIch kann die lage kamen z\u00e4hlen und\nbin schon ganz nerv\u00f6s\nnehunsten funne\n\u0437\u0430\u0432\u0438\u0434\nauge .\nZabies selbst.\nverst\u00e4ndlich bin ich in Prag\nDie kommst. Das kann man mir\nnicht nehmen\nso\nwenn\n\u0442\u0430\u0438\u043b\u0438\u0439\nselbst wenn ich noch\nund.\ndringende Arbeit habe. Vir misst\nSie mir ganz genau den Zug\ndien Tag Deiner Jukinf\nmitteilen.\nEs ist m\u00f6glich, dass ich bis zum\nlessten Tag & auf der Reise bin, umm\nm\u00f6glichst die gauze Zeit mit die\nZusammen\nmensen zu k\u00f6nnen.\nErhole fich gut Babies und\njaus fest. innermen\nlass dick\nvon Finem Zob.\n\n",
+  "corrected_text": "Praha 4. 8. 36.\nMein liebes gutes Zabalein! \u2013 Wie ich mich\nfreue, kann ich Sie\nzur\nnicht schreiben\nnerv\u00f6s \u2013 im\nIch kann die Tage kaum z\u00e4hlen und\nbin schon ganz nerv\u00f6s\nnehunsten funne\n[illegible]\nZabies selbst.\nverst\u00e4ndlich bin ich in Prag\nDie kommst. Das kann man mir\nnicht nehmen\nso\nwenn\n[illegible]\nselbst wenn ich noch\nund.\ndringende Arbeit habe. Wir m\u00fcssen\nSie mir ganz genau den Zug\ndien Tag Deiner Ankunft\nmitteilen.\nEs ist m\u00f6glich, dass ich bis zum\nletzten Tag & auf der Reise bin, um\nm\u00f6glichst die ganze Zeit mit dir\nzusammen\nsein zu k\u00f6nnen.\nErhole dich gut Babies und\njaus fest. innermen\nlass dich\nvon deinem Bob.",
+  "translated_text": "Prague, August 4, 1936. My dearest little Zabalein! \u2013 How happy I am, I can&#39;t write to you nervously \u2013 I can hardly count the days and am already quite nervous about Zabies myself. Understandably, I am in Prague when you come. You can&#39;t take this away from me, even if I still have urgent work to do. We must tell me exactly the train time for the day of your arrival. It is possible that I will be on the journey until the last day, so that I can be with you as much as possible. Get well soon, Babies, and eat well. Let your Bob take care of you.",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "frene",
+      "corrected": "freue",
+      "reason": "Contextual correction for 'freue' (happy) in German."
+    },
+    {
+      "original": "zar",
+      "corrected": "zur",
+      "reason": "Common preposition in German."
+    },
+    {
+      "original": "lage kamen",
+      "corrected": "Tage kaum",
+      "reason": "Contextual correction for 'Tage kaum' (days hardly) in German."
+    },
+    {
+      "original": "nehunsten funne",
+      "corrected": "nehunsten funne",
+      "reason": "Unclear text, left as is."
+    },
+    {
+      "original": "\u0437\u0430\u0432\u0438\u0434",
+      "corrected": "[illegible]",
+      "reason": "Non-Latin script, marked as illegible."
+    },
+    {
+      "original": "Die kommst",
+      "corrected": "Die kommst",
+      "reason": "Unclear context, left as is."
+    },
+    {
+      "original": "\u0442\u0430\u0438\u043b\u0438\u0439",
+      "corrected": "[illegible]",
+      "reason": "Non-Latin script, marked as illegible."
+    },
+    {
+      "original": "Vir misst",
+      "corrected": "Wir m\u00fcssen",
+      "reason": "Corrected to 'Wir m\u00fcssen' (we must) in German."
+    },
+    {
+      "original": "dien Tag Deiner Jukinf",
+      "corrected": "den Tag Deiner Ankunft",
+      "reason": "Corrected to 'den Tag Deiner Ankunft' (the day of your arrival) in German."
+    },
+    {
+      "original": "lessten",
+      "corrected": "letzten",
+      "reason": "Corrected spelling to 'letzten' (last) in German."
+    },
+    {
+      "original": "gauze",
+      "corrected": "ganze",
+      "reason": "Corrected spelling to 'ganze' (whole) in German."
+    },
+    {
+      "original": "mensen",
+      "corrected": "sein",
+      "reason": "Contextual correction for 'sein' (to be) in German."
+    },
+    {
+      "original": "fich",
+      "corrected": "dich",
+      "reason": "Corrected to 'dich' (you) in German."
+    },
+    {
+      "original": "jaus",
+      "corrected": "jaus",
+      "reason": "Unclear text, left as is."
+    },
+    {
+      "original": "innermen",
+      "corrected": "innermen",
+      "reason": "Unclear text, left as is."
+    },
+    {
+      "original": "lass dick",
+      "corrected": "lass dich",
+      "reason": "Corrected to 'lass dich' (let yourself) in German."
+    },
+    {
+      "original": "Finem Zob",
+      "corrected": "deinem Bob",
+      "reason": "Corrected to 'deinem Bob', likely referring to a known person."
+    }
+  ],
+  "uncertain_segments": [
+    "nehunsten funne",
+    "Die kommst",
+    "jaus fest. innermen"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 115,
+  "corrected_word_count": 113,
+  "corrections_count": 17
+}

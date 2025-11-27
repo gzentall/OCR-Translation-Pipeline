@@ -1,0 +1,99 @@
+{
+  "pdf_file": "004-1940-fre.pdf",
+  "date_processed": "2025-11-16T17:33:49.940923",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "in 1940\n11 Ellesi a fait que father\nA une passante\net n'\u00e9tail d\u00e9fi flus))\nEh oui, vous \u00eates bonne! ...\nA.\nfe l'avant bien dit,\nI is your toujours remplis de vetre douce image,\nLes\nIl lisait pieusement les mots par vous \u00e9crite,\nSavourant le parfum de vos riants mess cifes\nAh! que se le comprennts de vous aimer ainsi!\nBelle comme I Amour, was grands yeux de sirene\nEtincellent sun pur \u00e9clat --- vaus serez reine\nToujours o\u00f9 marquera la trace de vos has\nHeureux\neureux de vous le dire et signe: Pourquoi has?\nVotre admirateur fervent\nCar Cars qu'on vous a cue, on ne vous oublie has!\noh! luisse moi vous le dire\nvous le dire enhassant\nEval\n\n& Bohudh\nEDOUARD MAUREL\nPEZENAS\nT\u00c9L\u00c9PHONE: 45\n\nMadam Ruberk\n\u0430\nNeidenthal\nGrand Holl\n\nEDOUARD MAUREL\nPEZENAS\nT\u00c9L\u00c9PHONE:\n: 45\n\n",
+  "corrected_text": "in 1940\nIl Elise a fait que father\nA une passante\net n'\u00e9tait d\u00e9fi plus))\nEh oui, vous \u00eates bonne! ...\nA.\nJe l'avais bien dit,\nIl est toujours rempli de votre douce image,\nLes\nIl lisait pieusement les mots par vous \u00e9crits,\nSavourant le parfum de vos riants mess cifes\nAh! que je le comprends de vous aimer ainsi!\nBelle comme l'Amour, vos grands yeux de sir\u00e8ne\nEtincellent d'un pur \u00e9clat --- vous serez reine\nToujours o\u00f9 marquera la trace de vos pas\nHeureux\nheureux de vous le dire et signe: Pourquoi pas?\nVotre admirateur fervent\nCar Car qu'on vous a vue, on ne vous oublie pas!\noh! laissez-moi vous le dire\nen vous le disant en passant\nEval\n\n& Bohudh\nEDOUARD MAUREL\nPEZENAS\nT\u00c9L\u00c9PHONE: 45\n\nMadame Ruberk\n\u00e0\nNeidenthal\nGrand H\u00f4tel\n\nEDOUARD MAUREL\nPEZENAS\nT\u00c9L\u00c9PHONE:\n: 45\n",
+  "translated_text": "In 1940, Elise made a father A passerby and was no longer a challenge. Yes, you are good! ... A. I told you so, He is always filled with your sweet image, He piously read the words you wrote, Savoring the fragrance of your laughing messes. Ah! How I understand loving you like this! Beautiful as Love, your large mermaid eyes Sparkle with a pure radiance --- you will always be queen wherever the trace of your steps will mark. Happy, happy to tell you this and sign: Why not? Your fervent admirer, For once you have been seen, you are not forgotten! Oh! Let me tell you this in passing. Eval &amp; Bohudh EDOUARD MAUREL PEZENAS TELEPHONE: 45 Madame Ruberk at Neidenthal Grand Hotel EDOUARD MAUREL PEZENAS TELEPHONE: 45\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "11 Ellesi a fait que father",
+      "corrected": "Il Elise a fait que father",
+      "reason": "Corrected '11' to 'Il' and 'Ellesi' to 'Elise' based on known names."
+    },
+    {
+      "original": "n'\u00e9tail d\u00e9fi flus))",
+      "corrected": "n'\u00e9tait d\u00e9fi plus))",
+      "reason": "Corrected 'n'\u00e9tail' to 'n'\u00e9tait' and 'flus' to 'plus' for grammatical accuracy."
+    },
+    {
+      "original": "I is your toujours remplis de vetre douce image,",
+      "corrected": "Il est toujours rempli de votre douce image,",
+      "reason": "Corrected 'I is your' to 'Il est' and 'vetre' to 'votre' for grammatical accuracy."
+    },
+    {
+      "original": "les mots par vous \u00e9crite,",
+      "corrected": "les mots par vous \u00e9crits,",
+      "reason": "Corrected '\u00e9crite' to '\u00e9crits' for grammatical agreement."
+    },
+    {
+      "original": "vos riants mess cifes",
+      "corrected": "vos riants mess cifes",
+      "reason": "Left unchanged as 'mess cifes' is unclear and might be a name or specific term."
+    },
+    {
+      "original": "se le comprennts",
+      "corrected": "je le comprends",
+      "reason": "Corrected 'se le comprennts' to 'je le comprends' for grammatical accuracy."
+    },
+    {
+      "original": "I Amour",
+      "corrected": "l'Amour",
+      "reason": "Corrected 'I' to 'l'' for grammatical accuracy."
+    },
+    {
+      "original": "was grands yeux de sirene",
+      "corrected": "vos grands yeux de sir\u00e8ne",
+      "reason": "Corrected 'was' to 'vos' and 'sirene' to 'sir\u00e8ne' for grammatical accuracy."
+    },
+    {
+      "original": "vaus serez reine",
+      "corrected": "vous serez reine",
+      "reason": "Corrected 'vaus' to 'vous' for grammatical accuracy."
+    },
+    {
+      "original": "Pourquoi has?",
+      "corrected": "Pourquoi pas?",
+      "reason": "Corrected 'has' to 'pas' for logical consistency."
+    },
+    {
+      "original": "Car Cars qu'on vous a cue",
+      "corrected": "Car Car qu'on vous a vue",
+      "reason": "Corrected 'cue' to 'vue' for grammatical accuracy."
+    },
+    {
+      "original": "vous le dire enhassant",
+      "corrected": "vous le disant en passant",
+      "reason": "Corrected 'enhassant' to 'en passant' for logical consistency."
+    },
+    {
+      "original": "Madam Ruberk",
+      "corrected": "Madame Ruberk",
+      "reason": "Corrected 'Madam' to 'Madame' for grammatical accuracy."
+    },
+    {
+      "original": "Neidenthal",
+      "corrected": "Neidenthal",
+      "reason": "Left unchanged as it might be a specific name or location."
+    },
+    {
+      "original": "Grand Holl",
+      "corrected": "Grand H\u00f4tel",
+      "reason": "Corrected 'Holl' to 'H\u00f4tel' for logical consistency."
+    }
+  ],
+  "uncertain_segments": [
+    "vos riants mess cifes",
+    "Neidenthal"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 140,
+  "corrected_word_count": 139,
+  "corrections_count": 15
+}

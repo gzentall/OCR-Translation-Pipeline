@@ -1,0 +1,51 @@
+{
+  "pdf_file": "011-1940-06-11-fre.pdf",
+  "date_processed": "2025-11-16T17:40:09.911924",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "bede le 11/745.\n\u044b\u0439 \u0447\u0442\nOrdre de Mission.\n17\u00aa C'e\nLe sol. Zweigental Robert de la 173 Cr\nse rend a Agde pour y prendre des\neffets.\nHure du d\u00e9port: 9h\nHeure du retour: 12h\nCat Cre\nhement\n\n",
+  "corrected_text": "bede le 11/7/45.\n\nOrdre de Mission.\n17\u00aa Cie\nLe soldat Zweigenthal Robert de la 173 Cie\nse rend \u00e0 Agde pour y prendre des\neffets.\nHeure du d\u00e9part: 9h\nHeure du retour: 12h\n\n",
+  "translated_text": "Order of Mission, July 11, 1945. 17th Company. Private Robert Zweigenthal of the 173rd Company is going to Agde to collect his belongings. Departure time: 9:00 AM. Return time: 12:00 PM.\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "\u044b\u0439 \u0447\u0442",
+      "corrected": "",
+      "reason": "Gibberish text likely from OCR error, removed as it does not fit context."
+    },
+    {
+      "original": "17\u00aa C'e",
+      "corrected": "17\u00aa Cie",
+      "reason": "Corrected 'C'e' to 'Cie' for 'Compagnie', a common military term."
+    },
+    {
+      "original": "Le sol. Zweigental Robert de la 173 Cr",
+      "corrected": "Le soldat Zweigenthal Robert de la 173 Cie",
+      "reason": "Corrected 'sol.' to 'soldat' and 'Cr' to 'Cie' for clarity and consistency with military terms."
+    },
+    {
+      "original": "Hure du d\u00e9port: 9h",
+      "corrected": "Heure du d\u00e9part: 9h",
+      "reason": "Corrected 'Hure' to 'Heure' and 'd\u00e9port' to 'd\u00e9part' for correct French phrasing."
+    },
+    {
+      "original": "Cat Cre",
+      "corrected": "",
+      "reason": "Gibberish text likely from OCR error, removed as it does not fit context."
+    },
+    {
+      "original": "hement",
+      "corrected": "",
+      "reason": "Gibberish text likely from OCR error, removed as it does not fit context."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 38,
+  "corrected_word_count": 33,
+  "corrections_count": 6
+}

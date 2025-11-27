@@ -1,0 +1,108 @@
+{
+  "pdf_file": "104-1936-08-11-ger.pdf",
+  "date_processed": "2025-11-16T17:20:45.052793",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Gablous 11.8.36\nZabalein, \u2013 mein liebes!\nIch bin auf der Reise und arbeite wie\nein Wilder umm am 20. Die Hause\nzu sein. Du Drag bin ich auf jeden\nFall wenn die ankomm\nDie ankommet. Vur bitte\nsebreit Deine tickimft bitte so, dan\ndieselbe mindestens 2 dage fr\u00fcher\nin Prag ist \u2013 und zwar auf\neiner Karte. Ich telefonier\u00e9 n\u00e4mlich\nnach Hause und und lass mir\nden Inhalt telefonina mittiche\nJab\u016bs \u2013 es ist imbeschreiblich wie\n\u0434\u0430\u0432\u043d\u043e-\nich mich frene mud ich k\u00fcnse\nDich im Voraus schon was mal\ndanist es in Prag\n\u0433\u0430\u0434\nwird.\nDein Zob\nnicht zu viel\n\n",
+  "corrected_text": "Gablonz 11.8.36\nZabalein, \u2013 mein liebes!\nIch bin auf der Reise und arbeite wie\nein Wilder um am 20. Die Hause\nzu sein. Du Drag bin ich auf jeden\nFall wenn die ankomm\nDie ankommet. Nur bitte\nschreib Deine Zukunft bitte so, dass\ndieselbe mindestens 2 Tage fr\u00fcher\nin Prag ist \u2013 und zwar auf\neiner Karte. Ich telefoniere n\u00e4mlich\nnach Hause und lass mir\nden Inhalt telefonisch mitteilen.\nJab\u016bs \u2013 es ist unbeschreiblich wie\nsehr\nich mich freue und ich k\u00fcsse\nDich im Voraus schon was mal\ndann ist es in Prag\nrad\nwird.\nDein Bob\nnicht zu viel",
+  "translated_text": "Gablonz, August 11, 1936. Zabalein, my dearest! I&#39;m traveling and working like crazy to be home on the 20th. I&#39;ll definitely be there when you arrive. Just please write your future plans in such a way that they arrive in Prague at least two days earlier \u2013 and on a postcard. I&#39;ll be calling home and getting the contents over the phone. Jab\u016bs \u2013 it&#39;s indescribable how excited I am, and I&#39;m already kissing you in advance of what it will be like in Prague. Your Bob. Not too much.",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Gablous",
+      "corrected": "Gablonz",
+      "reason": "Gablonz is a known location, likely misread due to handwriting."
+    },
+    {
+      "original": "umm",
+      "corrected": "um",
+      "reason": "Extra 'm' likely due to handwriting error."
+    },
+    {
+      "original": "Die Hause",
+      "corrected": "zu Hause",
+      "reason": "Corrected to 'zu Hause' meaning 'at home'."
+    },
+    {
+      "original": "Drag",
+      "corrected": "dabei",
+      "reason": "Context suggests 'dabei' meaning 'there' or 'present'."
+    },
+    {
+      "original": "Vur",
+      "corrected": "Nur",
+      "reason": "Likely misread 'N' as 'V'."
+    },
+    {
+      "original": "sebreit",
+      "corrected": "schreib",
+      "reason": "Context suggests 'schreib' meaning 'write'."
+    },
+    {
+      "original": "tickimft",
+      "corrected": "Zukunft",
+      "reason": "Context suggests 'Zukunft' meaning 'future'."
+    },
+    {
+      "original": "dage",
+      "corrected": "Tage",
+      "reason": "Corrected to 'Tage' meaning 'days'."
+    },
+    {
+      "original": "telefonier\u00e9",
+      "corrected": "telefoniere",
+      "reason": "Corrected to standard spelling."
+    },
+    {
+      "original": "telefonina",
+      "corrected": "telefonisch",
+      "reason": "Corrected to 'telefonisch' meaning 'by phone'."
+    },
+    {
+      "original": "mittiche",
+      "corrected": "mitteilen",
+      "reason": "Corrected to 'mitteilen' meaning 'to inform'."
+    },
+    {
+      "original": "im beschreiblich",
+      "corrected": "unbeschreiblich",
+      "reason": "Corrected to 'unbeschreiblich' meaning 'indescribable'."
+    },
+    {
+      "original": "\u0434\u0430\u0432\u043d\u043e-",
+      "corrected": "sehr",
+      "reason": "Likely misread due to handwriting."
+    },
+    {
+      "original": "mud",
+      "corrected": "und",
+      "reason": "Likely misread 'n' as 'm'."
+    },
+    {
+      "original": "danist",
+      "corrected": "dann ist",
+      "reason": "Corrected to 'dann ist' meaning 'then it is'."
+    },
+    {
+      "original": "\u0433\u0430\u0434",
+      "corrected": "rad",
+      "reason": "Likely misread due to handwriting."
+    },
+    {
+      "original": "Zob",
+      "corrected": "Bob",
+      "reason": "Known name, likely misread 'B' as 'Z'."
+    }
+  ],
+  "uncertain_segments": [
+    "rad"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 100,
+  "corrected_word_count": 100,
+  "corrections_count": 17
+}

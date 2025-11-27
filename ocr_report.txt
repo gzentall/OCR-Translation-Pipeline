@@ -1,0 +1,25 @@
+OCR Translation Pipeline - Local Storage Report
+==================================================
+Generated: 2025-09-25 09:36:51
+Total Documents: 1
+Total People: 2
+
+DOCUMENTS:
+--------------------
+• Test Letter - 1938
+  Date: 2025-09-25T08:58:26.374782
+  Language: de → en
+  People: 2
+  Summary: A personal letter from 1938 discussing family matters
+
+PEOPLE:
+--------------------
+• john smith
+  Aliases: John Smith
+  First mentioned: 2025-09-25T08:58:26.374782
+  Documents: 1
+
+• maria schmidt
+  Aliases: Maria Schmidt
+  First mentioned: 2025-09-25T08:58:26.374782
+  Documents: 1

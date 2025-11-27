@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Up Your Password - Postmark</title>
+    
+    <!-- Material Design Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --md-sys-color-primary: #6750a4;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #eaddff;
+            --md-sys-color-on-primary-container: #21005d;
+            --md-sys-color-error: #ba1a1a;
+            --md-sys-color-on-error: #ffffff;
+            --md-sys-color-error-container: #ffdad6;
+            --md-sys-color-on-error-container: #410002;
+            --md-sys-color-surface: #fffbfe;
+            --md-sys-color-on-surface: #1c1b1f;
+            --md-sys-color-surface-variant: #e7e0ec;
+            --md-sys-color-on-surface-variant: #49454f;
+            --md-sys-color-outline: #79747e;
+            --md-sys-color-background: #fffbfe;
+            --md-sys-color-on-background: #1c1b1f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-surface) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            max-width: 480px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo h1 {
+            color: var(--md-sys-color-primary);
+            font-size: 32px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 16px;
+        }
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .welcome-text h2 {
+            color: var(--md-sys-color-on-surface);
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text p {
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 14px;
+        }
+
+        .error-message {
+            background-color: var(--md-sys-color-error-container);
+            color: var(--md-sys-color-on-error-container);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message .material-icons {
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--md-sys-color-on-surface);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--md-sys-color-primary);
+            border-width: 2px;
+            padding: 11px 15px;
+        }
+
+        .form-input:disabled {
+            background-color: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .password-requirements {
+            background-color: var(--md-sys-color-surface-variant);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .password-requirements h3 {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            margin-bottom: 12px;
+        }
+
+        .password-requirements ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .password-requirements li {
+            font-size: 13px;
+            color: var(--md-sys-color-on-surface-variant);
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .password-requirements li::before {
+            content: '•';
+            color: var(--md-sys-color-primary);
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .submit-button {
+            width: 100%;
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            border-radius: 24px;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-button:hover {
+            background-color: #5542a6;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-button:active {
+            background-color: #4a3a94;
+        }
+
+        .submit-button:disabled {
+            background-color: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: not-allowed;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 13px;
+        }
+
+        .footer-text a {
+            color: var(--md-sys-color-primary);
+            text-decoration: none;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            background-color: var(--md-sys-color-surface-variant);
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        .password-strength-bar.weak {
+            width: 33%;
+            background-color: #ba1a1a;
+        }
+
+        .password-strength-bar.medium {
+            width: 66%;
+            background-color: #ffb300;
+        }
+
+        .password-strength-bar.strong {
+            width: 100%;
+            background-color: #2e7d32;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px;
+            }
+
+            .logo h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>Postmark</h1>
+            <p>Document Management System</p>
+        </div>
+
+        {% if error %}
+        <div class="error-message">
+            <span class="material-icons">error</span>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        {% if token %}
+        <div class="welcome-text">
+            <h2>Welcome{% if first_name %}, {{ first_name }}{% endif %}!</h2>
+            <p>Please set up your password to access your account</p>
+        </div>
+
+        <form method="POST" action="/accept-invite" id="setupForm">
+            <input type="hidden" name="token" value="{{ token }}">
+            
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input type="email" class="form-input" id="email" value="{{ email }}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" class="form-input" id="password" name="password" required 
+                       minlength="8" placeholder="Enter your password">
+                <div class="password-strength">
+                    <div class="password-strength-bar" id="strengthBar"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="confirm_password">Confirm Password</label>
+                <input type="password" class="form-input" id="confirm_password" name="confirm_password" required 
+                       minlength="8" placeholder="Confirm your password">
+            </div>
+
+            <div class="password-requirements">
+                <h3>Password Requirements</h3>
+                <ul>
+                    <li>At least 8 characters long</li>
+                    <li>Contains at least one uppercase letter</li>
+                    <li>Contains at least one lowercase letter</li>
+                    <li>Contains at least one number</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="submit-button" id="submitButton">Set Password & Sign In</button>
+        </form>
+        {% else %}
+        <div class="welcome-text">
+            <h2>Invalid Invitation</h2>
+            <p>This invitation link is invalid or has expired.</p>
+        </div>
+        {% endif %}
+
+        <div class="footer-text">
+            Already have an account? <a href="/login">Sign In</a>
+        </div>
+    </div>
+
+    <script>
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const strengthBar = document.getElementById('strengthBar');
+        const submitButton = document.getElementById('submitButton');
+        const setupForm = document.getElementById('setupForm');
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+            if (strength <= 2) return 'weak';
+            if (strength <= 4) return 'medium';
+            return 'strong';
+        }
+
+        // Update password strength indicator
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                
+                if (password.length === 0) {
+                    strengthBar.className = 'password-strength-bar';
+                    return;
+                }
+
+                const strength = checkPasswordStrength(password);
+                strengthBar.className = 'password-strength-bar ' + strength;
+            });
+        }
+
+        // Form validation
+        if (setupForm) {
+            setupForm.addEventListener('submit', function(e) {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Passwords do not match. Please try again.');
+                    return false;
+                }
+
+                if (password.length < 8) {
+                    e.preventDefault();
+                    alert('Password must be at least 8 characters long.');
+                    return false;
+                }
+
+                // Check password requirements
+                if (!/[A-Z]/.test(password)) {
+                    e.preventDefault();
+                    alert('Password must contain at least one uppercase letter.');
+                    return false;
+                }
+
+                if (!/[a-z]/.test(password)) {
+                    e.preventDefault();
+                    alert('Password must contain at least one lowercase letter.');
+                    return false;
+                }
+
+                if (!/[0-9]/.test(password)) {
+                    e.preventDefault();
+                    alert('Password must contain at least one number.');
+                    return false;
+                }
+
+                // Disable button to prevent double submission
+                submitButton.disabled = true;
+                submitButton.textContent = 'Setting up your account...';
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+
+

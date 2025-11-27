@@ -1,0 +1,36 @@
+{
+  "pdf_file": "071-1940-05-22-fre.pdf",
+  "date_processed": "2025-11-16T17:35:22.872673",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "APUC\nContr\u00f4le Postal Militaire\n81\nTENTED THANG\nPA\nF.M.\nPIS\n22\n19H\n\u039c\u0391\u0399\nDES\n40\nMonier Robert-Zwei\nTer Regiment Inftanterie\nVel Rota\nPEZENAS\n(H\u00e9rault)\nREGIMEN\n\u0e44\u0e1b\n1ER\nD'INE\nLe Vaguemestre\n*\nCHECOS\n81\nAPUCINES\n\nVOJENSKA CENSURA\n\n",
+  "corrected_text": "APUC\nContr\u00f4le Postal Militaire\n81\nTENTED THANG\nPA\nF.M.\nPIS\n22\n19H\n\u039c\u0391\u0399\nDES\n40\nMonsieur Robert Zweigenthal\n1er Regiment Infanterie\nVel Rota\nPEZENAS\n(H\u00e9rault)\nREGIMENT\n\u0e44\u0e1b\n1ER\nD'INE\nLe Vaguemestre\n*\nCHECOS\n81\nAPUCINES\n\nVOJENSKA CENSURA\n",
+  "translated_text": "APUC Contr\u00f4le Postal Militaire 81 TENTED THANG PA FM PIS 22 19H \u039c\u0391\u0399 DES 40 Monsieur Robert Zweigenthal 1st Regiment Infantry Vel Rota PEZENAS (H\u00e9rault) REGIMENT \u0e44\u0e1b 1ER D&#39;INE D&#39;INE CHESTER CHAPTER 81 MILITARY CENSORSHIP\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Monier Robert-Zwei",
+      "corrected": "Monsieur Robert Zweigenthal",
+      "reason": "Corrected name based on known people."
+    },
+    {
+      "original": "Ter Regiment Inftanterie",
+      "corrected": "1er Regiment Infanterie",
+      "reason": "Corrected ordinal and spelling based on context."
+    },
+    {
+      "original": "\u0e44\u0e1b",
+      "corrected": "[illegible]",
+      "reason": "Text appears to be illegible or in the wrong alphabet."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 36,
+  "corrected_word_count": 37,
+  "corrections_count": 3
+}

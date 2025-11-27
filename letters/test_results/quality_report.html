@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Quality Comparison Report</title>
+    <style>
+        :root {
+            --primary-color: #6750a4;
+            --surface-color: #f5f5f5;
+            --on-surface: #1c1b1f;
+            --error-color: #ba1a1a;
+            --success-color: #198754;
+            --warning-color: #ff9800;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--on-surface);
+            background: var(--surface-color);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #8b5cf6 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .summary-card h3 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            font-weight: normal;
+        }
+        
+        .summary-card .value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .document {
+            margin-bottom: 60px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .document-header {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .document-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .document-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.9em;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .confidence-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .confidence-high {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .confidence-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .confidence-low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        .comparison-side {
+            padding: 20px;
+            background: white;
+        }
+        
+        .comparison-side:first-child {
+            border-right: 2px solid #e0e0e0;
+        }
+        
+        .side-header {
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .raw-header {
+            color: #dc3545;
+        }
+        
+        .corrected-header {
+            color: #198754;
+        }
+        
+        .text-content {
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            line-height: 1.8;
+            font-size: 0.95em;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 4px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .corrections-list {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .corrections-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .correction-item {
+            padding: 8px 12px;
+            margin: 8px 0;
+            background: white;
+            border-left: 3px solid var(--primary-color);
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .correction-original {
+            color: #dc3545;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .correction-arrow {
+            color: #666;
+            margin: 0 8px;
+        }
+        
+        .correction-fixed {
+            color: #198754;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .correction-reason {
+            color: #666;
+            font-style: italic;
+            margin-top: 4px;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 900px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-side:first-child {
+                border-right: none;
+                border-bottom: 2px solid #e0e0e0;
+            }
+        }
+        
+        .legend {
+            margin: 30px 0;
+            padding: 15px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            border-radius: 4px;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 OCR Quality Comparison Report</h1>
+        <p class="subtitle">Generated on November 16, 2025 at 02:00 PM</p>
+        
+        <div class="summary">
+            <div class="summary-card">
+                <h3>Total Documents</h3>
+                <div class="value">4</div>
+            </div>
+            <div class="summary-card">
+                <h3>Average Confidence</h3>
+                <div class="value">85.0%</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Corrections</h3>
+                <div class="value">148</div>
+            </div>
+            <div class="summary-card">
+                <h3>Corrections/Doc</h3>
+                <div class="value">37.0</div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-title">📖 How to Read This Report</div>
+            <ul>
+                <li><strong>Left side (red):</strong> Raw OCR output from Google Vision</li>
+                <li><strong>Right side (green):</strong> AI-corrected text using context</li>
+                <li><strong>Confidence score:</strong> LLM's confidence in corrections (0-100%)</li>
+                <li><strong>Corrections list:</strong> Specific changes made with explanations</li>
+                <li><strong>Sorted by confidence:</strong> Lowest confidence first (needs most review)</li>
+            </ul>
+        </div>
+
+        <div class="document">
+            <div class="document-header">
+                <div class="document-title">📄 1. 01-27-2003_eng_letter-001.pdf</div>
+                <div class="document-meta">
+                    <div class="meta-item">
+                        <strong>Confidence:</strong>
+                        <span class="confidence-badge confidence-high">85%</span>
+                    </div>
+                    <div class="meta-item">
+                        <strong>Provider:</strong> OPENAI
+                    </div>
+                    <div class="meta-item">
+                        <strong>Corrections:</strong> 14
+                    </div>
+                    <div class="meta-item">
+                        <strong>Date:</strong> 01-27-2003
+                    </div>
+                    <div class="meta-item">
+                        <strong>Language:</strong> English
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comparison">
+                <div class="comparison-side">
+                    <div class="side-header raw-header">❌ Raw OCR (Google Vision)</div>
+                    <div class="text-content">ZENTALL
+21 BAYBERRY LANE
+RYE BROOK, N.Y. 10573
+Dear Gabe
+I&#39;d
+For Jan 27,03
+11 were a
+арост
+s.
+I write a poem to sung jour
+praise if I were an artist
+paint a
+I&#39;d
+picture in which
+joi&#39;d have wings... bud,
+you
+alas, I am
+just a poor
+human with strongly
+with strongly limited
+Reforming capability!...
+Cerid so
+... I&#39;ll use simple
+Words to wish you a wonderful
+birthday- may some
+of your
+Wishes come though in de
+fear alead, may ju be happer,
+Realty of successful! May this
+аз
+be the best fear ever.
+over
+So much love
+Grandma
+
+The enclosed is but a tober
+of my love
+же
+for you
+
+</div>
+                </div>
+                <div class="comparison-side">
+                    <div class="side-header corrected-header">✅ AI-Corrected Text</div>
+                    <div class="text-content">ZENTALL
+21 BAYBERRY LANE
+RYE BROOK, N.Y. 10573
+Dear Gabe
+I&#39;d
+For Jan 27, 03
+If I were a
+poet
+I&#39;d write a poem to sing your
+praise if I were an artist
+I&#39;d paint a
+picture in which
+you&#39;d have wings... but,
+alas, I am
+just a poor
+human with strongly
+limited
+Reforming capability!...
+And so
+... I&#39;ll use simple
+Words to wish you a wonderful
+birthday- may some
+of your
+Wishes come true in the
+year ahead, may you be happier,
+Really successful! May this
+year
+be the best year ever.
+over
+So much love
+Grandma
+
+The enclosed is but a token
+of my love
+for you
+</div>
+                </div>
+            </div>
+
+            <div class="corrections-list">
+                <div class="corrections-header">🔧 Corrections Made (14)</div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"jour"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"your"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;j&#39; as &#39;j&#39; instead of &#39;y&#39;</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"арост"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"poet"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;poet&#39; due to handwriting style</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"sung"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"sing"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;sing&#39; as &#39;sung&#39;</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"joi&#39;d"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"you&#39;d"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;you&#39;d&#39; as &#39;joi&#39;d&#39;</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"bud,"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"but,"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;but&#39; as &#39;bud&#39;</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"with strongly
+with strongly limited"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"with strongly
+limited"</span>
+                    </div>
+                    <div class="correction-reason">Duplicate phrase due to OCR error</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Cerid"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"And"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;And&#39; as &#39;Cerid&#39;</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"though"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"true"</span>
+                    </div>
+                    <div class="correction-reason">Contextual correction for &#39;come true&#39;</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"de
+fear alead"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"the
+year ahead"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;the year ahead&#39; due to handwriting style</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"ju"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"you"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;you&#39; as &#39;ju&#39;</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"happer,"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"happier,"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;happier&#39; as &#39;happer&#39;</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Realty of successful!"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Really successful!"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;Really&#39; as &#39;Realty&#39;</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"аз"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"year"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;year&#39; as &#39;аз&#39;</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"tober"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"token"</span>
+                    </div>
+                    <div class="correction-reason">OCR misread &#39;token&#39; as &#39;tober&#39;</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="document">
+            <div class="document-header">
+                <div class="document-title">📄 2. 007-1940-07-01-fre.pdf</div>
+                <div class="document-meta">
+                    <div class="meta-item">
+                        <strong>Confidence:</strong>
+                        <span class="confidence-badge confidence-high">85%</span>
+                    </div>
+                    <div class="meta-item">
+                        <strong>Provider:</strong> OPENAI
+                    </div>
+                    <div class="meta-item">
+                        <strong>Corrections:</strong> 33
+                    </div>
+                    <div class="meta-item">
+                        <strong>Date:</strong> unknown
+                    </div>
+                    <div class="meta-item">
+                        <strong>Language:</strong> English
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comparison">
+                <div class="comparison-side">
+                    <div class="side-header raw-header">❌ Raw OCR (Google Vision)</div>
+                    <div class="text-content">Villeneuve Pot 1.7.40
+tu te
+Ma cherie,
+Nous sommes toujour ici et nous attendons
+notre ordre pour la demobilisation.
+Je serais heureuse, si je serrais ou
+frouve. Naturellement je veuse aller fork
+de mite à higiniac si je n&#39;ai pas
+as des
+nouvelles de foi entreteness. He croise
+nous sommes encore 2-3 jours ici. C&#39;est
+terrible foujours attendre. Mais pour
+le moment est rien à faire
+feuille de la demobilization
+Je t&#39;adore ma petite femme etf
+дай дово
+à frès bientôt.
+sans la
+espere
+
+FRANCHISE MILITAIRE
+PRIORITÉ
+40
+RÉPUBLIQUE BRANÇAISE
+40
+91
+I CARTE POSTALE LATE
+EXPÉDITEUR
+fenther.
+MR. Jueg
+reg. infanterie
+1. reg.
+13 comp.
+J;P. 31121
+à........
+Nom :
+Grade.
+w
+furt
+ARMEES
+Cette Carte
+est vendue
+5 Centimes
+dans tous les
+Bureaux de
+Poste
+DESTINATAIRE
+Madonne
+ше
+E. Froeigenthal
+Compacchese Mouil
+Compagni Coterie
+ше
+th
+Régiment (arme ou service
+Département....
+Secteur Postal N°
+El Liginia
+(Il est recommandé d&#39;écrire très lisiblement)
+Corrèze
+u
+par
+
+</div>
+                </div>
+                <div class="comparison-side">
+                    <div class="side-header corrected-header">✅ AI-Corrected Text</div>
+                    <div class="text-content">Villeneuve Port 1.7.40
+
+Ma chérie,
+Nous sommes toujours ici et nous attendons
+notre ordre pour la démobilisation.
+Je serais heureuse, si je serais ou
+trouve. Naturellement je veux aller fort
+de suite à [illegible] si je n&#39;ai pas
+as des
+nouvelles de toi entretemps. Je crois
+nous sommes encore 2-3 jours ici. C&#39;est
+terrible toujours attendre. Mais pour
+le moment est rien à faire
+feuille de la démobilisation
+Je t&#39;adore ma petite femme et
+à très bientôt.
+
+FRANCHISE MILITAIRE
+PRIORITÉ
+40
+RÉPUBLIQUE FRANÇAISE
+40
+91
+CARTE POSTALE
+EXPÉDITEUR
+[illegible]
+MR. [illegible]
+reg. infanterie
+1. reg.
+13 comp.
+J.P. 31121
+à........
+Nom :
+Grade.
+[illegible]
+ARMEES
+Cette Carte
+est vendue
+5 Centimes
+dans tous les
+Bureaux de
+Poste
+DESTINATAIRE
+Madame
+E. Froelichenthal
+Compagnie Mouil
+Compagnie Coterie
+[illegible]
+Régiment (arme ou service)
+Département....
+Secteur Postal N°
+[illegible]
+(Il est recommandé d&#39;écrire très lisiblement)
+Corrèze
+u
+par</div>
+                </div>
+            </div>
+
+            <div class="corrections-list">
+                <div class="corrections-header">🔧 Corrections Made (33)</div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Pot"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Port"</span>
+                    </div>
+                    <div class="correction-reason">Common location name correction.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"tu te"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">""</span>
+                    </div>
+                    <div class="correction-reason">Unnecessary text, likely OCR error.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"toujour"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"toujours"</span>
+                    </div>
+                    <div class="correction-reason">Correct spelling in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"serrais"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"serais"</span>
+                    </div>
+                    <div class="correction-reason">Correct verb form in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"frouve"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"trouve"</span>
+                    </div>
+                    <div class="correction-reason">Correct spelling in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"veuse"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"veux"</span>
+                    </div>
+                    <div class="correction-reason">Correct spelling in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"fork"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"fort"</span>
+                    </div>
+                    <div class="correction-reason">Correct spelling in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"de mite à higiniac"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"de suite à [illegible]"</span>
+                    </div>
+                    <div class="correction-reason">Correct phrase and mark illegible part.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"as des"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"de"</span>
+                    </div>
+                    <div class="correction-reason">Correct preposition usage in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"foi entreteness"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"toi entretemps"</span>
+                    </div>
+                    <div class="correction-reason">Correct phrase in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"He croise"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Je crois"</span>
+                    </div>
+                    <div class="correction-reason">Correct pronoun and verb in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"foujours"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"toujours"</span>
+                    </div>
+                    <div class="correction-reason">Correct spelling in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"feuille de la demobilization"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"feuille de la démobilisation"</span>
+                    </div>
+                    <div class="correction-reason">Correct spelling in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"etf"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"et"</span>
+                    </div>
+                    <div class="correction-reason">Correct conjunction in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"дай дово"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"à"</span>
+                    </div>
+                    <div class="correction-reason">Correct phrase in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"frès"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"très"</span>
+                    </div>
+                    <div class="correction-reason">Correct spelling in French.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"sans la"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">""</span>
+                    </div>
+                    <div class="correction-reason">Unnecessary text, likely OCR error.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"espere"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">""</span>
+                    </div>
+                    <div class="correction-reason">Unnecessary text, likely OCR error.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"FRANCHISE MILITAIRE"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"FRANCHISE MILITAIRE"</span>
+                    </div>
+                    <div class="correction-reason">Correct as is.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"PRIORITÉ"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"PRIORITÉ"</span>
+                    </div>
+                    <div class="correction-reason">Correct as is.</div>
+                </div>
+
+                <div style="margin-top: 10px; color: #666; font-style: italic;">
+                    ... and 13 more corrections
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="document">
+            <div class="document-header">
+                <div class="document-title">📄 3. 089-1936-01-23-ger.pdf</div>
+                <div class="document-meta">
+                    <div class="meta-item">
+                        <strong>Confidence:</strong>
+                        <span class="confidence-badge confidence-high">85%</span>
+                    </div>
+                    <div class="meta-item">
+                        <strong>Provider:</strong> OPENAI
+                    </div>
+                    <div class="meta-item">
+                        <strong>Corrections:</strong> 52
+                    </div>
+                    <div class="meta-item">
+                        <strong>Date:</strong> unknown
+                    </div>
+                    <div class="meta-item">
+                        <strong>Language:</strong> English
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comparison">
+                <div class="comparison-side">
+                    <div class="side-header raw-header">❌ Raw OCR (Google Vision)</div>
+                    <div class="text-content">Prag 2.3. 1.36.
+Babus, es war wirklich eine grosse Prende, welche
+Die mir mit den Foto&#39;s gemacht hast
+Ich musste
+sie immer und immer wieder auschauen, will
+duvon bekommend. Kusige sind wirbelich
+ezeichnet geworden
+детер
+ausg
+fist fast jedes.
+heider war es von
+von mir bei den meister fildern)
+ein unverzeihlicher Fehler trotz Pan-film mit
+Selbscheibe in arbeiten. Dadurch sind bei vielen,
+sehr schöne kleinigkeiten verschwunden. Das näch.
+ste mail soll nur so etwas nicht mehr passieren.
+Inzwischen sind auch die Filme angekomm
+ther ist allerdings noch ausgezeichnetes Material
+vorhanden.
+kommen.
+Du noch. Jedent ders gute Sachen bekommst.
+sedenfalls hätte ich niemals ge
+gedacht
+dass die Zaba so hübsch sein kann - naturlid,
+mur auf Bilder. Ist das um ein Verdient des
+Mädchens Photo&#39;s oder Photographen. – Velumen
+wir einmal an das des
+vielen Dank mein Liebes.
+-
+Photos.
+Vochfeimual
+Soust ist mein Geburtstag sehr nett und wil
+Geschenke verlaufen.
+viel
+Darienter Gramophon.
+platen, Hemden, hantelstoff, Shawl&#39;s, Krawatten
+Parfum, is s. w.
+de und von
+Ja
+Ellen
+einen wunderbaren Montblanc Füller und fleiß
+
+と
+1.23
+langen
+alles in einem Etui mit einem sehr netten Brief.
+Meinen letzten Brief erwälut sie nur ganz kurz in
+dem sie einen Teil davon für geschackles livelt.
+Rebel genommen hat sie es aber incht.
+im Sommer
+день
+Sie fahrt
+ранз
+ganz nach Palästina.
+Heute war ich bei der Elekta - Filingesellschaft
+Prag I Narodny tr. 26. (Mr. Auerbach) Er was
+sehr nett und wird das Zuch durchsehen.
+In deutsch wäre es ihm leeber gewesen
+hat er
+gehen. Wenn du
+vesen aber es
+erade etwas
+gerade
+wird auch so gel
+frei hast schick es mir oder ihm. Er möchte
+es auch nach ferlin schicken. Bei mir
+dass ich mich an verschiedene
+gesagt,
+Operateure wenden soll. Va, einmal sehen
+Ich habe liver noch 2 Leute denen ich das
+Burch zeigen möchte. Samtliche Entscheisting
+über evtl. Filmrechte überlasse ich selbstverständen
+luch.
+Die
+-
+Cu
+angelerent te Fotob sende ich aubei mit.
+Schreib mir bald was
+es sonst geht:
+hady macht und wie
+Es küsst dich vielmals Fin
+Bol
+Den Film sende ich zurück wenn ich ihm
+nicht mehr brauche con
+3 Wochen.
+
+येणे
+r
+Fil.
+Elisabeth Aigner
+и
+Paris 15e
+6.9 bis Rue Grancion
+Pralia XIII Ruska
+
+
+
+</div>
+                </div>
+                <div class="comparison-side">
+                    <div class="side-header corrected-header">✅ AI-Corrected Text</div>
+                    <div class="text-content">Prag 23.1.36.
+
+Babus, es war wirklich eine grosse Freude, welche
+Du mir mit den Foto&#39;s gemacht hast.
+Ich musste
+sie immer und immer wieder anschauen, weil
+du von bekommend. Einige sind wirklich
+gezeichnet geworden
+
+leider war es von
+von mir bei den meisten Bildern
+ein unverzeihlicher Fehler trotz Pan-film mit
+Selbstscheibe in Arbeiten. Dadurch sind bei vielen,
+sehr schöne Kleinigkeiten verschwunden. Das näch-
+ste Mal soll so etwas nicht mehr passieren.
+Inzwischen sind auch die Filme angekommen,
+aber es ist allerdings noch ausgezeichnetes Material
+vorhanden.
+
+Du noch. Jedenfalls gute Sachen bekommst.
+Jedenfalls hätte ich niemals ge-
+dacht
+dass die Zaba so hübsch sein kann - natürlich,
+nur auf Bilder. Ist das um ein Verdienst des
+Mädchens Photo&#39;s oder Photographen. – Wollen
+wir einmal an das des
+vielen Dank mein Liebes.
+
+Photos.
+
+Sonst ist mein Geburtstag sehr nett und mit
+Geschenke verlaufen.
+viel
+Darunter Grammophon-
+platten, Hemden, Handtuchstoff, Shawl&#39;s, Krawatten
+Parfum, usw.
+
+Ja
+Ellen
+einen wunderbaren Montblanc Füller und fleiß
+
+langen
+alles in einem Etui mit einem sehr netten Brief.
+Meinen letzten Brief erwähnt sie nur ganz kurz in
+dem sie einen Teil davon für geschmacklos hält.
+Rebel genommen hat sie es aber nicht.
+
+im Sommer
+
+Sie fährt
+ganz nach Palästina.
+Heute war ich bei der Elekta - Filmgesellschaft
+Prag I Narodny tr. 26. (Mr. Auerbach) Er war
+sehr nett und wird das Buch durchsehen.
+In Deutsch wäre es ihm lieber gewesen
+hat er
+gehen. Wenn du
+wesen aber es
+gerade etwas
+
+wird auch so gel
+frei hast schick es mir oder ihm. Er möchte
+es auch nach Berlin schicken. Bei mir
+hat er gesagt,
+dass ich mich an verschiedene
+Operateure wenden soll. Na, einmal sehen
+Ich habe hier noch 2 Leute denen ich das
+Buch zeigen möchte. Sämtliche Entscheidung
+über evtl. Filmrechte überlasse ich selbstverständ-
+lich.
+
+Die
+
+angelehnte Fotos sende ich auch mit.
+Schreib mir bald was
+es sonst geht:
+wie es dir macht und wie
+Es küsst dich vielmals
+
+Den Film sende ich zurück wenn ich ihn
+nicht mehr brauche in
+3 Wochen.
+
+Elisabeth Aigner
+
+Paris 15e
+6.9 bis Rue Grancion
+Prag XIII Ruska
+
+</div>
+                </div>
+            </div>
+
+            <div class="corrections-list">
+                <div class="corrections-header">🔧 Corrections Made (52)</div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Prag 2.3. 1.36."</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Prag 23.1.36."</span>
+                    </div>
+                    <div class="correction-reason">Date format correction.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Prende"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Freude"</span>
+                    </div>
+                    <div class="correction-reason">Contextual correction for &#39;joy&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Die mir mit den Foto&#39;s gemacht hast"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Du mir mit den Foto&#39;s gemacht hast."</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Die&#39; to &#39;Du&#39; for grammatical accuracy.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"auschauen"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"anschauen"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to proper German word for &#39;look at&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Kusige"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Einige"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;Einige&#39; meaning &#39;some&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"ezeichnet"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"gezeichnet"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;gezeichnet&#39; meaning &#39;drawn&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"fist"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"ist"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;ist&#39; meaning &#39;is&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"heider"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"leider"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;leider&#39; meaning &#39;unfortunately&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"meister fildern"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"meisten Bildern"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;meisten Bildern&#39; meaning &#39;most pictures&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Selbscheibe"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Selbstscheibe"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;Selbstscheibe&#39; meaning &#39;self-disc&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Das näch."</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Das näch-"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;Das näch-&#39; for continuation.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"ste mail"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"ste Mal"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;ste Mal&#39; meaning &#39;next time&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"ther"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"aber"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;aber&#39; meaning &#39;but&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Jedent ders"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Jedenfalls"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;Jedenfalls&#39; meaning &#39;in any case&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"gedacht"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"gedacht"</span>
+                    </div>
+                    <div class="correction-reason">Repeated for clarity.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"naturlid"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"natürlich"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;natürlich&#39; meaning &#39;naturally&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"mur"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"nur"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;nur&#39; meaning &#39;only&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Velumen"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Wollen"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;Wollen&#39; meaning &#39;want&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Vochfeimual"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Sonst"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;Sonst&#39; meaning &#39;otherwise&#39;.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"wil"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"mit"</span>
+                    </div>
+                    <div class="correction-reason">Corrected to &#39;mit&#39; meaning &#39;with&#39;.</div>
+                </div>
+
+                <div style="margin-top: 10px; color: #666; font-style: italic;">
+                    ... and 32 more corrections
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="document">
+            <div class="document-header">
+                <div class="document-title">📄 4. 01-05-1938_ger_letter-002.pdf</div>
+                <div class="document-meta">
+                    <div class="meta-item">
+                        <strong>Confidence:</strong>
+                        <span class="confidence-badge confidence-high">85%</span>
+                    </div>
+                    <div class="meta-item">
+                        <strong>Provider:</strong> OPENAI
+                    </div>
+                    <div class="meta-item">
+                        <strong>Corrections:</strong> 49
+                    </div>
+                    <div class="meta-item">
+                        <strong>Date:</strong> 01-05-1938
+                    </div>
+                    <div class="meta-item">
+                        <strong>Language:</strong> German
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comparison">
+                <div class="comparison-side">
+                    <div class="side-header raw-header">❌ Raw OCR (Google Vision)</div>
+                    <div class="text-content">haci lady!
++
+Alles Gute wünsche ich mich
+zu kuerer Reise. Ich danke
+dir sehr für alles. Leider wollten
+es die verschiedenstenx Auter
+nicht, dass wir uns von deiner
+poreise sehen. Nicht desso
+weniger werde ich versüchen
+bei euch früchtbringe
+Arbeit zu leisten.
+7. Uler abend.
+Euer Bob.
+unde
+Solben habe ich die Bewilligung für Flux karte
+bekommen. rs
+ich Peats have, haugh &amp; Art davon ab wavel
+ich Peatz have. Also mich Pemptens komme ich
+bestimund. Quer Rob.
+S. 1.38
+Zabūs, undlish kam gestern Abend Dein
+Brief. For kann allerdings nicht verstehen
+Ich
+dass die 10 Tape keine Post bekommen
+лотаре
+erast. Ausserdem habe ich immer
+wenn ich etwas definitives wüsste
+sofort geschrieben.
+weiter.
+=
+Kleines, ich werde nicht mehr jammeren
+aber wen das so noch stage
+geht, bin ich reif für ein Verven -
+Sanatorium. Es ist schade, dass so
+viel wertvolle Craft verloren geht.
+die 3 Tage fahrt Grätten mir über
+haupt nichts
+ausgemacht.
+ich brauche dazu noch 3. Visumma
+Ungarn, Iugoslavien, schweiz.
+!das Ingosta vische würde gestern Abgelehn
+deh unisste in Zeograd Einreichen
+und das dauert stage. Du meiner
+Aber.
+
+Verzweiflung leabe ich dann noch
+einmal das Aussenministerium
+Dr. From ist heute
+angerüfen.
+zurüélhgekommen, hat man mir
+uitgeteilt. Ich bin sofort him, habe
+unit seinem Vertreter gesprochen,
+ernalen telefonische Kirchsprache
+und jetzt sitzte ich unten in
+jetzt
+tinuministerium und weiße
+auf den Brief welchen man mir
+für die Nationalbank mithiot.
+Jall mache also noch einen Versuch
+mich der Zewilligung der Flugkarte
+gabūs!
+abus, em fild vou all deux wirst
+du dir erst machen können,
+ich dir alles persönlich erzählen
+werde. Komplizierter kann es nicht
+Ich
+و
+wenn
+mehr sein. Das was die weisst sind
+löchstens 10% davon. Ich mache
+es
+mir
+acers perni. die Verven.
+version
+versagu
+Weisst die wie glücklich ich wäre,
+wenn ich alles schon linter mir
+lätte?!!!
+Du kannst überzeugt sein, dass
+ich alles tue. Sicher Aabe ich auch
+Fehler gemacht, aber wenn man
+vorher alles wrissk, -.
+persönlich.
+Darüber
+undl
+bei Troc
+bei
+·From
+ist natürlich durch den Brief
+das telegram welches ich saculte
+meinem heutigen Besuch
+gegenstands los geworden.
+Kleines, bitte sei nicht mmgeduldig
+ich bin es schon genug Seine Zob.
+
+</div>
+                </div>
+                <div class="comparison-side">
+                    <div class="side-header corrected-header">✅ AI-Corrected Text</div>
+                    <div class="text-content">haci lady!
++
+Alles Gute wünsche ich mir
+zu deiner Reise. Ich danke
+dir sehr für alles. Leider wollten
+es die verschiedensten Autoren
+nicht, dass wir uns von deiner
+Abreise sehen. Nicht desto
+weniger werde ich versuchen
+bei euch fruchtbringende
+Arbeit zu leisten.
+7. Uler abend.
+Euer Bob.
+und
+Solben habe ich die Bewilligung für Flugkarte
+bekommen. rs
+ich Peats habe, haugh &amp; Art davon ab wavel
+ich Peatz habe. Also mich Pemptens komme ich
+bestimmt. Euer Bob.
+S. 1.38
+Zabūs, endlich kam gestern Abend Dein
+Brief. Ich kann allerdings nicht verstehen
+dass die 10 Tage keine Post bekommen
+konnten
+erst. Außerdem habe ich immer
+wenn ich etwas Definitives wüsste
+sofort geschrieben.
+weiter.
+=
+Kleines, ich werde nicht mehr jammern
+aber wenn das so noch Tage
+geht, bin ich reif für ein Nerven-
+Sanatorium. Es ist schade, dass so
+viel wertvolle Kraft verloren geht.
+die 3 Tage Fahrt machten mir über-
+haupt nichts
+ausgemacht.
+ich brauche dazu noch 3. Visa
+Ungarn, Jugoslawien, Schweiz.
+!das Jugoslawische wurde gestern abgelehnt
+deh unisste in Belgrad einreichen
+und das dauert Tage. Du meiner
+Aber.
+
+Verzweiflung habe ich dann noch
+einmal das Außenministerium
+Dr. From ist heute
+angerufen.
+zurückgekommen, hat man mir
+mitgeteilt. Ich bin sofort hin, habe
+mit seinem Vertreter gesprochen,
+erneut telefonische Rücksprache
+und jetzt sitze ich unten im
+jetzt
+Finanzministerium und warte
+auf den Brief welchen man mir
+für die Nationalbank mitgibt.
+Ich mache also noch einen Versuch
+mich der Bewilligung der Flugkarte
+zu bemächtigen!
+Zabūs, im Feld von all dem wirst
+du dir erst machen können,
+wenn ich dir alles persönlich erzählen
+werde. Komplizierter kann es nicht
+mehr sein. Das was du weißt sind
+höchstens 10% davon. Ich mache
+es
+mir
+alles persönlich. die Nerven.
+
+Weißt du wie glücklich ich wäre,
+wenn ich alles schon hinter mir
+hätte?!!!
+Du kannst überzeugt sein, dass
+ich alles tue. Sicher habe ich auch
+Fehler gemacht, aber wenn man
+vorher alles wüsste, -.
+
+Darüber
+
+bei Troc
+bei
+·From
+ist natürlich durch den Brief
+das Telegramm welches ich schickte
+meinem heutigen Besuch
+gegenstandslos geworden.
+Kleines, bitte sei nicht ungeduldig
+ich bin es schon genug. Seine Zob.</div>
+                </div>
+            </div>
+
+            <div class="corrections-list">
+                <div class="corrections-header">🔧 Corrections Made (49)</div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"wünsche ich mich"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"wünsche ich mir"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;mich&#39; to &#39;mir&#39; for grammatical accuracy.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"poreise"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Abreise"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;poreise&#39; to &#39;Abreise&#39; based on context.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"früchtbringe"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"fruchtbringende"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;früchtbringe&#39; to &#39;fruchtbringende&#39; for proper adjective form.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Solben"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Sobald"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Solben&#39; to &#39;Sobald&#39; for logical sentence structure.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Flux karte"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Flugkarte"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Flux karte&#39; to &#39;Flugkarte&#39; based on context.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"bestimund"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"bestimmt"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;bestimund&#39; to &#39;bestimmt&#39; for proper word form.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Zabūs"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Zabūs"</span>
+                    </div>
+                    <div class="correction-reason">Retained &#39;Zabūs&#39; as it appears to be a name or term.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"undlish"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"endlich"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;undlish&#39; to &#39;endlich&#39; for logical sentence structure.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Tape"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Tage"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Tape&#39; to &#39;Tage&#39; based on context.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"lotare"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"konnten"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;lotare&#39; to &#39;konnten&#39; for logical sentence structure.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Verven"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Nerven"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Verven&#39; to &#39;Nerven&#39; based on context.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Craft"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Kraft"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Craft&#39; to &#39;Kraft&#39; for proper German spelling.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Grätten"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"machten"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Grätten&#39; to &#39;machten&#39; for logical sentence structure.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Visumma"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Visa"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Visumma&#39; to &#39;Visa&#39; based on context.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Iugoslavien"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Jugoslawien"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Iugoslavien&#39; to &#39;Jugoslawien&#39; for proper spelling.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Ingosta vische"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Jugoslawische"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Ingosta vische&#39; to &#39;Jugoslawische&#39; based on context.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Zeograd"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Belgrad"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Zeograd&#39; to &#39;Belgrad&#39; based on context.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"deh unisste"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"dort musste"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;deh unisste&#39; to &#39;dort musste&#39; for logical sentence structure.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"leabe"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"habe"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;leabe&#39; to &#39;habe&#39; for proper verb form.</div>
+                </div>
+
+                <div class="correction-item">
+                    <div>
+                        <span class="correction-original">"Aussenministerium"</span>
+                        <span class="correction-arrow">→</span>
+                        <span class="correction-fixed">"Außenministerium"</span>
+                    </div>
+                    <div class="correction-reason">Corrected &#39;Aussenministerium&#39; to &#39;Außenministerium&#39; for proper spelling.</div>
+                </div>
+
+                <div style="margin-top: 10px; color: #666; font-style: italic;">
+                    ... and 29 more corrections
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>

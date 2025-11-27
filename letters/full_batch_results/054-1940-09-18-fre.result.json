@@ -1,0 +1,53 @@
+{
+  "pdf_file": "054-1940-09-18-fre.pdf",
+  "date_processed": "2025-11-16T17:37:44.859138",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Commissariat de Police\nAGDE (H\u00e9rault)\nLe 18/9/1940\nMe\n\u3075\nVous \u00eates invit\u00e9 \u00e0 vous pr\u00e9senter en mon\ncabinet situ\u00e9 \u00e0 l'H\u00f4tel-de-Ville le\nfound' Rui\n\u00e0 19 heure\nqui vous concerne.\nce\ncourant,\npour une affaire\nAT\nLe Commissaire de Police,\nHERAULT\nM\nInveigenthal Robert\n32 Rue Republique\nRapporter la Pr\u00e9sente.\n\n",
+  "corrected_text": "Commissariat de Police\nAGDE (H\u00e9rault)\nLe 18/9/1940\nMonsieur\n\nVous \u00eates invit\u00e9 \u00e0 vous pr\u00e9senter en mon\ncabinet situ\u00e9 \u00e0 l'H\u00f4tel-de-Ville le\n[illegible]\n\u00e0 19 heures\npour une affaire qui vous concerne.\n\nLe Commissaire de Police,\nHERAULT\n\nMonsieur Zweigenthal Robert\n32 Rue R\u00e9publique\nRapporter la Pr\u00e9sente.",
+  "translated_text": "Police Station AGDE (H\u00e9rault) September 18, 1940 Sir, You are summoned to appear at my office located in the Town Hall on [illegible] at 7:00 PM regarding a matter concerning you. The Police Commissioner, HERAULT Mr. Robert Zweigenthal 32 Rue R\u00e9publique Please return this notice.",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Me",
+      "corrected": "Monsieur",
+      "reason": "Common salutation in formal letters."
+    },
+    {
+      "original": "\u3075",
+      "corrected": "",
+      "reason": "Gibberish character likely due to OCR error."
+    },
+    {
+      "original": "found' Rui",
+      "corrected": "[illegible]",
+      "reason": "Text is not clear and does not match any known context."
+    },
+    {
+      "original": "heure",
+      "corrected": "heures",
+      "reason": "Correct plural form for time in French."
+    },
+    {
+      "original": "Inveigenthal Robert",
+      "corrected": "Monsieur Zweigenthal Robert",
+      "reason": "Corrected name based on known people."
+    },
+    {
+      "original": "32 Rue Republique",
+      "corrected": "32 Rue R\u00e9publique",
+      "reason": "Corrected to proper French spelling."
+    }
+  ],
+  "uncertain_segments": [
+    "[illegible]"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 50,
+  "corrected_word_count": 45,
+  "corrections_count": 6
+}

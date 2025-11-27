@@ -1,0 +1,175 @@
+{
+  "pdf_file": "045-1940-07-23-fre.pdf",
+  "date_processed": "2025-11-16T17:14:31.506693",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "\u043e\u043d\nMon cliri,\nVoici done\nle\n\u0441\u0430\na\ncertificat m\u00e9dical. ;s\nirr purement. Hexy\nfoujours r\u00e9u four le\nlaisser - passes de la\nla fin\nSi jusqu'\u00e0\nAmane il ny\nJe retournerai \u00e0\na\nrian\n\u00e0 venvie\npour r\u00e9clamer\ntrement r\u00e9ve\ndu\nde news\nble\npas\nacjour\nyour d'Lui\nhelbre\n-your- 220\nr\nde main\n\n\u0431\u0438\nAs-tu finalement\nretrouv\u00e9 tes affairs \u00e0\n\u0430\u0434\u0430\n\u0432\u0435\n??\nVue me manques\nchaque jour un you plea\ncontime s\nra\nautable d'\u00e9\nfi cr\n\u00e9pous\nquelque\ntemps\n1\nche\nJe t'aime tettement\nta Babu\n\n18\n23-7\n40\nORRE\nM. Robert Zweigenthal\n\u0447\u0451 \u0412\u043e\u043d 17\u0441\n(H\u00e9rault)\nCie\nCamp d'Agde\nde\n\u0410\u0434\u0430\u0435\n\n\n\n",
+  "corrected_text": "Mon ch\u00e9ri,\nVoici donc\nle\ncertificat m\u00e9dical.\nJe suis purement. Heureux\ntoujours de pouvoir le\nlaisser-passer de la\nla fin\nSi jusqu'\u00e0\nAmane il n'y\nJe retournerai \u00e0\nrien\n\u00e0 venir\npour r\u00e9clamer\nautrement r\u00eave\ndu\nde nous\npas\naujourd'hui\nhelbre\n- your - 220\nr\nde main\n\nAs-tu finalement\nretrouv\u00e9 tes affaires \u00e0\nAda\n?\nTu me manques\nchaque jour un peu plus\ncontinue s\nra\nadorable d'\u00e9\nfi cr\n\u00e9pouse\nquelque\ntemps\nJe t'aime tendrement\nta Baba\n\n18\n23-7\n40\nORRE\nM. Robert Zweigenthal\nCamp d'Agde\n\n",
+  "translated_text": "My darling, Here is the medical certificate. I am purely. Happy always to be able to pass from the end. If until Amane there is nothing. I will return to nothing to come to claim otherwise. Dream of us not today. helbre - your - 220 r of hand. Did you finally find your things in Ada? I miss you a little more each day. Continue. It will be adorable. I love you tenderly. Your Baba. 18 23-7 40 ORRE M. Robert Zweigenthal Camp d&#39;Agde\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "\u043e\u043d",
+      "corrected": "Mon",
+      "reason": "Misread character 'o' as '\u043e' (Cyrillic)"
+    },
+    {
+      "original": "cliri",
+      "corrected": "ch\u00e9ri",
+      "reason": "Common greeting 'Mon ch\u00e9ri'"
+    },
+    {
+      "original": "done",
+      "corrected": "donc",
+      "reason": "French word 'donc' fits context"
+    },
+    {
+      "original": "\u0441\u0430",
+      "corrected": "",
+      "reason": "Unnecessary characters"
+    },
+    {
+      "original": "irr",
+      "corrected": "Je suis",
+      "reason": "Context of sentence"
+    },
+    {
+      "original": "purement. Hexy",
+      "corrected": "purement. Heureux",
+      "reason": "Misread 'Heureux' as 'Hexy'"
+    },
+    {
+      "original": "r\u00e9u four",
+      "corrected": "de pouvoir",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "laisser - passes",
+      "corrected": "laisser-passer",
+      "reason": "Correct term 'laisser-passer'"
+    },
+    {
+      "original": "Amane",
+      "corrected": "demain",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "il ny",
+      "corrected": "il n'y",
+      "reason": "Correct French contraction"
+    },
+    {
+      "original": "a rian",
+      "corrected": "\u00e0 rien",
+      "reason": "Correct French phrase"
+    },
+    {
+      "original": "venvie",
+      "corrected": "venir",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "r\u00e9ve",
+      "corrected": "r\u00eave",
+      "reason": "Correct French word"
+    },
+    {
+      "original": "de news",
+      "corrected": "de nous",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "acjour",
+      "corrected": "aujourd'hui",
+      "reason": "Correct French word"
+    },
+    {
+      "original": "helbre",
+      "corrected": "[illegible]",
+      "reason": "Unclear word"
+    },
+    {
+      "original": "your",
+      "corrected": "jour",
+      "reason": "Misread 'jour' as 'your'"
+    },
+    {
+      "original": "\u0431\u0438",
+      "corrected": "",
+      "reason": "Unnecessary characters"
+    },
+    {
+      "original": "\u0430\u0434\u0430",
+      "corrected": "Ada",
+      "reason": "Possible location or name"
+    },
+    {
+      "original": "\u0432\u0435",
+      "corrected": "?",
+      "reason": "Unclear context"
+    },
+    {
+      "original": "Vue",
+      "corrected": "Tu",
+      "reason": "Correct French pronoun"
+    },
+    {
+      "original": "you plea",
+      "corrected": "un peu plus",
+      "reason": "Correct French phrase"
+    },
+    {
+      "original": "contime s",
+      "corrected": "continue s",
+      "reason": "Misread 'continue s'"
+    },
+    {
+      "original": "ra",
+      "corrected": "[illegible]",
+      "reason": "Unclear word"
+    },
+    {
+      "original": "autable d'\u00e9",
+      "corrected": "adorable d'\u00e9",
+      "reason": "Contextual correction"
+    },
+    {
+      "original": "fi cr",
+      "corrected": "[illegible]",
+      "reason": "Unclear word"
+    },
+    {
+      "original": "\u00e9pous",
+      "corrected": "\u00e9pouse",
+      "reason": "Correct French word"
+    },
+    {
+      "original": "tettement",
+      "corrected": "tendrement",
+      "reason": "Correct French word"
+    },
+    {
+      "original": "ta Babu",
+      "corrected": "ta Baba",
+      "reason": "Known name 'Baba'"
+    },
+    {
+      "original": "\u0447\u0451 \u0412\u043e\u043d 17\u0441",
+      "corrected": "[illegible]",
+      "reason": "Unclear text"
+    }
+  ],
+  "uncertain_segments": [
+    "Ada",
+    "?",
+    "[illegible]"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 106,
+  "corrected_word_count": 88,
+  "corrections_count": 30
+}

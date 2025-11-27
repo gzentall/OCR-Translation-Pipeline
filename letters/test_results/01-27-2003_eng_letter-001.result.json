@@ -1,0 +1,91 @@
+{
+  "pdf_file": "01-27-2003_eng_letter-001.pdf",
+  "date_processed": "2025-11-16T14:00:40.754780",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "01-27-2003"
+  },
+  "raw_text": "ZENTALL\n21 BAYBERRY LANE\nRYE BROOK, N.Y. 10573\nDear Gabe\nI'd\nFor Jan 27,03\n11 were a\n\u0430\u0440\u043e\u0441\u0442\ns.\nI write a poem to sung jour\npraise if I were an artist\npaint a\nI'd\npicture in which\njoi'd have wings... bud,\nyou\nalas, I am\njust a poor\nhuman with strongly\nwith strongly limited\nReforming capability!...\nCerid so\n... I'll use simple\nWords to wish you a wonderful\nbirthday- may some\nof your\nWishes come though in de\nfear alead, may ju be happer,\nRealty of successful! May this\n\u0430\u0437\nbe the best fear ever.\nover\nSo much love\nGrandma\n\nThe enclosed is but a tober\nof my love\n\u0436\u0435\nfor you\n\n",
+  "corrected_text": "ZENTALL\n21 BAYBERRY LANE\nRYE BROOK, N.Y. 10573\nDear Gabe\nI'd\nFor Jan 27, 03\nIf I were a\npoet\nI'd write a poem to sing your\npraise if I were an artist\nI'd paint a\npicture in which\nyou'd have wings... but,\nalas, I am\njust a poor\nhuman with strongly\nlimited\nReforming capability!...\nAnd so\n... I'll use simple\nWords to wish you a wonderful\nbirthday- may some\nof your\nWishes come true in the\nyear ahead, may you be happier,\nReally successful! May this\nyear\nbe the best year ever.\nover\nSo much love\nGrandma\n\nThe enclosed is but a token\nof my love\nfor you\n",
+  "translated_text": "ZENTALL\n21 BAYBERRY LANE\nRYE BROOK, N.Y. 10573\nDear Gabe\nI'd\nFor Jan 27, 03\nIf I were a\npoet\nI'd write a poem to sing your\npraise if I were an artist\nI'd paint a\npicture in which\nyou'd have wings... but,\nalas, I am\njust a poor\nhuman with strongly\nlimited\nReforming capability!...\nAnd so\n... I'll use simple\nWords to wish you a wonderful\nbirthday- may some\nof your\nWishes come true in the\nyear ahead, may you be happier,\nReally successful! May this\nyear\nbe the best year ever.\nover\nSo much love\nGrandma\n\nThe enclosed is but a token\nof my love\nfor you\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "jour",
+      "corrected": "your",
+      "reason": "OCR misread 'j' as 'j' instead of 'y'"
+    },
+    {
+      "original": "\u0430\u0440\u043e\u0441\u0442",
+      "corrected": "poet",
+      "reason": "OCR misread 'poet' due to handwriting style"
+    },
+    {
+      "original": "sung",
+      "corrected": "sing",
+      "reason": "OCR misread 'sing' as 'sung'"
+    },
+    {
+      "original": "joi'd",
+      "corrected": "you'd",
+      "reason": "OCR misread 'you'd' as 'joi'd'"
+    },
+    {
+      "original": "bud,",
+      "corrected": "but,",
+      "reason": "OCR misread 'but' as 'bud'"
+    },
+    {
+      "original": "with strongly\nwith strongly limited",
+      "corrected": "with strongly\nlimited",
+      "reason": "Duplicate phrase due to OCR error"
+    },
+    {
+      "original": "Cerid",
+      "corrected": "And",
+      "reason": "OCR misread 'And' as 'Cerid'"
+    },
+    {
+      "original": "though",
+      "corrected": "true",
+      "reason": "Contextual correction for 'come true'"
+    },
+    {
+      "original": "de\nfear alead",
+      "corrected": "the\nyear ahead",
+      "reason": "OCR misread 'the year ahead' due to handwriting style"
+    },
+    {
+      "original": "ju",
+      "corrected": "you",
+      "reason": "OCR misread 'you' as 'ju'"
+    },
+    {
+      "original": "happer,",
+      "corrected": "happier,",
+      "reason": "OCR misread 'happier' as 'happer'"
+    },
+    {
+      "original": "Realty of successful!",
+      "corrected": "Really successful!",
+      "reason": "OCR misread 'Really' as 'Realty'"
+    },
+    {
+      "original": "\u0430\u0437",
+      "corrected": "year",
+      "reason": "OCR misread 'year' as '\u0430\u0437'"
+    },
+    {
+      "original": "tober",
+      "corrected": "token",
+      "reason": "OCR misread 'token' as 'tober'"
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 113,
+  "corrected_word_count": 109,
+  "corrections_count": 14
+}

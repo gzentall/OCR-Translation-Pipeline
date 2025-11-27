@@ -1,0 +1,190 @@
+{
+  "pdf_file": "007-1940-07-01-fre.pdf",
+  "date_processed": "2025-11-16T14:00:20.153517",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Villeneuve Pot 1.7.40\ntu te\nMa cherie,\nNous sommes toujour ici et nous attendons\nnotre ordre pour la demobilisation.\nJe serais heureuse, si je serrais ou\nfrouve. Naturellement je veuse aller fork\nde mite \u00e0 higiniac si je n'ai pas\nas des\nnouvelles de foi entreteness. He croise\nnous sommes encore 2-3 jours ici. C'est\nterrible foujours attendre. Mais pour\nle moment est rien \u00e0 faire\nfeuille de la demobilization\nJe t'adore ma petite femme etf\n\u0434\u0430\u0439 \u0434\u043e\u0432\u043e\n\u00e0 fr\u00e8s bient\u00f4t.\nsans la\nespere\n\nFRANCHISE MILITAIRE\nPRIORIT\u00c9\n40\nR\u00c9PUBLIQUE BRAN\u00c7AISE\n40\n91\nI CARTE POSTALE LATE\nEXP\u00c9DITEUR\nfenther.\nMR. Jueg\nreg. infanterie\n1. reg.\n13 comp.\nJ;P. 31121\n\u00e0........\nNom :\nGrade.\nw\nfurt\nARMEES\nCette Carte\nest vendue\n5 Centimes\ndans tous les\nBureaux de\nPoste\nDESTINATAIRE\nMadonne\n\u0448\u0435\nE. Froeigenthal\nCompacchese Mouil\nCompagni Coterie\n\u0448\u0435\nth\nR\u00e9giment (arme ou service\nD\u00e9partement....\nSecteur Postal N\u00b0\nEl Liginia\n(Il est recommand\u00e9 d'\u00e9crire tr\u00e8s lisiblement)\nCorr\u00e8ze\nu\npar\n\n",
+  "corrected_text": "Villeneuve Port 1.7.40\n\nMa ch\u00e9rie,\nNous sommes toujours ici et nous attendons\nnotre ordre pour la d\u00e9mobilisation.\nJe serais heureuse, si je serais ou\ntrouve. Naturellement je veux aller fort\nde suite \u00e0 [illegible] si je n'ai pas\nas des\nnouvelles de toi entretemps. Je crois\nnous sommes encore 2-3 jours ici. C'est\nterrible toujours attendre. Mais pour\nle moment est rien \u00e0 faire\nfeuille de la d\u00e9mobilisation\nJe t'adore ma petite femme et\n\u00e0 tr\u00e8s bient\u00f4t.\n\nFRANCHISE MILITAIRE\nPRIORIT\u00c9\n40\nR\u00c9PUBLIQUE FRAN\u00c7AISE\n40\n91\nCARTE POSTALE\nEXP\u00c9DITEUR\n[illegible]\nMR. [illegible]\nreg. infanterie\n1. reg.\n13 comp.\nJ.P. 31121\n\u00e0........\nNom :\nGrade.\n[illegible]\nARMEES\nCette Carte\nest vendue\n5 Centimes\ndans tous les\nBureaux de\nPoste\nDESTINATAIRE\nMadame\nE. Froelichenthal\nCompagnie Mouil\nCompagnie Coterie\n[illegible]\nR\u00e9giment (arme ou service)\nD\u00e9partement....\nSecteur Postal N\u00b0\n[illegible]\n(Il est recommand\u00e9 d'\u00e9crire tr\u00e8s lisiblement)\nCorr\u00e8ze\nu\npar",
+  "translated_text": "Villeneuve Port 1.7.40 My darling, We are still here and are waiting for our demobilization order. I would be happy if I were or found. Naturally, I want to go straight to [illegible] if I haven&#39;t heard from you in the meantime. I think we&#39;ll be here for another 2-3 days. It&#39;s terrible always waiting. But for the moment, there&#39;s nothing to do but fill out the demobilization papers. I adore you, my little wife, and see you very soon. PRIORITY MILITARY FRANCHISE 40 FRENCH REPUBLIC 40 91 POSTCARD SENDER [illegible] MR. [illegible] reg. infantry 1. reg. 13 comp. JP 31121 to........ Name: Rank. [illegible] ARMY This card is sold for 5 cents in all Post Offices. RECIPIENT: Mrs. E. Froelichenthal Company Mouil Company Coterie [illegible] Regiment (branch or service) Department.... Postal Sector No. [illegible] (It is recommended to write very legibly) Corr\u00e8ze u by",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Pot",
+      "corrected": "Port",
+      "reason": "Common location name correction."
+    },
+    {
+      "original": "tu te",
+      "corrected": "",
+      "reason": "Unnecessary text, likely OCR error."
+    },
+    {
+      "original": "toujour",
+      "corrected": "toujours",
+      "reason": "Correct spelling in French."
+    },
+    {
+      "original": "serrais",
+      "corrected": "serais",
+      "reason": "Correct verb form in French."
+    },
+    {
+      "original": "frouve",
+      "corrected": "trouve",
+      "reason": "Correct spelling in French."
+    },
+    {
+      "original": "veuse",
+      "corrected": "veux",
+      "reason": "Correct spelling in French."
+    },
+    {
+      "original": "fork",
+      "corrected": "fort",
+      "reason": "Correct spelling in French."
+    },
+    {
+      "original": "de mite \u00e0 higiniac",
+      "corrected": "de suite \u00e0 [illegible]",
+      "reason": "Correct phrase and mark illegible part."
+    },
+    {
+      "original": "as des",
+      "corrected": "de",
+      "reason": "Correct preposition usage in French."
+    },
+    {
+      "original": "foi entreteness",
+      "corrected": "toi entretemps",
+      "reason": "Correct phrase in French."
+    },
+    {
+      "original": "He croise",
+      "corrected": "Je crois",
+      "reason": "Correct pronoun and verb in French."
+    },
+    {
+      "original": "foujours",
+      "corrected": "toujours",
+      "reason": "Correct spelling in French."
+    },
+    {
+      "original": "feuille de la demobilization",
+      "corrected": "feuille de la d\u00e9mobilisation",
+      "reason": "Correct spelling in French."
+    },
+    {
+      "original": "etf",
+      "corrected": "et",
+      "reason": "Correct conjunction in French."
+    },
+    {
+      "original": "\u0434\u0430\u0439 \u0434\u043e\u0432\u043e",
+      "corrected": "\u00e0",
+      "reason": "Correct phrase in French."
+    },
+    {
+      "original": "fr\u00e8s",
+      "corrected": "tr\u00e8s",
+      "reason": "Correct spelling in French."
+    },
+    {
+      "original": "sans la",
+      "corrected": "",
+      "reason": "Unnecessary text, likely OCR error."
+    },
+    {
+      "original": "espere",
+      "corrected": "",
+      "reason": "Unnecessary text, likely OCR error."
+    },
+    {
+      "original": "FRANCHISE MILITAIRE",
+      "corrected": "FRANCHISE MILITAIRE",
+      "reason": "Correct as is."
+    },
+    {
+      "original": "PRIORIT\u00c9",
+      "corrected": "PRIORIT\u00c9",
+      "reason": "Correct as is."
+    },
+    {
+      "original": "R\u00c9PUBLIQUE BRAN\u00c7AISE",
+      "corrected": "R\u00c9PUBLIQUE FRAN\u00c7AISE",
+      "reason": "Correct spelling in French."
+    },
+    {
+      "original": "I CARTE POSTALE LATE",
+      "corrected": "CARTE POSTALE",
+      "reason": "Correct phrase in French."
+    },
+    {
+      "original": "fenther.",
+      "corrected": "[illegible]",
+      "reason": "Illegible text."
+    },
+    {
+      "original": "Jueg",
+      "corrected": "[illegible]",
+      "reason": "Illegible text."
+    },
+    {
+      "original": "w",
+      "corrected": "[illegible]",
+      "reason": "Illegible text."
+    },
+    {
+      "original": "furt",
+      "corrected": "[illegible]",
+      "reason": "Illegible text."
+    },
+    {
+      "original": "Madonne",
+      "corrected": "Madame",
+      "reason": "Correct title in French."
+    },
+    {
+      "original": "\u0448\u0435",
+      "corrected": "",
+      "reason": "Unnecessary text, likely OCR error."
+    },
+    {
+      "original": "Froeigenthal",
+      "corrected": "Froelichenthal",
+      "reason": "Correct spelling of name."
+    },
+    {
+      "original": "Compacchese Mouil",
+      "corrected": "Compagnie Mouil",
+      "reason": "Correct phrase in French."
+    },
+    {
+      "original": "Compagni Coterie",
+      "corrected": "Compagnie Coterie",
+      "reason": "Correct phrase in French."
+    },
+    {
+      "original": "th",
+      "corrected": "[illegible]",
+      "reason": "Illegible text."
+    },
+    {
+      "original": "El Liginia",
+      "corrected": "[illegible]",
+      "reason": "Illegible text."
+    }
+  ],
+  "uncertain_segments": [
+    "de suite \u00e0 [illegible]",
+    "[illegible]",
+    "El Liginia"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 157,
+  "corrected_word_count": 144,
+  "corrections_count": 33
+}

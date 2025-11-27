@@ -1,0 +1,251 @@
+{
+  "pdf_file": "038-1940-06-20-fre.pdf",
+  "date_processed": "2025-11-16T17:35:16.955117",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "20. 6.40\nlia polite deine\n'I'ai frome ice ime porta et je fe\ntrouve\nre\nveuse \u00e9crire toute de suite. J'ai regarde\nany read hun la curie, mais je n'ai pas\ntrouve liginiac. Est ce que il est ellony\npetit. I'esp\u00e8re j le trouverai.\n\u0435\u043d\u0435\n. Je sins cher boome saut\u00e9 river petit\n\u0431\u043e\u0441\u043e\u0432\u0435 \u0440\u044b\net tons va bun comme toujour\nNous \u00e9sperons tonjour vous sera\nbeen tamb\u00e9. Je pense fonte la journet\n\u00e0 foi et que nous ferons apr\u00e8s ciste\n'ai des votos. vers\u00e9 aussi un per\nsa ca, seulement reste caline mon chouse\nc'est fellement important pour vous-\npour moi je croix ou le sais. Si j'e te trouve\nPerre\nT\nSije\ncomme ca dois ira bien.\nde suis avec beaucoup des ani's (nouocam\nfrancais is. Mais canardes de la regimis\n\u043f\u0435\u0434\u043d\u0438\u0439\ntai perdon je ne sais pas exactement\non ils se trouvent, mais ca va surement\npar fellement bien quand shies moi\nJe suis tout ches for Babus et je\nfor trob\nt'aime\n\nF.\nMindy\nE.Zwew\nher the\nRAND\nCHEZE\n19.50\n21-6\nTE\nhigimas\nCorrise\n400\nZEAUX\nNNEY\n\n\u0434\u0430\u043b\u0430\u0441\n\u2022Santal 1.reg. camp. He\nSiP, 31121\n\n",
+  "corrected_text": "20. 6.40\nMa petite femme\nJ'ai trouv\u00e9 ce qui m'importe et je te\ntrouve\nr\u00eaveuse \u00e9crire toute de suite. J'ai regard\u00e9\nun peu dans la cuisine, mais je n'ai pas\ntouv\u00e9 l'ignace. Est-ce qu'il est chez mon\npetit. J'esp\u00e8re je le trouverai.\n\nJe suis cher bonne sant\u00e9 mon petit\nbocuse et tout va bien comme toujours\nNous esp\u00e9rons toujours vous serez\nbien aussi. Je pense toute la journ\u00e9e\n\u00e0 toi et que nous ferons apr\u00e8s cette\nj'ai des v\u0153ux. Vers\u00e9 aussi un peu\n\u00e7a, seulement reste calme mon ch\u00e9ri\nc'est tellement important pour vous-\npour moi je crois tu le sais. Si je te trouve\n\nSi je\ncomme \u00e7a tout ira bien.\nJe suis avec beaucoup des amis (nouveaux\nfran\u00e7ais). Mais camarades de la r\u00e9gion\n\npardon je ne sais pas exactement\no\u00f9 ils se trouvent, mais \u00e7a va s\u00fbrement\npar tellement bien quand chez moi\nJe suis tout chez toi Baba et je\nt'aime\n\nF.\nMindy\nE. Zweigenthal\n\nRAND\nCHEZ\n19.50\n21-6\nTE\nhigimas\nCorrise\n400\nZEAUX\nNNEY\n\nSantal 1.reg. camp. He\nSiP, 31121\n",
+  "translated_text": "June 20, 2040 My little wife, I&#39;ve found what matters to me, and I find you dreamy, writing right away. I looked a little in the kitchen, but I didn&#39;t find the Ignace. Is it at my little one&#39;s? I hope I&#39;ll find it. I&#39;m dear, good health my little Bocuse, and everything is fine as always. We always hope you&#39;ll be well too. I think of you all day, and what we&#39;ll do after this, I have some wishes. Pour a little of that too, just stay calm my darling, it&#39;s so important for you\u2014for me, I think you know. If I find you, if I like that, everything will be fine. I&#39;m with many friends (new French). But comrades from the region, pardon me, I don&#39;t know exactly where they are, but things are surely not going so well when I&#39;m at home. I&#39;m completely at your place, Baba, and I love you. F. Mindy E. Zweigenthal RAND AT 19.50 21-6 TE higimas Corrise 400 ZEAUX NNEY Santal 1.reg. camp. He SiP, 31121\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "lia polite deine",
+      "corrected": "Ma petite femme",
+      "reason": "Common greeting and context of letter"
+    },
+    {
+      "original": "'I'ai frome ice ime porta et je fe",
+      "corrected": "J'ai trouv\u00e9 ce qui m'importe et je te",
+      "reason": "Corrected to make sense in context"
+    },
+    {
+      "original": "re veuse",
+      "corrected": "r\u00eaveuse",
+      "reason": "Likely intended word based on context"
+    },
+    {
+      "original": "\u00e9crire toute de suite",
+      "corrected": "\u00e9crire toute de suite",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "any read hun la curie",
+      "corrected": "un peu dans la cuisine",
+      "reason": "Corrected to make sense in context"
+    },
+    {
+      "original": "trouve liginiac",
+      "corrected": "trouv\u00e9 l'ignace",
+      "reason": "Corrected to a plausible name or item"
+    },
+    {
+      "original": "Est ce que il est ellony petit",
+      "corrected": "Est-ce qu'il est chez mon petit",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "Je sins cher boome saut\u00e9 river petit",
+      "corrected": "Je suis cher bonne sant\u00e9 mon petit",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "\u0431\u043e\u0441\u043e\u0432\u0435 \u0440\u044b",
+      "corrected": "bocuse",
+      "reason": "Corrected to a plausible word"
+    },
+    {
+      "original": "et tons va bun comme toujour",
+      "corrected": "et tout va bien comme toujours",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "Nous \u00e9sperons tonjour vous sera",
+      "corrected": "Nous esp\u00e9rons toujours vous serez",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "been tamb\u00e9",
+      "corrected": "bien aussi",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "Je pense fonte la journet",
+      "corrected": "Je pense toute la journ\u00e9e",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "\u00e0 foi et que nous ferons apr\u00e8s ciste",
+      "corrected": "\u00e0 toi et que nous ferons apr\u00e8s cette",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "'ai des votos",
+      "corrected": "j'ai des v\u0153ux",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "vers\u00e9 aussi un per",
+      "corrected": "Vers\u00e9 aussi un peu",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "sa ca, seulement reste caline mon chouse",
+      "corrected": "\u00e7a, seulement reste calme mon ch\u00e9ri",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "c'est fellement important pour vous-",
+      "corrected": "c'est tellement important pour vous-",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "pour moi je croix ou le sais",
+      "corrected": "pour moi je crois tu le sais",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "Si j'e te trouve",
+      "corrected": "Si je te trouve",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "Perre",
+      "corrected": "",
+      "reason": "Removed as it seems out of context"
+    },
+    {
+      "original": "de suis avec beaucoup des ani's (nouocam",
+      "corrected": "Je suis avec beaucoup des amis (nouveaux",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "francais is",
+      "corrected": "fran\u00e7ais)",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "Mais canardes de la regimis",
+      "corrected": "Mais camarades de la r\u00e9gion",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "\u043f\u0435\u0434\u043d\u0438\u0439",
+      "corrected": "",
+      "reason": "Removed as it seems out of context"
+    },
+    {
+      "original": "tai perdon je ne sais pas exactement",
+      "corrected": "pardon je ne sais pas exactement",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "on ils se trouvent, mais ca va surement",
+      "corrected": "o\u00f9 ils se trouvent, mais \u00e7a va s\u00fbrement",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "par fellement bien quand shies moi",
+      "corrected": "par tellement bien quand chez moi",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "Je suis tout ches for Babus et je",
+      "corrected": "Je suis tout chez toi Baba et je",
+      "reason": "Corrected to a plausible sentence"
+    },
+    {
+      "original": "for trob",
+      "corrected": "",
+      "reason": "Removed as it seems out of context"
+    },
+    {
+      "original": "t'aime",
+      "corrected": "t'aime",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "E.Zwew",
+      "corrected": "E. Zweigenthal",
+      "reason": "Corrected to known name"
+    },
+    {
+      "original": "her the",
+      "corrected": "",
+      "reason": "Removed as it seems out of context"
+    },
+    {
+      "original": "RAND",
+      "corrected": "RAND",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "CHEZE",
+      "corrected": "CHEZ",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "19.50",
+      "corrected": "19.50",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "21-6",
+      "corrected": "21-6",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "TE",
+      "corrected": "TE",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "higimas",
+      "corrected": "higimas",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "Corrise",
+      "corrected": "Corrise",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "400",
+      "corrected": "400",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "ZEAUX",
+      "corrected": "ZEAUX",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "NNEY",
+      "corrected": "NNEY",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "\u0434\u0430\u043b\u0430\u0441",
+      "corrected": "",
+      "reason": "Removed as it seems out of context"
+    },
+    {
+      "original": "\u2022Santal 1.reg. camp. He",
+      "corrected": "Santal 1.reg. camp. He",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "SiP, 31121",
+      "corrected": "SiP, 31121",
+      "reason": "No correction needed"
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 188,
+  "corrected_word_count": 174,
+  "corrections_count": 46
+}

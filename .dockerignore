@@ -1,0 +1,68 @@
+# Docker ignore file - don't copy these to the image
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# Environment and secrets (will be mounted or passed as env vars)
+.env
+.env.*
+*.key
+*.pem
+
+# Logs
+*.log
+logs/
+
+# Local storage (will be mounted as volumes)
+ocr_storage/
+letters/work/*
+letters/inbox/*
+
+# Temporary files
+*.tmp
+*.temp
+*_tmp/
+*_temp/
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+*.md
+docs/
+
+# Development files
+test_*.py
+*_test.txt
+
+# Node modules (if any)
+node_modules/
+_archived/
+
+

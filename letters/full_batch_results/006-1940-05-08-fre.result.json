@@ -1,0 +1,71 @@
+{
+  "pdf_file": "006-1940-05-08-fre.pdf",
+  "date_processed": "2025-11-16T17:30:13.292838",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "WN'T\nCame\n'3\nion\nParis\n15e\nplu\n1940\nro\nBabukann\n\u3072\n1.5300\n0\nAujourd li je te veuse\nseulement embrassez tout\nfort. I'ai beaucoup travaille\nmais malgre\nfous\nje pense\nfoujour - Qu'est ce que c'est\nque fera maintensuit anci\nRelitefence.\nJet 'adore mon petib\nSon Rol\n\n\n\n",
+  "corrected_text": "WN'T\nCame\n'3\nion\nParis\n15e\nplu\n1940\nro\nBabukann\n\u3072\n1.5300\n0\nAujourd'hui je te veux\nseulement embrasser tout\nfort. J'ai beaucoup travaill\u00e9\nmais malgr\u00e9\ntous\nje pense\ntoujours - Qu'est-ce que c'est\nque fera maintenant avec\nRelitefence.\nJe t'adore mon petit\nSon Rol\n",
+  "translated_text": "WN&#39;T Came &#39;3 ion Paris 15th plu 1940 ro Babukann \u3072 1.5300 0 Today I just want to kiss you tightly. I&#39;ve worked a lot, but despite everything, I still think - What will I do now with Relitefence? I adore you, my little Son Rol\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Aujourd li je te veuse",
+      "corrected": "Aujourd'hui je te veux",
+      "reason": "Corrected 'li' to 'hui' and 'veuse' to 'veux' for proper French phrase 'Aujourd'hui je te veux'"
+    },
+    {
+      "original": "embrassez",
+      "corrected": "embrasser",
+      "reason": "Corrected 'embrassez' to 'embrasser' for proper infinitive form in context"
+    },
+    {
+      "original": "I'ai",
+      "corrected": "J'ai",
+      "reason": "Corrected 'I' to 'J' for proper French pronoun 'J'ai'"
+    },
+    {
+      "original": "travaille",
+      "corrected": "travaill\u00e9",
+      "reason": "Added accent for past participle 'travaill\u00e9'"
+    },
+    {
+      "original": "fous",
+      "corrected": "tous",
+      "reason": "Corrected 'fous' to 'tous' for contextually appropriate word"
+    },
+    {
+      "original": "foujour",
+      "corrected": "toujours",
+      "reason": "Corrected 'foujour' to 'toujours' for proper French word"
+    },
+    {
+      "original": "maintensuit",
+      "corrected": "maintenant",
+      "reason": "Corrected 'maintensuit' to 'maintenant' for proper French word"
+    },
+    {
+      "original": "anci",
+      "corrected": "avec",
+      "reason": "Corrected 'anci' to 'avec' for contextually appropriate word"
+    },
+    {
+      "original": "Jet 'adore mon petib",
+      "corrected": "Je t'adore mon petit",
+      "reason": "Corrected 'Jet' to 'Je t' and 'petib' to 'petit' for proper French phrase"
+    },
+    {
+      "original": "Son Rol",
+      "corrected": "Son Rol",
+      "reason": "No correction needed, assumed to be a name or signature"
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 47,
+  "corrected_word_count": 45,
+  "corrections_count": 10
+}

@@ -1,0 +1,136 @@
+{
+  "pdf_file": "067-1940-04-28-fre.pdf",
+  "date_processed": "2025-11-16T17:23:34.567360",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Mon Petit\nDimande 28. IV, 40\nce matin j'ai re\u00e7u 2 letore de\nchu 23 cb dhe 24. Je suis bien contente que\nfout wille bien des toi. Je t'envoie demain les\nphotos que\nst cuvoyer\nil sant\nque\nil n'y\na\nMais\nbu me dem candles. He rais aussi\nle papier Bromure d'Illford\nIn t'occupes du r\u00e9v\u00e9lateur: Ta\n10\nri - Le docteur m'a donn\u00e9\nNouveaux m\u00e9dicaments it fe feu panger\nun peu de poulet it du\nambou\nAujourd hive c'est de me a che, le me\nrefore toute con fournie - & in cerit 2 Coup\nLettres \u00e0 Heddy et in medy, Ecris chaque four\nmon Bebehen \u2013 \u00e0\na tu Baba\n\nCORRESPONDANCE\n14H\nAUX ARM\u00c9ES\niL\niL\nFRANCHISE\nPOSTALE\nEXPEDITEUR :\nmme E. Zweis.\nenthal 6.\nR\nBrancion\nParis 15e\nM Robert Zweipenthat\nfer R. 1. Tchecoslovaque Vel Rota\nP\u00e9zenas F\u00e9rault\n\n",
+  "corrected_text": "Mon Petit\nDimanche 28. IV, 40\nce matin j'ai re\u00e7u 2 lettres de\ntu 23 et du 24. Je suis bien contente que\ntout aille bien de toi. Je t'envoie demain les\nphotos que\ntu envoyais\nil sont\nque\nil n'y\na\nMais\nne me demande pas de chandelles. Je fais aussi\nle papier Bromure d'Ilford\nTu t'occupes du r\u00e9v\u00e9lateur: Ta\n10\nri - Le docteur m'a donn\u00e9\ndes nouveaux m\u00e9dicaments et je peux manger\nun peu de poulet et du\njambon\nAujourd'hui c'est de me reposer, je me\nreforce toute confiante - & je t'\u00e9cris 2 courtes\nlettres \u00e0 Heddy et \u00e0 Irma, \u00c9cris chaque jour\nmon B\u00e9b\u00e9 ch\u00e9ri \u2013 \u00e0\ntu Baba\n\nCORRESPONDANCE\n14H\nAUX ARM\u00c9ES\nIL\nIL\nFRANCHISE\nPOSTALE\nEXP\u00c9DITEUR :\nMme E. Zweigenthal\n6.\nR\nBrancion\nParis 15e\nM Robert Zweigenthal\nfer R. 1. Tch\u00e9coslovaque Vel Rota\nP\u00e9zenas H\u00e9rault\n",
+  "translated_text": "My Little Sunday, April 28th, 40th. This morning I received two letters, one from the 23rd and the other from the 24th. I&#39;m so glad everything is going well with you. I&#39;ll send you the photos you were sending tomorrow; they&#39;re so beautiful. But don&#39;t ask me for candles. I also make Ilford Bromide paper. You take care of the developer: Your 10 ri - The doctor gave me new medicine and I can eat a little chicken and ham. Today is for resting, I&#39;m regaining my strength, full of confidence - &amp; I&#39;m writing you 2 short letters to Heddy and Irma. Write every day, my darling Baby - to you, Baba. CORRESPONDENCE 2 PM TO THE ARMY. IT POSTAL FRANCHISE. SENDER: Mrs. E. Zweigenthal, 6 Rue Brancion, Paris 15th. Mr. Robert Zweigenthal, Fer R. 1. Czechoslovakian Vel Rota P\u00e9zenas H\u00e9rault\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Dimande",
+      "corrected": "Dimanche",
+      "reason": "Corrected to the French word for Sunday."
+    },
+    {
+      "original": "letore",
+      "corrected": "lettres",
+      "reason": "Corrected to the French word for letters."
+    },
+    {
+      "original": "chu",
+      "corrected": "tu",
+      "reason": "Corrected to the French word for you."
+    },
+    {
+      "original": "cb",
+      "corrected": "et",
+      "reason": "Corrected to the French word for and."
+    },
+    {
+      "original": "fout wille",
+      "corrected": "tout aille",
+      "reason": "Corrected to the French phrase meaning everything goes."
+    },
+    {
+      "original": "des toi",
+      "corrected": "de toi",
+      "reason": "Corrected to the French phrase meaning from you."
+    },
+    {
+      "original": "st cuvoyer",
+      "corrected": "tu envoyais",
+      "reason": "Corrected to the French phrase meaning you sent."
+    },
+    {
+      "original": "bu me dem candles",
+      "corrected": "ne me demande pas de chandelles",
+      "reason": "Corrected to the French phrase meaning do not ask me for candles."
+    },
+    {
+      "original": "He rais",
+      "corrected": "Je fais",
+      "reason": "Corrected to the French phrase meaning I make."
+    },
+    {
+      "original": "In t'occupes",
+      "corrected": "Tu t'occupes",
+      "reason": "Corrected to the French phrase meaning you take care of."
+    },
+    {
+      "original": "ri",
+      "corrected": "ch\u00e9ri",
+      "reason": "Corrected to the French word for darling."
+    },
+    {
+      "original": "Nouveaux m\u00e9dicaments it fe feu panger",
+      "corrected": "des nouveaux m\u00e9dicaments et je peux manger",
+      "reason": "Corrected to the French phrase meaning new medicines and I can eat."
+    },
+    {
+      "original": "ambou",
+      "corrected": "jambon",
+      "reason": "Corrected to the French word for ham."
+    },
+    {
+      "original": "Aujourd hive",
+      "corrected": "Aujourd'hui",
+      "reason": "Corrected to the French word for today."
+    },
+    {
+      "original": "a che",
+      "corrected": "\u00e0 Irma",
+      "reason": "Corrected to the name Irma, a known person."
+    },
+    {
+      "original": "in cerit 2 Coup",
+      "corrected": "je t'\u00e9cris 2 courtes",
+      "reason": "Corrected to the French phrase meaning I write you 2 short."
+    },
+    {
+      "original": "in medy",
+      "corrected": "\u00e0 Irma",
+      "reason": "Corrected to the name Irma, a known person."
+    },
+    {
+      "original": "mon Bebehen",
+      "corrected": "mon B\u00e9b\u00e9 ch\u00e9ri",
+      "reason": "Corrected to the French phrase meaning my darling baby."
+    },
+    {
+      "original": "a tu Baba",
+      "corrected": "\u00e0 tu Baba",
+      "reason": "Corrected to the French phrase meaning to you Baba."
+    },
+    {
+      "original": "Zweis. enthal",
+      "corrected": "Zweigenthal",
+      "reason": "Corrected to the known surname Zweigenthal."
+    },
+    {
+      "original": "Zweipenthat",
+      "corrected": "Zweigenthal",
+      "reason": "Corrected to the known surname Zweigenthal."
+    },
+    {
+      "original": "Tchecoslovaque Vel Rota",
+      "corrected": "Tch\u00e9coslovaque Vel Rota",
+      "reason": "Corrected to the French spelling of Czechoslovak Vel Rota."
+    },
+    {
+      "original": "F\u00e9rault",
+      "corrected": "H\u00e9rault",
+      "reason": "Corrected to the French department name H\u00e9rault."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 144,
+  "corrected_word_count": 143,
+  "corrections_count": 23
+}

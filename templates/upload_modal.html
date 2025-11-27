@@ -1,0 +1,354 @@
+<!-- Upload Modal Content -->
+<div class="upload-form">
+    <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">
+            <span class="material-icons">cloud_upload</span>
+        </div>
+        <div class="upload-text">Drop your PDFs here or click to browse</div>
+        <div class="upload-subtext">Supports multiple PDF files up to 200MB each</div>
+        <input type="file" id="fileInput" accept=".pdf" multiple style="display: none;">
+    </div>
+
+    <div class="file-list" id="fileList" style="display: none;">
+        <div class="file-list-header">Selected Files:</div>
+        <div class="file-items" id="fileItems"></div>
+    </div>
+
+    <div class="progress" id="progress" style="display: none;">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div id="progressText">Processing...</div>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="result" id="result" style="display: none;">
+        <h3>Processing Complete!</h3>
+        <div class="result-text" id="resultText"></div>
+        <div class="result-actions">
+            <button class="mdc-button mdc-button--raised" onclick="closeUploadModal(); if(typeof loadDocuments === 'function') loadDocuments();">
+                <span class="mdc-button__ripple"></span>
+                <span class="mdc-button__label">View Documents</span>
+            </button>
+            <button class="mdc-button mdc-button--outlined" onclick="closeUploadModal()">
+                <span class="mdc-button__ripple"></span>
+                <span class="mdc-button__label">Close</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Material Design 3 Color System */
+:root {
+    --md-sys-color-primary: #6750a4;
+    --md-sys-color-on-primary: #ffffff;
+    --md-sys-color-primary-container: #eaddff;
+    --md-sys-color-on-primary-container: #21005d;
+    
+    --md-sys-color-secondary: #625b71;
+    --md-sys-color-on-secondary: #ffffff;
+    --md-sys-color-secondary-container: #e8def8;
+    --md-sys-color-on-secondary-container: #1d192b;
+    
+    --md-sys-color-tertiary: #7d5260;
+    --md-sys-color-on-tertiary: #ffffff;
+    --md-sys-color-tertiary-container: #ffd8e4;
+    --md-sys-color-on-tertiary-container: #31111d;
+    
+    --md-sys-color-error: #ba1a1a;
+    --md-sys-color-on-error: #ffffff;
+    --md-sys-color-error-container: #ffdad6;
+    --md-sys-color-on-error-container: #410002;
+    
+    --md-sys-color-surface: #fffbfe;
+    --md-sys-color-on-surface: #1c1b1f;
+    --md-sys-color-surface-variant: #e7e0ec;
+    --md-sys-color-on-surface-variant: #49454f;
+    
+    --md-sys-color-outline: #79747e;
+    --md-sys-color-outline-variant: #cac4d0;
+    
+    --md-sys-color-background: #fffbfe;
+    --md-sys-color-on-background: #1c1b1f;
+    
+    --md-sys-color-surface-container-lowest: #ffffff;
+    --md-sys-color-surface-container-low: #f7f2fa;
+    --md-sys-color-surface-container: #f3edf7;
+    --md-sys-color-surface-container-high: #ece6f0;
+    --md-sys-color-surface-container-highest: #e6e0e9;
+    
+    /* Typography */
+    --md-sys-typescale-title-medium-font: 'Roboto Flex', sans-serif;
+    --md-sys-typescale-title-medium-size: 16px;
+    --md-sys-typescale-title-medium-weight: 500;
+    --md-sys-typescale-title-medium-line-height: 24px;
+    --md-sys-typescale-title-medium-tracking: 0.15px;
+    
+    --md-sys-typescale-body-medium-font: 'Roboto Flex', sans-serif;
+    --md-sys-typescale-body-medium-size: 14px;
+    --md-sys-typescale-body-medium-weight: 400;
+    --md-sys-typescale-body-medium-line-height: 20px;
+    --md-sys-typescale-body-medium-tracking: 0.25px;
+    
+    /* Spacing */
+    --md-sys-spacing-1: 4px;
+    --md-sys-spacing-2: 8px;
+    --md-sys-spacing-3: 12px;
+    --md-sys-spacing-4: 16px;
+    --md-sys-spacing-5: 20px;
+    --md-sys-spacing-6: 24px;
+    --md-sys-spacing-7: 28px;
+    --md-sys-spacing-8: 32px;
+    --md-sys-spacing-9: 36px;
+    --md-sys-spacing-10: 40px;
+}
+
+.upload-form {
+    padding: var(--md-sys-spacing-5);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.upload-area {
+    border: 2px dashed var(--md-sys-color-outline);
+    border-radius: 12px;
+    padding: var(--md-sys-spacing-10) var(--md-sys-spacing-5);
+    text-align: center;
+    background: var(--md-sys-color-surface-container-low);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    min-height: 200px; /* M3 minimum touch target for large interactive areas */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-area:hover {
+    background: var(--md-sys-color-surface-container);
+    border-color: var(--md-sys-color-primary);
+}
+
+.upload-area.dragover {
+    background: var(--md-sys-color-primary-container);
+    border-color: var(--md-sys-color-primary);
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: var(--md-sys-color-primary);
+    margin-bottom: 16px;
+}
+
+.upload-text {
+    font-family: var(--md-sys-typescale-title-medium-font);
+    font-size: var(--md-sys-typescale-title-medium-size);
+    font-weight: var(--md-sys-typescale-title-medium-weight);
+    line-height: var(--md-sys-typescale-title-medium-line-height);
+    letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+    color: var(--md-sys-color-on-surface);
+    margin-bottom: 8px;
+}
+
+.upload-subtext {
+    font-family: var(--md-sys-typescale-body-medium-font);
+    font-size: var(--md-sys-typescale-body-medium-size);
+    font-weight: var(--md-sys-typescale-body-medium-weight);
+    line-height: var(--md-sys-typescale-body-medium-line-height);
+    letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.file-list {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--md-sys-color-surface-container-low);
+    border-radius: 12px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.file-list-header {
+    font-family: var(--md-sys-typescale-title-medium-font);
+    font-size: var(--md-sys-typescale-title-medium-size);
+    font-weight: var(--md-sys-typescale-title-medium-weight);
+    line-height: var(--md-sys-typescale-title-medium-line-height);
+    letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+    color: var(--md-sys-color-on-surface);
+    margin-bottom: 12px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: 8px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    margin-bottom: 8px;
+}
+
+.file-item:last-child {
+    margin-bottom: 0;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.file-icon {
+    color: var(--md-sys-color-primary);
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+.file-name {
+    font-family: var(--md-sys-typescale-body-medium-font);
+    font-size: var(--md-sys-typescale-body-medium-size);
+    font-weight: var(--md-sys-typescale-body-medium-weight);
+    line-height: var(--md-sys-typescale-body-medium-line-height);
+    letter-spacing: var(--md-sys-typescale-body-medium-tracking);
+    color: var(--md-sys-color-on-surface);
+    margin-right: 8px;
+}
+
+.file-size {
+    font-family: var(--md-sys-typescale-body-small-font);
+    font-size: 12px;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.file-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.file-progress {
+    width: 60px;
+    height: 4px;
+    background: var(--md-sys-color-surface-variant);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.file-progress-fill {
+    height: 100%;
+    background: var(--md-sys-color-primary);
+    width: 0%;
+    transition: width 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.status-icon {
+    font-size: 16px;
+}
+
+.status-icon.success {
+    color: var(--md-sys-color-tertiary);
+}
+
+.status-icon.error {
+    color: var(--md-sys-color-error);
+}
+
+.status-icon.uploading {
+    color: var(--md-sys-color-primary);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.progress {
+    margin-top: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--md-sys-color-surface-variant);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--md-sys-color-primary);
+    width: 0%;
+    transition: width 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+#progressText {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.status {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.status.success {
+    background: var(--md-sys-color-tertiary-container);
+    color: var(--md-sys-color-on-tertiary-container);
+    border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.status.error {
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+    border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.result {
+    margin-top: 20px;
+    padding: 20px;
+    background: var(--md-sys-color-surface-container-low);
+    border-radius: 12px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.result h3 {
+    margin: 0 0 16px 0;
+    color: var(--md-sys-color-primary);
+    font-family: var(--md-sys-typescale-title-medium-font);
+    font-size: var(--md-sys-typescale-title-medium-size);
+    font-weight: var(--md-sys-typescale-title-medium-weight);
+    line-height: var(--md-sys-typescale-title-medium-line-height);
+    letter-spacing: var(--md-sys-typescale-title-medium-tracking);
+}
+
+.result-text {
+    background: var(--md-sys-color-surface-container-lowest);
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    color: var(--md-sys-color-on-surface);
+}
+
+.result-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+</style>
+
+<!-- JavaScript is now handled in the main page -->

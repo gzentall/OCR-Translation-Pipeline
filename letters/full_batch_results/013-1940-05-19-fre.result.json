@@ -1,0 +1,196 @@
+{
+  "pdf_file": "013-1940-05-19-fre.pdf",
+  "date_processed": "2025-11-16T17:39:37.747061",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "19.5.40\n'ai re\u00e7u 2 lettres de foi\nMein Kleines\nApr\u00e8s\n\u0458\u0435\u043d\u0438\u0439\nchez aides donne hommeur. De est dimanche mais\nil n'y a plus de dimanche chez nous. On travail\nbout les jours.\nhon petit, je t'envoix 400.- frs liver parce que\nperseque\nj'ai re\u00e7u d'argent pour le papier et je ne veuse\npas\nlaisser cet argent ici. J'ai asser et si\nme manque quelqu\nwe chose fu sais je demandrai\npas\nJe ne veuse\nwas chuir beaucoup d'argent ici.\n\u00e7a\nPi nous retterous ici se je ne peux pas dire. Pour\nle moment s\u00fbrament. Je croise il n'y a pas une\nchangements. Mais on ne sais rieus toi la moral\nest tr\u00e8s bien et bous va mieuse que, jemals.\nhe journale jougoslave me faimait beaucoup\nplaisir. C'est seulement me petite chose\nmais mienx gaand rien.\n-\nachith foi\nC'est magnifique que tu te seus asses biece Mon\nchouse. Es ce que le baby est brave? \u2013 Tuas\ndeja re\u00e7u la livre de madly. Si non\nun bon. C'est tr\u00e8s important mon petib. Tu ne\npas faire des b\u00eatises.\n'\nMa cherie je suis tellement hereuse avec\nfoi et avec des lettres, tu ne sais pas \u00e7a\nBeaucoup a lamour de\nfon Boe\ndoin\n\nD'INF.\nMadance\nF\n131\n\u0909\u0938\n19\nERA\n5\nE. Zweigenthal\nCHEDUSLOVA\n69 bis rue Grancion\nParis 15\"\n\nZweigentural & reg. Vel, rota\nd\u00e9senas(fl\u00e9rolas\nVOJENSKA CENSURA\nCo e Postal\nP\u011b\u0161\u00ed\nVeliteleka\n21 Maire\n\n\n\n",
+  "corrected_text": "19.5.40\n'ai re\u00e7u 2 lettres de toi\nMon petit\nApr\u00e8s\nj'en ai\nchez aides donne honneur. Ce est dimanche mais\nil n'y a plus de dimanche chez nous. On travaille\ntous les jours.\nMon petit, je t'envoie 400.- frs livre parce que\nparce que\nj'ai re\u00e7u d'argent pour le papier et je ne veux\npas\nlaisser cet argent ici. J'ai assez et si\nme manque quelqu\nchose tu sais je demanderai\npas\nJe ne veux\npas choisir beaucoup d'argent ici.\n\u00e7a\nQuand nous retournerons ici je ne peux pas dire. Pour\nle moment s\u00fbrement. Je crois il n'y a pas de\nchangements. Mais on ne sait rien toi la morale\nest tr\u00e8s bien et nous va mieux que, jamais.\nle journal yougoslave me faisait beaucoup\nplaisir. C'est seulement une petite chose\nmais mieux que rien.\n-\nchaque fois\nC'est magnifique que tu te sens assez bien Mon\nch\u00e9ri. Est-ce que le baby est brave? \u2013 Tu as\nd\u00e9j\u00e0 re\u00e7u la lettre de madly. Si non\nun bon. C'est tr\u00e8s important mon petit. Tu ne\ndois pas faire des b\u00eatises.\n'\nMa ch\u00e9rie je suis tellement heureuse avec\ntoi et avec tes lettres, tu ne sais pas \u00e7a\nBeaucoup d'amour de\nTon Bob\n\nD'INF.\nMadame\nF\n131\n19\nERA\n5\nE. Zweigenthal\nCHEDUSLOVA\n69 bis rue Grancion\nParis 15\"\n\nZweigenthal & reg. Vel, rota\nd\u00e9senas(fl\u00e9rolas\nVOJENSKA CENSURA\nCo e Postal\nP\u011b\u0161\u00ed\nVeliteleka\n21 Maire\n",
+  "translated_text": "May 19, 1940. I received two letters from you, my little one. After that, I have some at home. It&#39;s Sunday, but there are no more Sundays where we live. We work every day. My little one, I&#39;m sending you 400 francs because I received money for the paper and I don&#39;t want to leave that money here. I have enough, and if I need anything, you know I won&#39;t ask. I don&#39;t want to keep a lot of money here. When we return here, I can&#39;t say. For the moment, certainly. I think there are no changes. But we don&#39;t know anything. Your morals are very good and suit us better than ever. The Yugoslavian newspaper gave me great pleasure. It&#39;s only a small thing, but better than nothing. - Every time. It&#39;s wonderful that you feel quite well, my darling. Is the baby brave? - You already received Madly&#39;s letter. If not, a good one. It&#39;s very important, my little one. You mustn&#39;t do anything silly. &#39;My darling, I&#39;m so happy with you and your letters, you don&#39;t know that. Lots of love from your Bob D&#39;INF. Mrs. F 131 19 ERA 5 E. Zweigenthal CHEDUSLOVA 69 bis rue Grancion Paris 15&#39; Zweigenthal &amp; reg. Vel, rota d\u00e9senas(fl\u00e9rolas VOJENSKA CENSURA Co e Postal P\u011b\u0161\u00ed Veliteleka 21 Maire\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "foi",
+      "corrected": "toi",
+      "reason": "contextual correction for 'lettres de toi'"
+    },
+    {
+      "original": "Mein Kleines",
+      "corrected": "Mon petit",
+      "reason": "consistent with French language and context"
+    },
+    {
+      "original": "\u0458\u0435\u043d\u0438\u0439",
+      "corrected": "j'en ai",
+      "reason": "contextual correction for French phrase"
+    },
+    {
+      "original": "hommeur",
+      "corrected": "honneur",
+      "reason": "contextual correction for 'donne honneur'"
+    },
+    {
+      "original": "De est",
+      "corrected": "Ce est",
+      "reason": "grammatical correction"
+    },
+    {
+      "original": "On travail",
+      "corrected": "On travaille",
+      "reason": "correct verb conjugation"
+    },
+    {
+      "original": "bout",
+      "corrected": "tous",
+      "reason": "contextual correction for 'tous les jours'"
+    },
+    {
+      "original": "hon",
+      "corrected": "Mon",
+      "reason": "consistent with known phrases"
+    },
+    {
+      "original": "je t'envoix",
+      "corrected": "je t'envoie",
+      "reason": "correct verb conjugation"
+    },
+    {
+      "original": "perseque",
+      "corrected": "parce que",
+      "reason": "common phrase correction"
+    },
+    {
+      "original": "veuse",
+      "corrected": "veux",
+      "reason": "correct verb form"
+    },
+    {
+      "original": "asser",
+      "corrected": "assez",
+      "reason": "correct spelling"
+    },
+    {
+      "original": "we chose fu sais",
+      "corrected": "chose tu sais",
+      "reason": "contextual correction"
+    },
+    {
+      "original": "was chuir",
+      "corrected": "pas choisir",
+      "reason": "contextual correction"
+    },
+    {
+      "original": "Pi nous retterous",
+      "corrected": "Quand nous retournerons",
+      "reason": "contextual correction"
+    },
+    {
+      "original": "s\u00fbrament",
+      "corrected": "s\u00fbrement",
+      "reason": "correct spelling"
+    },
+    {
+      "original": "rieus",
+      "corrected": "rien",
+      "reason": "contextual correction"
+    },
+    {
+      "original": "bous va mieuse",
+      "corrected": "nous va mieux",
+      "reason": "contextual correction"
+    },
+    {
+      "original": "jemals",
+      "corrected": "jamais",
+      "reason": "correct spelling"
+    },
+    {
+      "original": "he journale jougoslave",
+      "corrected": "le journal yougoslave",
+      "reason": "correct spelling and context"
+    },
+    {
+      "original": "faimait",
+      "corrected": "faisait",
+      "reason": "correct verb conjugation"
+    },
+    {
+      "original": "me petite chose",
+      "corrected": "une petite chose",
+      "reason": "correct article usage"
+    },
+    {
+      "original": "mienx gaand",
+      "corrected": "mieux que",
+      "reason": "contextual correction"
+    },
+    {
+      "original": "achith foi",
+      "corrected": "chaque fois",
+      "reason": "contextual correction"
+    },
+    {
+      "original": "asses biece",
+      "corrected": "assez bien",
+      "reason": "correct spelling"
+    },
+    {
+      "original": "Mon chouse",
+      "corrected": "Mon ch\u00e9ri",
+      "reason": "consistent with known phrases"
+    },
+    {
+      "original": "Tuas",
+      "corrected": "Tu as",
+      "reason": "correct spacing"
+    },
+    {
+      "original": "deja",
+      "corrected": "d\u00e9j\u00e0",
+      "reason": "correct spelling"
+    },
+    {
+      "original": "livre de madly",
+      "corrected": "lettre de madly",
+      "reason": "contextual correction"
+    },
+    {
+      "original": "petib",
+      "corrected": "petit",
+      "reason": "correct spelling"
+    },
+    {
+      "original": "pas faire",
+      "corrected": "dois pas faire",
+      "reason": "contextual correction"
+    },
+    {
+      "original": "hereuse",
+      "corrected": "heureuse",
+      "reason": "correct spelling"
+    },
+    {
+      "original": "foi et avec des lettres",
+      "corrected": "toi et avec tes lettres",
+      "reason": "contextual correction"
+    },
+    {
+      "original": "lamour de",
+      "corrected": "d'amour de",
+      "reason": "correct preposition usage"
+    },
+    {
+      "original": "fon Boe",
+      "corrected": "Ton Bob",
+      "reason": "consistent with known names"
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 235,
+  "corrected_word_count": 233,
+  "corrections_count": 35
+}

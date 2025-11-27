@@ -1,0 +1,41 @@
+{
+  "pdf_file": "034-1941-06-18-fre.pdf",
+  "date_processed": "2025-11-16T17:22:59.939373",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "$\nZweigenthal\nPOSTES\nPOSTES\n90%\n90%\nREPUBLIQUE FRANCAISE REPUBLIQUE FRANCAISE\n18-6 m\n41\nVAR\nMER\n32 Rue de la Republique\n(Herault)\n\u043b\u0430\nAGDE.\nLA SEYNE\nEUR-MER 655\n\nOver\n\u0644\u0648\u062f\nLa\nSabletter\n&\nE\n19 N 18-6\naute\n\n",
+  "corrected_text": "$\nZweigenthal\nPOSTES\nPOSTES\n90%\n90%\nREPUBLIQUE FRANCAISE REPUBLIQUE FRANCAISE\n18-6 m\n41\nVAR\nMER\n32 Rue de la Republique\n(Herault)\nla\nAGDE.\nLA SEYNE\nSUR-MER 655\n\nOver\n[illegible]\nLa\nSablette\n&\nE\n19 N 18-6\naute\n",
+  "translated_text": "$ Zweigenthal POSTES POSTES 90% 90% FRENCH REPUBLIC FRENCH REPUBLIC 18-6 m 41 VAR MER 32 Rue de la Republique (Herault) la AGDE. LA SEYNE SUR MER 655 Over [illegible] La Sablette &amp; E 19 N 18-6 aute\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "EUR-MER",
+      "corrected": "SUR-MER",
+      "reason": "Corrected based on known location 'LA SEYNE SUR-MER'"
+    },
+    {
+      "original": "\u0644\u0648\u062f",
+      "corrected": "[illegible]",
+      "reason": "Text is not recognizable as any known language or context"
+    },
+    {
+      "original": "\u043b\u0430",
+      "corrected": "la",
+      "reason": "Corrected to lowercase 'la' as it fits the context of French language"
+    },
+    {
+      "original": "Sabletter",
+      "corrected": "Sablette",
+      "reason": "Corrected to 'Sablette' as it is a known location in the context"
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 37,
+  "corrected_word_count": 37,
+  "corrections_count": 4
+}

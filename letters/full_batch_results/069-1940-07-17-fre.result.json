@@ -1,0 +1,46 @@
+{
+  "pdf_file": "069-1940-07-17-fre.pdf",
+  "date_processed": "2025-11-16T17:28:09.664535",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "POSTES\nREPUBLIQUE FRANCAISE\n\u043d\u0435\nPOSTES\nRE CHIFFRE\nCENTIMES\nPERCEVOIR\nTAXE RE\nAU\nPOSTES\nORY\nMonsieur Robert Zweigentlal\nPoste Restauto\nA g de\n(H\u00e9rault)\n\nEweigenthal\nRiginiae\n(Corr\u00e8ze)\n\u043c\u043d\u0435 \u0432\n&.\nZ\nH\n-9 H 17-7\n1940\nLT\nA\nG\n30\n\n",
+  "corrected_text": "POSTES\nREPUBLIQUE FRANCAISE\n\u043d\u0435\nPOSTES\nRE CHIFFRE\nCENTIMES\nPERCEVOIR\nTAXE RE\nAU\nPOSTES\nORY\nMonsieur Robert Zweigenthal\nPoste Restante\nAgde\n(H\u00e9rault)\nE. Zweigenthal\nRignac\n(Corr\u00e8ze)\n\u043c\u043d\u0435 \u0432\n&.\nZ\nH\n-9 H 17-7\n1940\nLT\nA\nG\n30\n",
+  "translated_text": "POST OFFICES FRENCH REPUBLIC \u043d\u0435 POST OFFICES RE FIGURE CENTIMES COLLECT TAX RE AT POST OFFICES ORY Mr. Robert Zweigenthal Poste Restante Agde (H\u00e9rault) E. Zweigenthal Rignac (Corr\u00e8ze) \u043c\u043d\u0435 \u0432 &amp;. Z H -9 H 17-7 1940 LT A G 30\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Zweigentlal",
+      "corrected": "Zweigenthal",
+      "reason": "Corrected to known family name"
+    },
+    {
+      "original": "Restauto",
+      "corrected": "Restante",
+      "reason": "Corrected to common postal term 'Poste Restante'"
+    },
+    {
+      "original": "A g de",
+      "corrected": "Agde",
+      "reason": "Corrected to known location 'Agde'"
+    },
+    {
+      "original": "Eweigenthal",
+      "corrected": "E. Zweigenthal",
+      "reason": "Corrected to known family name"
+    },
+    {
+      "original": "Riginiae",
+      "corrected": "Rignac",
+      "reason": "Corrected to known location 'Rignac'"
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 39,
+  "corrected_word_count": 38,
+  "corrections_count": 5
+}

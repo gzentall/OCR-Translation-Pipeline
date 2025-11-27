@@ -1,0 +1,844 @@
+{
+  "total_documents": 4,
+  "processed_successfully": 4,
+  "date_processed": "2025-11-16T14:00:40.755448",
+  "provider_used": "openai",
+  "results": [
+    {
+      "pdf_file": "01-05-1938_ger_letter-002.pdf",
+      "date_processed": "2025-11-16T13:58:33.239841",
+      "metadata": {
+        "document_type": "letter",
+        "expected_language": "German",
+        "date": "01-05-1938"
+      },
+      "raw_text": "haci lady!\n+\nAlles Gute w\u00fcnsche ich mich\nzu kuerer Reise. Ich danke\ndir sehr f\u00fcr alles. Leider wollten\nes die verschiedenstenx Auter\nnicht, dass wir uns von deiner\nporeise sehen. Nicht desso\nweniger werde ich vers\u00fcchen\nbei euch fr\u00fcchtbringe\nArbeit zu leisten.\n7. Uler abend.\nEuer Bob.\nunde\nSolben habe ich die Bewilligung f\u00fcr Flux karte\nbekommen. rs\nich Peats have, haugh & Art davon ab wavel\nich Peatz have. Also mich Pemptens komme ich\nbestimund. Quer Rob.\nS. 1.38\nZab\u016bs, undlish kam gestern Abend Dein\nBrief. For kann allerdings nicht verstehen\nIch\ndass die 10 Tape keine Post bekommen\n\u043b\u043e\u0442\u0430\u0440\u0435\nerast. Ausserdem habe ich immer\nwenn ich etwas definitives w\u00fcsste\nsofort geschrieben.\nweiter.\n=\nKleines, ich werde nicht mehr jammeren\naber wen das so noch stage\ngeht, bin ich reif f\u00fcr ein Verven -\nSanatorium. Es ist schade, dass so\nviel wertvolle Craft verloren geht.\ndie 3 Tage fahrt Gr\u00e4tten mir \u00fcber\nhaupt nichts\nausgemacht.\nich brauche dazu noch 3. Visumma\nUngarn, Iugoslavien, schweiz.\n!das Ingosta vische w\u00fcrde gestern Abgelehn\ndeh unisste in Zeograd Einreichen\nund das dauert stage. Du meiner\nAber.\n\nVerzweiflung leabe ich dann noch\neinmal das Aussenministerium\nDr. From ist heute\nanger\u00fcfen.\nzur\u00fc\u00e9lhgekommen, hat man mir\nuitgeteilt. Ich bin sofort him, habe\nunit seinem Vertreter gesprochen,\nernalen telefonische Kirchsprache\nund jetzt sitzte ich unten in\njetzt\ntinuministerium und wei\u00dfe\nauf den Brief welchen man mir\nf\u00fcr die Nationalbank mithiot.\nJall mache also noch einen Versuch\nmich der Zewilligung der Flugkarte\ngab\u016bs!\nabus, em fild vou all deux wirst\ndu dir erst machen k\u00f6nnen,\nich dir alles pers\u00f6nlich erz\u00e4hlen\nwerde. Komplizierter kann es nicht\nIch\n\u0648\nwenn\nmehr sein. Das was die weisst sind\nl\u00f6chstens 10% davon. Ich mache\nes\nmir\nacers perni. die Verven.\nversion\nversagu\nWeisst die wie gl\u00fccklich ich w\u00e4re,\nwenn ich alles schon linter mir\nl\u00e4tte?!!!\nDu kannst \u00fcberzeugt sein, dass\nich alles tue. Sicher Aabe ich auch\nFehler gemacht, aber wenn man\nvorher alles wrissk, -.\npers\u00f6nlich.\nDar\u00fcber\nundl\nbei Troc\nbei\n\u00b7From\nist nat\u00fcrlich durch den Brief\ndas telegram welches ich saculte\nmeinem heutigen Besuch\ngegenstands los geworden.\nKleines, bitte sei nicht mmgeduldig\nich bin es schon genug Seine Zob.\n\n",
+      "corrected_text": "haci lady!\n+\nAlles Gute w\u00fcnsche ich mir\nzu deiner Reise. Ich danke\ndir sehr f\u00fcr alles. Leider wollten\nes die verschiedensten Autoren\nnicht, dass wir uns von deiner\nAbreise sehen. Nicht desto\nweniger werde ich versuchen\nbei euch fruchtbringende\nArbeit zu leisten.\n7. Uler abend.\nEuer Bob.\nund\nSolben habe ich die Bewilligung f\u00fcr Flugkarte\nbekommen. rs\nich Peats habe, haugh & Art davon ab wavel\nich Peatz habe. Also mich Pemptens komme ich\nbestimmt. Euer Bob.\nS. 1.38\nZab\u016bs, endlich kam gestern Abend Dein\nBrief. Ich kann allerdings nicht verstehen\ndass die 10 Tage keine Post bekommen\nkonnten\nerst. Au\u00dferdem habe ich immer\nwenn ich etwas Definitives w\u00fcsste\nsofort geschrieben.\nweiter.\n=\nKleines, ich werde nicht mehr jammern\naber wenn das so noch Tage\ngeht, bin ich reif f\u00fcr ein Nerven-\nSanatorium. Es ist schade, dass so\nviel wertvolle Kraft verloren geht.\ndie 3 Tage Fahrt machten mir \u00fcber-\nhaupt nichts\nausgemacht.\nich brauche dazu noch 3. Visa\nUngarn, Jugoslawien, Schweiz.\n!das Jugoslawische wurde gestern abgelehnt\ndeh unisste in Belgrad einreichen\nund das dauert Tage. Du meiner\nAber.\n\nVerzweiflung habe ich dann noch\neinmal das Au\u00dfenministerium\nDr. From ist heute\nangerufen.\nzur\u00fcckgekommen, hat man mir\nmitgeteilt. Ich bin sofort hin, habe\nmit seinem Vertreter gesprochen,\nerneut telefonische R\u00fccksprache\nund jetzt sitze ich unten im\njetzt\nFinanzministerium und warte\nauf den Brief welchen man mir\nf\u00fcr die Nationalbank mitgibt.\nIch mache also noch einen Versuch\nmich der Bewilligung der Flugkarte\nzu bem\u00e4chtigen!\nZab\u016bs, im Feld von all dem wirst\ndu dir erst machen k\u00f6nnen,\nwenn ich dir alles pers\u00f6nlich erz\u00e4hlen\nwerde. Komplizierter kann es nicht\nmehr sein. Das was du wei\u00dft sind\nh\u00f6chstens 10% davon. Ich mache\nes\nmir\nalles pers\u00f6nlich. die Nerven.\n\nWei\u00dft du wie gl\u00fccklich ich w\u00e4re,\nwenn ich alles schon hinter mir\nh\u00e4tte?!!!\nDu kannst \u00fcberzeugt sein, dass\nich alles tue. Sicher habe ich auch\nFehler gemacht, aber wenn man\nvorher alles w\u00fcsste, -.\n\nDar\u00fcber\n\nbei Troc\nbei\n\u00b7From\nist nat\u00fcrlich durch den Brief\ndas Telegramm welches ich schickte\nmeinem heutigen Besuch\ngegenstandslos geworden.\nKleines, bitte sei nicht ungeduldig\nich bin es schon genug. Seine Zob.",
+      "translated_text": "Haci lady! + I wish you all the best for your trip. Thank you so much for everything. Unfortunately, the various authors didn&#39;t want us to see each other before your departure. Nevertheless, I will try to do fruitful work for you. 7. Uler evening. Yours, Bob. And Solben, I received the approval for the plane ticket. rs I have Peats, haugh &amp; Art, depending on whether I have Peatz. So I&#39;ll definitely come to Pemptens. Yours, Bob. p. 1.38 Zab\u016bs, your letter finally arrived last night. However, I can&#39;t understand why you couldn&#39;t get any mail for 10 days. Besides, I always wrote immediately when I knew something definite. = Little one, I won&#39;t complain anymore, but if this goes on for days, I&#39;m ready for a sanatorium. It&#39;s a shame that so much valuable energy is wasted. The 3-day journey didn&#39;t bother me at all. I still need three visas: Hungary, Yugoslavia, and Switzerland. The Yugoslavian one was rejected yesterday, so I have to submit it in Belgrade, and that takes days. In my desperation, I called the Foreign Ministry again. Dr. From called today and I was told he&#39;d come back. I went there immediately, spoke with his representative, we had another phone consultation, and now I&#39;m sitting downstairs in the Finance Ministry waiting for the letter they&#39;ll give me for the National Bank. So I&#39;m making one more attempt to get the plane ticket approved! Zab\u016bs, you&#39;ll only be able to understand all of this when I tell you everything in person. It couldn&#39;t be more complicated. What you know is at most 10% of it. I&#39;m handling it all personally. It&#39;s nerve-wracking. Do you know how happy I&#39;d be if I could just put all this behind me?! You can be sure I&#39;m doing everything I can. Sure, I&#39;ve made mistakes, but if you knew everything beforehand... Regarding Troc&#39;s letter, the telegram I sent regarding my visit today has of course become irrelevant due to the letter. Little one, please don&#39;t be impatient; I&#39;m already impatient enough. His Zob.",
+      "confidence": 85,
+      "corrections": [
+        {
+          "original": "w\u00fcnsche ich mich",
+          "corrected": "w\u00fcnsche ich mir",
+          "reason": "Corrected 'mich' to 'mir' for grammatical accuracy."
+        },
+        {
+          "original": "poreise",
+          "corrected": "Abreise",
+          "reason": "Corrected 'poreise' to 'Abreise' based on context."
+        },
+        {
+          "original": "fr\u00fcchtbringe",
+          "corrected": "fruchtbringende",
+          "reason": "Corrected 'fr\u00fcchtbringe' to 'fruchtbringende' for proper adjective form."
+        },
+        {
+          "original": "Solben",
+          "corrected": "Sobald",
+          "reason": "Corrected 'Solben' to 'Sobald' for logical sentence structure."
+        },
+        {
+          "original": "Flux karte",
+          "corrected": "Flugkarte",
+          "reason": "Corrected 'Flux karte' to 'Flugkarte' based on context."
+        },
+        {
+          "original": "bestimund",
+          "corrected": "bestimmt",
+          "reason": "Corrected 'bestimund' to 'bestimmt' for proper word form."
+        },
+        {
+          "original": "Zab\u016bs",
+          "corrected": "Zab\u016bs",
+          "reason": "Retained 'Zab\u016bs' as it appears to be a name or term."
+        },
+        {
+          "original": "undlish",
+          "corrected": "endlich",
+          "reason": "Corrected 'undlish' to 'endlich' for logical sentence structure."
+        },
+        {
+          "original": "Tape",
+          "corrected": "Tage",
+          "reason": "Corrected 'Tape' to 'Tage' based on context."
+        },
+        {
+          "original": "lotare",
+          "corrected": "konnten",
+          "reason": "Corrected 'lotare' to 'konnten' for logical sentence structure."
+        },
+        {
+          "original": "Verven",
+          "corrected": "Nerven",
+          "reason": "Corrected 'Verven' to 'Nerven' based on context."
+        },
+        {
+          "original": "Craft",
+          "corrected": "Kraft",
+          "reason": "Corrected 'Craft' to 'Kraft' for proper German spelling."
+        },
+        {
+          "original": "Gr\u00e4tten",
+          "corrected": "machten",
+          "reason": "Corrected 'Gr\u00e4tten' to 'machten' for logical sentence structure."
+        },
+        {
+          "original": "Visumma",
+          "corrected": "Visa",
+          "reason": "Corrected 'Visumma' to 'Visa' based on context."
+        },
+        {
+          "original": "Iugoslavien",
+          "corrected": "Jugoslawien",
+          "reason": "Corrected 'Iugoslavien' to 'Jugoslawien' for proper spelling."
+        },
+        {
+          "original": "Ingosta vische",
+          "corrected": "Jugoslawische",
+          "reason": "Corrected 'Ingosta vische' to 'Jugoslawische' based on context."
+        },
+        {
+          "original": "Zeograd",
+          "corrected": "Belgrad",
+          "reason": "Corrected 'Zeograd' to 'Belgrad' based on context."
+        },
+        {
+          "original": "deh unisste",
+          "corrected": "dort musste",
+          "reason": "Corrected 'deh unisste' to 'dort musste' for logical sentence structure."
+        },
+        {
+          "original": "leabe",
+          "corrected": "habe",
+          "reason": "Corrected 'leabe' to 'habe' for proper verb form."
+        },
+        {
+          "original": "Aussenministerium",
+          "corrected": "Au\u00dfenministerium",
+          "reason": "Corrected 'Aussenministerium' to 'Au\u00dfenministerium' for proper spelling."
+        },
+        {
+          "original": "anger\u00fcfen",
+          "corrected": "angerufen",
+          "reason": "Corrected 'anger\u00fcfen' to 'angerufen' for proper verb form."
+        },
+        {
+          "original": "zur\u00fc\u00e9lhgekommen",
+          "corrected": "zur\u00fcckgekommen",
+          "reason": "Corrected 'zur\u00fc\u00e9lhgekommen' to 'zur\u00fcckgekommen' for proper verb form."
+        },
+        {
+          "original": "uitgeteilt",
+          "corrected": "mitgeteilt",
+          "reason": "Corrected 'uitgeteilt' to 'mitgeteilt' for proper verb form."
+        },
+        {
+          "original": "unit",
+          "corrected": "mit",
+          "reason": "Corrected 'unit' to 'mit' for proper preposition."
+        },
+        {
+          "original": "ernalen",
+          "corrected": "erneut",
+          "reason": "Corrected 'ernalen' to 'erneut' for logical sentence structure."
+        },
+        {
+          "original": "Kirchsprache",
+          "corrected": "R\u00fccksprache",
+          "reason": "Corrected 'Kirchsprache' to 'R\u00fccksprache' based on context."
+        },
+        {
+          "original": "tinuministerium",
+          "corrected": "Finanzministerium",
+          "reason": "Corrected 'tinuministerium' to 'Finanzministerium' based on context."
+        },
+        {
+          "original": "wei\u00dfe",
+          "corrected": "warte",
+          "reason": "Corrected 'wei\u00dfe' to 'warte' for logical sentence structure."
+        },
+        {
+          "original": "mithiot",
+          "corrected": "mitgibt",
+          "reason": "Corrected 'mithiot' to 'mitgibt' for proper verb form."
+        },
+        {
+          "original": "Jall",
+          "corrected": "Ich",
+          "reason": "Corrected 'Jall' to 'Ich' for logical sentence structure."
+        },
+        {
+          "original": "Zewilligung",
+          "corrected": "Bewilligung",
+          "reason": "Corrected 'Zewilligung' to 'Bewilligung' based on context."
+        },
+        {
+          "original": "gab\u016bs",
+          "corrected": "zu bem\u00e4chtigen",
+          "reason": "Corrected 'gab\u016bs' to 'zu bem\u00e4chtigen' for logical sentence structure."
+        },
+        {
+          "original": "abus",
+          "corrected": "Zab\u016bs",
+          "reason": "Retained 'Zab\u016bs' as it appears to be a name or term."
+        },
+        {
+          "original": "fild vou",
+          "corrected": "im Feld von",
+          "reason": "Corrected 'fild vou' to 'im Feld von' for logical sentence structure."
+        },
+        {
+          "original": "deux",
+          "corrected": "dem",
+          "reason": "Corrected 'deux' to 'dem' for proper article."
+        },
+        {
+          "original": "Ich",
+          "corrected": "wenn",
+          "reason": "Corrected 'Ich' to 'wenn' for logical sentence structure."
+        },
+        {
+          "original": "l\u00f6chstens",
+          "corrected": "h\u00f6chstens",
+          "reason": "Corrected 'l\u00f6chstens' to 'h\u00f6chstens' for proper spelling."
+        },
+        {
+          "original": "acers perni",
+          "corrected": "alles pers\u00f6nlich",
+          "reason": "Corrected 'acers perni' to 'alles pers\u00f6nlich' for logical sentence structure."
+        },
+        {
+          "original": "version",
+          "corrected": "Nerven",
+          "reason": "Corrected 'version' to 'Nerven' based on context."
+        },
+        {
+          "original": "versagu",
+          "corrected": "pers\u00f6nlich",
+          "reason": "Corrected 'versagu' to 'pers\u00f6nlich' for logical sentence structure."
+        },
+        {
+          "original": "l\u00e4tte",
+          "corrected": "h\u00e4tte",
+          "reason": "Corrected 'l\u00e4tte' to 'h\u00e4tte' for proper verb form."
+        },
+        {
+          "original": "wrissk",
+          "corrected": "w\u00fcsste",
+          "reason": "Corrected 'wrissk' to 'w\u00fcsste' for proper verb form."
+        },
+        {
+          "original": "undl",
+          "corrected": "Dar\u00fcber",
+          "reason": "Corrected 'undl' to 'Dar\u00fcber' for logical sentence structure."
+        },
+        {
+          "original": "bei Troc",
+          "corrected": "bei",
+          "reason": "Corrected 'bei Troc' to 'bei' for logical sentence structure."
+        },
+        {
+          "original": "\u00b7From",
+          "corrected": "From",
+          "reason": "Corrected '\u00b7From' to 'From' for proper name."
+        },
+        {
+          "original": "saculte",
+          "corrected": "schickte",
+          "reason": "Corrected 'saculte' to 'schickte' for proper verb form."
+        },
+        {
+          "original": "gegenstands los",
+          "corrected": "gegenstandslos",
+          "reason": "Corrected 'gegenstands los' to 'gegenstandslos' for proper spelling."
+        },
+        {
+          "original": "mmgeduldig",
+          "corrected": "ungeduldig",
+          "reason": "Corrected 'mmgeduldig' to 'ungeduldig' for proper spelling."
+        },
+        {
+          "original": "Seine Zob",
+          "corrected": "Seine Zob",
+          "reason": "Retained 'Seine Zob' as it appears to be a name or term."
+        }
+      ],
+      "uncertain_segments": [
+        "Zab\u016bs",
+        "Seine Zob"
+      ],
+      "provider_used": "openai",
+      "comparison": null,
+      "raw_word_count": 360,
+      "corrected_word_count": 350,
+      "corrections_count": 49
+    },
+    {
+      "pdf_file": "089-1936-01-23-ger.pdf",
+      "date_processed": "2025-11-16T13:59:37.436737",
+      "metadata": {
+        "document_type": "letter",
+        "expected_language": "English",
+        "date": "unknown"
+      },
+      "raw_text": "Prag 2.3. 1.36.\nBabus, es war wirklich eine grosse Prende, welche\nDie mir mit den Foto's gemacht hast\nIch musste\nsie immer und immer wieder auschauen, will\nduvon bekommend. Kusige sind wirbelich\nezeichnet geworden\n\u0434\u0435\u0442\u0435\u0440\nausg\nfist fast jedes.\nheider war es von\nvon mir bei den meister fildern)\nein unverzeihlicher Fehler trotz Pan-film mit\nSelbscheibe in arbeiten. Dadurch sind bei vielen,\nsehr sch\u00f6ne kleinigkeiten verschwunden. Das n\u00e4ch.\nste mail soll nur so etwas nicht mehr passieren.\nInzwischen sind auch die Filme angekomm\nther ist allerdings noch ausgezeichnetes Material\nvorhanden.\nkommen.\nDu noch. Jedent ders gute Sachen bekommst.\nsedenfalls h\u00e4tte ich niemals ge\ngedacht\ndass die Zaba so h\u00fcbsch sein kann - naturlid,\nmur auf Bilder. Ist das um ein Verdient des\nM\u00e4dchens Photo's oder Photographen. \u2013 Velumen\nwir einmal an das des\nvielen Dank mein Liebes.\n-\nPhotos.\nVochfeimual\nSoust ist mein Geburtstag sehr nett und wil\nGeschenke verlaufen.\nviel\nDarienter Gramophon.\nplaten, Hemden, hantelstoff, Shawl's, Krawatten\nParfum, is s. w.\nde und von\nJa\nEllen\neinen wunderbaren Montblanc F\u00fcller und flei\u00df\n\n\u3068\n1.23\nlangen\nalles in einem Etui mit einem sehr netten Brief.\nMeinen letzten Brief erw\u00e4lut sie nur ganz kurz in\ndem sie einen Teil davon f\u00fcr geschackles livelt.\nRebel genommen hat sie es aber incht.\nim Sommer\n\u0434\u0435\u043d\u044c\nSie fahrt\n\u0440\u0430\u043d\u0437\nganz nach Pal\u00e4stina.\nHeute war ich bei der Elekta - Filingesellschaft\nPrag I Narodny tr. 26. (Mr. Auerbach) Er was\nsehr nett und wird das Zuch durchsehen.\nIn deutsch w\u00e4re es ihm leeber gewesen\nhat er\ngehen. Wenn du\nvesen aber es\nerade etwas\ngerade\nwird auch so gel\nfrei hast schick es mir oder ihm. Er m\u00f6chte\nes auch nach ferlin schicken. Bei mir\ndass ich mich an verschiedene\ngesagt,\nOperateure wenden soll. Va, einmal sehen\nIch habe liver noch 2 Leute denen ich das\nBurch zeigen m\u00f6chte. Samtliche Entscheisting\n\u00fcber evtl. Filmrechte \u00fcberlasse ich selbstverst\u00e4nden\nluch.\nDie\n-\nCu\nangelerent te Fotob sende ich aubei mit.\nSchreib mir bald was\nes sonst geht:\nhady macht und wie\nEs k\u00fcsst dich vielmals Fin\nBol\nDen Film sende ich zur\u00fcck wenn ich ihm\nnicht mehr brauche con\n3 Wochen.\n\n\u092f\u0947\u0923\u0947\nr\nFil.\nElisabeth Aigner\n\u0438\nParis 15e\n6.9 bis Rue Grancion\nPralia XIII Ruska\n\n\n\n",
+      "corrected_text": "Prag 23.1.36.\n\nBabus, es war wirklich eine grosse Freude, welche\nDu mir mit den Foto's gemacht hast.\nIch musste\nsie immer und immer wieder anschauen, weil\ndu von bekommend. Einige sind wirklich\ngezeichnet geworden\n\nleider war es von\nvon mir bei den meisten Bildern\nein unverzeihlicher Fehler trotz Pan-film mit\nSelbstscheibe in Arbeiten. Dadurch sind bei vielen,\nsehr sch\u00f6ne Kleinigkeiten verschwunden. Das n\u00e4ch-\nste Mal soll so etwas nicht mehr passieren.\nInzwischen sind auch die Filme angekommen,\naber es ist allerdings noch ausgezeichnetes Material\nvorhanden.\n\nDu noch. Jedenfalls gute Sachen bekommst.\nJedenfalls h\u00e4tte ich niemals ge-\ndacht\ndass die Zaba so h\u00fcbsch sein kann - nat\u00fcrlich,\nnur auf Bilder. Ist das um ein Verdienst des\nM\u00e4dchens Photo's oder Photographen. \u2013 Wollen\nwir einmal an das des\nvielen Dank mein Liebes.\n\nPhotos.\n\nSonst ist mein Geburtstag sehr nett und mit\nGeschenke verlaufen.\nviel\nDarunter Grammophon-\nplatten, Hemden, Handtuchstoff, Shawl's, Krawatten\nParfum, usw.\n\nJa\nEllen\neinen wunderbaren Montblanc F\u00fcller und flei\u00df\n\nlangen\nalles in einem Etui mit einem sehr netten Brief.\nMeinen letzten Brief erw\u00e4hnt sie nur ganz kurz in\ndem sie einen Teil davon f\u00fcr geschmacklos h\u00e4lt.\nRebel genommen hat sie es aber nicht.\n\nim Sommer\n\nSie f\u00e4hrt\nganz nach Pal\u00e4stina.\nHeute war ich bei der Elekta - Filmgesellschaft\nPrag I Narodny tr. 26. (Mr. Auerbach) Er war\nsehr nett und wird das Buch durchsehen.\nIn Deutsch w\u00e4re es ihm lieber gewesen\nhat er\ngehen. Wenn du\nwesen aber es\ngerade etwas\n\nwird auch so gel\nfrei hast schick es mir oder ihm. Er m\u00f6chte\nes auch nach Berlin schicken. Bei mir\nhat er gesagt,\ndass ich mich an verschiedene\nOperateure wenden soll. Na, einmal sehen\nIch habe hier noch 2 Leute denen ich das\nBuch zeigen m\u00f6chte. S\u00e4mtliche Entscheidung\n\u00fcber evtl. Filmrechte \u00fcberlasse ich selbstverst\u00e4nd-\nlich.\n\nDie\n\nangelehnte Fotos sende ich auch mit.\nSchreib mir bald was\nes sonst geht:\nwie es dir macht und wie\nEs k\u00fcsst dich vielmals\n\nDen Film sende ich zur\u00fcck wenn ich ihn\nnicht mehr brauche in\n3 Wochen.\n\nElisabeth Aigner\n\nParis 15e\n6.9 bis Rue Grancion\nPrag XIII Ruska\n\n",
+      "translated_text": "Prague, January 23, 1936. Babus, it was truly a great joy you gave me with the photos. I had to look at them again and again because you received them. Some really turned out beautifully. Unfortunately, it was an unforgivable mistake on my part with most of the pictures, despite using Pan film with a self-disc camera. As a result, many very nice little details were lost. Next time, something like that shouldn&#39;t happen again. The films have arrived in the meantime, but there is still some excellent material available. You still have some. In any case, you&#39;ll get good things. Anyway, I would never have thought that Zaba could be so pretty \u2013 of course, only in pictures. Is that thanks to the girl, the photos, or the photographer? \u2013 Let&#39;s talk about the photos. Thank you so much, my dear. Otherwise, my birthday went very nicely and with presents. Many things, including gramophone records, shirts, towel fabric, shawls, ties, perfume, etc. Yes, Ellen, a wonderful Montblanc fountain pen, and diligently crafted items, all in a case with a very nice letter. She only mentions my last letter very briefly, in which she considers part of it tasteless. But she didn&#39;t take it. In the summer, she&#39;s going to Palestine. Today I was at the Elekta Film Company, Prague 1, Narodny tr. 26. (Mr. Auerbach) He was very nice and will look through the book. He would have preferred it in German, but he left. If you have any free time, send it to me or him. He also wants to send it to Berlin. He told me that I should contact various film producers. Well, we&#39;ll see. I have two more people here to whom I would like to show the book. I am, of course, leaving all decisions regarding possible film rights to them. I am also sending the attached photos. Write to me soon about how things are going: how you&#39;re doing and how it&#39;s going. Lots of love. I&#39;ll send the film back in three weeks when I no longer need it. Elisabeth Aigner, Paris 15th arrondissement, 6.9 bis Rue Grancion, Prague 13th arrondissement, Ruska\n\n",
+      "confidence": 85,
+      "corrections": [
+        {
+          "original": "Prag 2.3. 1.36.",
+          "corrected": "Prag 23.1.36.",
+          "reason": "Date format correction."
+        },
+        {
+          "original": "Prende",
+          "corrected": "Freude",
+          "reason": "Contextual correction for 'joy'."
+        },
+        {
+          "original": "Die mir mit den Foto's gemacht hast",
+          "corrected": "Du mir mit den Foto's gemacht hast.",
+          "reason": "Corrected 'Die' to 'Du' for grammatical accuracy."
+        },
+        {
+          "original": "auschauen",
+          "corrected": "anschauen",
+          "reason": "Corrected to proper German word for 'look at'."
+        },
+        {
+          "original": "Kusige",
+          "corrected": "Einige",
+          "reason": "Corrected to 'Einige' meaning 'some'."
+        },
+        {
+          "original": "ezeichnet",
+          "corrected": "gezeichnet",
+          "reason": "Corrected to 'gezeichnet' meaning 'drawn'."
+        },
+        {
+          "original": "fist",
+          "corrected": "ist",
+          "reason": "Corrected to 'ist' meaning 'is'."
+        },
+        {
+          "original": "heider",
+          "corrected": "leider",
+          "reason": "Corrected to 'leider' meaning 'unfortunately'."
+        },
+        {
+          "original": "meister fildern",
+          "corrected": "meisten Bildern",
+          "reason": "Corrected to 'meisten Bildern' meaning 'most pictures'."
+        },
+        {
+          "original": "Selbscheibe",
+          "corrected": "Selbstscheibe",
+          "reason": "Corrected to 'Selbstscheibe' meaning 'self-disc'."
+        },
+        {
+          "original": "Das n\u00e4ch.",
+          "corrected": "Das n\u00e4ch-",
+          "reason": "Corrected to 'Das n\u00e4ch-' for continuation."
+        },
+        {
+          "original": "ste mail",
+          "corrected": "ste Mal",
+          "reason": "Corrected to 'ste Mal' meaning 'next time'."
+        },
+        {
+          "original": "ther",
+          "corrected": "aber",
+          "reason": "Corrected to 'aber' meaning 'but'."
+        },
+        {
+          "original": "Jedent ders",
+          "corrected": "Jedenfalls",
+          "reason": "Corrected to 'Jedenfalls' meaning 'in any case'."
+        },
+        {
+          "original": "gedacht",
+          "corrected": "gedacht",
+          "reason": "Repeated for clarity."
+        },
+        {
+          "original": "naturlid",
+          "corrected": "nat\u00fcrlich",
+          "reason": "Corrected to 'nat\u00fcrlich' meaning 'naturally'."
+        },
+        {
+          "original": "mur",
+          "corrected": "nur",
+          "reason": "Corrected to 'nur' meaning 'only'."
+        },
+        {
+          "original": "Velumen",
+          "corrected": "Wollen",
+          "reason": "Corrected to 'Wollen' meaning 'want'."
+        },
+        {
+          "original": "Vochfeimual",
+          "corrected": "Sonst",
+          "reason": "Corrected to 'Sonst' meaning 'otherwise'."
+        },
+        {
+          "original": "wil",
+          "corrected": "mit",
+          "reason": "Corrected to 'mit' meaning 'with'."
+        },
+        {
+          "original": "Darienter",
+          "corrected": "Darunter",
+          "reason": "Corrected to 'Darunter' meaning 'among them'."
+        },
+        {
+          "original": "Gramophon.",
+          "corrected": "Grammophon-",
+          "reason": "Corrected to 'Grammophon-' for continuation."
+        },
+        {
+          "original": "hantelstoff",
+          "corrected": "Handtuchstoff",
+          "reason": "Corrected to 'Handtuchstoff' meaning 'towel fabric'."
+        },
+        {
+          "original": "is s. w.",
+          "corrected": "usw.",
+          "reason": "Corrected to 'usw.' meaning 'etc.'."
+        },
+        {
+          "original": "flei\u00df",
+          "corrected": "flei\u00df",
+          "reason": "Repeated for clarity."
+        },
+        {
+          "original": "langen",
+          "corrected": "langen",
+          "reason": "Repeated for clarity."
+        },
+        {
+          "original": "erw\u00e4lut",
+          "corrected": "erw\u00e4hnt",
+          "reason": "Corrected to 'erw\u00e4hnt' meaning 'mentioned'."
+        },
+        {
+          "original": "geschackles livelt",
+          "corrected": "geschmacklos h\u00e4lt",
+          "reason": "Corrected to 'geschmacklos h\u00e4lt' meaning 'tasteless'."
+        },
+        {
+          "original": "Rebel",
+          "corrected": "\u00dcbel",
+          "reason": "Corrected to '\u00dcbel' meaning 'badly'."
+        },
+        {
+          "original": "incht",
+          "corrected": "nicht",
+          "reason": "Corrected to 'nicht' meaning 'not'."
+        },
+        {
+          "original": "\u0440\u0430\u043d\u0437",
+          "corrected": "ganz",
+          "reason": "Corrected to 'ganz' meaning 'completely'."
+        },
+        {
+          "original": "Filingesellschaft",
+          "corrected": "Filmgesellschaft",
+          "reason": "Corrected to 'Filmgesellschaft' meaning 'film company'."
+        },
+        {
+          "original": "was",
+          "corrected": "war",
+          "reason": "Corrected to 'war' meaning 'was'."
+        },
+        {
+          "original": "Zuch",
+          "corrected": "Buch",
+          "reason": "Corrected to 'Buch' meaning 'book'."
+        },
+        {
+          "original": "leeber",
+          "corrected": "lieber",
+          "reason": "Corrected to 'lieber' meaning 'preferably'."
+        },
+        {
+          "original": "vesen",
+          "corrected": "gewesen",
+          "reason": "Corrected to 'gewesen' meaning 'been'."
+        },
+        {
+          "original": "gerade",
+          "corrected": "gerade",
+          "reason": "Repeated for clarity."
+        },
+        {
+          "original": "gel",
+          "corrected": "gehen",
+          "reason": "Corrected to 'gehen' meaning 'go'."
+        },
+        {
+          "original": "ferlin",
+          "corrected": "Berlin",
+          "reason": "Corrected to 'Berlin' as a known location."
+        },
+        {
+          "original": "Burch",
+          "corrected": "Buch",
+          "reason": "Corrected to 'Buch' meaning 'book'."
+        },
+        {
+          "original": "Samtliche",
+          "corrected": "S\u00e4mtliche",
+          "reason": "Corrected to 'S\u00e4mtliche' meaning 'all'."
+        },
+        {
+          "original": "Entscheisting",
+          "corrected": "Entscheidung",
+          "reason": "Corrected to 'Entscheidung' meaning 'decision'."
+        },
+        {
+          "original": "selbstverst\u00e4nden",
+          "corrected": "selbstverst\u00e4ndlich",
+          "reason": "Corrected to 'selbstverst\u00e4ndlich' meaning 'of course'."
+        },
+        {
+          "original": "Cu",
+          "corrected": "Die",
+          "reason": "Corrected to 'Die' meaning 'the'."
+        },
+        {
+          "original": "angelerent",
+          "corrected": "angelehnte",
+          "reason": "Corrected to 'angelehnte' meaning 'attached'."
+        },
+        {
+          "original": "aubei",
+          "corrected": "auch",
+          "reason": "Corrected to 'auch' meaning 'also'."
+        },
+        {
+          "original": "hady",
+          "corrected": "dir",
+          "reason": "Corrected to 'dir' meaning 'you'."
+        },
+        {
+          "original": "Bol",
+          "corrected": "[illegible]",
+          "reason": "Text is illegible."
+        },
+        {
+          "original": "con",
+          "corrected": "in",
+          "reason": "Corrected to 'in' meaning 'in'."
+        },
+        {
+          "original": "3 Wochen.",
+          "corrected": "3 Wochen.\n\n",
+          "reason": "Added line break for formatting."
+        },
+        {
+          "original": "\u0438",
+          "corrected": "[illegible]",
+          "reason": "Text is illegible."
+        },
+        {
+          "original": "Pralia XIII Ruska",
+          "corrected": "Prag XIII Ruska",
+          "reason": "Corrected to 'Prag XIII Ruska' as a location."
+        }
+      ],
+      "uncertain_segments": [
+        "Du noch. Jedent ders gute Sachen bekommst.",
+        "Es k\u00fcsst dich vielmals Fin",
+        "Bol",
+        "\u0438"
+      ],
+      "provider_used": "openai",
+      "comparison": null,
+      "raw_word_count": 369,
+      "corrected_word_count": 345,
+      "corrections_count": 52
+    },
+    {
+      "pdf_file": "007-1940-07-01-fre.pdf",
+      "date_processed": "2025-11-16T14:00:20.153517",
+      "metadata": {
+        "document_type": "letter",
+        "expected_language": "English",
+        "date": "unknown"
+      },
+      "raw_text": "Villeneuve Pot 1.7.40\ntu te\nMa cherie,\nNous sommes toujour ici et nous attendons\nnotre ordre pour la demobilisation.\nJe serais heureuse, si je serrais ou\nfrouve. Naturellement je veuse aller fork\nde mite \u00e0 higiniac si je n'ai pas\nas des\nnouvelles de foi entreteness. He croise\nnous sommes encore 2-3 jours ici. C'est\nterrible foujours attendre. Mais pour\nle moment est rien \u00e0 faire\nfeuille de la demobilization\nJe t'adore ma petite femme etf\n\u0434\u0430\u0439 \u0434\u043e\u0432\u043e\n\u00e0 fr\u00e8s bient\u00f4t.\nsans la\nespere\n\nFRANCHISE MILITAIRE\nPRIORIT\u00c9\n40\nR\u00c9PUBLIQUE BRAN\u00c7AISE\n40\n91\nI CARTE POSTALE LATE\nEXP\u00c9DITEUR\nfenther.\nMR. Jueg\nreg. infanterie\n1. reg.\n13 comp.\nJ;P. 31121\n\u00e0........\nNom :\nGrade.\nw\nfurt\nARMEES\nCette Carte\nest vendue\n5 Centimes\ndans tous les\nBureaux de\nPoste\nDESTINATAIRE\nMadonne\n\u0448\u0435\nE. Froeigenthal\nCompacchese Mouil\nCompagni Coterie\n\u0448\u0435\nth\nR\u00e9giment (arme ou service\nD\u00e9partement....\nSecteur Postal N\u00b0\nEl Liginia\n(Il est recommand\u00e9 d'\u00e9crire tr\u00e8s lisiblement)\nCorr\u00e8ze\nu\npar\n\n",
+      "corrected_text": "Villeneuve Port 1.7.40\n\nMa ch\u00e9rie,\nNous sommes toujours ici et nous attendons\nnotre ordre pour la d\u00e9mobilisation.\nJe serais heureuse, si je serais ou\ntrouve. Naturellement je veux aller fort\nde suite \u00e0 [illegible] si je n'ai pas\nas des\nnouvelles de toi entretemps. Je crois\nnous sommes encore 2-3 jours ici. C'est\nterrible toujours attendre. Mais pour\nle moment est rien \u00e0 faire\nfeuille de la d\u00e9mobilisation\nJe t'adore ma petite femme et\n\u00e0 tr\u00e8s bient\u00f4t.\n\nFRANCHISE MILITAIRE\nPRIORIT\u00c9\n40\nR\u00c9PUBLIQUE FRAN\u00c7AISE\n40\n91\nCARTE POSTALE\nEXP\u00c9DITEUR\n[illegible]\nMR. [illegible]\nreg. infanterie\n1. reg.\n13 comp.\nJ.P. 31121\n\u00e0........\nNom :\nGrade.\n[illegible]\nARMEES\nCette Carte\nest vendue\n5 Centimes\ndans tous les\nBureaux de\nPoste\nDESTINATAIRE\nMadame\nE. Froelichenthal\nCompagnie Mouil\nCompagnie Coterie\n[illegible]\nR\u00e9giment (arme ou service)\nD\u00e9partement....\nSecteur Postal N\u00b0\n[illegible]\n(Il est recommand\u00e9 d'\u00e9crire tr\u00e8s lisiblement)\nCorr\u00e8ze\nu\npar",
+      "translated_text": "Villeneuve Port 1.7.40 My darling, We are still here and are waiting for our demobilization order. I would be happy if I were or found. Naturally, I want to go straight to [illegible] if I haven&#39;t heard from you in the meantime. I think we&#39;ll be here for another 2-3 days. It&#39;s terrible always waiting. But for the moment, there&#39;s nothing to do but fill out the demobilization papers. I adore you, my little wife, and see you very soon. PRIORITY MILITARY FRANCHISE 40 FRENCH REPUBLIC 40 91 POSTCARD SENDER [illegible] MR. [illegible] reg. infantry 1. reg. 13 comp. JP 31121 to........ Name: Rank. [illegible] ARMY This card is sold for 5 cents in all Post Offices. RECIPIENT: Mrs. E. Froelichenthal Company Mouil Company Coterie [illegible] Regiment (branch or service) Department.... Postal Sector No. [illegible] (It is recommended to write very legibly) Corr\u00e8ze u by",
+      "confidence": 85,
+      "corrections": [
+        {
+          "original": "Pot",
+          "corrected": "Port",
+          "reason": "Common location name correction."
+        },
+        {
+          "original": "tu te",
+          "corrected": "",
+          "reason": "Unnecessary text, likely OCR error."
+        },
+        {
+          "original": "toujour",
+          "corrected": "toujours",
+          "reason": "Correct spelling in French."
+        },
+        {
+          "original": "serrais",
+          "corrected": "serais",
+          "reason": "Correct verb form in French."
+        },
+        {
+          "original": "frouve",
+          "corrected": "trouve",
+          "reason": "Correct spelling in French."
+        },
+        {
+          "original": "veuse",
+          "corrected": "veux",
+          "reason": "Correct spelling in French."
+        },
+        {
+          "original": "fork",
+          "corrected": "fort",
+          "reason": "Correct spelling in French."
+        },
+        {
+          "original": "de mite \u00e0 higiniac",
+          "corrected": "de suite \u00e0 [illegible]",
+          "reason": "Correct phrase and mark illegible part."
+        },
+        {
+          "original": "as des",
+          "corrected": "de",
+          "reason": "Correct preposition usage in French."
+        },
+        {
+          "original": "foi entreteness",
+          "corrected": "toi entretemps",
+          "reason": "Correct phrase in French."
+        },
+        {
+          "original": "He croise",
+          "corrected": "Je crois",
+          "reason": "Correct pronoun and verb in French."
+        },
+        {
+          "original": "foujours",
+          "corrected": "toujours",
+          "reason": "Correct spelling in French."
+        },
+        {
+          "original": "feuille de la demobilization",
+          "corrected": "feuille de la d\u00e9mobilisation",
+          "reason": "Correct spelling in French."
+        },
+        {
+          "original": "etf",
+          "corrected": "et",
+          "reason": "Correct conjunction in French."
+        },
+        {
+          "original": "\u0434\u0430\u0439 \u0434\u043e\u0432\u043e",
+          "corrected": "\u00e0",
+          "reason": "Correct phrase in French."
+        },
+        {
+          "original": "fr\u00e8s",
+          "corrected": "tr\u00e8s",
+          "reason": "Correct spelling in French."
+        },
+        {
+          "original": "sans la",
+          "corrected": "",
+          "reason": "Unnecessary text, likely OCR error."
+        },
+        {
+          "original": "espere",
+          "corrected": "",
+          "reason": "Unnecessary text, likely OCR error."
+        },
+        {
+          "original": "FRANCHISE MILITAIRE",
+          "corrected": "FRANCHISE MILITAIRE",
+          "reason": "Correct as is."
+        },
+        {
+          "original": "PRIORIT\u00c9",
+          "corrected": "PRIORIT\u00c9",
+          "reason": "Correct as is."
+        },
+        {
+          "original": "R\u00c9PUBLIQUE BRAN\u00c7AISE",
+          "corrected": "R\u00c9PUBLIQUE FRAN\u00c7AISE",
+          "reason": "Correct spelling in French."
+        },
+        {
+          "original": "I CARTE POSTALE LATE",
+          "corrected": "CARTE POSTALE",
+          "reason": "Correct phrase in French."
+        },
+        {
+          "original": "fenther.",
+          "corrected": "[illegible]",
+          "reason": "Illegible text."
+        },
+        {
+          "original": "Jueg",
+          "corrected": "[illegible]",
+          "reason": "Illegible text."
+        },
+        {
+          "original": "w",
+          "corrected": "[illegible]",
+          "reason": "Illegible text."
+        },
+        {
+          "original": "furt",
+          "corrected": "[illegible]",
+          "reason": "Illegible text."
+        },
+        {
+          "original": "Madonne",
+          "corrected": "Madame",
+          "reason": "Correct title in French."
+        },
+        {
+          "original": "\u0448\u0435",
+          "corrected": "",
+          "reason": "Unnecessary text, likely OCR error."
+        },
+        {
+          "original": "Froeigenthal",
+          "corrected": "Froelichenthal",
+          "reason": "Correct spelling of name."
+        },
+        {
+          "original": "Compacchese Mouil",
+          "corrected": "Compagnie Mouil",
+          "reason": "Correct phrase in French."
+        },
+        {
+          "original": "Compagni Coterie",
+          "corrected": "Compagnie Coterie",
+          "reason": "Correct phrase in French."
+        },
+        {
+          "original": "th",
+          "corrected": "[illegible]",
+          "reason": "Illegible text."
+        },
+        {
+          "original": "El Liginia",
+          "corrected": "[illegible]",
+          "reason": "Illegible text."
+        }
+      ],
+      "uncertain_segments": [
+        "de suite \u00e0 [illegible]",
+        "[illegible]",
+        "El Liginia"
+      ],
+      "provider_used": "openai",
+      "comparison": null,
+      "raw_word_count": 157,
+      "corrected_word_count": 144,
+      "corrections_count": 33
+    },
+    {
+      "pdf_file": "01-27-2003_eng_letter-001.pdf",
+      "date_processed": "2025-11-16T14:00:40.754780",
+      "metadata": {
+        "document_type": "letter",
+        "expected_language": "English",
+        "date": "01-27-2003"
+      },
+      "raw_text": "ZENTALL\n21 BAYBERRY LANE\nRYE BROOK, N.Y. 10573\nDear Gabe\nI'd\nFor Jan 27,03\n11 were a\n\u0430\u0440\u043e\u0441\u0442\ns.\nI write a poem to sung jour\npraise if I were an artist\npaint a\nI'd\npicture in which\njoi'd have wings... bud,\nyou\nalas, I am\njust a poor\nhuman with strongly\nwith strongly limited\nReforming capability!...\nCerid so\n... I'll use simple\nWords to wish you a wonderful\nbirthday- may some\nof your\nWishes come though in de\nfear alead, may ju be happer,\nRealty of successful! May this\n\u0430\u0437\nbe the best fear ever.\nover\nSo much love\nGrandma\n\nThe enclosed is but a tober\nof my love\n\u0436\u0435\nfor you\n\n",
+      "corrected_text": "ZENTALL\n21 BAYBERRY LANE\nRYE BROOK, N.Y. 10573\nDear Gabe\nI'd\nFor Jan 27, 03\nIf I were a\npoet\nI'd write a poem to sing your\npraise if I were an artist\nI'd paint a\npicture in which\nyou'd have wings... but,\nalas, I am\njust a poor\nhuman with strongly\nlimited\nReforming capability!...\nAnd so\n... I'll use simple\nWords to wish you a wonderful\nbirthday- may some\nof your\nWishes come true in the\nyear ahead, may you be happier,\nReally successful! May this\nyear\nbe the best year ever.\nover\nSo much love\nGrandma\n\nThe enclosed is but a token\nof my love\nfor you\n",
+      "translated_text": "ZENTALL\n21 BAYBERRY LANE\nRYE BROOK, N.Y. 10573\nDear Gabe\nI'd\nFor Jan 27, 03\nIf I were a\npoet\nI'd write a poem to sing your\npraise if I were an artist\nI'd paint a\npicture in which\nyou'd have wings... but,\nalas, I am\njust a poor\nhuman with strongly\nlimited\nReforming capability!...\nAnd so\n... I'll use simple\nWords to wish you a wonderful\nbirthday- may some\nof your\nWishes come true in the\nyear ahead, may you be happier,\nReally successful! May this\nyear\nbe the best year ever.\nover\nSo much love\nGrandma\n\nThe enclosed is but a token\nof my love\nfor you\n",
+      "confidence": 85,
+      "corrections": [
+        {
+          "original": "jour",
+          "corrected": "your",
+          "reason": "OCR misread 'j' as 'j' instead of 'y'"
+        },
+        {
+          "original": "\u0430\u0440\u043e\u0441\u0442",
+          "corrected": "poet",
+          "reason": "OCR misread 'poet' due to handwriting style"
+        },
+        {
+          "original": "sung",
+          "corrected": "sing",
+          "reason": "OCR misread 'sing' as 'sung'"
+        },
+        {
+          "original": "joi'd",
+          "corrected": "you'd",
+          "reason": "OCR misread 'you'd' as 'joi'd'"
+        },
+        {
+          "original": "bud,",
+          "corrected": "but,",
+          "reason": "OCR misread 'but' as 'bud'"
+        },
+        {
+          "original": "with strongly\nwith strongly limited",
+          "corrected": "with strongly\nlimited",
+          "reason": "Duplicate phrase due to OCR error"
+        },
+        {
+          "original": "Cerid",
+          "corrected": "And",
+          "reason": "OCR misread 'And' as 'Cerid'"
+        },
+        {
+          "original": "though",
+          "corrected": "true",
+          "reason": "Contextual correction for 'come true'"
+        },
+        {
+          "original": "de\nfear alead",
+          "corrected": "the\nyear ahead",
+          "reason": "OCR misread 'the year ahead' due to handwriting style"
+        },
+        {
+          "original": "ju",
+          "corrected": "you",
+          "reason": "OCR misread 'you' as 'ju'"
+        },
+        {
+          "original": "happer,",
+          "corrected": "happier,",
+          "reason": "OCR misread 'happier' as 'happer'"
+        },
+        {
+          "original": "Realty of successful!",
+          "corrected": "Really successful!",
+          "reason": "OCR misread 'Really' as 'Realty'"
+        },
+        {
+          "original": "\u0430\u0437",
+          "corrected": "year",
+          "reason": "OCR misread 'year' as '\u0430\u0437'"
+        },
+        {
+          "original": "tober",
+          "corrected": "token",
+          "reason": "OCR misread 'token' as 'tober'"
+        }
+      ],
+      "uncertain_segments": [],
+      "provider_used": "openai",
+      "comparison": null,
+      "raw_word_count": 113,
+      "corrected_word_count": 109,
+      "corrections_count": 14
+    }
+  ]
+}

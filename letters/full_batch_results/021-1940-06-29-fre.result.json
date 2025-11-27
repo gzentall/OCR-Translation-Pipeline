@@ -1,0 +1,180 @@
+{
+  "pdf_file": "021-1940-06-29-fre.pdf",
+  "date_processed": "2025-11-16T17:29:10.119320",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "21.6.40\nMa petit femme, ma cherie\n2. De sins assez pr\u00e8s de foi mais\nje ne sais pas encore si je top\nfrouv\u00e9. J'esp\u00e8re je pense avoir\num permission pour\nquelques heures. S'i non\nreste tranquille mon chouse\nm\u00eame si tu n'as pas des\nnouvelles quelques semaines\no\u00f9 quelques mois, Peut \u00eatre\nnous parterons tr\u00e8s loin.\nje ne sais rien. S'i j'ai la\npossibilit\u00e9s triar, faire\nune visite chez soi nous\nparlerons de fons. Pour\n\nthe situation je me trouve\nen plaire sant\u00e9, et ca va\ntr\u00e8s bien. Seulement les\nsorsis avec foi.\nrt.\n\u0433\u0430\u0437\nSi car sera plorsangereiz\npart (mais sentement avec\nfaute la famille) vers Pezenas\nha, tu frouver des anns. hais\nlaisse l'adresse flour forks les\nCes cas)\naes More Moneil. furement\n\u0434\u0435 \u0432\u043e\nje trouverai ales meilleur\npour for et moi, sencement\nje te prie reste calme. Co\nme donne beaucoup plus defore\nJe n'ai pas des nouvelles de\nfor depuis Peseras mais\nj'esp\u00e8re tous va bien.\nJe t'embrasse mon petit\nTu sais comment j'et'aime\n\n\u0c2e\n\u0f26\u0f21\u0f21\u0f23\u0f23\n\u0f4f\u0f0b %\n\u0647\u0648\u0630\u0627\nAGRO\n\u0631\u064a\n\u5ddd\nPeut \u00eatre\n\u017five voice.\nte pense raconter for aver\n3351\n300\nt'adore\n\n1\nMadame\nE. Zweisenthal\nchez le Concil\nhiginias\nCorreze\n\n52\n\u0441\u0432\u0435\u043e\u043b\u043d\u043e\u043a\u0430\u0434\u0438\u0435\nIN\nZwergenthal I\nIve rofer\n\n",
+  "corrected_text": "21.6.40\nMa petite femme, ma ch\u00e9rie\n2. De suis assez pr\u00e8s de toi mais\nje ne sais pas encore si je t'ai\ntrouv\u00e9. J'esp\u00e8re je pense avoir\nune permission pour\nquelques heures. Si non\nreste tranquille mon choux\nm\u00eame si tu n'as pas de\nnouvelles quelques semaines\nou quelques mois, Peut-\u00eatre\nnous partirons tr\u00e8s loin.\nje ne sais rien. Si j'ai la\npossibilit\u00e9 d'y aller, faire\nune visite chez soi nous\nparlerons de fonds. Pour\n\nthe situation je me trouve\nen pleine sant\u00e9, et \u00e7a va\ntr\u00e8s bien. Seulement les\nsorties avec toi.\nrt.\n[illegible]\nSi cela sera plus dangereux\npart (mais seulement avec\ntoute la famille) vers Pezenas\nha, tu trouveras des amis. Mais\nlaisse l'adresse pour tous les\nCes cas)\nchez Mme Morel. s\u00fbrement\n[illegible]\nje trouverai le meilleur\npour toi et moi, seulement\nje te prie reste calme. \u00c7a\nme donne beaucoup plus de force\nJe n'ai pas de nouvelles de\ntoi depuis Pezenas mais\nj'esp\u00e8re tout va bien.\nJe t'embrasse mon petit\nTu sais comment je t'aime\n\n[illegible]\nPeut-\u00eatre\n[illegible]\nje pense raconter toi avec\n[illegible]\n[illegible]\nt'adore\n\n1\nMadame\nE. Zweigenthal\nchez le Consul\n[illegible]\nCorreze\n\n52\n[illegible]\nIN\nZweigenthal I\n[illegible]\n\n",
+  "translated_text": "June 21, 1940 My little wife, my darling, I&#39;m quite close to you, but I don&#39;t know yet if I&#39;ve found you. I hope I have a few hours&#39; leave. If not, stay calm, my sweetie, even if you don&#39;t hear from me for a few weeks or months. Perhaps we&#39;ll go very far away. I don&#39;t know anything. If I have the opportunity to go there, to visit you at home, we&#39;ll talk about money. As for the situation, I&#39;m in excellent health, and everything is going very well. Only outings with you. [illegible] If it becomes more dangerous, go (but only with the whole family) to Pezenas, you&#39;ll find friends there. But leave the address for everyone (in these cases) at Mrs. Morel&#39;s. Surely [illegible] I&#39;ll find the best thing for you and me, just please stay calm. It gives me much more strength. I haven&#39;t heard from you since Pezenas, but I hope everything is alright. I kiss you, my little one. You know how much I love you. Perhaps I think I&#39;ll tell you about it. I adore you. 1 Madame E. Zweigenthal at the Consul&#39;s. Correze 52. IN Zweigenthal I\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Ma petit femme",
+      "corrected": "Ma petite femme",
+      "reason": "Corrected gender agreement in French."
+    },
+    {
+      "original": "ma cherie",
+      "corrected": "ma ch\u00e9rie",
+      "reason": "Added accent for correct French spelling."
+    },
+    {
+      "original": "De sins assez pr\u00e8s de foi",
+      "corrected": "De suis assez pr\u00e8s de toi",
+      "reason": "Corrected to proper French phrase."
+    },
+    {
+      "original": "je top frouv\u00e9",
+      "corrected": "je t'ai trouv\u00e9",
+      "reason": "Corrected to proper French phrase."
+    },
+    {
+      "original": "um permission",
+      "corrected": "une permission",
+      "reason": "Corrected article in French."
+    },
+    {
+      "original": "S'i non",
+      "corrected": "Si non",
+      "reason": "Corrected French spelling."
+    },
+    {
+      "original": "mon chouse",
+      "corrected": "mon choux",
+      "reason": "Corrected to a common French term of endearment."
+    },
+    {
+      "original": "des nouvelles",
+      "corrected": "de nouvelles",
+      "reason": "Corrected preposition in French."
+    },
+    {
+      "original": "Peut \u00eatre",
+      "corrected": "Peut-\u00eatre",
+      "reason": "Added hyphen for correct French spelling."
+    },
+    {
+      "original": "nous parterons",
+      "corrected": "nous partirons",
+      "reason": "Corrected verb spelling."
+    },
+    {
+      "original": "S'i j'ai",
+      "corrected": "Si j'ai",
+      "reason": "Corrected French spelling."
+    },
+    {
+      "original": "triar",
+      "corrected": "d'y aller",
+      "reason": "Corrected to a plausible French phrase."
+    },
+    {
+      "original": "de fons",
+      "corrected": "de fonds",
+      "reason": "Corrected to proper French spelling."
+    },
+    {
+      "original": "en plaire sant\u00e9",
+      "corrected": "en pleine sant\u00e9",
+      "reason": "Corrected to proper French phrase."
+    },
+    {
+      "original": "ca va",
+      "corrected": "\u00e7a va",
+      "reason": "Added accent for correct French spelling."
+    },
+    {
+      "original": "Seulement les sorsis avec foi",
+      "corrected": "Seulement les sorties avec toi",
+      "reason": "Corrected to proper French phrase."
+    },
+    {
+      "original": "Si car sera plorsangereiz",
+      "corrected": "Si cela sera plus dangereux",
+      "reason": "Corrected to a plausible French phrase."
+    },
+    {
+      "original": "sentement avec faute la famille",
+      "corrected": "seulement avec toute la famille",
+      "reason": "Corrected to a plausible French phrase."
+    },
+    {
+      "original": "tu frouver des anns",
+      "corrected": "tu trouveras des amis",
+      "reason": "Corrected to a plausible French phrase."
+    },
+    {
+      "original": "flour forks les",
+      "corrected": "pour tous les",
+      "reason": "Corrected to a plausible French phrase."
+    },
+    {
+      "original": "aes More Moneil",
+      "corrected": "chez Mme Morel",
+      "reason": "Corrected to a plausible French name."
+    },
+    {
+      "original": "furement",
+      "corrected": "s\u00fbrement",
+      "reason": "Corrected to proper French spelling."
+    },
+    {
+      "original": "ales meilleur",
+      "corrected": "le meilleur",
+      "reason": "Corrected article agreement in French."
+    },
+    {
+      "original": "sencement",
+      "corrected": "seulement",
+      "reason": "Corrected to proper French spelling."
+    },
+    {
+      "original": "Co me donne",
+      "corrected": "\u00c7a me donne",
+      "reason": "Corrected to proper French spelling."
+    },
+    {
+      "original": "defore",
+      "corrected": "de force",
+      "reason": "Corrected to a plausible French phrase."
+    },
+    {
+      "original": "for depuis Peseras",
+      "corrected": "toi depuis Pezenas",
+      "reason": "Corrected to a plausible French phrase."
+    },
+    {
+      "original": "t'embrasse mon petit",
+      "corrected": "t'embrasse mon petit",
+      "reason": "Corrected to a plausible French phrase."
+    },
+    {
+      "original": "j'et'aime",
+      "corrected": "je t'aime",
+      "reason": "Corrected to proper French spelling."
+    },
+    {
+      "original": "Madame E. Zweisenthal",
+      "corrected": "Madame E. Zweigenthal",
+      "reason": "Corrected known name spelling."
+    },
+    {
+      "original": "chez le Concil",
+      "corrected": "chez le Consul",
+      "reason": "Corrected to a plausible French phrase."
+    }
+  ],
+  "uncertain_segments": [
+    "Si cela sera plus dangereux",
+    "chez Mme Morel",
+    "je pense raconter toi avec"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 205,
+  "corrected_word_count": 197,
+  "corrections_count": 31
+}

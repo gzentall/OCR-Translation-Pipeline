@@ -1,0 +1,71 @@
+{
+  "pdf_file": "023-1940-07-13-fre.pdf",
+  "date_processed": "2025-11-16T17:40:52.148566",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Aux Arm\u00e9es le 13,\nMon petit\na\n7.\n1940\nsest'ai oublie \u00e0 dire que tu me dois\nen t\u00f4t que possible ine\nenvoyer plu\nanci\u00e8rme Resepiss\u00e9e de travaille. S'il\nte plans envois moi\nca recommander,\n\u0441\u0430\n\u0436\u0434\u0430\nHerault) #4, 'me Bon\nCamp Agde (Heranes)\n17am comp. Je l'ai besoin pour la\ndemobilisation.\nA bient\u00f4t monchoux\nton Bob,\n\nZworgenthat camp. Agde\nHerauld) 4.5-8\n17 Comp.\nNom et Adresse de l'Exp\u00e9diteur:\nR\u00c9PUBLIQUE FRAN\u00c7AISE\nCARTE CORRESPONDANCE\nMA\nF. M.\nAGDE\n7\nMadame\nE. Zweigenthal\n\u0456\u0434\u0435\u043b\u044c\u043d\u043e\u0435\nIst thing Shoncie\n\u0639\u062f\u0643\nhiginiac\nCorr\u00e8ze\nHERAUL\npar Ussel\n\n",
+  "corrected_text": "Aux Arm\u00e9es le 13,\nMon petit\n\u00e0\n7.\n1940\nc'est j'ai oubli\u00e9 \u00e0 dire que tu me dois\nen t\u00f4t que possible me\nenvoyer plus\nanciennement R\u00e9c\u00e9piss\u00e9 de travail. S'il\nte pla\u00eet envoie-moi\n\u00e7a recommand\u00e9,\n\u00e7a\n\u0436\u0434\u0430\nH\u00e9rault) #4, 'me Bon\nCamp Agde (H\u00e9rault)\n17\u00e8me comp. Je l'ai besoin pour la\nd\u00e9mobilisation.\nA bient\u00f4t mon ch\u00e9ri\nTon Bob,\n\nZweigenthal camp. Agde\nH\u00e9rault) 4.5-8\n17\u00e8me Comp.\nNom et Adresse de l'Exp\u00e9diteur:\nR\u00c9PUBLIQUE FRAN\u00c7AISE\nCARTE CORRESPONDANCE\nM. A.\nF. M.\nAGDE\n7\nMadame\nE. Zweigenthal\n\u0456\u0434\u0435\u043b\u044c\u043d\u043e\u0435\nIst thing Shoncie\n\u0639\u062f\u0643\nhiginiac\nCorr\u00e8ze\nH\u00c9RAULT\npar Ussel\n",
+  "translated_text": "To the Army on the 13th, My little one at 7. 1940, I forgot to say that you must send me your old work receipt as soon as possible. Please send it to me registered mail, it&#39;s (H\u00e9rault) #4, &#39;me Bon Camp Agde (H\u00e9rault) 17th Company. I need it for demobilization. See you soon my darling, Your Bob, Zweigenthal camp. Agde H\u00e9rault) 4.5-8 17th Company. Sender&#39;s Name and Address: FRENCH REPUBLIC CORRESPONDENCE CARD MAFM AGDE 7 Mrs. E. Zweigenthal (Ideal) Ist thing Shoncie (Idk) higiniac Corr\u00e8ze H\u00c9RAULT via Ussel\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "sest'ai",
+      "corrected": "c'est j'ai",
+      "reason": "Corrected to common French phrase 'c'est j'ai'"
+    },
+    {
+      "original": "ine",
+      "corrected": "me",
+      "reason": "Corrected to 'me' for grammatical consistency"
+    },
+    {
+      "original": "anci\u00e8rme Resepiss\u00e9e de travaille",
+      "corrected": "anciennement R\u00e9c\u00e9piss\u00e9 de travail",
+      "reason": "Corrected to proper French spelling and grammar"
+    },
+    {
+      "original": "te plans envois moi",
+      "corrected": "te pla\u00eet envoie-moi",
+      "reason": "Corrected to proper French phrase 's'il te pla\u00eet envoie-moi'"
+    },
+    {
+      "original": "monchoux",
+      "corrected": "mon ch\u00e9ri",
+      "reason": "Corrected to common closing phrase 'mon ch\u00e9ri'"
+    },
+    {
+      "original": "Zworgenthat",
+      "corrected": "Zweigenthal",
+      "reason": "Corrected to known name 'Zweigenthal'"
+    },
+    {
+      "original": "Heranes",
+      "corrected": "H\u00e9rault",
+      "reason": "Corrected to known location 'H\u00e9rault'"
+    },
+    {
+      "original": "17am comp.",
+      "corrected": "17\u00e8me comp.",
+      "reason": "Corrected to proper French ordinal '17\u00e8me'"
+    },
+    {
+      "original": "Herauld",
+      "corrected": "H\u00e9rault",
+      "reason": "Corrected to known location 'H\u00e9rault'"
+    },
+    {
+      "original": "\u0436\u0434\u0430",
+      "corrected": "[illegible]",
+      "reason": "Non-French text, marked as illegible"
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 91,
+  "corrected_word_count": 93,
+  "corrections_count": 10
+}

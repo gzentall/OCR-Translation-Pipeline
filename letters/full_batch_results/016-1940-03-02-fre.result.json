@@ -1,0 +1,78 @@
+{
+  "pdf_file": "016-1940-03-02-fre.pdf",
+  "date_processed": "2025-11-16T17:15:25.708666",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Merci pron che\nle\nto quitille\nS 29/2/40\nPette\nPOSTE\nAUX\nAF\nES\nde\npelita Miece Patricia duient\nd\u00e9j\u00e0 un grand personnage\nelle attend avec impatience\n\u0440\u0430\u0441\u0432\u0441\u043a\u0438\u0439\n\u0440\u043e\u0448\u043e\u0439\nLacie\nfau\nde sou ouch, Bob\nex\nta\nLa\nComansanc\nElla et\n\u0434\u0449\u0438\nFastrais\ntois Hem hassons tous trois bien affectueusent\n\nAutoris\u00e9 par la censure No 0\nExp\u00e9diteur\nCHECOSLOVALDES DESKUSLOVE & S\nLES\n2 MAR 1940\nFRANCE\nMILITAIRE\nMusion et quential.\n47556\nYouseed\nfor Regiment\n197\nTanyagnie\nS.P.\nAge 43 - Paris xv.\n\n",
+  "corrected_text": "Merci mon ch\u00e9ri\nle\n29/2/40\nPetite\nPOSTE\nAUX\nARM\u00c9ES\nde\npetite Miece Patricia devient\nd\u00e9j\u00e0 un grand personnage\nelle attend avec impatience\n\u0440\u0430\u0441\u0432\u0441\u043a\u0438\u0439\n\u0440\u043e\u0448\u043e\u0439\nLacie\nfau\nde son oncle, Bob\nex\nta\nLa\nComansance\nElla et\n\u0434\u0449\u0438\nFastrais\ntous les trois nous embrassons tous trois bien affectueusement\n\nAutoris\u00e9 par la censure No 0\nExp\u00e9diteur\nCHECOSLOVAQUES DESKUSLOVE & S\nLES\n2 MAR 1940\nFRANCE\nMILITAIRE\nMonsieur et Madame Zweigenthal\n47556\nYouseed\nfor Regiment\n197\nTanyagnie\nS.P.\nAge 43 - Paris xv.",
+  "translated_text": "Thank you my darling 29/2/40 Little POST OFFICE TO THE ARMY from little Miece Patricia is already becoming a great person she is waiting impatiently for \u0440\u0430\u0441\u0432\u0441\u043a\u0438\u0439 \u0440\u043e\u0448\u043e\u0439 Lacie fau from her uncle, Bob ex ta La Comansance Ella and \u0434\u0449\u0438 Fastrais all three of us we all three kiss each other very affectionately Authorized by the censorship No 0 Sender CZECHOSLOVAKIAN DESKUSLOVE &amp; S THE 2 MAR 1940 MILITARY FRANCE Mr and Mrs Zweigenthal 47556 Youseed for Regiment 197 Tanyagnie SP Age 43 - Paris xv.",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "pron che",
+      "corrected": "mon ch\u00e9ri",
+      "reason": "Common greeting in letters"
+    },
+    {
+      "original": "to quitille",
+      "corrected": "Petite",
+      "reason": "Likely a term of endearment"
+    },
+    {
+      "original": "AF",
+      "corrected": "ARM\u00c9ES",
+      "reason": "Context of military mail"
+    },
+    {
+      "original": "pelita Miece Patricia duient",
+      "corrected": "petite Miece Patricia devient",
+      "reason": "Correcting OCR errors and context of a child growing"
+    },
+    {
+      "original": "fau",
+      "corrected": "son oncle",
+      "reason": "Context of family relations"
+    },
+    {
+      "original": "sou ouch",
+      "corrected": "son oncle",
+      "reason": "Context of family relations"
+    },
+    {
+      "original": "La Comansanc",
+      "corrected": "La Comansance",
+      "reason": "Likely a name or title"
+    },
+    {
+      "original": "tois Hem hassons",
+      "corrected": "tous les trois nous embrassons",
+      "reason": "Common phrase in letters"
+    },
+    {
+      "original": "tous trois bien affectueusent",
+      "corrected": "tous trois bien affectueusement",
+      "reason": "Correcting OCR errors for common closing"
+    },
+    {
+      "original": "Musion et quential.",
+      "corrected": "Monsieur et Madame Zweigenthal",
+      "reason": "Known people in context"
+    }
+  ],
+  "uncertain_segments": [
+    "\u0440\u0430\u0441\u0432\u0441\u043a\u0438\u0439",
+    "\u0440\u043e\u0448\u043e\u0439",
+    "\u0434\u0449\u0438",
+    "Fastrais",
+    "Youseed",
+    "Tanyagnie"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 81,
+  "corrected_word_count": 80,
+  "corrections_count": 10
+}

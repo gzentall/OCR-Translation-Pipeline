@@ -1,0 +1,205 @@
+{
+  "pdf_file": "058-1940-05-10-fre.pdf",
+  "date_processed": "2025-11-16T17:31:57.970405",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "10. V. 40\nMon amour\n\u00e9motion\nNous avons eu quelque\naujourd'hui, mais nous\nMaman\nsommes tous tr\u00e8s calmes, mo\ncomprise it allows tous deven\nJe passe mon temps \u00e0 pensers\nloset\ntu puit aimperains, tellement que\nthe l\u00e0 \u2013 fast?\nca me\n\u0434\u0430\npour me journ\u00e9e\n- sa\ndomuerait tant de courage\nnon pas que j'en manque\nman J'en aurais encore\ndavantage Bi je te savais plus\npre- Ensin ne cleman dous\npas l'impossible\nPour l'instant je ponderis\npeulement que tu ailles bien\n\u0437\u0430\u043c\u0435\u0442\u0440\u0438\u0442\nl\u00e0 o\u00f9 tu es et l\u00e0 o\u00f9 le sost\npeut t'amener. Ma plurie\nF'accompague partout, dans\nLagune heure de to vie\n\u0440\u0430\u0434\u0438\u043a\npu le sais bien\n\u2013 n'est.\ncela\nce\n\npas? Cala doit te garantis\nContre tout. Tu m'entends?\nLa oir sans toi n'aurait\nplus ancun\nseus et s'eu\nLews,\n\u0410\u043d\u0433\u0430 \u0430\u0448\u0435\u043b\u044c\naucun!\nMon cliri song sage, ne\nais pas de beling\n\u0646\u0647\net sacles\nque\navec toi ta vie\net celle de cl\nLun forte\nla nuenue\ncelle qui va veur\nJe t'aime\nin ets\nta Baker,\n\u0430\u0432\u044f\n\nContr\u00f4le Postal Militaire\nPARIS\n1940\nR.P\nFRAN\nI\nL'AVIATIO!\nEST LA PLUS BELLE\nDES CARRI\u00c8RES\nM. Robert Zweigenthal\n10 R. 1. Telecoslovaque\nREGIMENT\nER\nD'INF.\nLe Vaguemestre\nCHECOS\nVel Rotor\nPezenas\n(H\u00e9rault)\n\nAD\n128.\n13\n40\nVOJENSKA CENSURA\n\n",
+  "corrected_text": "10. V. 40\nMon amour\n\u00e9motion\nNous avons eu quelque\naujourd'hui, mais nous\nMaman\nsommes tous tr\u00e8s calmes, ma\ncomprise et alors tous deven\nJe passe mon temps \u00e0 penser\n[illegible]\ntu puis imaginer, tellement que\nl\u00e0 \u2013 fast?\n\u00e7a me\n[illegible]\npour ma journ\u00e9e\n- \u00e7a\ndemanderait tant de courage\nnon pas que j'en manque\nmais J'en aurais encore\ndavantage si je te savais plus\npr\u00e8s. Enfin ne demande pas\nl'impossible\nPour l'instant je pense\nseulement que tu ailles bien\n[illegible]\nl\u00e0 o\u00f9 tu es et l\u00e0 o\u00f9 le sort\npeut t'amener. Ma pri\u00e8re\nt'accompagne partout, dans\nchaque heure de ta vie\n[illegible]\ntu le sais bien\n\u2013 n'est-ce\npas? Cela doit te garantir\ncontre tout. Tu m'entends?\nLa vie sans toi n'aurait\nplus aucun\nsens et serait\n[illegible]\naucun!\nMon ch\u00e9ri sois sage, ne\nfais pas de b\u00eatise\n[illegible]\net sache\nque\navec toi ta vie\net celle de\n[illegible]\nL'un forte\nla nouvelle\ncelle qui va venir\nJe t'aime\n[illegible]\nta Betty,\n[illegible]\n\nContr\u00f4le Postal Militaire\nPARIS\n1940\nR.P\nFRAN\nI\nL'AVIATION\nEST LA PLUS BELLE\nDES CARRI\u00c8RES\nM. Robert Zweigenthal\n10 R. 1. Tch\u00e9coslovaque\nREGIMENT\nER\nD'INF.\nLe Vaguemestre\nCHECOS\nVel Rotor\nPezenas\n(H\u00e9rault)\n\nAD\n128.\n13\n40\nVOJENSKA CENSURA\n",
+  "translated_text": "10. V. 40 My love, emotion. We had something today, but we, Mom, are all very calm, my understanding, and then all become... I spend my time thinking [illegible] you can imagine, so much so that there \u2013 fast? It [illegible] makes me [illegible] for my day - it would take so much courage, not that I lack it, but I would have even more if I knew you were closer. Anyway, don&#39;t ask the impossible. For now, I only think that you are well [illegible] wherever you are and wherever fate may take you. My prayer accompanies you everywhere, in every hour of your life [illegible], you know that well \u2013 don&#39;t you? That must protect you against everything. Do you hear me? Life without you would have no meaning and would be [illegible] nothing! My darling, be good, don&#39;t do anything foolish [illegible] and know that with you your life and that of [illegible] One strong the new one the one that is coming I love you [illegible] your Betty, [illegible] Military Postal Control PARIS 1940 RP FRAN I AVIATION IS THE MOST BEAUTIFUL OF CAREERS Mr. Robert Zweigenthal 10 R. 1. Czechoslovak REGIMENT ER D&#39;INF. The Postmaster CHECOS Vel Rotor Pezenas (H\u00e9rault) AD 128. 13 40 VOJENSKA CENSURA\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "mo",
+      "corrected": "ma",
+      "reason": "Context suggests 'ma' fits better with 'comprise'."
+    },
+    {
+      "original": "pensers",
+      "corrected": "penser",
+      "reason": "Correct verb form in context."
+    },
+    {
+      "original": "loset",
+      "corrected": "[illegible]",
+      "reason": "Unclear word, marked as illegible."
+    },
+    {
+      "original": "tu puit aimperains",
+      "corrected": "tu puis imaginer",
+      "reason": "Corrected to a logical phrase."
+    },
+    {
+      "original": "ca me",
+      "corrected": "\u00e7a me",
+      "reason": "Corrected to proper French spelling."
+    },
+    {
+      "original": "\u0434\u0430",
+      "corrected": "[illegible]",
+      "reason": "Non-French character, marked as illegible."
+    },
+    {
+      "original": "domuerait",
+      "corrected": "demanderait",
+      "reason": "Corrected to a logical word."
+    },
+    {
+      "original": "man",
+      "corrected": "mais",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "pre-",
+      "corrected": "pr\u00e8s.",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "cleman",
+      "corrected": "demande",
+      "reason": "Corrected to a logical word."
+    },
+    {
+      "original": "ponderis",
+      "corrected": "pense",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "\u0437\u0430\u043c\u0435\u0442\u0440\u0438\u0442",
+      "corrected": "[illegible]",
+      "reason": "Non-French character, marked as illegible."
+    },
+    {
+      "original": "Ma plurie",
+      "corrected": "Ma pri\u00e8re",
+      "reason": "Corrected to a logical phrase."
+    },
+    {
+      "original": "F'accompague",
+      "corrected": "t'accompagne",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "Lagune",
+      "corrected": "chaque",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "\u0440\u0430\u0434\u0438\u043a",
+      "corrected": "[illegible]",
+      "reason": "Non-French character, marked as illegible."
+    },
+    {
+      "original": "n'est.",
+      "corrected": "n'est-ce",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "Cala",
+      "corrected": "Cela",
+      "reason": "Corrected to proper French spelling."
+    },
+    {
+      "original": "garantis",
+      "corrected": "garantir",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "ancun",
+      "corrected": "aucun",
+      "reason": "Corrected to proper French spelling."
+    },
+    {
+      "original": "seus",
+      "corrected": "sens",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "Lews,",
+      "corrected": "[illegible]",
+      "reason": "Unclear word, marked as illegible."
+    },
+    {
+      "original": "\u0410\u043d\u0433\u0430 \u0430\u0448\u0435\u043b\u044c",
+      "corrected": "[illegible]",
+      "reason": "Non-French character, marked as illegible."
+    },
+    {
+      "original": "Mon cliri",
+      "corrected": "Mon ch\u00e9ri",
+      "reason": "Corrected to a known phrase."
+    },
+    {
+      "original": "song",
+      "corrected": "sois",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "beling",
+      "corrected": "b\u00eatise",
+      "reason": "Corrected to a logical word."
+    },
+    {
+      "original": "\u0646\u0647",
+      "corrected": "[illegible]",
+      "reason": "Non-French character, marked as illegible."
+    },
+    {
+      "original": "sacles",
+      "corrected": "sache",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "cl",
+      "corrected": "[illegible]",
+      "reason": "Unclear word, marked as illegible."
+    },
+    {
+      "original": "Lun forte",
+      "corrected": "L'un forte",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "la nuenue",
+      "corrected": "la nouvelle",
+      "reason": "Corrected to fit context."
+    },
+    {
+      "original": "in ets",
+      "corrected": "[illegible]",
+      "reason": "Unclear phrase, marked as illegible."
+    },
+    {
+      "original": "ta Baker,",
+      "corrected": "ta Betty,",
+      "reason": "Corrected to a known name."
+    },
+    {
+      "original": "\u0430\u0432\u044f",
+      "corrected": "[illegible]",
+      "reason": "Non-French character, marked as illegible."
+    },
+    {
+      "original": "Telecoslovaque",
+      "corrected": "Tch\u00e9coslovaque",
+      "reason": "Corrected to proper spelling."
+    },
+    {
+      "original": "Vel Rotor",
+      "corrected": "[illegible]",
+      "reason": "Unclear phrase, marked as illegible."
+    }
+  ],
+  "uncertain_segments": [
+    "l\u00e0 \u2013 fast?",
+    "L'un forte",
+    "in ets"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 211,
+  "corrected_word_count": 204,
+  "corrections_count": 36
+}

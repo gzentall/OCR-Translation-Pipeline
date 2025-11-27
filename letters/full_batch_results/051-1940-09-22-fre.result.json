@@ -1,0 +1,180 @@
+{
+  "pdf_file": "051-1940-09-22-fre.pdf",
+  "date_processed": "2025-11-16T17:24:15.544514",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Chatean tour. 22.1\nLiebe 3. Exergen that ll Robert!\n2\n1\n\u043b\u044f\nWie f\u00fcr vieleicht gebort haben si\nk\u00f6nnen wir Tschechen nicht die meme\npassieven, und so haben er. 12 Kamer\nand so Kamarader\nindier) vins entschlouse dhe time and\nRisk zu \u00fcberqueren, ob in\neigen\ndieses Unternehmen gilings wei\u00df ein Mensch\nober and hatten mnr 2. M\u00f6glich liter\nentereder unerlaubt unser Gl\u00fcck zu\n\u043c\u0438\u0441\u043b\u0435\noder aber in ein avbestill\nso\n\u0f5a\u0f7a \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b \u0f0b\nversuchen,\non\ngesand zu werden, und wo haber des\nenster gew\u00e4hlt. Wir hoffen, da\u00df unser Plan\ngelingen wird, und mir so sets bald in Paris\nzen duen werden, und wenn nicht somines\nsauch so\nan\ngehe\nDas ist augenblicklich aller, su\u00df ich se\nschreiben Man\nWenn sie von mir eine Nachricht erhalten\nsollten (mashden die lost wieder geben wird\nso heart richtigen Sie litte meine Mutter\n20\n\u0434\u0430\nHerzh che\ngripenin\nin the From Mutter,\nch\nSuley\n\nPOSTES\nBE\nH\nZIERS\n15 *\n24-1X\n1940\nEST UNAEN\nREPUBLIQUE FRANCAISE\nBUVEZ DU VIN\nThat\nTouring Robert treipe T\nHerault)\nf\na\nMme Pelisuir\n3.2 rue de la R\u00e9publique\nAgole\n\nTAU\nMER\n\n",
+  "corrected_text": "Chateau tour. 22.1\nLiebe 3. Exergen that ll Robert!\n2\n1\n\u043b\u044f\nWie f\u00fcr vielleicht geh\u00f6rt haben si\nk\u00f6nnen wir Tschechen nicht die meme\npassieven, und so haben er. 12 Kamer\nand so Kameraden\nindier) uns entschlossen die time and\nRisk zu \u00fcberqueren, ob in\neigen\ndieses Unternehmen gelingt wei\u00df ein Mensch\naber und hatten nur 2. M\u00f6glichkeit\neither unerlaubt unser Gl\u00fcck zu\nversuchen,\noder aber in ein anderes Ziel\nso\nversuchen,\non\ngesandt zu werden, und wir haben das\nerste gew\u00e4hlt. Wir hoffen, da\u00df unser Plan\ngelingen wird, und wir so sehr bald in Paris\nsein d\u00fcrfen werden, und wenn nicht zumindest\nauch so\nan\ngehe\nDas ist augenblicklich alles, was ich zu\nschreiben habe.\nWenn sie von mir eine Nachricht erhalten\nsollten (vielleicht die Post wieder geben wird)\nso benachrichtigen Sie bitte meine Mutter\nHerzliche\ngr\u00fc\u00dfe\nin the Form Mutter,\nSuley\n\nPOSTES\nBE\nH\nZIERS\n15 *\n24-IX\n1940\nEST UNAN\nREPUBLIQUE FRANCAISE\nBUVEZ DU VIN\nThat\nTouring Robert treipe T\nHerault)\nf\na\nMme Pelisuir\n3.2 rue de la R\u00e9publique\nAgole\n\nTAU\nMER\n\n",
+  "translated_text": "Chateau tour. 22.1 Dear 3. Exergen that ll Robert! 2 1 lya As you may have heard, we Czechs cannot pass the meme passieven, and so he. 12 comrades and so comrades (indier) decided to cross the time and risk, whether this undertaking will succeed, but no one knows, and we had only two options: either to try our luck illegally, or to try to be sent to another destination, and we chose the first. We hope that our plan will succeed, and that we will be allowed to be in Paris very soon, and if not, at least we will go on. That is all I have to write at the moment. If you should receive a message from me (perhaps the post will return it), please notify my mother. Kind regards, Mother, Suley. POSTES BE H ZIERS 15 * 24-IX 1940 EST UNAN REPUBLIQUE FRANCAISE BUVEZ DU VIN That Touring Robert treipe T Herault) f a Mme Pelisiir 3.2 rue de la R\u00e9publique Agole TAU MER\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Chatean",
+      "corrected": "Chateau",
+      "reason": "Corrected to the French word 'Chateau' which fits the context."
+    },
+    {
+      "original": "Exergen",
+      "corrected": "Exergen",
+      "reason": "No correction needed, possibly a name or term."
+    },
+    {
+      "original": "ll",
+      "corrected": "ll",
+      "reason": "No correction needed, possibly a stylistic choice."
+    },
+    {
+      "original": "\u043b\u044f",
+      "corrected": "[illegible]",
+      "reason": "Non-Latin characters, marked as illegible."
+    },
+    {
+      "original": "f\u00fcr vieleicht gebort",
+      "corrected": "f\u00fcr vielleicht geh\u00f6rt",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "si",
+      "corrected": "sie",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "meme",
+      "corrected": "gleiche",
+      "reason": "Corrected to 'gleiche' meaning 'same' in German."
+    },
+    {
+      "original": "Kamer",
+      "corrected": "Kameraden",
+      "reason": "Corrected to 'Kameraden' meaning 'comrades' in German."
+    },
+    {
+      "original": "Kamarader",
+      "corrected": "Kameraden",
+      "reason": "Corrected to 'Kameraden' meaning 'comrades' in German."
+    },
+    {
+      "original": "indier)",
+      "corrected": "uns",
+      "reason": "Corrected to 'uns' meaning 'us' in German."
+    },
+    {
+      "original": "entschlouse",
+      "corrected": "entschlossen",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "dhe",
+      "corrected": "die",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "ober",
+      "corrected": "aber",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "mnr",
+      "corrected": "nur",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "entereder",
+      "corrected": "entweder",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "\u043c\u0438\u0441\u043b\u0435",
+      "corrected": "[illegible]",
+      "reason": "Non-Latin characters, marked as illegible."
+    },
+    {
+      "original": "avbestill",
+      "corrected": "anderes Ziel",
+      "reason": "Corrected to 'anderes Ziel' meaning 'another target' in German."
+    },
+    {
+      "original": "gesand",
+      "corrected": "gesandt",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "haber",
+      "corrected": "haben",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "zen duen",
+      "corrected": "sein d\u00fcrfen",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "somines",
+      "corrected": "zumindest",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "sauch",
+      "corrected": "auch",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "su\u00df",
+      "corrected": "was",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "mashden",
+      "corrected": "vielleicht",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "heart",
+      "corrected": "benachrichtigen",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "litte",
+      "corrected": "bitte",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "Herzh che",
+      "corrected": "Herzliche",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "gripenin",
+      "corrected": "gr\u00fc\u00dfe",
+      "reason": "Corrected to proper German spelling."
+    },
+    {
+      "original": "in the From Mutter,",
+      "corrected": "in the Form Mutter,",
+      "reason": "Corrected to 'Form' which fits the context."
+    },
+    {
+      "original": "Pelisuir",
+      "corrected": "Pelisuir",
+      "reason": "No correction needed, possibly a name."
+    },
+    {
+      "original": "Agole",
+      "corrected": "Agole",
+      "reason": "No correction needed, possibly a location."
+    }
+  ],
+  "uncertain_segments": [
+    "Exergen",
+    "Pelisuir",
+    "Agole"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 199,
+  "corrected_word_count": 176,
+  "corrections_count": 31
+}

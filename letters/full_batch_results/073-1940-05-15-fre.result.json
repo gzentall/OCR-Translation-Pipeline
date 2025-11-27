@@ -1,0 +1,201 @@
+{
+  "pdf_file": "073-1940-05-15-fre.pdf",
+  "date_processed": "2025-11-16T17:19:19.115142",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Mon Amour,\n\u0627\nle 15. V.40\nhes to J'ai d\u00e9janne aujourd'hui lez\nJosephine Baler dans sa magnifique villa\npr\u00e8 de Paris.\nJe devais faire 1 reportage\nmais elle \u00e9tait trop biste, elle n'a\npas\nou\nvoulu\n\u0430\u0439 \u0447\u0435\u0441\u0438 \u043c\u043e\u0438 \u0441\u0432\u043e\u0439 \u0441\u0432\u0438\u0445 \u0441\u0435 \u0431\u043e\u044f\nde boi. Mon pauvre Bobchen tu as\neu de la fi\u00e8vre et tu de recais pas\nmes letters. Je t'\u00e9cris maintenant\nbraiment chaque jour\n\u0440\u0435\u0442\nnous tout va bien. J'au\n\u043f\u043e\nd\u00e9j\u00e0 \u00e9crit \u00e0 ton ami de la Censare\nIl l'a surement recu\ncubre temps.\n\n\u0634\u0627\u0644\u064a\u0647\nne m'envois surtout pas d'argent\naccer\nJe t'ai d\u00e9j\u00e0 dit que j'en avais are\npour l'instant et que l'Etat mapes\nra certainement\npayer bient\u00f4t\nJe t'ai d\u00e9j\u00e0 envoy\u00e9 la facture\nIllford. Encaisse l'argent\nThe me l'cursios pas\nte le renverrai\nmais\nSi oui, je\nI ne faut pas\nque tu restes sans argent mais\nLais attention pour qu'on ve\nan\nle vole pas.\nne te\nKnewmo\nwww\n\u0441\u0432\u0430\u0440\u0438\u0435\nAu revois zion Bebehen ch\u00e8ri\nt'adore et je ne concre clapre sais\nen to serrant tor for fort dans me\nbras-\n\u0400 \u0412\u0430\u0432\u044f\nmes\nJe crois que le baby a boug\u00e9 aujourd'hui pour la l\u00e8re fois\n\nContr\u00f4le Postal Militaire\nPARIS\n19H\nMAI\nDES\n81\nTENTEZ CHANCE\nA\nw with\nNAT MALE\nCEj\nM. Robert Weipen that\nper R. 1.\nVel Rota.\nPezenas\n(Fl\u00e9rault)\n81\nPARTS\n19H\nMAI\n40\n0.\nRUE\nDES\nCAPUCINES\nREGIMEN HANE\nLe Vaguemestre\nECOS\n\nTAN\nVOJENSKA CENSURA\n\n",
+  "corrected_text": "Mon Amour,\n\nle 15. V.40\n\nJ'ai d\u00e9jeun\u00e9 aujourd'hui chez\nJosephine Baker dans sa magnifique villa\npr\u00e8s de Paris.\nJe devais faire un reportage\nmais elle \u00e9tait trop triste, elle n'a\npas voulu\nme voir. Mon pauvre Bobchen tu as\neu de la fi\u00e8vre et tu ne re\u00e7ois pas\nmes lettres. Je t'\u00e9cris maintenant\nvraiment chaque jour\npour\nnous tout va bien. J'ai\n\n d\u00e9j\u00e0 \u00e9crit \u00e0 ton ami de la Censure\nIl l'a s\u00fbrement re\u00e7u\nentre temps.\n\nne m'envoie surtout pas d'argent\nJe t'ai d\u00e9j\u00e0 dit que j'en avais assez\npour l'instant et que l'Etat m'a promis\ncertainement\nde payer bient\u00f4t\nJe t'ai d\u00e9j\u00e0 envoy\u00e9 la facture\nIlford. Encaisse l'argent\nmais ne le garde pas\nje te le renverrai\nSi oui, je\nIl ne faut pas\nque tu restes sans argent mais\nfais attention pour qu'on ne\nte le vole pas.\n\nAu revoir mon Bobchen ch\u00e9ri\nt'adore et je ne cesse de penser \u00e0 toi\nen te serrant tr\u00e8s tr\u00e8s fort dans mes\nbras-\n\nBaba\n\nJe crois que le baby a boug\u00e9 aujourd'hui pour la 1\u00e8re fois\n\nContr\u00f4le Postal Militaire\nPARIS\n19H\nMAI\n40\nRUE\nDES\nCAPUCINES\nLe Vaguemestre\n\nVOJENSKA CENSURA",
+  "translated_text": "My Love, the 15th. V.40 I had lunch today at Josephine Baker&#39;s magnificent villa near Paris. I was supposed to do a story, but she was too sad; she didn&#39;t want to see me. My poor Bobchen, you&#39;ve had a fever and you&#39;re not receiving my letters. I&#39;m writing to you every day now; everything is fine between us. I&#39;ve already written to your friend at the Censorship Office. He&#39;s surely received it by now. Don&#39;t send me any money. I&#39;ve already told you I have enough for now, and the State has promised to pay me soon. I&#39;ve already sent you the Ilford bill. Cash the money, but don&#39;t keep it; I&#39;ll send it back to you. If so, I... You mustn&#39;t be without money, but be careful so it doesn&#39;t get stolen. Goodbye my darling Bobchen, I adore you and I can&#39;t stop thinking about you while holding you very, very tightly in my arms - Baba. I think the baby moved for the first time today. Military Postal Control PARIS 7 PM MAY 40 RUE DES CAPUCINES The Postmaster VOJENSKA CENSURA",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "hes to J'ai d\u00e9janne",
+      "corrected": "J'ai d\u00e9jeun\u00e9",
+      "reason": "Corrected 'd\u00e9janne' to 'd\u00e9jeun\u00e9' based on context of dining."
+    },
+    {
+      "original": "lez Josephine Baler",
+      "corrected": "chez Josephine Baker",
+      "reason": "Corrected 'lez' to 'chez' and 'Baler' to 'Baker' based on known person."
+    },
+    {
+      "original": "pr\u00e8 de Paris.",
+      "corrected": "pr\u00e8s de Paris.",
+      "reason": "Corrected 'pr\u00e8' to 'pr\u00e8s' for correct spelling."
+    },
+    {
+      "original": "biste",
+      "corrected": "triste",
+      "reason": "Corrected 'biste' to 'triste' based on context of emotion."
+    },
+    {
+      "original": "ou voulu",
+      "corrected": "voulu",
+      "reason": "Removed 'ou' as it was an error."
+    },
+    {
+      "original": "\u0430\u0439 \u0447\u0435\u0441\u0438 \u043c\u043e\u0438 \u0441\u0432\u043e\u0439 \u0441\u0432\u0438\u0445 \u0441\u0435 \u0431\u043e\u044f",
+      "corrected": "me voir.",
+      "reason": "Replaced gibberish with 'me voir' based on context."
+    },
+    {
+      "original": "de boi.",
+      "corrected": "me voir.",
+      "reason": "Corrected 'de boi' to 'me voir' based on context."
+    },
+    {
+      "original": "de recais pas",
+      "corrected": "ne re\u00e7ois pas",
+      "reason": "Corrected 'de recais' to 'ne re\u00e7ois' for correct grammar."
+    },
+    {
+      "original": "braiment",
+      "corrected": "vraiment",
+      "reason": "Corrected 'braiment' to 'vraiment' for correct spelling."
+    },
+    {
+      "original": "\u0440\u0435\u0442",
+      "corrected": "pour",
+      "reason": "Corrected '\u0440\u0435\u0442' to 'pour' based on context."
+    },
+    {
+      "original": "J'au",
+      "corrected": "J'ai",
+      "reason": "Corrected 'J'au' to 'J'ai' for correct grammar."
+    },
+    {
+      "original": "\u043f\u043e",
+      "corrected": "",
+      "reason": "Removed '\u043f\u043e' as it was an error."
+    },
+    {
+      "original": "cubre temps.",
+      "corrected": "entre temps.",
+      "reason": "Corrected 'cubre' to 'entre' for correct phrase."
+    },
+    {
+      "original": "accer",
+      "corrected": "",
+      "reason": "Removed 'accer' as it was an error."
+    },
+    {
+      "original": "are",
+      "corrected": "assez",
+      "reason": "Corrected 'are' to 'assez' for correct spelling."
+    },
+    {
+      "original": "mapes",
+      "corrected": "m'a promis",
+      "reason": "Corrected 'mapes' to 'm'a promis' for correct phrase."
+    },
+    {
+      "original": "The me l'cursios pas",
+      "corrected": "mais ne le garde pas",
+      "reason": "Corrected 'The me l'cursios pas' to 'mais ne le garde pas' for correct phrase."
+    },
+    {
+      "original": "te le renverrai mais Si oui, je",
+      "corrected": "je te le renverrai Si oui, je",
+      "reason": "Reordered for correct sentence structure."
+    },
+    {
+      "original": "Lais attention pour qu'on ve an le vole pas.",
+      "corrected": "fais attention pour qu'on ne te le vole pas.",
+      "reason": "Corrected 'Lais' to 'fais' and reordered for correct grammar."
+    },
+    {
+      "original": "Knewmo",
+      "corrected": "",
+      "reason": "Removed 'Knewmo' as it was an error."
+    },
+    {
+      "original": "www",
+      "corrected": "",
+      "reason": "Removed 'www' as it was an error."
+    },
+    {
+      "original": "\u0441\u0432\u0430\u0440\u0438\u0435",
+      "corrected": "",
+      "reason": "Removed '\u0441\u0432\u0430\u0440\u0438\u0435' as it was an error."
+    },
+    {
+      "original": "Au revois zion Bebehen ch\u00e8ri",
+      "corrected": "Au revoir mon Bobchen ch\u00e9ri",
+      "reason": "Corrected 'Au revois zion Bebehen ch\u00e8ri' to 'Au revoir mon Bobchen ch\u00e9ri' based on known names and phrases."
+    },
+    {
+      "original": "clapre sais",
+      "corrected": "cesse de penser \u00e0 toi",
+      "reason": "Corrected 'clapre sais' to 'cesse de penser \u00e0 toi' for correct phrase."
+    },
+    {
+      "original": "tor for fort",
+      "corrected": "tr\u00e8s tr\u00e8s fort",
+      "reason": "Corrected 'tor for fort' to 'tr\u00e8s tr\u00e8s fort' for correct phrase."
+    },
+    {
+      "original": "\u0412\u0430\u0432\u044f",
+      "corrected": "Baba",
+      "reason": "Corrected '\u0412\u0430\u0432\u044f' to 'Baba' based on known names."
+    },
+    {
+      "original": "l\u00e8re",
+      "corrected": "1\u00e8re",
+      "reason": "Corrected 'l\u00e8re' to '1\u00e8re' for correct abbreviation."
+    },
+    {
+      "original": "NAT MALE",
+      "corrected": "",
+      "reason": "Removed 'NAT MALE' as it was an error."
+    },
+    {
+      "original": "CEj",
+      "corrected": "",
+      "reason": "Removed 'CEj' as it was an error."
+    },
+    {
+      "original": "M. Robert Weipen that",
+      "corrected": "M. Robert Zweigenthal",
+      "reason": "Corrected 'Weipen that' to 'Zweigenthal' based on known names."
+    },
+    {
+      "original": "Vel Rota.",
+      "corrected": "",
+      "reason": "Removed 'Vel Rota.' as it was an error."
+    },
+    {
+      "original": "Pezenas (Fl\u00e9rault)",
+      "corrected": "Pezenas (H\u00e9rault)",
+      "reason": "Corrected 'Fl\u00e9rault' to 'H\u00e9rault' for correct location."
+    },
+    {
+      "original": "PARTS",
+      "corrected": "PARIS",
+      "reason": "Corrected 'PARTS' to 'PARIS' for correct location."
+    },
+    {
+      "original": "REGIMEN HANE",
+      "corrected": "",
+      "reason": "Removed 'REGIMEN HANE' as it was an error."
+    },
+    {
+      "original": "ECOS",
+      "corrected": "",
+      "reason": "Removed 'ECOS' as it was an error."
+    },
+    {
+      "original": "TAN",
+      "corrected": "",
+      "reason": "Removed 'TAN' as it was an error."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 237,
+  "corrected_word_count": 190,
+  "corrections_count": 36
+}

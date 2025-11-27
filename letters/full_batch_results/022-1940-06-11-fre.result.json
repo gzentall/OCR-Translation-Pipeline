@@ -1,0 +1,140 @@
+{
+  "pdf_file": "022-1940-06-11-fre.pdf",
+  "date_processed": "2025-11-16T17:36:13.744668",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "11.6.40\nCa vatr\u00e8s bien, je travail commune\navant. I attend des nouvelles\nde foi. J'esp\u00e8re tu vas bien maz\nehouse es tu es bien arrive\nchez externe. Tu voise j'avais\n\u0435\u043d\u0438\npenson toi ne pas laisser dis\nEcris moi souvient parceque\nmaintenant ca se pas fellement\nvite avec la poste. Reste calie\nmon pefit m\u00eame si tu ne recever\npas des lettres. If t'adong ma petite\nfemme fon Bob\n\nFRANCHISE MILITAIRE\nPRIORIT\u00c9\nR\u00c9PUBLIQUE FRANCAISE\n\u0422\u043e\u0436\u0438\nCARTE POSTALE AUX ARM\u00c9ES\nCette Cartel\nest vendue\n5 Centimes\ndans tous les\nBureaux de\nPoste\nEXP\u00c9DITEUR\nMfweigen that\nNoma\nres thecoslovac Grade\nvel, rota\n\u0433\u043e\u0440\u0430\nSP, 31121\nD\u00e9partement..\nDESTINATAIRE\n\u20a4. Zweigenthal\nches lune Moncise\nCompagnie, Batterie\nRiginiac\n-R\u00e9giment ferme ou service)\nSecteur Postal N\u00b0\n(Il est recommand\u00e9 d'\u00e9crire tr\u00e8s lisiblement)\n(Corr\u00e8ze)\n\n",
+  "corrected_text": "11.6.40\n\u00c7a va tr\u00e8s bien, je travaille comme\navant. J'attends des nouvelles\nde toi. J'esp\u00e8re tu vas bien ma\nch\u00e9rie et tu es bien arriv\u00e9e\nchez externe. Tu vois je n'avais\npension toi ne pas laisser dis\n\u00c9cris-moi souvent parce que\nmaintenant \u00e7a se passe tellement\nvite avec la poste. Reste calme\nmon petit m\u00eame si tu ne re\u00e7ois\npas des lettres. Je t'adore ma petite\nfemme ton Bob\n\nFRANCHISE MILITAIRE\nPRIORIT\u00c9\nR\u00c9PUBLIQUE FRAN\u00c7AISE\n\nCARTE POSTALE AUX ARM\u00c9ES\nCette Carte\nest vendue\n5 Centimes\ndans tous les\nBureaux de\nPoste\nEXP\u00c9DITEUR\nM. Zweigenthal\nNom\n[illegible] Grade\n[illegible]\nSP, 31121\nD\u00e9partement..\nDESTINATAIRE\nE. Zweigenthal\nchez Mme Moncise\nCompagnie, Batterie\n[illegible]\n-R\u00e9giment ferme ou service)\nSecteur Postal N\u00b0\n(Il est recommand\u00e9 d'\u00e9crire tr\u00e8s lisiblement)\n(Corr\u00e8ze)",
+  "translated_text": "11.6.40 Everything&#39;s going very well, I&#39;m working as before. I&#39;m waiting to hear from you. I hope you&#39;re well, my darling, and that you arrived safely at your new post office. You see, I didn&#39;t think you&#39;d let me tell you. Write to me often because things move so fast with the post office now. Stay calm, my little one, even if you don&#39;t receive any letters. I adore you, my little wife, your Bob. MILITARY FRANCHISE PRIORITY FRENCH REPUBLIC POSTCARD TO THE ARMED FORCES This card is sold for 5 cents in all Post Offices. SENDER Mr. Zweigenthal Name [illegible] Rank [illegible] SP, 31121 Department. RECIPIENT E. Zweigenthal c/o Mrs. Moncise Company, Battery [illegible] -Regiment (firm or service) Postal Sector No. (It is recommended to write very legibly) (Corr\u00e8ze)",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Ca vatr\u00e8s bien",
+      "corrected": "\u00c7a va tr\u00e8s bien",
+      "reason": "Corrected spacing and accents in French phrase"
+    },
+    {
+      "original": "je travail commune",
+      "corrected": "je travaille comme",
+      "reason": "Corrected verb form and phrase"
+    },
+    {
+      "original": "I attend des nouvelles",
+      "corrected": "J'attends des nouvelles",
+      "reason": "Corrected pronoun and verb form"
+    },
+    {
+      "original": "de foi",
+      "corrected": "de toi",
+      "reason": "Corrected to common phrase 'de toi'"
+    },
+    {
+      "original": "maz ehouse",
+      "corrected": "ma ch\u00e9rie",
+      "reason": "Corrected to common term of endearment"
+    },
+    {
+      "original": "es tu es bien arrive",
+      "corrected": "et tu es bien arriv\u00e9e",
+      "reason": "Corrected conjunction and verb agreement"
+    },
+    {
+      "original": "chez externe",
+      "corrected": "chez externe",
+      "reason": "No correction needed, assumed correct"
+    },
+    {
+      "original": "Tu voise j'avais",
+      "corrected": "Tu vois je n'avais",
+      "reason": "Corrected verb form and phrase"
+    },
+    {
+      "original": "penson toi ne pas laisser dis",
+      "corrected": "pension toi ne pas laisser dis",
+      "reason": "Assumed correct, unclear context"
+    },
+    {
+      "original": "Ecris moi souvient parceque",
+      "corrected": "\u00c9cris-moi souvent parce que",
+      "reason": "Corrected accents and spacing"
+    },
+    {
+      "original": "maintenant ca se pas fellement",
+      "corrected": "maintenant \u00e7a se passe tellement",
+      "reason": "Corrected verb form and accents"
+    },
+    {
+      "original": "vite avec la poste. Reste calie",
+      "corrected": "vite avec la poste. Reste calme",
+      "reason": "Corrected spelling"
+    },
+    {
+      "original": "mon pefit m\u00eame si tu ne recever",
+      "corrected": "mon petit m\u00eame si tu ne re\u00e7ois",
+      "reason": "Corrected spelling and verb form"
+    },
+    {
+      "original": "If t'adong ma petite",
+      "corrected": "Je t'adore ma petite",
+      "reason": "Corrected phrase to common closing"
+    },
+    {
+      "original": "femme fon Bob",
+      "corrected": "femme ton Bob",
+      "reason": "Corrected spelling"
+    },
+    {
+      "original": "Mfweigen that",
+      "corrected": "M. Zweigenthal",
+      "reason": "Corrected to known name"
+    },
+    {
+      "original": "Noma",
+      "corrected": "Nom",
+      "reason": "Corrected to French word for 'name'"
+    },
+    {
+      "original": "res thecoslovac Grade",
+      "corrected": "[illegible] Grade",
+      "reason": "Marked as illegible due to unclear context"
+    },
+    {
+      "original": "vel, rota",
+      "corrected": "[illegible]",
+      "reason": "Marked as illegible due to unclear context"
+    },
+    {
+      "original": "\u0433\u043e\u0440\u0430",
+      "corrected": "[illegible]",
+      "reason": "Marked as illegible due to unclear context"
+    },
+    {
+      "original": "\u20a4. Zweigenthal",
+      "corrected": "E. Zweigenthal",
+      "reason": "Corrected to known name"
+    },
+    {
+      "original": "ches lune Moncise",
+      "corrected": "chez Mme Moncise",
+      "reason": "Corrected to common French address format"
+    },
+    {
+      "original": "Riginiac",
+      "corrected": "[illegible]",
+      "reason": "Marked as illegible due to unclear context"
+    }
+  ],
+  "uncertain_segments": [
+    "pension toi ne pas laisser dis",
+    "chez externe",
+    "Riginiac"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 127,
+  "corrected_word_count": 123,
+  "corrections_count": 23
+}

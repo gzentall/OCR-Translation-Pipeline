@@ -1,0 +1,120 @@
+{
+  "pdf_file": "007-1940-07-01-fre.pdf",
+  "date_processed": "2025-11-16T17:18:11.181445",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Villeneuve Pot 1.7.40\ntu te\nMa cherie,\nNous sommes toujour ici et nous attendons\nnotre ordre pour la demobilisation.\nJe serais heureuse, si je serrais ou\nfrouve. Naturellement je veuse aller fork\nde mite \u00e0 higiniac si je n'ai pas\nas des\nnouvelles de foi entreteness. He croise\nnous sommes encore 2-3 jours ici. C'est\nterrible foujours attendre. Mais pour\nle moment est rien \u00e0 faire\nfeuille de la demobilization\nJe t'adore ma petite femme etf\n\u0434\u0430\u0439 \u0434\u043e\u0432\u043e\n\u00e0 fr\u00e8s bient\u00f4t.\nsans la\nespere\n\nFRANCHISE MILITAIRE\nPRIORIT\u00c9\n40\nR\u00c9PUBLIQUE BRAN\u00c7AISE\n40\n91\nI CARTE POSTALE LATE\nEXP\u00c9DITEUR\nfenther.\nMR. Jueg\nreg. infanterie\n1. reg.\n13 comp.\nJ;P. 31121\n\u00e0........\nNom :\nGrade.\nw\nfurt\nARMEES\nCette Carte\nest vendue\n5 Centimes\ndans tous les\nBureaux de\nPoste\nDESTINATAIRE\nMadonne\n\u0448\u0435\nE. Froeigenthal\nCompacchese Mouil\nCompagni Coterie\n\u0448\u0435\nth\nR\u00e9giment (arme ou service\nD\u00e9partement....\nSecteur Postal N\u00b0\nEl Liginia\n(Il est recommand\u00e9 d'\u00e9crire tr\u00e8s lisiblement)\nCorr\u00e8ze\nu\npar\n\n",
+  "corrected_text": "Villeneuve Pot 1.7.40\ntu te\nMa ch\u00e9rie,\nNous sommes toujours ici et nous attendons\nnotre ordre pour la d\u00e9mobilisation.\nJe serais heureuse, si je serais ou\ntrouve. Naturellement je veux aller fort\nde suite \u00e0 l'igniace si je n'ai pas\nas des\nnouvelles de toi entretemps. Je crois\nnous sommes encore 2-3 jours ici. C'est\nterrible toujours attendre. Mais pour\nle moment est rien \u00e0 faire\nfeuille de la d\u00e9mobilisation\nJe t'adore ma petite femme et\n\u00e0 tr\u00e8s bient\u00f4t.\nsans la\nesp\u00e8re\n\nFRANCHISE MILITAIRE\nPRIORIT\u00c9\n40\nR\u00c9PUBLIQUE FRAN\u00c7AISE\n40\n91\nI CARTE POSTALE LATE\nEXP\u00c9DITEUR\nfenther.\nMR. Zweigenthal\nreg. infanterie\n1. reg.\n13 comp.\nJ;P. 31121\n\u00e0........\nNom :\nGrade.\nw\nfurt\nARM\u00c9ES\nCette Carte\nest vendue\n5 Centimes\ndans tous les\nBureaux de\nPoste\nDESTINATAIRE\nMadame\nE. Zweigenthal\nCompagnie Mouil\nCompagnie Coterie\nR\u00e9giment (arme ou service\nD\u00e9partement....\nSecteur Postal N\u00b0\nEl Liginia\n(Il est recommand\u00e9 d'\u00e9crire tr\u00e8s lisiblement)\nCorr\u00e8ze\nu\npar\n",
+  "translated_text": "Villeneuve Pot 1.7.40 My darling, We are still here and are waiting for our order for demobilization. I would be happy if I were or found. Naturally, I want to go straight to the hospital if I don&#39;t hear from you in the meantime. I think we are still here 2-3 days. It&#39;s terrible always waiting. But for the moment there is nothing to do, demobilization papers. I adore you my little wife and see you very soon. Without hope. PRIORITY MILITARY FRANCHISE 40 FRENCH REPUBLIC 40 91 I POSTCARD LATE SENDER fenther. MR. Zweigenthal reg. infantry 1. reg. 13 comp. J;P. 31121 to........ Name: Rank. w furt ARMIES This card is sold for 5 cents in all Post Offices RECIPIENT Mrs. E. Zweigenthal Company Mouil Company Coterie Regiment (arm or service) Department.... Postal Sector No. El Liginia (It is recommended to write very legibly) Corr\u00e8ze u by\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Ma cherie",
+      "corrected": "Ma ch\u00e9rie",
+      "reason": "Corrected accent on 'ch\u00e9rie'"
+    },
+    {
+      "original": "toujour",
+      "corrected": "toujours",
+      "reason": "Corrected spelling to 'toujours'"
+    },
+    {
+      "original": "serrais",
+      "corrected": "serais",
+      "reason": "Corrected spelling to 'serais'"
+    },
+    {
+      "original": "frouve",
+      "corrected": "trouve",
+      "reason": "Corrected spelling to 'trouve'"
+    },
+    {
+      "original": "veuse",
+      "corrected": "veux",
+      "reason": "Corrected spelling to 'veux'"
+    },
+    {
+      "original": "fork",
+      "corrected": "fort",
+      "reason": "Corrected spelling to 'fort'"
+    },
+    {
+      "original": "de mite \u00e0 higiniac",
+      "corrected": "de suite \u00e0 l'igniace",
+      "reason": "Corrected to likely phrase 'de suite \u00e0 l'igniace'"
+    },
+    {
+      "original": "He croise",
+      "corrected": "Je crois",
+      "reason": "Corrected to 'Je crois'"
+    },
+    {
+      "original": "foujours",
+      "corrected": "toujours",
+      "reason": "Corrected spelling to 'toujours'"
+    },
+    {
+      "original": "feuille de la demobilization",
+      "corrected": "feuille de la d\u00e9mobilisation",
+      "reason": "Corrected spelling and accent"
+    },
+    {
+      "original": "etf",
+      "corrected": "et",
+      "reason": "Corrected to 'et'"
+    },
+    {
+      "original": "\u0434\u0430\u0439 \u0434\u043e\u0432\u043e",
+      "corrected": "\u00e0 tr\u00e8s bient\u00f4t",
+      "reason": "Corrected to likely phrase '\u00e0 tr\u00e8s bient\u00f4t'"
+    },
+    {
+      "original": "FRANCHISE MILITAIRE",
+      "corrected": "FRANCHISE MILITAIRE",
+      "reason": "No correction needed"
+    },
+    {
+      "original": "R\u00c9PUBLIQUE BRAN\u00c7AISE",
+      "corrected": "R\u00c9PUBLIQUE FRAN\u00c7AISE",
+      "reason": "Corrected spelling to 'FRAN\u00c7AISE'"
+    },
+    {
+      "original": "MR. Jueg",
+      "corrected": "MR. Zweigenthal",
+      "reason": "Corrected to known name 'Zweigenthal'"
+    },
+    {
+      "original": "Madonne",
+      "corrected": "Madame",
+      "reason": "Corrected to 'Madame'"
+    },
+    {
+      "original": "E. Froeigenthal",
+      "corrected": "E. Zweigenthal",
+      "reason": "Corrected to known name 'Zweigenthal'"
+    },
+    {
+      "original": "Compacchese Mouil",
+      "corrected": "Compagnie Mouil",
+      "reason": "Corrected to likely phrase 'Compagnie Mouil'"
+    },
+    {
+      "original": "Compagni Coterie",
+      "corrected": "Compagnie Coterie",
+      "reason": "Corrected to likely phrase 'Compagnie Coterie'"
+    }
+  ],
+  "uncertain_segments": [
+    "de suite \u00e0 l'igniace",
+    "Compagnie Mouil",
+    "Compagnie Coterie"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 157,
+  "corrected_word_count": 152,
+  "corrections_count": 19
+}

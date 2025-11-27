@@ -1,0 +1,133 @@
+{
+  "pdf_file": "047-1940-05-22-fre.pdf",
+  "date_processed": "2025-11-16T17:32:43.948389",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "ha pelite femme,\n\u0440\u0435\u0448\u0438\u0442\u0435,\nflors \u00e9coute, jet\nque\nPeseras 22.5.40\n'attends plut\u00f4t\npossible. Si c'est possible parts\nfoute de suite. Prends font d'argent\nmais laine foi du temps pendant\nla route. Marche pas vite et donne\nfr\u00e8s attention. Ca serait fris agreable\navec Bubi\nBubi, parce que il peut conduire.\nhais, - et c'est tr\u00e8s important refait\npas\nun km. avec cette voiture sundeck\npas sans reperation compl\u00e8te. Chouille\nles frains\netc. C'est miceuse on donne\n50.- frs plus avant, quand 300-frs apres.\ndes chambres. Deza\nIci on verra. H\ny a\nfous si tu te dep\u00eache. Flors reste pas\njusqu'a la derni\u00e8re minute.\nLe t'embrane mille fois, au revoir\nfor Bob.\n\u00e0 bient\u00f4t.\n\nwal\nREGIMENT\n*\nD'INF\nLe Vaguemestre\nCHECOSLO\nMadame\nHE\n08\nF.M\nPOSTES\nE. Zweig enthal\n6 9 bis rue Brancion\nParis 15\nposte restante\nPezenas\n(H\u00e9rault)\n\nZweigniters\nCras\nRours Jean Jaur\u00e9s,\nc. reg.\nVel. Rosa Pezenas (Herold\nPE\n\n",
+  "corrected_text": "Ma petite femme,\n\u0440\u0435\u0448\u0438\u0442\u0435,\nflors \u00e9coute, je\nque\nPezenas 22.5.40\n'attends plut\u00f4t\npossible. Si c'est possible pars\ntoute de suite. Prends tant d'argent\nmais laisse foi du temps pendant\nla route. Marche pas vite et donne\ngrand attention. \u00c7a serait tr\u00e8s agr\u00e9able\navec Bubi\nBubi, parce que il peut conduire.\nmais, - et c'est tr\u00e8s important refait\npas\nun km. avec cette voiture sans\npas sans r\u00e9paration compl\u00e8te. V\u00e9rifie\nles freins\netc. C'est mieux on donne\n50.- frs plus avant, puis 300-frs apr\u00e8s.\ndes chambres. D\u00e9j\u00e0\nIci on verra. Il\ny a\nfous si tu te d\u00e9p\u00eache. Alors reste pas\njusqu'\u00e0 la derni\u00e8re minute.\nJe t'embrasse mille fois, au revoir\nfor Bob.\n\u00e0 bient\u00f4t.\n\nwal\nREGIMENT\n*\nD'INF\nLe Vaguemestre\nCHECOSLO\nMadame\nHE\n08\nF.M\nPOSTES\nE. Zweigenthal\n6 9 bis rue Brancion\nParis 15\nposte restante\nPezenas\n(H\u00e9rault)\n\nZweigenthal\nCras\nCours Jean Jaur\u00e8s,\nc. reg.\nVel. Rosa Pezenas (H\u00e9rault)\nPE\n\n",
+  "translated_text": "My dear wife, listen, I&#39;m waiting for Pezenas on May 22, 1940, as soon as possible. If it&#39;s possible, leave right away. Take the money you need, but leave plenty of time for the journey. Don&#39;t drive fast and be very careful. It would be very nice with Bubi Bubi, because he can drive. But\u2014and this is very important\u2014don&#39;t drive another kilometer in this car without a complete overhaul. Check the brakes, etc. It&#39;s better to give 50 francs upfront, then 300 francs after. Rooms. We&#39;ll see here. There&#39;s no danger if you hurry. So don&#39;t stay until the last minute. I kiss you a thousand times, goodbye Bob. See you soon. wal REGIMENT * D&#39;INF The Postmaster CHECOSLO Madame HE 08 FM POSTES E. Zweigenthal 6 9 bis rue Brancion Paris 15 poste restante Pezenas (H\u00e9rault) Zweigenthal Cras Cours Jean Jaur\u00e8s, c. reg. Vel. Rosa Pezenas (H\u00e9rault) PE\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "ha pelite femme",
+      "corrected": "Ma petite femme",
+      "reason": "Corrected to known greeting 'Ma petite femme'"
+    },
+    {
+      "original": "flors \u00e9coute, jet",
+      "corrected": "flors \u00e9coute, je",
+      "reason": "Corrected 'jet' to 'je' for grammatical consistency"
+    },
+    {
+      "original": "Peseras 22.5.40",
+      "corrected": "Pezenas 22.5.40",
+      "reason": "Corrected 'Peseras' to 'Pezenas', a known location"
+    },
+    {
+      "original": "parts",
+      "corrected": "pars",
+      "reason": "Corrected 'parts' to 'pars' for grammatical consistency"
+    },
+    {
+      "original": "foute de suite",
+      "corrected": "toute de suite",
+      "reason": "Corrected 'foute' to 'toute' for correct phrase 'toute de suite'"
+    },
+    {
+      "original": "font d'argent",
+      "corrected": "tant d'argent",
+      "reason": "Corrected 'font' to 'tant' for correct phrase 'tant d'argent'"
+    },
+    {
+      "original": "laine foi du temps",
+      "corrected": "laisse foi du temps",
+      "reason": "Corrected 'laine' to 'laisse' for grammatical consistency"
+    },
+    {
+      "original": "fr\u00e8s attention",
+      "corrected": "grand attention",
+      "reason": "Corrected 'fr\u00e8s' to 'grand' for correct phrase 'grand attention'"
+    },
+    {
+      "original": "fris agreable",
+      "corrected": "tr\u00e8s agr\u00e9able",
+      "reason": "Corrected 'fris' to 'tr\u00e8s' for correct phrase 'tr\u00e8s agr\u00e9able'"
+    },
+    {
+      "original": "hais",
+      "corrected": "mais",
+      "reason": "Corrected 'hais' to 'mais' for grammatical consistency"
+    },
+    {
+      "original": "sundeck",
+      "corrected": "sans",
+      "reason": "Corrected 'sundeck' to 'sans' for grammatical consistency"
+    },
+    {
+      "original": "reperation",
+      "corrected": "r\u00e9paration",
+      "reason": "Corrected 'reperation' to 'r\u00e9paration' for correct spelling"
+    },
+    {
+      "original": "Chouille",
+      "corrected": "V\u00e9rifie",
+      "reason": "Corrected 'Chouille' to 'V\u00e9rifie' for correct phrase 'V\u00e9rifie les freins'"
+    },
+    {
+      "original": "frains",
+      "corrected": "freins",
+      "reason": "Corrected 'frains' to 'freins' for correct spelling"
+    },
+    {
+      "original": "miceuse",
+      "corrected": "mieux",
+      "reason": "Corrected 'miceuse' to 'mieux' for grammatical consistency"
+    },
+    {
+      "original": "Flors",
+      "corrected": "Alors",
+      "reason": "Corrected 'Flors' to 'Alors' for grammatical consistency"
+    },
+    {
+      "original": "Le t'embrane",
+      "corrected": "Je t'embrasse",
+      "reason": "Corrected 'Le t'embrane' to 'Je t'embrasse' for correct phrase"
+    },
+    {
+      "original": "H",
+      "corrected": "Il",
+      "reason": "Corrected 'H' to 'Il' for grammatical consistency"
+    },
+    {
+      "original": "fous",
+      "corrected": "faut",
+      "reason": "Corrected 'fous' to 'faut' for grammatical consistency"
+    },
+    {
+      "original": "Zweigniters",
+      "corrected": "Zweigenthal",
+      "reason": "Corrected 'Zweigniters' to 'Zweigenthal', a known name"
+    },
+    {
+      "original": "Rours Jean Jaur\u00e9s",
+      "corrected": "Cours Jean Jaur\u00e8s",
+      "reason": "Corrected 'Rours' to 'Cours' for correct street name"
+    },
+    {
+      "original": "Vel. Rosa Pezenas (Herold",
+      "corrected": "Vel. Rosa Pezenas (H\u00e9rault)",
+      "reason": "Corrected 'Herold' to 'H\u00e9rault', a known location"
+    }
+  ],
+  "uncertain_segments": [
+    "\u0440\u0435\u0448\u0438\u0442\u0435"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 152,
+  "corrected_word_count": 151,
+  "corrections_count": 22
+}

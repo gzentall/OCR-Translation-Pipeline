@@ -1,0 +1,171 @@
+{
+  "pdf_file": "101-1936-09-07-ger.pdf",
+  "date_processed": "2025-11-16T17:15:36.064822",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "hahr. Schonbery 7.9.26\nMeine liebe, liebe Zabus\nich Dir heute nicht schreiben\nviel kann\n-\ndazu.\nsind meine & colanken einfache\nnicht\nwie\ngening beieinander. Es ist so ein\nkomisches Gef\u00fchl: wie \u091b\nya,\nich 14 Tage st\u00e4ndig karusell gefallen\nw\u00e4re und um pl\u00f6tzlich ausgestiegen\nnun\nbin. Es dreht sich noch alles in mir\nund men mir herium.\nan mir\nund es ist schuer das Gleichgewicht\nwieder zu bekommen\nBabalien, als die heute weggefahren\nbist, habe ich das Gef\u00fchl gehabt die\nw\u00fcrdest mur\nganz schnell einmal\n\u0434\u0430\u043d\u0443\neinen kleinen tus fling machen.\nVur mm etwas zu erledigen - gauz\nschnell. Ich habe \u00fcberhaupt nicht au\nAbschied.\ngedacht. Vir, \u2013 als der letzte\nWagen nicht mehr zu sehen war w\u00fcrde\nmir auf einmal bew\u00fcsst wie allein\n\nDort\n\u043b\u0438\u0439\nich bin. und dann kann eine kleine\nReaktion, nicht sehlium Liebes\nbis ich am Wenselsplats war.\nish mir n\u00e4mlich eingef\u00e4llen\neingef\u00e4llen, dass die\nj'a wirklich nur eine kleine Besorging\nmachst und am Abend bestimmt\nwieder Z\u00fcr\u00fccle bist.\nZabalein\nich bin so sch\u00f6n unide\nund werde mich so gut ausr\u00fcchen heube\nAbend. Mit dir\nDeinen lb. Jug\nwenn du mich mit\nJugen, and\nen anschaut.\n\u0434\u0430\u0439 \u0434\u043e\u0432\nzabatein, eben muss Du in M\u00fcnchen\nekommen sein. Morgen arbeite\nich schon hier\nfehlaf recht gut Liebes.\n\n",
+  "corrected_text": "hahr. Schonberg 7.9.26\nMeine liebe, liebe Babalien\nich Dir heute nicht schreiben\nviel kann\n-\ndazu.\nsind meine Gedanken einfache\nnicht\nwie\ngen\u00fcgend beieinander. Es ist so ein\nkomisches Gef\u00fchl: wie\nja,\nich 14 Tage st\u00e4ndig Karussell gefahren\nw\u00e4re und nun pl\u00f6tzlich ausgestiegen\nbin. Es dreht sich noch alles in mir\nund um mich herum.\nan mir\nund es ist schwer das Gleichgewicht\nwieder zu bekommen\nBabalien, als du heute weggefahren\nbist, habe ich das Gef\u00fchl gehabt du\nw\u00fcrdest nur\nganz schnell einmal\neinen kleinen Ausflug machen.\nNur um etwas zu erledigen - ganz\nschnell. Ich habe \u00fcberhaupt nicht an\nAbschied\ngedacht. Wir, \u2013 als der letzte\nWagen nicht mehr zu sehen war wurde\nmir auf einmal bewusst wie allein\n\nDort\nbin\nich bin. und dann kam eine kleine\nReaktion, nicht schlimm Liebes\nbis ich am Wenzelsplatz war.\nmir n\u00e4mlich eingefallen\neingefallen, dass du\nja wirklich nur eine kleine Besorgung\nmachst und am Abend bestimmt\nwieder zur\u00fcck bist.\nBabalien\nich bin so sch\u00f6n m\u00fcde\nund werde mich so gut ausruhen heute\nAbend. Mit dir\nDeinen lieben Augen\nwenn du mich mit\nAugen, und\nanschaut.\nBabalien, eben musst Du in M\u00fcnchen\nangekommen sein. Morgen arbeite\nich schon hier\nf\u00fchle mich recht gut Liebes.\n",
+  "translated_text": "Hahr. Schonberg 7.9.26 My dearest, dearest Babalien, I can&#39;t write much to you today \u2013 my thoughts are simply not gathered together enough. It&#39;s such a strange feeling: like I&#39;ve been on a carousel for 14 days straight and now I&#39;ve suddenly gotten off. Everything is still spinning inside me and around me, and it&#39;s hard to regain my balance. Babalien, when you drove off today, I had the feeling you were just taking a quick little trip. Just to run an errand \u2013 very quickly. I didn&#39;t think about saying goodbye at all. We \u2013 when the last car was no longer in sight, I suddenly realized how alone I am. And then came a small reaction, nothing serious, dear, until I was at Wenceslas Square. It occurred to me that you were really just running a small errand and would surely be back in the evening. Babalien, I am so wonderfully tired and will rest so well tonight. With you, with your dear eyes, when you look at me with your eyes, and Babalien, you must have just arrived in Munich. I&#39;m already working here tomorrow, feeling quite good, love.\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "hahr",
+      "corrected": "hahr",
+      "reason": "No correction needed, assumed to be a location or name."
+    },
+    {
+      "original": "Schonbery",
+      "corrected": "Schonberg",
+      "reason": "Common location name correction."
+    },
+    {
+      "original": "Zabus",
+      "corrected": "Babalien",
+      "reason": "Known name from context."
+    },
+    {
+      "original": "colanken",
+      "corrected": "Gedanken",
+      "reason": "Contextual correction, 'Gedanken' means 'thoughts'."
+    },
+    {
+      "original": "gening",
+      "corrected": "gen\u00fcgend",
+      "reason": "Corrected to 'gen\u00fcgend', meaning 'enough'."
+    },
+    {
+      "original": "karusell",
+      "corrected": "Karussell",
+      "reason": "Corrected spelling of 'Karussell'."
+    },
+    {
+      "original": "schuer",
+      "corrected": "schwer",
+      "reason": "Corrected to 'schwer', meaning 'difficult'."
+    },
+    {
+      "original": "Babalien",
+      "corrected": "Babalien",
+      "reason": "No correction needed, known name."
+    },
+    {
+      "original": "mur",
+      "corrected": "nur",
+      "reason": "Corrected to 'nur', meaning 'only'."
+    },
+    {
+      "original": "tus fling",
+      "corrected": "Ausflug",
+      "reason": "Corrected to 'Ausflug', meaning 'excursion'."
+    },
+    {
+      "original": "gauz",
+      "corrected": "ganz",
+      "reason": "Corrected to 'ganz', meaning 'completely'."
+    },
+    {
+      "original": "Vur",
+      "corrected": "Nur",
+      "reason": "Corrected to 'Nur', meaning 'only'."
+    },
+    {
+      "original": "vir",
+      "corrected": "wir",
+      "reason": "Corrected to 'wir', meaning 'we'."
+    },
+    {
+      "original": "w\u00fcrde",
+      "corrected": "wurde",
+      "reason": "Corrected to 'wurde', meaning 'became'."
+    },
+    {
+      "original": "bew\u00fcsst",
+      "corrected": "bewusst",
+      "reason": "Corrected spelling of 'bewusst'."
+    },
+    {
+      "original": "Dort",
+      "corrected": "Dort",
+      "reason": "No correction needed, assumed to be a location or name."
+    },
+    {
+      "original": "\u043b\u0438\u0439",
+      "corrected": "bin",
+      "reason": "Corrected to 'bin', meaning 'am'."
+    },
+    {
+      "original": "sehlium",
+      "corrected": "schlimm",
+      "reason": "Corrected to 'schlimm', meaning 'bad'."
+    },
+    {
+      "original": "Wenselsplats",
+      "corrected": "Wenzelsplatz",
+      "reason": "Corrected to 'Wenzelsplatz', a known location."
+    },
+    {
+      "original": "ish",
+      "corrected": "mir",
+      "reason": "Corrected to 'mir', meaning 'to me'."
+    },
+    {
+      "original": "eingef\u00e4llen",
+      "corrected": "eingefallen",
+      "reason": "Corrected spelling of 'eingefallen'."
+    },
+    {
+      "original": "Zabalein",
+      "corrected": "Babalien",
+      "reason": "Known name from context."
+    },
+    {
+      "original": "unide",
+      "corrected": "m\u00fcde",
+      "reason": "Corrected to 'm\u00fcde', meaning 'tired'."
+    },
+    {
+      "original": "ausr\u00fcchen",
+      "corrected": "ausruhen",
+      "reason": "Corrected to 'ausruhen', meaning 'rest'."
+    },
+    {
+      "original": "lb.",
+      "corrected": "lieben",
+      "reason": "Corrected to 'lieben', meaning 'dear'."
+    },
+    {
+      "original": "Jug",
+      "corrected": "Augen",
+      "reason": "Corrected to 'Augen', meaning 'eyes'."
+    },
+    {
+      "original": "Jugen",
+      "corrected": "Augen",
+      "reason": "Corrected to 'Augen', meaning 'eyes'."
+    },
+    {
+      "original": "\u0434\u0430\u0439 \u0434\u043e\u0432",
+      "corrected": "Babalien",
+      "reason": "Corrected to 'Babalien', known name."
+    },
+    {
+      "original": "ekommen",
+      "corrected": "angekommen",
+      "reason": "Corrected to 'angekommen', meaning 'arrived'."
+    },
+    {
+      "original": "fehlaf",
+      "corrected": "f\u00fchle",
+      "reason": "Corrected to 'f\u00fchle', meaning 'feel'."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 210,
+  "corrected_word_count": 202,
+  "corrections_count": 30
+}

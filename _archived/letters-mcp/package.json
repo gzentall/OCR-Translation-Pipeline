@@ -1,0 +1,32 @@
+{
+  "name": "letters-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for Letters app - provides CRUD operations for documents, references, and context management",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  },
+  "keywords": ["mcp", "letters", "ocr", "documents", "references"],
+  "author": "Letters App Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "zod": "^3.22.4",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsx": "^4.6.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "@types/node-fetch": "^2.6.9"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

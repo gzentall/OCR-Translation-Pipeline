@@ -1,0 +1,131 @@
+{
+  "pdf_file": "092-1934-12-22-ger.pdf",
+  "date_processed": "2025-11-16T17:36:42.229225",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "42\nthe Zabalion\nAlso\nfforsheim 21. 12. 34\nmit deinem\nBrief habe ich mich sehr gefrent.\ngefreint. Wenn\ntreffen\nwir ums in Deutschland\nk\u00f6nnen, ist es mir vollkommen\ngleichg\u00fcltig\nwo. Ich kann mir\nnicht nach Frankreich, weil ich nicht\nwein wie ich dir das Geld zur\u00fcck.\nIch denke wir treffen\ngeben soll.\nund je machden\nums in Zaden \u2013 Baden und\ndas Wetter ist fahren wir weiter oder\nbleiben. Nur\nN\u00fcr folgendes nich. Auf den\ndag genann weiss ich noch nicht wann\nwir ums treffen\nlier eine teleme Verschiebung geben\nso dass wir uns erst am\nwerden. Es banne\n30. 12.\nIche\nfalire morgen\nevtl. treffen k\u00f6nnen\nnache trag und weiss wool wicht ob\nich schon wieder am 19. in Raden\nsein kann.\n\u0437\u0430\u0436\u0438\nthir schreib ich dir\nvon\nnoch ganz genain\n\u0434\u0435\u043b\u0430\u0439 \u0433\u0443\u043c\u0430\nPrag\naus\n\nJus\nA\nwww\n\n",
+  "corrected_text": "42\nthe Zabalion\nAlso\nfforsheim 21. 12. 34\nmit deinem\nBrief habe ich mich sehr gefreut.\nWenn\ntreffen\nwir uns in Deutschland\nk\u00f6nnen, ist es mir vollkommen\ngleichg\u00fcltig\nwo. Ich kann mir\nnicht nach Frankreich, weil ich nicht\nwei\u00df wie ich dir das Geld zur\u00fcck.\nIch denke wir treffen\ngeben soll.\nund je nachdem\nuns in Baden-Baden und\ndas Wetter ist fahren wir weiter oder\nbleiben. Nur\nNur folgendes noch. Auf den\ntag genau wei\u00df ich noch nicht wann\nwir uns treffen\nhier eine kleine Verschiebung geben\nso dass wir uns erst am\nwerden. Es kann\n30. 12.\nIch\nfahre morgen\nevtl. treffen k\u00f6nnen\nnach Prag und wei\u00df wohl nicht ob\nich schon wieder am 19. in Baden\nsein kann.\n\nhier schreib ich dir\nvon\nnoch ganz genau\n\nPrag\naus\n\n\n\n\n\n",
+  "translated_text": "42 the Zabalion Also fforsheim 21. 12. 34 I was very happy with your letter. If we can meet in Germany, it doesn&#39;t matter to me where. I can&#39;t go to France because I don&#39;t know how I&#39;ll pay you back. I think we should meet. And depending on when we meet in Baden-Baden and the weather, we&#39;ll either continue on or stay. Just one more thing. I don&#39;t know the exact day yet, so there might be a slight postponement, so we might meet on December 30th. I&#39;m going to Prague tomorrow, and I don&#39;t know if I&#39;ll be back in Baden-Baden on the 19th. I&#39;m writing to you from Prague, not yet.\n\n\n\n\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "gefreint.",
+      "corrected": "gefreut.",
+      "reason": "Corrected to the proper German word for 'pleased'."
+    },
+    {
+      "original": "ums",
+      "corrected": "uns",
+      "reason": "Corrected to the proper German word for 'us'."
+    },
+    {
+      "original": "wein",
+      "corrected": "wei\u00df",
+      "reason": "Corrected to the proper German word for 'know'."
+    },
+    {
+      "original": "nachden",
+      "corrected": "nachdem",
+      "reason": "Corrected to the proper German word for 'after'."
+    },
+    {
+      "original": "Zaden \u2013 Baden",
+      "corrected": "Baden-Baden",
+      "reason": "Corrected to the known location 'Baden-Baden'."
+    },
+    {
+      "original": "N\u00fcr",
+      "corrected": "Nur",
+      "reason": "Corrected to the proper German word for 'only'."
+    },
+    {
+      "original": "dag genann",
+      "corrected": "tag genau",
+      "reason": "Corrected to the proper German phrase for 'exact day'."
+    },
+    {
+      "original": "lier",
+      "corrected": "hier",
+      "reason": "Corrected to the proper German word for 'here'."
+    },
+    {
+      "original": "teleme",
+      "corrected": "kleine",
+      "reason": "Corrected to the proper German word for 'small'."
+    },
+    {
+      "original": "banne",
+      "corrected": "kann",
+      "reason": "Corrected to the proper German word for 'can'."
+    },
+    {
+      "original": "Iche",
+      "corrected": "Ich",
+      "reason": "Corrected to the proper German word for 'I'."
+    },
+    {
+      "original": "falire",
+      "corrected": "fahre",
+      "reason": "Corrected to the proper German word for 'drive' or 'go'."
+    },
+    {
+      "original": "nache trag",
+      "corrected": "nach Prag",
+      "reason": "Corrected to the known location 'Prag' (Prague)."
+    },
+    {
+      "original": "wool",
+      "corrected": "wohl",
+      "reason": "Corrected to the proper German word for 'probably'."
+    },
+    {
+      "original": "wicht",
+      "corrected": "nicht",
+      "reason": "Corrected to the proper German word for 'not'."
+    },
+    {
+      "original": "Raden",
+      "corrected": "Baden",
+      "reason": "Corrected to the known location 'Baden'."
+    },
+    {
+      "original": "\u0437\u0430\u0436\u0438",
+      "corrected": "[illegible]",
+      "reason": "Text appears to be in a different script and is illegible."
+    },
+    {
+      "original": "thir",
+      "corrected": "hier",
+      "reason": "Corrected to the proper German word for 'here'."
+    },
+    {
+      "original": "\u0434\u0435\u043b\u0430\u0439 \u0433\u0443\u043c\u0430",
+      "corrected": "[illegible]",
+      "reason": "Text appears to be in a different script and is illegible."
+    },
+    {
+      "original": "Jus",
+      "corrected": "[illegible]",
+      "reason": "Text is unclear and does not form a recognizable word."
+    },
+    {
+      "original": "A",
+      "corrected": "[illegible]",
+      "reason": "Text is unclear and does not form a recognizable word."
+    },
+    {
+      "original": "www",
+      "corrected": "[illegible]",
+      "reason": "Text is unclear and does not form a recognizable word."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 139,
+  "corrected_word_count": 130,
+  "corrections_count": 22
+}

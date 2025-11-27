@@ -1,0 +1,94 @@
+{
+  "pdf_file": "078-1940-05-23-fre.pdf",
+  "date_processed": "2025-11-16T17:21:35.484842",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Mon don\nAlon nous\n23. V. 40\npartons\ndemain matin dans\n\u0645\u0627\nLa Correze\nI moi je\nvan peut \u00eatre able to\n\u0440\u0435\n\u0430\u044f\nbon seule, Je dois\nen tous cas revenus \u00e0\n\u0433\u0435\u043d\u0438\u0439\nParin on mon\n\u0644\u0644\u0647 \u0627\u0644\u0644\u0647\nM'attend. Apr\u00e8, si\nC'\u00e9tait n\u00e9ersaire fi reponty\n\navec Opera Mundi l\u00e0 du\nis ront-\nfe don parti manite\nnant\na\n\u0441\u0432\n\u0440\u0435\u0441\u0442\u0440\u0438\n\u0430\u043d\npas assy de chauffeur\net on a besoin de\n\u0432\u0441\u044f\nm\nAlois mon shit peut\n\u00eatre \u00e0 dimanche\nJet\nadore\nBaby\n\nContr\u00f4le Postal Militaire\nPARIS\nRUE\n19H\nMAI\nDES\n81\n100/-\nCAPUCING\nTENTEZAMAND\nNATIC BALE\nPARK\n\u0440\u0430\nRUE\nMAI\n40\nCES\nMr. Robert Lovcip on the \" INF\n2%\n1er R.%\nVel Roter\nREGI\nLe Voguemestre\n\u0420\u0435\u0437\u043d\u043e\u0433\u043e\nH\u00e9rault,\n81\n\nCINE\nU\nVOJENSK\u00c1 CENSU\n\n",
+  "corrected_text": "Mon ch\u00e9ri\nAlon nous\n23. V. 40\npartons\ndemain matin dans\nla\nLa Corr\u00e8ze\net moi je\nvais peut \u00eatre able to\nrevenir\nbon seule, Je dois\nen tous cas revenus \u00e0\nParis on mon\nch\u00e9ri\nM'attend. Apr\u00e8s, si\nC'\u00e9tait n\u00e9cessaire si reponty\n\navec Opera Mundi l\u00e0 du\nis front-\nfe don parti manite\nnant\na\npas assy de chauffeur\net on a besoin de\n\nAlors mon ch\u00e9ri peut\n\u00eatre \u00e0 dimanche\nJe t'adore\nBaby\n\nContr\u00f4le Postal Militaire\nPARIS\nRUE\n19H\nMAI\nDES\n81\n100/-\nCAPUCINES\nTENTEZAMAND\nNATIC BALE\nPARK\nRUE\nMAI\n40\nCES\nMr. Robert Zweigenthal on the \" INF\n2%\n1er R.%\nVel Roter\nREGI\nLe Voguemestre\nH\u00e9rault,\n81\n\nCINE\nU\nVOJENSK\u00c1 CENSU\n",
+  "translated_text": "My darling Alon, we are leaving tomorrow morning for La Corr\u00e8ze, and I might be able to come back alone. In any case, I must be back in Paris where my darling is waiting for me. Afterwards, if necessary, if there is a response with Opera Mundi, there is no driver and we need one. So, my darling, maybe see you Sunday. I adore you, Baby. Military Postal Control PARIS STREET 19H MAY DES 81 100/- CAPUCINES TENTEZAMAND NATIC BALE PARK STREET MAY 40 CES Mr. Robert Zweigenthal on the &quot;INF 2% 1st R.% Vel Roter REGI The Voguemestre H\u00e9rault, 81 CINE U VOJENSK\u00c1 CENSU\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Mon don",
+      "corrected": "Mon ch\u00e9ri",
+      "reason": "Common greeting in these documents"
+    },
+    {
+      "original": "\u0645\u0627",
+      "corrected": "la",
+      "reason": "Contextual correction for French language"
+    },
+    {
+      "original": "I moi je",
+      "corrected": "et moi je",
+      "reason": "Corrected to French conjunction 'et'"
+    },
+    {
+      "original": "van peut \u00eatre able to",
+      "corrected": "vais peut \u00eatre able to",
+      "reason": "Corrected to 'vais' for 'I will' in French"
+    },
+    {
+      "original": "\u0430\u044f",
+      "corrected": "revenir",
+      "reason": "Contextual correction for French language"
+    },
+    {
+      "original": "\u0433\u0435\u043d\u0438\u0439",
+      "corrected": "Paris",
+      "reason": "Known location likely intended"
+    },
+    {
+      "original": "Parin on mon",
+      "corrected": "Paris on mon",
+      "reason": "Corrected to known location 'Paris'"
+    },
+    {
+      "original": "\u0644\u0644\u0647 \u0627\u0644\u0644\u0647",
+      "corrected": "ch\u00e9ri",
+      "reason": "Common term of endearment in these documents"
+    },
+    {
+      "original": "Apr\u00e8, si",
+      "corrected": "Apr\u00e8s, si",
+      "reason": "Corrected to proper French spelling"
+    },
+    {
+      "original": "n\u00e9ersaire fi reponty",
+      "corrected": "n\u00e9cessaire si reponty",
+      "reason": "Corrected to proper French spelling"
+    },
+    {
+      "original": "fe don parti manite",
+      "corrected": "de ton parti manite",
+      "reason": "Corrected to French 'de ton'"
+    },
+    {
+      "original": "Alois mon shit peut",
+      "corrected": "Alors mon ch\u00e9ri peut",
+      "reason": "Corrected to 'Alors' and 'ch\u00e9ri' for context"
+    },
+    {
+      "original": "Jet",
+      "corrected": "Je t'",
+      "reason": "Common closing phrase 'Je t'adore'"
+    },
+    {
+      "original": "Lovcip",
+      "corrected": "Zweigenthal",
+      "reason": "Known person likely intended"
+    }
+  ],
+  "uncertain_segments": [
+    "si reponty",
+    "de ton parti manite"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 125,
+  "corrected_word_count": 115,
+  "corrections_count": 14
+}

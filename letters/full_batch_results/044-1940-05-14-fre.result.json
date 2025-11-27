@@ -1,0 +1,138 @@
+{
+  "pdf_file": "044-1940-05-14-fre.pdf",
+  "date_processed": "2025-11-16T17:29:48.556736",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Grand Caf\u00e9 Glacier\nP. ICH\u00c9, PROPRI\u00c9TAIRE\nCONSOMMATIONS\ndes Premi\u00e8res Marques\nSALLE de REUNIONS\nPLACE DU 14 JUILLET\nP\u00c9ZENAS\nTH\u00c9RAULTI\nT\u00c9L\u00c9PHONE 1.30\n14.5.\nP\u00e9zenas, le\n1940\nMon petit chouse\nAujourd bei jetai pas encore reen ta\nlettre, malgr\u00e9 tout je suis apr\u00e8s va lettre\nlier un peu tranquille.\nde\nJe ne sais pas qu'est ce que c'est maimbeuent\nchaque\nmit j'ai une r\u00eave de toi. Il est\nbonjour\nour une Entre chose pas absolument\nd\u00e9sagreable mais conjour sur ces besoin\nDis-moi comment ca va notre &ebe, il fail\nd\u00e9j\u00e0 mal? Qu'est ce que fail mannen. Tu\nme m'as pas encore \u00e9crit comment, ce va\nmaintenant avec vous. J'esp\u00e8re tous est\nDUBBu ordre. Et Pista, et susanne et, Laci\nect. ect.. Ecris moi mon amour et Boublie pas\nque je t'aime tou Bob.\nDUBON\n#\nDUBONNET\n\nPARIS\n69\n29 40 1530\nDEVOUILLE\n09\n29 11 40 15 30-\nROE VOUILLY\n-Uusien Hobert Zweigenthal\nper R. J.\n\u0431\u0435\u0439\nfor Compagnie\nS.P. gigy\nVOJENSK\u00c1 CENSURA\n\nContr\u00f4le Postal Militaire\nPOSTE\nS\nAUX\nCN\nA\n\n",
+  "corrected_text": "Grand Caf\u00e9 Glacier\nP. ICH\u00c9, PROPRI\u00c9TAIRE\nCONSOMMATIONS\ndes Premi\u00e8res Marques\nSALLE de REUNIONS\nPLACE DU 14 JUILLET\nP\u00c9ZENAS\nH\u00c9RAULT\nT\u00c9L\u00c9PHONE 1.30\n14.5.\nP\u00e9zenas, le\n1940\nMon petit choux\nAujourd'hui je n'ai pas encore re\u00e7u ta\nlettre, malgr\u00e9 tout je suis apr\u00e8s ta lettre\n\u00eatre un peu tranquille.\nJe ne sais pas qu'est ce que c'est mais\nchaque nuit j'ai une r\u00eave de toi. Il est\npour une autre chose pas absolument\nd\u00e9sagr\u00e9able mais toujours sur ce besoin\nDis-moi comment \u00e7a va notre b\u00e9b\u00e9, il fait\nencore mal? Qu'est ce que fait maman. Tu\nne m'as pas encore \u00e9crit comment \u00e7a va\nmaintenant avec vous. J'esp\u00e8re tout est\nen ordre. Et Pista, et Susanne et, Laci\netc. etc.. \u00c9cris-moi mon amour et n'oublie pas\nque je t'aime ton Bob.\nDUBON\n#\nDUBONNET\n\nPARIS\n69\n29 40 1530\nDEVOUILLE\n09\n29 11 40 15 30-\nRUE VOUILLY\n-Lucien Robert Zweigenthal\nper R. J.\nbei\nfor Compagnie\nS.P. gigy\nVOJENSK\u00c1 CENSURA\n\nContr\u00f4le Postal Militaire\nPOSTE\nS\nAUX\nCN\nA\n\n",
+  "translated_text": "Grand Caf\u00e9 Glacier P. ICH\u00c9, OWNER First Brand Consumption MEETING ROOM PLACE DU 14 JUILLET P\u00c9ZENAS H\u00c9RAULT TELEPHONE 1.30 14.5. P\u00e9zenas, 1940 My little darling, Today I haven&#39;t received your letter yet, but I&#39;m still a little at peace after your letter. I don&#39;t know what it is, but every night I have a dream about you. It&#39;s for something else, not entirely unpleasant, but always about this need. Tell me how our baby is, is he still in pain? What is Mommy doing? You haven&#39;t written to me yet about how things are now with you. I hope everything is in order. And Pista, and Susanne, and Laci, etc., etc. Write to me, my love, and don&#39;t forget that I love you, your Bob. DUBON # DUBONNET PARIS 69 29 40 1530 DEVOUILLE 09 29 11 40 15 30- RUE VOUILLY -Lucien Robert Zweigenthal per RJ bei for Compagnie SP gigy VOJENSK\u00c1 CENSURA Military Postal Control POST S AUX CN A\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "TH\u00c9RAULTI",
+      "corrected": "H\u00c9RAULT",
+      "reason": "Corrected to known location spelling."
+    },
+    {
+      "original": "Mon petit chouse",
+      "corrected": "Mon petit choux",
+      "reason": "Corrected to a common affectionate term."
+    },
+    {
+      "original": "Aujourd bei jetai pas encore reen ta",
+      "corrected": "Aujourd'hui je n'ai pas encore re\u00e7u ta",
+      "reason": "Corrected to proper French phrase."
+    },
+    {
+      "original": "lettre, malgr\u00e9 tout je suis apr\u00e8s va lettre",
+      "corrected": "lettre, malgr\u00e9 tout je suis apr\u00e8s ta lettre",
+      "reason": "Corrected 'va' to 'ta' for consistency."
+    },
+    {
+      "original": "lier un peu tranquille.",
+      "corrected": "\u00eatre un peu tranquille.",
+      "reason": "Corrected 'lier' to '\u00eatre' for grammatical accuracy."
+    },
+    {
+      "original": "de",
+      "corrected": "",
+      "reason": "Removed extraneous 'de'."
+    },
+    {
+      "original": "maimbeuent",
+      "corrected": "mais",
+      "reason": "Corrected to proper French conjunction."
+    },
+    {
+      "original": "mit j'ai une r\u00eave de toi.",
+      "corrected": "nuit j'ai une r\u00eave de toi.",
+      "reason": "Corrected 'mit' to 'nuit' for context."
+    },
+    {
+      "original": "bonjour",
+      "corrected": "pour",
+      "reason": "Corrected to fit sentence context."
+    },
+    {
+      "original": "our une Entre chose",
+      "corrected": "pour une autre chose",
+      "reason": "Corrected to proper French phrase."
+    },
+    {
+      "original": "conjour sur ces besoin",
+      "corrected": "toujours sur ce besoin",
+      "reason": "Corrected 'conjour' to 'toujours' for context."
+    },
+    {
+      "original": "ca va notre &ebe, il fail",
+      "corrected": "\u00e7a va notre b\u00e9b\u00e9, il fait",
+      "reason": "Corrected '&ebe' to 'b\u00e9b\u00e9' and 'fail' to 'fait' for context."
+    },
+    {
+      "original": "d\u00e9j\u00e0 mal? Qu'est ce que fail mannen.",
+      "corrected": "encore mal? Qu'est ce que fait maman.",
+      "reason": "Corrected 'd\u00e9j\u00e0' to 'encore' and 'mannen' to 'maman' for context."
+    },
+    {
+      "original": "ce va",
+      "corrected": "\u00e7a va",
+      "reason": "Corrected to proper French phrase."
+    },
+    {
+      "original": "tous est",
+      "corrected": "tout est",
+      "reason": "Corrected 'tous' to 'tout' for grammatical accuracy."
+    },
+    {
+      "original": "DUBBu ordre.",
+      "corrected": "en ordre.",
+      "reason": "Corrected 'DUBBu' to 'en' for context."
+    },
+    {
+      "original": "susanne",
+      "corrected": "Susanne",
+      "reason": "Capitalized known name."
+    },
+    {
+      "original": "Boublie",
+      "corrected": "n'oublie",
+      "reason": "Corrected to proper French phrase."
+    },
+    {
+      "original": "tou Bob.",
+      "corrected": "ton Bob.",
+      "reason": "Corrected 'tou' to 'ton' for grammatical accuracy."
+    },
+    {
+      "original": "ROE VOUILLY",
+      "corrected": "RUE VOUILLY",
+      "reason": "Corrected 'ROE' to 'RUE' for proper street name."
+    },
+    {
+      "original": "Uusien Hobert Zweigenthal",
+      "corrected": "Lucien Robert Zweigenthal",
+      "reason": "Corrected to known name."
+    },
+    {
+      "original": "\u0431\u0435\u0439",
+      "corrected": "bei",
+      "reason": "Corrected to proper context."
+    },
+    {
+      "original": "S.P. gigy",
+      "corrected": "S.P. [illegible]",
+      "reason": "Marked 'gigy' as illegible."
+    }
+  ],
+  "uncertain_segments": [
+    "S.P. [illegible]"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 169,
+  "corrected_word_count": 166,
+  "corrections_count": 23
+}

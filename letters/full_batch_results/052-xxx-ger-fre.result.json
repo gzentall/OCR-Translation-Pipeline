@@ -1,0 +1,104 @@
+{
+  "pdf_file": "052-xxx-ger-fre.pdf",
+  "date_processed": "2025-11-16T17:24:05.511936",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "1. Die Briefe Lacki Wady, Charles Brody\n2. Die photos Year Pierre m\u00f6chte ich haben\nWas soll Ra\u00fbx ausrichten\n3.\n4\nIch m\u00f6chte ihm die Schl\u00fcssel geben f\u00fcr\nBila\n5 Heizung. In welchem Summe soll ich\nmit Rawie \u00fcber die Heizung schrechese\n6 Foll der Roux mit dem llawen von Winkler\nsprechou, wegen geld.\n7. Kinder bett vorhaug.\n.\n8\nSterili sakur abholen\n9. Uni prix full preise\netwas\n10. Ob Raux aus der Wohnung wucht mitbringen\nk\u00f6nnte s\nzu\n11. Bela sollte die Negative datis wo sich\nnehmen von Piola Wohning\n12. K\u00f6nnte man nicht 1000 frs. Rox\n,\n-geben f\u00fcr die mei Soci\u00e9t\u00e9's and 500 protolo\n13. Essig Sauere Towerde das by die wechslaries wan\nF\naur\u00f6sisch\n13.'\n14. Ich m\u00f6chte Howlag hiverne gehu,\nLaweit ich uis ur prix Gehen kann.\nJ\n\u0634\u0639\u0631\nV\n\u041a\u0430\u0448\u0438\n\n2 Redientem de ti elements\nlocation mensuelle\nprolongement michelleation\nwiteriene\n\u0448\u043b\n15\n2.50*17\n17.\n2\n50\n50\n42.50\nTotal\ntuyaux\n\u00bfvacent on\npour les\nradiactems, le m\u00e8tre 15 Pagemant\ncomplant.\nNoto - 1 y\n\u00e0 environ him de\ntenfant d'execuation f\u00fcr\n100+ of huge conftant\n9,\n\n",
+  "corrected_text": "1. Die Briefe Laci Vady, Charles Brody\n2. Die photos von Pierre m\u00f6chte ich haben\nWas soll Raux ausrichten\n3.\n4\nIch m\u00f6chte ihm die Schl\u00fcssel geben f\u00fcr\nBila\n5 Heizung. In welchem Summe soll ich\nmit Raux \u00fcber die Heizung sprechen\n6 Soll der Raux mit dem Mann von Winkler\nsprechen, wegen Geld.\n7. Kinderbett vorhanden.\n.\n8\nSterilisator abholen\n9. Uni prix full preise\netwas\n10. Ob Raux aus der Wohnung etwas mitbringen\nk\u00f6nnte\nzu\n11. Bela sollte die Negative dort wo sich\nnehmen von Piola Wohnung\n12. K\u00f6nnte man nicht 1000 frs. Raux\n-geben f\u00fcr die meine Soci\u00e9t\u00e9's und 500 protolo\n13. Essig Sauere Towerde das bei die Wechselaries wann\nF\nfranz\u00f6sisch\n13.'\n14. Ich m\u00f6chte Howlag hiverne gehen,\nLaweit ich aus ur prix Gehen kann.\nJ\n\u0634\u0639\u0631\nV\n\u041a\u0430\u0448\u0438\n\n2 Redientem de ti elements\nlocation mensuelle\nprolongement michelleation\nwiteriene\n\u0448\u043b\n15\n2.50*17\n17.\n2\n50\n50\n42.50\nTotal\ntuyaux\n\u00bfvacent on\npour les\nradiateurs, le m\u00e8tre 15 Pagemant\ncomplant.\nNoto - 1 y\n\u00e0 environ him de\ntenfant d'ex\u00e9cution f\u00fcr\n100+ of huge constant\n9,\n",
+  "translated_text": "1. The letters Laci Vady, Charles Brody 2. I would like to have the photos from Pierre. What should Raux do? 3. 4. I would like to give him the keys for Bila 5. Heating. What sum should I discuss with Raux regarding the heating? 6. Should Raux speak with Winkler&#39;s husband about money? 7. Cot available? 8. Pick up sterilizer 9. Uni prix full prices something 10. Could Raux bring something from the apartment? 11. Bela should take the negatives from Piola&#39;s apartment. 12. Couldn&#39;t one give Raux 1000 francs for my Soci\u00e9t\u00e9s and 500 for the protocol? 13. Vinegar, sour tower, that at the exchange when F French 13.&#39; 14. I would like to go Howlag hiverne, as long as I can go from ur prix. J \u0634\u0639\u0631 V \u041a\u0430\u0448\u0438 2 Redientem de ti elements location mensuelle prolongement michelleation width \u0448\u043b 15 2.50*17 17. 2 50 50 42.50 Total tuyaux \u00bfvacent on pour les radiateurs, the meter 15 Pagemant compplant. Noto - 1 y \u00e0 environ him de tenfant d&#39;ex\u00e9cution f\u00fcr 100+ of huge constant 9,\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Lacki Wady",
+      "corrected": "Laci Vady",
+      "reason": "Known name Laci likely misread as Lacki"
+    },
+    {
+      "original": "Year Pierre",
+      "corrected": "von Pierre",
+      "reason": "Context suggests 'photos von Pierre' is more logical"
+    },
+    {
+      "original": "Ra\u00fbx",
+      "corrected": "Raux",
+      "reason": "Consistent spelling correction throughout the document"
+    },
+    {
+      "original": "schrechese",
+      "corrected": "sprechen",
+      "reason": "Likely misread of 'sprechen' based on context"
+    },
+    {
+      "original": "Foll",
+      "corrected": "Soll",
+      "reason": "Context suggests 'Soll' is the correct word"
+    },
+    {
+      "original": "llawen",
+      "corrected": "Mann",
+      "reason": "Context suggests 'Mann' is the correct word"
+    },
+    {
+      "original": "sprechou",
+      "corrected": "sprechen",
+      "reason": "Likely misread of 'sprechen' based on context"
+    },
+    {
+      "original": "bett vorhaug",
+      "corrected": "bett vorhanden",
+      "reason": "Context suggests 'vorhanden' is the correct word"
+    },
+    {
+      "original": "Sterili sakur",
+      "corrected": "Sterilisator",
+      "reason": "Context suggests 'Sterilisator' is the correct word"
+    },
+    {
+      "original": "wucht",
+      "corrected": "etwas",
+      "reason": "Context suggests 'etwas' is the correct word"
+    },
+    {
+      "original": "datis wo sich",
+      "corrected": "dort wo sich",
+      "reason": "Context suggests 'dort' is the correct word"
+    },
+    {
+      "original": "Piola Wohning",
+      "corrected": "Piola Wohnung",
+      "reason": "Correct spelling of 'Wohnung'"
+    },
+    {
+      "original": "Rox",
+      "corrected": "Raux",
+      "reason": "Consistent spelling correction throughout the document"
+    },
+    {
+      "original": "aur\u00f6sisch",
+      "corrected": "franz\u00f6sisch",
+      "reason": "Context suggests 'franz\u00f6sisch' is the correct word"
+    },
+    {
+      "original": "Howlag hiverne gehu",
+      "corrected": "Howlag hiverne gehen",
+      "reason": "Context suggests 'gehen' is the correct word"
+    },
+    {
+      "original": "Laweit ich uis ur prix Gehen kann",
+      "corrected": "Laweit ich aus ur prix Gehen kann",
+      "reason": "Correct spelling of 'aus'"
+    }
+  ],
+  "uncertain_segments": [
+    "Howlag hiverne gehen",
+    "Laweit ich aus ur prix Gehen kann"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 183,
+  "corrected_word_count": 179,
+  "corrections_count": 16
+}

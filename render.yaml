@@ -1,0 +1,31 @@
+# Render Blueprint for OCR Translation Pipeline
+# This file configures automatic deployment to Render
+
+services:
+  - type: web
+    name: postmark-ocr-pipeline
+    env: python
+    region: oregon
+    plan: free  # Free tier
+    branch: main
+    buildCommand: "./render-build.sh"
+    startCommand: "python3 startup.py && gunicorn -w 2 -b 0.0.0.0:$PORT --timeout 300 app:app"
+    healthCheckPath: /status
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: DATABASE_URL
+        sync: false  # Set manually - use your Neon database
+      - key: RESEND_API_KEY
+        sync: false
+      - key: GCP_VISION_API_KEY
+        sync: false
+      - key: GEOAPIFY_API_KEY
+        sync: false
+      - key: APP_URL
+        value: https://postmark-ocr-pipeline.onrender.com
+      - key: PYTHON_VERSION
+        value: 3.11.6
+

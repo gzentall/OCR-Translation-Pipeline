@@ -1,0 +1,126 @@
+{
+  "pdf_file": "090-xxx-ger.pdf",
+  "date_processed": "2025-11-16T17:23:09.353934",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "R. ZWEIGENTHAL\nBIJOUTERIE EXPORT-IMPORT\nPRAHA XIII, RUSK\u00c1 48\nTEL. 586-38\nZarus, halt vielen Dank f\u00fcr ruere Inspr\u00fccktionen.\n\u0437\u043d\u044b\u0439\nIch werde noch heute alles so\nerledigen.\nWenn wichtig\ngut wie m\u00f6glich\nsehreibe ich ruch noch\nlimmal morgen dar\u00fcber.\nPraktisch k\u00f6nnte eigentlich nichts miche\ndazwischen kommen. Nur zeitlich leave\nes sich verschieben. So habe ich frichestens\nam 3. 1. einen Flip ting plate bekomme\nund dies nur durch Profektion. Es ist\naber m\u00f6glich, dass dieses thing beng weg\nzu schlechten etter nicht fliegt, sodass\nlier evtl. noch eine Verschiebung eintreten\nkonnte. Es w\u00e4re sehr bedauerlich\nich dann Laci nicht mehr spreabeu\nwollen.\nsprechen w\u00fcrde\nWenn ich mit der Zahn fahre branche\nich ca 4.\n4 Tage\nMit dem Flip tung\nThing\nes kostet ca loop ke\nrung 2\u00bd/2 Hinden\n2\u00bd Stiunden 1200 k\u010d.\ndann kann ich evtl. Keine Devisen bewilly\nbekommen. Das ist aber nicht so-\nschleim\nda man mir numer etwas nachsendan\nkami.\n\nZabus, - heute kam so eine sch\u00f6ne Kravalle\nbekommen es hat mir solche Freude\ngemacht. Viellen Dank.\n\u0434\u0435\u0438\nAlso - definitive Vedricht \u00fcber meine\nAnkunft bekommt Ihr sp\u00e4testens\nSamstag\nMud\njetzt gehe ich weiter meine Sachen\nerledigen.\nViele liebe K\u00fcsse von Deinem Bob-\n\n",
+  "corrected_text": "R. ZWEIGENTHAL\nBIJOUTERIE EXPORT-IMPORT\nPRAHA XIII, RUSK\u00c1 48\nTEL. 586-38\n\nZarus, halt vielen Dank f\u00fcr eure Instruktionen.\nIch werde noch heute alles so\nerledigen.\nWenn wichtig\ngut wie m\u00f6glich\nschreibe ich euch noch\neinmal morgen dar\u00fcber.\nPraktisch k\u00f6nnte eigentlich nichts mich\ndazwischen kommen. Nur zeitlich kann\nes sich verschieben. So habe ich fr\u00fchestens\nam 3. 1. einen Flug bekommen\nund dies nur durch Pr\u00e4fektion. Es ist\naber m\u00f6glich, dass dieses Flugzeug wegen\nzu schlechten Wetter nicht fliegt, sodass\nhier evtl. noch eine Verschiebung eintreten\nk\u00f6nnte. Es w\u00e4re sehr bedauerlich\nwenn ich dann Laci nicht mehr sprechen\nw\u00fcrde.\nWenn ich mit der Bahn fahre brauche\nich ca 4 Tage.\nMit dem Flugzeug\nes kostet ca 2\u00bd Stunden 1200 K\u010d.\ndann kann ich evtl. keine Devisen bewilligt\nbekommen. Das ist aber nicht so\nschlimm\nda man mir immer etwas nachsenden\nkann.\n\nZarus, - heute kam so eine sch\u00f6ne Kravatte\nbekommen es hat mir solche Freude\ngemacht. Vielen Dank.\n\nAlso - definitive Nachricht \u00fcber meine\nAnkunft bekommt Ihr sp\u00e4testens\nSamstag.\n\nJetzt gehe ich weiter meine Sachen\nerledigen.\nViele liebe K\u00fcsse von Deinem Bob-\n",
+  "translated_text": "R. ZWEIGENTHAL BIJOUTERIE EXPORT-IMPORT PRAHA XIII, RUSK\u00c1 48 TEL. 586-38 Zarus, thank you very much for your instructions. I will take care of everything today. If it&#39;s important, I&#39;ll write to you again tomorrow about it as best I can. Practically speaking, nothing should get in my way. Only the timing could be affected. For example, I only got a flight on January 3rd at the earliest, and that was only through prefecture. However, it&#39;s possible that this plane won&#39;t fly due to bad weather, so there could be another delay. It would be very unfortunate if I couldn&#39;t speak to Laci then. If I go by train, it will take me about 4 days. By plane, it costs about 2.5 hours and 1200 CZK. Then I might not be able to get any foreign currency approved. But that&#39;s not so bad since they can always send me some money later. Zarus, - I received such a beautiful tie today, it made me so happy. Thank you so much. So - you&#39;ll get definitive news about my arrival by Saturday at the latest. Now I&#39;m going to get back to taking care of my things. Lots of love and kisses from your Bob-\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "ruere Inspr\u00fccktionen",
+      "corrected": "eure Instruktionen",
+      "reason": "Corrected misread letters and contextually corrected to 'eure' (your) and 'Instruktionen' (instructions)."
+    },
+    {
+      "original": "sehreibe ich ruch noch",
+      "corrected": "schreibe ich euch noch",
+      "reason": "Corrected 'sehreibe' to 'schreibe' (write) and 'ruch' to 'euch' (you)."
+    },
+    {
+      "original": "limmal",
+      "corrected": "einmal",
+      "reason": "Corrected 'limmal' to 'einmal' (once)."
+    },
+    {
+      "original": "frichestens",
+      "corrected": "fr\u00fchestens",
+      "reason": "Corrected 'frichestens' to 'fr\u00fchestens' (earliest)."
+    },
+    {
+      "original": "Flip ting plate",
+      "corrected": "Flug bekommen",
+      "reason": "Corrected 'Flip ting plate' to 'Flug bekommen' (flight received) based on context."
+    },
+    {
+      "original": "Profektion",
+      "corrected": "Pr\u00e4fektion",
+      "reason": "Corrected 'Profektion' to 'Pr\u00e4fektion' (perfection) based on context."
+    },
+    {
+      "original": "thing beng weg",
+      "corrected": "Flugzeug wegen",
+      "reason": "Corrected 'thing beng weg' to 'Flugzeug wegen' (airplane because of) based on context."
+    },
+    {
+      "original": "etter",
+      "corrected": "Wetter",
+      "reason": "Corrected 'etter' to 'Wetter' (weather)."
+    },
+    {
+      "original": "spreabeu",
+      "corrected": "sprechen",
+      "reason": "Corrected 'spreabeu' to 'sprechen' (speak)."
+    },
+    {
+      "original": "Zahn",
+      "corrected": "Bahn",
+      "reason": "Corrected 'Zahn' to 'Bahn' (train) based on context."
+    },
+    {
+      "original": "Flip tung",
+      "corrected": "Flugzeug",
+      "reason": "Corrected 'Flip tung' to 'Flugzeug' (airplane) based on context."
+    },
+    {
+      "original": "loop ke",
+      "corrected": "2\u00bd",
+      "reason": "Corrected 'loop ke' to '2\u00bd' based on context."
+    },
+    {
+      "original": "Hinden",
+      "corrected": "Stunden",
+      "reason": "Corrected 'Hinden' to 'Stunden' (hours)."
+    },
+    {
+      "original": "bewilly",
+      "corrected": "bewilligt",
+      "reason": "Corrected 'bewilly' to 'bewilligt' (approved)."
+    },
+    {
+      "original": "schleim",
+      "corrected": "schlimm",
+      "reason": "Corrected 'schleim' to 'schlimm' (bad)."
+    },
+    {
+      "original": "numer",
+      "corrected": "immer",
+      "reason": "Corrected 'numer' to 'immer' (always)."
+    },
+    {
+      "original": "nachsendan",
+      "corrected": "nachsenden",
+      "reason": "Corrected 'nachsendan' to 'nachsenden' (send after)."
+    },
+    {
+      "original": "Kravalle",
+      "corrected": "Kravatte",
+      "reason": "Corrected 'Kravalle' to 'Kravatte' (tie)."
+    },
+    {
+      "original": "Viellen",
+      "corrected": "Vielen",
+      "reason": "Corrected 'Viellen' to 'Vielen' (many)."
+    },
+    {
+      "original": "Vedricht",
+      "corrected": "Nachricht",
+      "reason": "Corrected 'Vedricht' to 'Nachricht' (message)."
+    },
+    {
+      "original": "Mud",
+      "corrected": "",
+      "reason": "Removed 'Mud' as it was an OCR error with no contextual meaning."
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 195,
+  "corrected_word_count": 180,
+  "corrections_count": 21
+}

@@ -1,0 +1,69 @@
+# Supervisor configuration for OCR Translation Pipeline
+# Place this in /etc/supervisor/conf.d/ocr-pipeline.conf
+
+[program:ocr-pipeline]
+# Working directory
+directory=/var/www/OCR-Translation-Pipeline
+
+# Command to run (using gunicorn)
+command=/var/www/OCR-Translation-Pipeline/venv/bin/gunicorn \
+    --workers 4 \
+    --bind 127.0.0.1:5001 \
+    --timeout 300 \
+    --access-logfile /var/log/ocr-pipeline-access.log \
+    --error-logfile /var/log/ocr-pipeline-error.log \
+    --log-level info \
+    app:app
+
+# User to run as
+user=www-data
+
+# Auto-start on system boot
+autostart=true
+
+# Auto-restart if crashes
+autorestart=true
+
+# Stop all processes in the group
+stopasgroup=true
+killasgroup=true
+
+# Logging
+stderr_logfile=/var/log/ocr-pipeline-supervisor.err.log
+stdout_logfile=/var/log/ocr-pipeline-supervisor.out.log
+
+# Number of log files to keep
+stderr_logfile_maxbytes=10MB
+stdout_logfile_maxbytes=10MB
+stderr_logfile_backups=5
+stdout_logfile_backups=5
+
+# Environment variables (optional - prefer using .env file)
+# environment=
+#     PATH="/var/www/OCR-Translation-Pipeline/venv/bin",
+#     FLASK_ENV="production",
+#     DATABASE_URL="postgresql://...",
+#     SECRET_KEY="..."
+
+# Priority (lower number = starts earlier)
+priority=999
+
+# ===========================================
+# After creating this file:
+# ===========================================
+# 1. Update supervisor:
+#    sudo supervisorctl reread
+#    sudo supervisorctl update
+#
+# 2. Control the service:
+#    sudo supervisorctl start ocr-pipeline
+#    sudo supervisorctl stop ocr-pipeline
+#    sudo supervisorctl restart ocr-pipeline
+#    sudo supervisorctl status ocr-pipeline
+#
+# 3. View logs:
+#    sudo supervisorctl tail -f ocr-pipeline stdout
+#    sudo supervisorctl tail -f ocr-pipeline stderr
+# ===========================================
+
+

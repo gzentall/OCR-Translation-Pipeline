@@ -1,0 +1,2 @@
+This is a test document for OCR processing.
+It contains some text that should be processed.

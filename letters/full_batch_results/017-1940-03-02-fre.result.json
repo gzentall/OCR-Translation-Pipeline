@@ -1,0 +1,64 @@
+{
+  "pdf_file": "017-1940-03-02-fre.pdf",
+  "date_processed": "2025-11-16T17:38:08.861498",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Mm aher Bob\nFline a.\nle 29-2-40\ndes non\nAUX\nAR\n6\nde\npas\n\u0434\u0435\nJare\ndepuis 10 jours\n\u0441\u0432\u0435\u0440\u0438\u0439\nponiquai? Nous avons rece\ndu 24 Ferrier\nSO\nla sails lettre qu\nMEES\nElle est\ndonne de ses nouvelle. Elle\nL\nhein affol\u00e9!! caris line de hite ici\nA tue pen Telephone lui\nsoir c'est moins chat.\na Lee 80-80 le\nVous &'euchamon Elian\n\nAutoris\u00e9 par la censure No 95\nLap\u00e9diteur\nR.D\nARIST\n10%\n1940\nCHECOS D\nCESKUSIO\nLAVIA FRANCE\nEST LA PLUSLITAIRE\nDES CARRIERES\nRoferte enthal\nUX ARM\n5. 2497\nI Regiment 6 Roo\nAigner 43 Que Cambronne\nParis XVS\nxve\n\n",
+  "corrected_text": "Mon cher Bob\nElise a.\nle 29-2-40\ndes non\nAUX\nAR\n6\nde\npas\nde\nJ'ai\nDepuis 10 jours\ncheri\nponiquai? Nous avons re\u00e7u\ndu 24 F\u00e9vrier\nSO\nla seule lettre qu\nMEES\nElle est\ndonn\u00e9 de ses nouvelles. Elle\nL\nhein affol\u00e9!! caris line de h\u00e2te ici\nA tue pen T\u00e9l\u00e9phone lui\nsoir c'est moins chat.\na Lucie 80-80 le\nVous &euchamon Elian\n\nAutoris\u00e9 par la censure No 95\nL'exp\u00e9diteur\nR.D\nARIST\n10%\n1940\nCHECOS D\nCESKUSIO\nLAVIA FRANCE\nEST LA PLUSLITAIRE\nDES CARRIERES\nRobert Zentall\nUX ARM\n5. 2497\nI Regiment 6 Roo\nAigner 43 Rue Cambronne\nParis XV\nxve\n",
+  "translated_text": "My dear Bob Elise a. on 29-2-40 of the no AUX AR 6 of no I have For 10 days darling poniquai? We received from 24 February SO the only letter that MEES She is given news of him. She L hein frantic!! caris line of haste here A tue pen Telephone him evening it&#39;s less chat. a Lucie 80-80 the You &amp;euchamon Elian Authorized by the censorship No. 95 The sender RD ARIST 10% 1940 CHECOS D CESKUSIO LAVIA FRANCE EST LA PLUSLITAIRE DES CARRIERES Robert Zentall UX ARM 5. 2497 I Regiment 6 Roo Aigner 43 Rue Cambronne Paris XV xve\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Mm aher Bob",
+      "corrected": "Mon cher Bob",
+      "reason": "Common greeting 'Mon cher' and known name 'Bob'"
+    },
+    {
+      "original": "Fline a.",
+      "corrected": "Elise a.",
+      "reason": "Known name 'Elise'"
+    },
+    {
+      "original": "Jare",
+      "corrected": "J'ai",
+      "reason": "Contextual fit for 'J'ai'"
+    },
+    {
+      "original": "\u0441\u0432\u0435\u0440\u0438\u0439",
+      "corrected": "cheri",
+      "reason": "Likely 'cheri' based on context and known terms"
+    },
+    {
+      "original": "rece",
+      "corrected": "re\u00e7u",
+      "reason": "Correct verb form 're\u00e7u'"
+    },
+    {
+      "original": "Ferrier",
+      "corrected": "F\u00e9vrier",
+      "reason": "Month 'F\u00e9vrier'"
+    },
+    {
+      "original": "Roferte enthal",
+      "corrected": "Robert Zentall",
+      "reason": "Known name 'Robert Zentall'"
+    },
+    {
+      "original": "Que Cambronne",
+      "corrected": "Rue Cambronne",
+      "reason": "Known location 'Rue Cambronne'"
+    }
+  ],
+  "uncertain_segments": [
+    "poniquai?",
+    "Vous &euchamon Elian"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 102,
+  "corrected_word_count": 102,
+  "corrections_count": 8
+}

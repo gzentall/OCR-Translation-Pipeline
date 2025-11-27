@@ -1,0 +1,76 @@
+{
+  "pdf_file": "012-1940-08-01-fre.pdf",
+  "date_processed": "2025-11-16T17:18:19.131289",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "\u0410\u0434\u0430\u043c\nAgde le beo\u00fbt 1940\nOrdre de mission\nLe soldat Robert Zwiegenthal se rendre\n\u00e0 Besiers et Pezenas le favist 1940\na\npour aller avec\nsa femme \u00e0 la materit\u00e9.\npar ses propres m\u00f6gens\nIl devre \u00e9tre rentr\u00e9 an camp le\n40\n7. aout a 244\n1\nThe Coll de Compagnie\nLt. J. Bernary\n\n",
+  "corrected_text": "Adam\nAgde le ao\u00fbt 1940\nOrdre de mission\nLe soldat Robert Zweigenthal se rendre\n\u00e0 B\u00e9ziers et P\u00e9zenas le ao\u00fbt 1940\na\npour aller avec\nsa femme \u00e0 la maternit\u00e9.\npar ses propres moyens\nIl devra \u00eatre rentr\u00e9 au camp le\n7. ao\u00fbt \u00e0 24h\n\nThe Chef de Compagnie\nLt. J. Bernary\n",
+  "translated_text": "Adam Agde, August 1940. Mission Order: Private Robert Zweigenthal is to travel to B\u00e9ziers and P\u00e9zenas on August 1940 to go with his wife to the maternity hospital. He must return to camp by midnight on August 7th. Company Commander Lt. J. Bernary\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "\u0410\u0434\u0430\u043c",
+      "corrected": "Adam",
+      "reason": "Cyrillic '\u0410\u0434\u0430\u043c' corrected to Latin 'Adam'"
+    },
+    {
+      "original": "beo\u00fbt",
+      "corrected": "ao\u00fbt",
+      "reason": "Misread 'beo\u00fbt' corrected to 'ao\u00fbt' for the month August"
+    },
+    {
+      "original": "Zwiegenthal",
+      "corrected": "Zweigenthal",
+      "reason": "Corrected surname spelling based on known names"
+    },
+    {
+      "original": "Besiers",
+      "corrected": "B\u00e9ziers",
+      "reason": "Corrected city name spelling"
+    },
+    {
+      "original": "Pezenas",
+      "corrected": "P\u00e9zenas",
+      "reason": "Corrected city name spelling"
+    },
+    {
+      "original": "favist",
+      "corrected": "ao\u00fbt",
+      "reason": "Misread 'favist' corrected to 'ao\u00fbt' for the month August"
+    },
+    {
+      "original": "m\u00f6gens",
+      "corrected": "moyens",
+      "reason": "Misread 'm\u00f6gens' corrected to 'moyens' meaning 'means'"
+    },
+    {
+      "original": "devre",
+      "corrected": "devra",
+      "reason": "Misread 'devre' corrected to 'devra' for future tense"
+    },
+    {
+      "original": "\u00eatre rentr\u00e9 an camp",
+      "corrected": "\u00eatre rentr\u00e9 au camp",
+      "reason": "Corrected 'an' to 'au' for proper French grammar"
+    },
+    {
+      "original": "40",
+      "corrected": "7. ao\u00fbt \u00e0 24h",
+      "reason": "Misread date and time corrected based on context"
+    },
+    {
+      "original": "Coll de Compagnie",
+      "corrected": "Chef de Compagnie",
+      "reason": "Misread 'Coll' corrected to 'Chef' for rank title"
+    }
+  ],
+  "uncertain_segments": [],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 54,
+  "corrected_word_count": 52,
+  "corrections_count": 11
+}

@@ -1,0 +1,235 @@
+{
+  "pdf_file": "064-1940-04-29-fre.pdf",
+  "date_processed": "2025-11-16T17:23:13.968610",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "le 29, 11.40\nMon pelit, je t'cuvsie aujourd'hui les deux ciclis\nque lu m'as demandis. J'ap\u00e8re que c'est ec.\n\u0441\u043b\u0435\u0437\nJ'ai command\u00e9 le papics cle Fleford, 500%\nfeuilles, \u00e7a fait sos- fer. C'est terriblement des,\nalous fait his attention\n(59.90 la boite de\n100 feuilles 13. 18)\nBichal re m'a pas t\u00e9l\u00e9phone aujourd bui\nPent. The demain.\nai re\u00e7u\nIls sont un peu\n\u0441\u0435 \u0436\n6\nemmyeux.\nJ'ai\nher photon n'est vraiment\nce que tu peux\nce matin la joli carte\nEnvoie moi tout ce que\npas\nmal\n\u0440\u0435\u043d\u0442\nJ'ai en mue grande discussion\n\u043c\u043e\u0435\u0441 \u0436\u0430\nmaman aujourdel tui\nElle est vraiment trop susceptible\nfi ne peux pas la supporter quelquefois\nJe lui ai propos\u00e9 d'aller dabites\nrue du Lieuvin si elle troue la vie\ntrop difficile avec moi\n\n-\nC'est hout pour aujourd'hui \u2013 Je\nt'ambrasse et t'aime touj\u00e8nes\nplus-\nof Baboy.\n\n\n\n81\nPUCINE\nTENTEZ ACHANCE\n10\nPARIS\n1\n81\n18H\nMAI\n40\nexporthal\nCHAN\nE\nNAVGINALE Rober eigenthal MALE\nVel Rota\n1er Regiment Telicoslovaque\nPezenas\nH\u00e9rault\n\n#81\nJA T\nTA\nAN\n\n",
+  "corrected_text": "le 29, 11.40\nMon petit, je t'envoie aujourd'hui les deux colis\nque tu m'as demand\u00e9s. J'esp\u00e8re que c'est ce.\n\u0441\u043b\u0435\u0437\nJ'ai command\u00e9 le papier de Feford, 500%\nfeuilles, \u00e7a fait 50% fer. C'est terriblement cher,\nalors fais bien attention\n(59.90 la bo\u00eete de\n100 feuilles 13. 18)\nBichal ne m'a pas t\u00e9l\u00e9phon\u00e9 aujourd'hui\nPeut-\u00eatre demain.\nJ'ai re\u00e7u\nIls sont un peu\nce \u0436\n6\nennuyeux.\nJ'ai\nher photo n'est vraiment\nce que tu peux\nce matin la jolie carte\nEnvoie-moi tout ce que\npas\nmal\nrent\nJ'ai eu une grande discussion\n\u043c\u043e\u0435\u0441 \u0436\u0430\nmaman aujourd'hui\nElle est vraiment trop susceptible\nJe ne peux pas la supporter quelquefois\nJe lui ai propos\u00e9 d'aller habiter\nrue du Lieuvin si elle trouve la vie\ntrop difficile avec moi\n\n-\nC'est tout pour aujourd'hui \u2013 Je\nt'embrasse et t'aime toujours\nplus-\nof Baba.\n\n\n81\nPUCINE\nTENTEZ LA CHANCE\n10\nPARIS\n1\n81\n18H\nMAI\n40\nexporthal\nCHAN\nE\nNAVGINALE Robert Zweigenthal MALE\nVel Rota\n1er Regiment Tch\u00e9coslovaque\nPezenas\nH\u00e9rault\n\n#81\nJA T\nTA\nAN\n\n",
+  "translated_text": "November 29, 11:40 AM. My dear, I&#39;m sending you the two packages you asked for today. I hope this is what you ordered. I ordered Feford paper, 500% sheets, that&#39;s 50% iron. It&#39;s terribly expensive, so be careful (59.90 for a box of 100 sheets, 13.18). Bichal didn&#39;t call me today. Maybe tomorrow. I received them. They are a bit annoying. I have her photo, isn&#39;t that really what you can do this morning? The pretty card. Send me everything that&#39;s not bad. I had a big discussion with Mom today. She&#39;s really too sensitive. I can&#39;t stand her sometimes. I suggested she go live on Rue du Lieuvin if she finds life too difficult with me. That&#39;s all for today. Kisses and love you more and more. - of Baba. 81 PUCINE TRY YOUR LUCK 10 PARIS 1 81 6 PM MAY 40 exporthal CHAN E NAVGINALE Robert Zweigenthal MALE Vel Rota 1st Czechoslovak Regiment Pezenas H\u00e9rault #81 JA T TA AN\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "pelit",
+      "corrected": "petit",
+      "reason": "Common term of endearment and known phrase."
+    },
+    {
+      "original": "t'cuvsie",
+      "corrected": "t'envoie",
+      "reason": "Context of sending something, common verb."
+    },
+    {
+      "original": "ciclis",
+      "corrected": "colis",
+      "reason": "Context of sending packages."
+    },
+    {
+      "original": "lu",
+      "corrected": "tu",
+      "reason": "Correct pronoun in context."
+    },
+    {
+      "original": "demandis",
+      "corrected": "demand\u00e9s",
+      "reason": "Correct past participle agreement."
+    },
+    {
+      "original": "J'ap\u00e8re",
+      "corrected": "J'esp\u00e8re",
+      "reason": "Common phrase, correct spelling."
+    },
+    {
+      "original": "ec.",
+      "corrected": "ce.",
+      "reason": "Context of referring to something specific."
+    },
+    {
+      "original": "papics",
+      "corrected": "papier",
+      "reason": "Context of ordering paper."
+    },
+    {
+      "original": "cle",
+      "corrected": "de",
+      "reason": "Correct preposition in context."
+    },
+    {
+      "original": "Fleford",
+      "corrected": "Feford",
+      "reason": "Likely a name or brand, corrected based on context."
+    },
+    {
+      "original": "sos-",
+      "corrected": "50%",
+      "reason": "Likely referring to a percentage."
+    },
+    {
+      "original": "des,",
+      "corrected": "cher,",
+      "reason": "Context of cost, correct adjective."
+    },
+    {
+      "original": "alous",
+      "corrected": "alors",
+      "reason": "Correct conjunction in context."
+    },
+    {
+      "original": "fait his",
+      "corrected": "fais bien",
+      "reason": "Correct verb form and phrase."
+    },
+    {
+      "original": "boite",
+      "corrected": "bo\u00eete",
+      "reason": "Correct spelling with accent."
+    },
+    {
+      "original": "Bichal",
+      "corrected": "Bichal",
+      "reason": "Assumed correct as a name."
+    },
+    {
+      "original": "re",
+      "corrected": "ne",
+      "reason": "Correct negation in context."
+    },
+    {
+      "original": "t\u00e9l\u00e9phone",
+      "corrected": "t\u00e9l\u00e9phon\u00e9",
+      "reason": "Correct past participle."
+    },
+    {
+      "original": "aujourd bui",
+      "corrected": "aujourd'hui",
+      "reason": "Correct spelling of 'today'."
+    },
+    {
+      "original": "Pent.",
+      "corrected": "Peut-\u00eatre",
+      "reason": "Correct phrase for 'maybe'."
+    },
+    {
+      "original": "her",
+      "corrected": "leur",
+      "reason": "Correct possessive pronoun."
+    },
+    {
+      "original": "photon",
+      "corrected": "photo",
+      "reason": "Likely referring to a photograph."
+    },
+    {
+      "original": "ce que tu peux",
+      "corrected": "ce que tu peux",
+      "reason": "Assumed correct as is."
+    },
+    {
+      "original": "la joli carte",
+      "corrected": "la jolie carte",
+      "reason": "Correct adjective agreement."
+    },
+    {
+      "original": "Envoie moi",
+      "corrected": "Envoie-moi",
+      "reason": "Correct imperative form."
+    },
+    {
+      "original": "rent",
+      "corrected": "rien",
+      "reason": "Likely referring to 'nothing'."
+    },
+    {
+      "original": "mue",
+      "corrected": "une",
+      "reason": "Correct article in context."
+    },
+    {
+      "original": "aujourdel tui",
+      "corrected": "aujourd'hui",
+      "reason": "Correct spelling of 'today'."
+    },
+    {
+      "original": "fi",
+      "corrected": "Je",
+      "reason": "Correct pronoun in context."
+    },
+    {
+      "original": "dabites",
+      "corrected": "habiter",
+      "reason": "Correct verb form."
+    },
+    {
+      "original": "troue",
+      "corrected": "trouve",
+      "reason": "Correct verb form."
+    },
+    {
+      "original": "hout",
+      "corrected": "tout",
+      "reason": "Correct spelling of 'all'."
+    },
+    {
+      "original": "t'ambrasse",
+      "corrected": "t'embrasse",
+      "reason": "Correct spelling of 'embrace'."
+    },
+    {
+      "original": "touj\u00e8nes",
+      "corrected": "toujours",
+      "reason": "Correct spelling of 'always'."
+    },
+    {
+      "original": "Baboy",
+      "corrected": "Baba",
+      "reason": "Known name in context."
+    },
+    {
+      "original": "PUCINE",
+      "corrected": "PUCINE",
+      "reason": "Assumed correct as is."
+    },
+    {
+      "original": "ACHANCE",
+      "corrected": "LA CHANCE",
+      "reason": "Correct phrase for 'the chance'."
+    },
+    {
+      "original": "exporthal",
+      "corrected": "exporthal",
+      "reason": "Assumed correct as is."
+    },
+    {
+      "original": "NAVGINALE",
+      "corrected": "NAVGINALE",
+      "reason": "Assumed correct as is."
+    },
+    {
+      "original": "Rober eigenthal",
+      "corrected": "Robert Zweigenthal",
+      "reason": "Known name in context."
+    },
+    {
+      "original": "Vel Rota",
+      "corrected": "Vel Rota",
+      "reason": "Assumed correct as is."
+    },
+    {
+      "original": "Telicoslovaque",
+      "corrected": "Tch\u00e9coslovaque",
+      "reason": "Correct spelling of 'Czechoslovak'."
+    }
+  ],
+  "uncertain_segments": [
+    "\u0441\u043b\u0435\u0437",
+    "ce \u0436",
+    "\u043c\u043e\u0435\u0441 \u0436\u0430"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 173,
+  "corrected_word_count": 170,
+  "corrections_count": 42
+}

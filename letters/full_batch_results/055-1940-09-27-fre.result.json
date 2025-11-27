@@ -1,0 +1,33 @@
+{
+  "pdf_file": "055-1940-09-27-fre.pdf",
+  "date_processed": "2025-11-16T17:19:00.625528",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "BE\nERS\n19 *\n27.1X\n1940\nHEPAUL\nLE\nEST UN\nREPUBLIQUE\nSE\nBUVEZ DU VIN\nMonsieur Robert Zrreipenthal\n32 rue de la R\u00e9publique\nGode\n\n83\n\n",
+  "corrected_text": "BE\nERS\n19 *\n27.1X\n1940\nHEPAUL\nLE\nEST UN\nREPUBLIQUE\nSE\nBUVEZ DU VIN\nMonsieur Robert Zweigenthal\n32 rue de la R\u00e9publique\nCode\n\n83\n",
+  "translated_text": "BEERS 19 * 27.1X 1940 HEPAUL LE IS A REPUBLIC DRINK WINE Mr. Robert Zweigenthal 32 rue de la R\u00e9publique Code 83\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "Zrreipenthal",
+      "corrected": "Zweigenthal",
+      "reason": "Known name from context"
+    },
+    {
+      "original": "Gode",
+      "corrected": "Code",
+      "reason": "Likely misread of 'Code' given the context of an address"
+    }
+  ],
+  "uncertain_segments": [
+    "27.1X"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 25,
+  "corrected_word_count": 25,
+  "corrections_count": 2
+}

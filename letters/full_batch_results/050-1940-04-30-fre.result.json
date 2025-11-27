@@ -1,0 +1,165 @@
+{
+  "pdf_file": "050-1940-04-30-fre.pdf",
+  "date_processed": "2025-11-16T17:41:09.663209",
+  "metadata": {
+    "document_type": "letter",
+    "expected_language": "English",
+    "date": "unknown"
+  },
+  "raw_text": "Paris\nle 30. IV. 40.\nnon Liebling! & mation\n\u2022Ce matin pas de letre de toi-\nPeut-\u00eatre ce soir....\nFlies soir j'ai\nai eu\nnue\nConque\nConversation avec\nMaman.\nelle m'a promis\nd'\u00eatre plus gentille et de me passe f\u00e4cher aussi\n\u0440\nsomvent-\non\nverra\nLe papier\nest\nparti\nlies. Mais ils\nn'ont\n\u0440\u0430\u043b\nde no 5.\nIls enverront ca\neu auront\nMais\nen\nd\u00e9j\u00e0 de\n\u0432\u0435\u0442\nLa semaine prodaine, quand ils eu\nattendant the awas\nNo 2 3 et 4\nDemain je vais voir un bus\nbon docteur longrois que\nM'a recommand\u00e9\nAvec moi\ncommencer\nFalu di\n\u00c7a va bien\nseulement avant de\nle traitement de\nce specialiste ji\nveux avoir l'avis\n\nd'un autre docteur\nEt boi pon petit\nras- tu\n\u0436\u0430\nes \u00e0 tu\nA\nles chaussures??\ncommend\n\u043b\u0438\u0431\naija\n\u00e0 achet\u00e9\nSi Sperr\non Bichal me\nme tili thonent pas aujourd\npas aujourd Lui,\nJe sais les appeler demain\nIls sont emb\u00eatants ! ...\nMon ch\u00e8ri je t'ambrasse mille\net mille fois de toute mon affection\net eu le ties\nte serrant bir si\u00e8s fort dans mes\nbras.\nte Baber\nqui va beaucoup mieux!\n\nFi\nTENTE AANCE)\nNA\nPARIS\nRUE\n8\n50\n46945\nAVRIL\nDES\n40\nFUCINES\nTENTEZ\nNATI\nMr. Robert Breigenthal\njer R. 1. Felicostora que\nVel Rota\nR\u00e9z\u00e9nas\n(Herault)\n\n-5\nHE RAVE\nAnoth\n\n",
+  "corrected_text": "Paris\nle 30. IV. 40.\nMon Liebling! & ma ch\u00e9rie\nCe matin pas de lettre de toi-\nPeut-\u00eatre ce soir....\nHier soir j'ai\nai eu\nune\nlongue\nconversation avec\nMaman.\nelle m'a promis\nd'\u00eatre plus gentille et de ne pas se f\u00e2cher aussi\nsouvent-\non\nverra\nLe papier\nest\nparti\nhier. Mais ils\nn'ont\npas\nde no 5.\nIls enverront \u00e7a\nquand ils en auront\nMais\nen\nd\u00e9j\u00e0 de\ncette\nLa semaine prochaine, quand ils en\nauront\nattendant tu auras\nNo 2 3 et 4\nDemain je vais voir un bon\ndocteur hongrois que\nM'a recommand\u00e9\nAvec moi\ncommencer\nFalu di\n\u00c7a va bien\nseulement avant de\nle traitement de\nce sp\u00e9cialiste je\nveux avoir l'avis\nd'un autre docteur\nEt toi mon petit\nas-tu\nachet\u00e9\nles chaussures??\ncomme\nlibre\nai-je\n\u00e0 achet\u00e9\nSi Sperr\nou Bichal ne\nme t\u00e9l\u00e9phonent pas aujourd'hui,\nJe vais les appeler demain\nIls sont emb\u00eatants ! ...\nMon ch\u00e9ri je t'embrasse mille\net mille fois de toute mon affection\net en te\nserrant bien si fort dans mes\nbras.\nTa Baba\nqui va beaucoup mieux!\n\nFi\nTENTE AANCE)\nNA\nPARIS\nRUE\n8\n50\n46945\nAVRIL\nDES\n40\nFUCINES\nTENTEZ\nNATI\nMr. Robert Zweigenthal\nchez R. 1. Felicostora que\nVel Rota\nR\u00e9z\u00e9nas\n(Herault)\n\n-5\nHE RAVE\nAnoth\n\n",
+  "translated_text": "Paris, April 30, 1940. My darling! And my sweetheart, no letter from you this morning\u2014maybe this evening\u2026 Last night I had a long conversation with Mother. She promised to be nicer and not get angry so often\u2014we&#39;ll see. The paper went out yesterday. But they don&#39;t have issue #5. They&#39;ll send it when they have it. But for now, next week, when they have it, you&#39;ll have #2, 3, and 4. Tomorrow I&#39;m going to see a good Hungarian doctor who was recommended to me. I&#39;ll start treatment with him. It&#39;s going well, but before this specialist&#39;s treatment, I want to get a second opinion. And you, my little one, have you bought the shoes? How free am I to buy them? If Sperr or Bichal don&#39;t call me today, I&#39;ll call them tomorrow. They&#39;re a nuisance!\u2026 My darling, I kiss you a thousand times with all my affection and hold you so tight in my arms. Your Baba is doing much better! (Fi TENTE AANCE) NA PARIS RUE 8 50 46945 APRIL DES 40 FUCINES TENTEZ NATI Mr. Robert Zweigenthal chez R. 1. Felicostora que Vel Rota R\u00e9z\u00e9nas (Herault) -5 HE RAVE Anoth\n\n",
+  "confidence": 85,
+  "corrections": [
+    {
+      "original": "non Liebling! & mation",
+      "corrected": "Mon Liebling! & ma ch\u00e9rie",
+      "reason": "Corrected greeting based on common phrases and context."
+    },
+    {
+      "original": "letre",
+      "corrected": "lettre",
+      "reason": "Corrected spelling error."
+    },
+    {
+      "original": "Flies soir",
+      "corrected": "Hier soir",
+      "reason": "Corrected to common phrase 'Hier soir' meaning 'Last night'."
+    },
+    {
+      "original": "nue",
+      "corrected": "une",
+      "reason": "Corrected to 'une' for grammatical correctness."
+    },
+    {
+      "original": "Conque",
+      "corrected": "longue",
+      "reason": "Corrected to 'longue' for context of conversation."
+    },
+    {
+      "original": "passe f\u00e4cher",
+      "corrected": "ne pas se f\u00e2cher",
+      "reason": "Corrected to proper French phrase."
+    },
+    {
+      "original": "somvent",
+      "corrected": "souvent",
+      "reason": "Corrected spelling error."
+    },
+    {
+      "original": "lies",
+      "corrected": "hier",
+      "reason": "Corrected to 'hier' meaning 'yesterday'."
+    },
+    {
+      "original": "\u0440\u0430\u043b",
+      "corrected": "pas",
+      "reason": "Corrected to 'pas' for negation."
+    },
+    {
+      "original": "\u0432\u0435\u0442",
+      "corrected": "cette",
+      "reason": "Corrected to 'cette' for context."
+    },
+    {
+      "original": "prodaine",
+      "corrected": "prochaine",
+      "reason": "Corrected spelling error."
+    },
+    {
+      "original": "eu",
+      "corrected": "auront",
+      "reason": "Corrected to 'auront' for future tense."
+    },
+    {
+      "original": "the awas",
+      "corrected": "tu auras",
+      "reason": "Corrected to 'tu auras' for future tense."
+    },
+    {
+      "original": "longrois",
+      "corrected": "hongrois",
+      "reason": "Corrected to 'hongrois' meaning 'Hungarian'."
+    },
+    {
+      "original": "Falu di",
+      "corrected": "Falu di",
+      "reason": "Left unchanged due to uncertainty."
+    },
+    {
+      "original": "ji",
+      "corrected": "je",
+      "reason": "Corrected to 'je' for grammatical correctness."
+    },
+    {
+      "original": "bai pon petit",
+      "corrected": "toi mon petit",
+      "reason": "Corrected to 'toi mon petit' for context."
+    },
+    {
+      "original": "\u0436\u0430",
+      "corrected": "as",
+      "reason": "Corrected to 'as' for grammatical correctness."
+    },
+    {
+      "original": "commend",
+      "corrected": "comme",
+      "reason": "Corrected to 'comme' for context."
+    },
+    {
+      "original": "\u043b\u0438\u0431",
+      "corrected": "libre",
+      "reason": "Corrected to 'libre' for context."
+    },
+    {
+      "original": "aija",
+      "corrected": "ai-je",
+      "reason": "Corrected to 'ai-je' for grammatical correctness."
+    },
+    {
+      "original": "Sperr",
+      "corrected": "Sperr",
+      "reason": "Left unchanged due to uncertainty."
+    },
+    {
+      "original": "Bichal",
+      "corrected": "Bichal",
+      "reason": "Left unchanged due to uncertainty."
+    },
+    {
+      "original": "tili thonent",
+      "corrected": "t\u00e9l\u00e9phonent",
+      "reason": "Corrected to 't\u00e9l\u00e9phonent' for context."
+    },
+    {
+      "original": "Mon ch\u00e8ri",
+      "corrected": "Mon ch\u00e9ri",
+      "reason": "Corrected spelling error."
+    },
+    {
+      "original": "t'ambrasse",
+      "corrected": "t'embrasse",
+      "reason": "Corrected spelling error."
+    },
+    {
+      "original": "te Baber",
+      "corrected": "Ta Baba",
+      "reason": "Corrected to known name 'Baba'."
+    },
+    {
+      "original": "Breigenthal",
+      "corrected": "Zweigenthal",
+      "reason": "Corrected to known name 'Zweigenthal'."
+    }
+  ],
+  "uncertain_segments": [
+    "Falu di",
+    "Sperr",
+    "Bichal"
+  ],
+  "provider_used": "openai",
+  "comparison": null,
+  "raw_word_count": 218,
+  "corrected_word_count": 210,
+  "corrections_count": 28
+}
