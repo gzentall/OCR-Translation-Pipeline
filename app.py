@@ -14,6 +14,7 @@ import html
 import sys
 import secrets
 import bcrypt
+import time
 from pathlib import Path
 from datetime import datetime
 from functools import wraps
@@ -79,6 +80,27 @@ local_storage = LocalOCRStorage()
 ai_processor = FallbackAIProcessor()
 geoapify_client = GeoapifyClient()
 envelope_extractor = EnvelopeExtractor()
+
+# R2 URL Cache - Cache presigned URLs for 50 minutes (they're valid for 1 hour)
+# Structure: {image_key: (url, expiry_timestamp)}
+_r2_url_cache = {}
+_r2_cache_ttl = 3000  # 50 minutes in seconds
+
+def get_cached_r2_url(image_key):
+    """Get a cached R2 presigned URL if still valid, otherwise None."""
+    if image_key in _r2_url_cache:
+        url, expiry = _r2_url_cache[image_key]
+        if time.time() < expiry:
+            return url
+        else:
+            # Expired, remove from cache
+            del _r2_url_cache[image_key]
+    return None
+
+def cache_r2_url(image_key, url):
+    """Cache an R2 presigned URL with expiry timestamp."""
+    expiry = time.time() + _r2_cache_ttl
+    _r2_url_cache[image_key] = (url, expiry)
 
 ALLOWED_EXTENSIONS = {'pdf'}
 
@@ -716,10 +738,18 @@ def get_document_image(doc_id, page_num):
                 # Try standard naming pattern for pdftoppm
                 image_name = f"{doc_id}-{page_num}.png"
             
-            # Generate presigned URL from R2
+            # Generate presigned URL from R2 (with caching)
             if image_name:
                 try:
-                    presigned_url = local_storage.r2.get_image_url(image_name, expires_in=3600)
+                    # Check cache first
+                    presigned_url = get_cached_r2_url(image_name)
+                    if not presigned_url:
+                        # Generate new presigned URL
+                        presigned_url = local_storage.r2.get_image_url(image_name, expires_in=3600)
+                        if presigned_url:
+                            # Cache for 50 minutes
+                            cache_r2_url(image_name, presigned_url)
+                    
                     if presigned_url:
                         return redirect(presigned_url)
                 except Exception as e:
