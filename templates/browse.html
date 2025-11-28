@@ -3089,6 +3089,37 @@
             margin: 0;
         }
 
+        .side-sheet__citation-text {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            color: var(--md-sys-color-on-surface-variant);
+            margin: var(--md-sys-spacing-2) 0 0 0;
+        }
+
+        .side-sheet__citation-text mark {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-weight: 500;
+        }
+
+        .side-sheet__citation-more {
+            color: var(--md-sys-color-primary);
+            font-weight: 500;
+        }
+
+        .side-sheet__citation-error {
+            font-family: var(--md-sys-typescale-body-small-font);
+            font-size: var(--md-sys-typescale-body-small-size);
+            color: var(--md-sys-color-on-surface-variant);
+            font-style: italic;
+            margin: var(--md-sys-spacing-2) 0 0 0;
+            opacity: 0.7;
+        }
+
         .side-sheet__empty {
             text-align: center;
             padding: var(--md-sys-spacing-8);
@@ -5176,6 +5207,8 @@
             display: block;
         }
         
+        /* Remove spacing for references tab - filter bar should be flush with section */
+        
         /* Ensure tab content in editor is scrollable */
         .editor-tabs-section .tab-content {
             display: block !important; /* Always visible in editor, panels control visibility */
@@ -5529,7 +5562,7 @@
     </div>
 
     <!-- Compact Search, Sort, Filter Bar -->
-    <div class="compact-search-filter-bar">
+    <div class="compact-search-filter-bar" id="documentFilterBar">
         <div class="search-input-container">
             <span class="material-icons search-icon">search</span>
             <input type="text" class="search-input" id="searchInput" placeholder="Search documents..." autocomplete="off">
@@ -5649,6 +5682,44 @@
                 </div>
         
             </div>
+
+    <!-- Reference Filter Bar (shown when References tab is active) -->
+    <div class="compact-search-filter-bar" id="referenceFilterBar" style="display: none;">
+        <div class="search-input-container">
+            <span class="material-icons search-icon">search</span>
+            <input type="text" class="search-input" id="referenceSearchInput" placeholder="Search references..." autocomplete="off">
+            <span class="material-icons clear-icon" id="clearReferenceSearchIcon" style="display: none;">close</span>
+        </div>
+        
+        <div class="filter-chips-container">
+            <a href="#" id="showAllRefsLink" class="show-all-link" onclick="resetReferenceFiltersAndSearch(); return false;" style="display: none; margin-right: 12px;">show all</a>
+            
+            <!-- Type Filter -->
+            <div class="filter-chip-wrapper">
+                <div class="filter-chip" id="referenceTypeFilter" data-filter="type">
+                    <span class="filter-chip-text">Type</span>
+                    <i class="material-icons filter-chip-arrow">keyboard_arrow_down</i>
+                </div>
+                <div class="filter-dropdown" id="referenceTypeDropdown" style="display: none;">
+                    <div class="filter-dropdown-header">
+                        <span class="filter-dropdown-title">Filter by Type</span>
+                        <button class="filter-clear-btn" onclick="clearReferenceTypeFilter()">
+                            <i class="material-icons">clear</i>
+                        </button>
+                    </div>
+                    <div class="filter-dropdown-content">
+                        <div class="filter-options" id="referenceTypeOptions">
+                            <div class="filter-option" data-type="person">Person</div>
+                            <div class="filter-option" data-type="place">Place</div>
+                            <div class="filter-option" data-type="event">Event</div>
+                            <div class="filter-option" data-type="theme">Theme</div>
+                            <div class="filter-option" data-type="emotion">Emotion</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -5830,36 +5901,42 @@
 
         <!-- References Tab Content -->
         <div id="references-tab" class="tab-content">
-            <!-- Search Section for People -->
-            <div class="search-section">
-                <h2>Search People</h2>
-                <div class="search-row">
-                    <div class="mdc-search" id="peopleSearch">
-                        <span class="material-icons mdc-search__icon">search</span>
-                        <input type="text" class="mdc-search__input" id="peopleSearchInput" placeholder="Search people..." autocomplete="off">
-                        <span class="material-icons mdc-search__trailing-icon" id="clearPeopleSearchIcon" style="display: none;">close</span>
-                        <div class="mdc-search__suggestions" id="peopleSearchSuggestions"></div>
-                    </div>
-                    <button class="mdc-button mdc-button--outlined" id="peopleClearBtn">
-                        <span class="mdc-button__ripple"></span>
-                        <span class="mdc-button__label">Clear</span>
-                    </button>
-                </div>
-                <div class="search-filters">
-                    <div class="filter-chip active" data-people-filter="all">All</div>
-                    <div class="filter-chip" data-people-filter="name">Name</div>
-                    <div class="filter-chip" data-people-filter="aliases">Aliases</div>
-                    <div class="filter-chip" data-people-filter="context">Context</div>
-                </div>
-                <div class="search-results-info" id="peopleSearchResultsInfo" style="display: none;"></div>
-            </div>
+            <div class="search-results-info" id="referenceSearchResultsInfo" style="display: none;"></div>
 
             <!-- People Section -->
             <div class="people-section">
-                <h2 class="section-title">
-                    <span id="peopleTitle">People References</span>
-                    <a href="#" id="selectAllRefsLink" class="show-all-link" onclick="toggleSelectAllReferences(true); return false;" style="margin-left: 8px; font-size: 14px;">select all</a>
-                </h2>
+                <div class="documents-header">
+                    <div class="documents-title-container">
+                        <h2 class="section-title">
+                            <span id="peopleTitle">People References</span>
+                            <a href="#" id="selectAllRefsLink" class="show-all-link" onclick="toggleSelectAllReferences(true); return false;" style="margin-left: 8px; font-size: 14px;">select all</a>
+                        </h2>
+                    </div>
+                    <div class="sort-controls">
+                        <span class="sort-label">Sort:</span>
+                        <div class="sort-container">
+                            <div class="sort-chip" id="referenceSortChip" data-sort="count" data-direction="desc">
+                                <i class="material-icons sort-icon">sort</i>
+                                <span class="sort-text">Count (d)</span>
+                                <i class="material-icons sort-arrow">keyboard_arrow_down</i>
+                            </div>
+                            <div class="sort-dropdown" id="referenceSortDropdown" style="display: none;">
+                                <div class="sort-option" data-sort="count" data-direction="asc">
+                                    <span class="sort-option-text">Count (a)</span>
+                                </div>
+                                <div class="sort-option" data-sort="count" data-direction="desc">
+                                    <span class="sort-option-text">Count (d)</span>
+                                </div>
+                                <div class="sort-option" data-sort="name" data-direction="asc">
+                                    <span class="sort-option-text">Name (a)</span>
+                                </div>
+                                <div class="sort-option" data-sort="name" data-direction="desc">
+                                    <span class="sort-option-text">Name (d)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div id="peopleContainer">
                     <div class="loading">
                         <p>Loading people...</p>
@@ -6026,9 +6103,9 @@
                 </div>
             </div>
 
-            <!-- Documents Section -->
+            <!-- Documents Citing Section -->
             <div class="side-sheet__section">
-                <h3 class="side-sheet__section-title">Documents</h3>
+                <h3 class="side-sheet__section-title">Documents Citing</h3>
                 <div class="side-sheet__documents-list" id="refDocumentsList">
                     <div class="side-sheet__empty">
                         <span class="material-icons">description</span>
@@ -6227,7 +6304,19 @@
         let filteredDocuments = [];
         let selectedPeople = new Set();
         let allPeople = [];
+        let filteredPeople = [];
         let snackbar = null;
+        
+        // Reference filter state
+        let activeReferenceFilters = {
+            type: null // 'person', 'place', 'event', 'theme', 'emotion', or null
+        };
+        
+        // Reference sort state
+        let currentReferenceSort = {
+            field: 'count',
+            direction: 'desc'
+        };
         let currentUserId = '{{ user.id if user else "" }}';
         let currentUserRole = '{{ user.role if user else "Viewer" }}';
         
@@ -6743,9 +6832,20 @@
             applyFilters();
         }
 
-        // Search people with filters
+        // Search people with filters (legacy - now uses applyReferenceFilters)
         function searchPeople() {
-            const query = document.getElementById('peopleSearchInput').value.toLowerCase().trim();
+            // Use new reference filter system if available
+            const referenceSearchInput = document.getElementById('referenceSearchInput');
+            if (referenceSearchInput) {
+                applyReferenceFilters();
+                return;
+            }
+            
+            // Fallback to old system if old input exists
+            const oldInput = document.getElementById('peopleSearchInput');
+            if (!oldInput) return;
+            
+            const query = oldInput.value.toLowerCase().trim();
             
             if (query === '') {
                 renderPeople(allPeople);
@@ -6787,10 +6887,13 @@
             }
         }
 
-        // Update people search results info
+        // Update people search results info (legacy)
         function updatePeopleSearchResultsInfo(count) {
             const info = document.getElementById('peopleSearchResultsInfo');
-            const query = document.getElementById('peopleSearchInput').value.trim();
+            if (!info) return;
+            
+            const oldInput = document.getElementById('peopleSearchInput');
+            const query = oldInput ? oldInput.value.trim() : '';
             
             if (query === '') {
                 info.style.display = 'none';
@@ -6810,11 +6913,24 @@
             renderDocuments();
         }
 
-        // Clear people search
+        // Clear people search (legacy - now uses resetReferenceFiltersAndSearch)
         function clearPeopleSearch() {
-            document.getElementById('peopleSearchInput').value = '';
-            document.getElementById('clearPeopleSearchIcon').style.display = 'none';
-            document.getElementById('peopleSearchSuggestions').classList.remove('show');
+            // Use new reference filter system if available
+            const referenceSearchInput = document.getElementById('referenceSearchInput');
+            if (referenceSearchInput) {
+                resetReferenceFiltersAndSearch();
+                return;
+            }
+            
+            // Fallback to old system
+            const oldInput = document.getElementById('peopleSearchInput');
+            const clearIcon = document.getElementById('clearPeopleSearchIcon');
+            const suggestions = document.getElementById('peopleSearchSuggestions');
+            
+            if (oldInput) oldInput.value = '';
+            if (clearIcon) clearIcon.style.display = 'none';
+            if (suggestions) suggestions.classList.remove('show');
+            
             updatePeopleSearchResultsInfo(allPeople.length);
             renderPeople(allPeople);
         }
@@ -6836,17 +6952,28 @@
             updateShowAllVisibility();
         }
 
-        // Handle people search input changes
+        // Handle people search input changes (legacy - now uses reference filter system)
         function handlePeopleSearchInput() {
+            // Use new reference filter system if available
+            const referenceSearchInput = document.getElementById('referenceSearchInput');
+            if (referenceSearchInput) {
+                applyReferenceFilters();
+                return;
+            }
+            
+            // Fallback to old system
             const input = document.getElementById('peopleSearchInput');
             const clearIcon = document.getElementById('clearPeopleSearchIcon');
             
+            if (!input) return;
+            
             if (input.value.length > 0) {
-                clearIcon.style.display = 'block';
+                if (clearIcon) clearIcon.style.display = 'block';
                 searchPeople();
             } else {
-                clearIcon.style.display = 'none';
-                document.getElementById('peopleSearchSuggestions').classList.remove('show');
+                if (clearIcon) clearIcon.style.display = 'none';
+                const suggestions = document.getElementById('peopleSearchSuggestions');
+                if (suggestions) suggestions.classList.remove('show');
                 clearPeopleSearch();
             }
         }
@@ -10098,16 +10225,26 @@
         });
         document.getElementById('clearSearchIcon').addEventListener('click', clearSearch);
 
-        // People search event listeners
-        document.getElementById('peopleClearBtn').addEventListener('click', clearPeopleSearch);
-        document.getElementById('peopleSearchInput').addEventListener('input', handlePeopleSearchInput);
-        document.getElementById('peopleSearchInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                searchPeople();
-            }
-        });
-        document.getElementById('clearPeopleSearchIcon').addEventListener('click', clearPeopleSearch);
+        // People search event listeners (legacy - only attach if elements exist)
+        const peopleClearBtn = document.getElementById('peopleClearBtn');
+        const peopleSearchInput = document.getElementById('peopleSearchInput');
+        const clearPeopleSearchIcon = document.getElementById('clearPeopleSearchIcon');
+        
+        if (peopleClearBtn) {
+            peopleClearBtn.addEventListener('click', clearPeopleSearch);
+        }
+        if (peopleSearchInput) {
+            peopleSearchInput.addEventListener('input', handlePeopleSearchInput);
+            peopleSearchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchPeople();
+                }
+            });
+        }
+        if (clearPeopleSearchIcon) {
+            clearPeopleSearchIcon.addEventListener('click', clearPeopleSearch);
+        }
 
         // Filter state variables
         let activeFilters = {
@@ -11653,6 +11790,24 @@
                 console.error('Tab content not found for:', tabName);
             }
             
+            // Show/hide filter bars based on active tab
+            const documentFilterBar = document.getElementById('documentFilterBar');
+            const referenceFilterBar = document.getElementById('referenceFilterBar');
+            
+            if (tabName === 'documents') {
+                // Show document filters, hide reference filters
+                if (documentFilterBar) documentFilterBar.style.display = 'flex';
+                if (referenceFilterBar) referenceFilterBar.style.display = 'none';
+            } else if (tabName === 'references') {
+                // Hide document filters, show reference filters
+                if (documentFilterBar) documentFilterBar.style.display = 'none';
+                if (referenceFilterBar) referenceFilterBar.style.display = 'flex';
+            } else {
+                // Hide both filter bars for other tabs (users, etc.)
+                if (documentFilterBar) documentFilterBar.style.display = 'none';
+                if (referenceFilterBar) referenceFilterBar.style.display = 'none';
+            }
+            
             // Load content for the active tab
             if (tabName === 'references') {
                 loadPeople();
@@ -12730,6 +12885,102 @@
         }
 
         // Load people for references tab
+        // Apply reference filters
+        function applyReferenceFilters() {
+            let filtered = [...allPeople];
+            
+            // Apply type filter
+            if (activeReferenceFilters.type) {
+                filtered = filtered.filter(ref => {
+                    const refType = ref.type || 'person';
+                    return refType === activeReferenceFilters.type;
+                });
+            }
+            
+            // Apply search filter
+            const searchQuery = document.getElementById('referenceSearchInput')?.value.trim() || '';
+            if (searchQuery) {
+                const queryLower = searchQuery.toLowerCase();
+                filtered = filtered.filter(ref => {
+                    // Search in name
+                    if (ref.name && ref.name.toLowerCase().includes(queryLower)) return true;
+                    // Search in aliases
+                    if (ref.aliases && ref.aliases.some(alias => alias.toLowerCase().includes(queryLower))) return true;
+                    // Search in context
+                    if (ref.context && ref.context.toLowerCase().includes(queryLower)) return true;
+                    return false;
+                });
+            }
+            
+            filteredPeople = filtered;
+            
+            // Update "show all" link visibility
+            const showAllLink = document.getElementById('showAllRefsLink');
+            const hasFilters = activeReferenceFilters.type || searchQuery;
+            if (showAllLink) {
+                showAllLink.style.display = hasFilters ? 'block' : 'none';
+            }
+            
+            // Update search results info
+            updateReferenceSearchResultsInfo();
+            
+            // Apply sorting
+            applyReferenceSorting();
+        }
+        
+        function updateReferenceSearchResultsInfo() {
+            const info = document.getElementById('referenceSearchResultsInfo');
+            const searchQuery = document.getElementById('referenceSearchInput')?.value.trim() || '';
+            
+            if (info) {
+                if (searchQuery || activeReferenceFilters.type) {
+                    const count = filteredPeople.length;
+                    info.textContent = `Found ${count} reference${count !== 1 ? 's' : ''}${searchQuery ? ` matching "${searchQuery}"` : ''}`;
+                    info.style.display = 'block';
+                } else {
+                    info.style.display = 'none';
+                }
+            }
+        }
+        
+        // Sort references
+        function sortReferences(references, sortField, sortDirection) {
+            return [...references].sort((a, b) => {
+                let aValue, bValue;
+                
+                switch (sortField) {
+                    case 'name':
+                        aValue = (a.name || '').toLowerCase();
+                        bValue = (b.name || '').toLowerCase();
+                        break;
+                    case 'count':
+                        aValue = a.document_count || 0;
+                        bValue = b.document_count || 0;
+                        break;
+                    default:
+                        return 0;
+                }
+                
+                // Handle empty values
+                if (aValue === bValue) return 0;
+                if (sortField === 'count') {
+                    // Numeric comparison
+                    return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+                } else {
+                    // String comparison
+                    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+                    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        
+        // Apply current sorting to filtered references
+        function applyReferenceSorting() {
+            filteredPeople = sortReferences(filteredPeople, currentReferenceSort.field, currentReferenceSort.direction);
+            renderPeople(filteredPeople);
+        }
+
         async function loadPeople() {
             try {
                 console.log('Loading people from /people/detailed...');
@@ -12744,7 +12995,8 @@
                     if (allPeople.length > 0) {
                         console.log('Sample person data:', allPeople[0]);
                     }
-                    renderPeople(allPeople);
+                    // Apply filters and sorting
+                    applyReferenceFilters();
                 } else {
                     showPeopleError('Failed to load people: ' + data.error);
                 }
@@ -12759,12 +13011,12 @@
             const container = document.getElementById('peopleContainer');
             
             if (people.length === 0) {
-                const query = document.getElementById('peopleSearchInput').value.trim();
+                const query = document.getElementById('referenceSearchInput')?.value.trim() || '';
                 container.innerHTML = `
                     <div class="search-empty-state">
                         <span class="material-icons">person_search</span>
-                        <h3>${query ? 'No people found' : 'No people available'}</h3>
-                        <p>${query ? `No people match "${query}"` : 'No people have been mentioned in documents yet'}</p>
+                        <h3>${query ? 'No references found' : 'No references available'}</h3>
+                        <p>${query ? `No references match "${query}"` : 'No references have been mentioned in documents yet'}</p>
                     </div>
                 `;
                 return;
@@ -12883,7 +13135,128 @@
         }
 
 
-        function renderDocumentsList(documents) {
+        // Extract citation context from document text - returns only the single sentence containing the reference
+        function extractCitationContext(text, personName, aliases) {
+            if (!text || typeof text !== 'string') {
+                return { error: 'No text available' };
+            }
+            
+            // Create search terms: person name and all aliases
+            const searchTerms = [personName, ...(aliases || [])].filter(Boolean);
+            if (searchTerms.length === 0) {
+                return { error: 'No search terms available' };
+            }
+            
+            // Find all mentions
+            const mentions = [];
+            const textLower = text.toLowerCase();
+            
+            for (const term of searchTerms) {
+                const termLower = term.toLowerCase();
+                // Use word boundaries to avoid partial matches
+                const regex = new RegExp(`\\b${escapeRegex(termLower)}\\b`, 'gi');
+                let match;
+                while ((match = regex.exec(textLower)) !== null) {
+                    mentions.push({
+                        index: match.index,
+                        term: text.substring(match.index, match.index + match[0].length), // Preserve original case
+                        length: match[0].length
+                    });
+                }
+            }
+            
+            if (mentions.length === 0) {
+                return { error: 'Reference not found in document text' };
+            }
+            
+            // Sort by position
+            mentions.sort((a, b) => a.index - b.index);
+            
+            // Get the first mention
+            const firstMention = mentions[0];
+            const mentionPos = firstMention.index;
+            
+            // Find sentence start - look backwards for sentence-ending punctuation followed by space
+            let sentenceStart = 0;
+            for (let i = mentionPos - 1; i >= Math.max(0, mentionPos - 300); i--) {
+                const char = text[i];
+                const nextChar = text[i + 1];
+                // Check for sentence-ending punctuation followed by space or newline
+                if ((char === '.' || char === '!' || char === '?') && (nextChar === ' ' || nextChar === '\n' || nextChar === '\r')) {
+                    sentenceStart = i + 1;
+                    // Skip whitespace
+                    while (sentenceStart < text.length && /\s/.test(text[sentenceStart])) {
+                        sentenceStart++;
+                    }
+                    break;
+                }
+            }
+            
+            // Find sentence end - look forwards for sentence-ending punctuation followed by space
+            let sentenceEnd = text.length;
+            let foundEnd = false;
+            for (let i = mentionPos + firstMention.length; i < Math.min(text.length, mentionPos + firstMention.length + 300); i++) {
+                const char = text[i];
+                const nextChar = i + 1 < text.length ? text[i + 1] : '';
+                // Check for sentence-ending punctuation followed by space, newline, or end of text
+                if ((char === '.' || char === '!' || char === '?') && (nextChar === ' ' || nextChar === '\n' || nextChar === '\r' || nextChar === '')) {
+                    sentenceEnd = i + 1; // Include punctuation
+                    foundEnd = true;
+                    break;
+                }
+            }
+            
+            // If no sentence end found, limit to reasonable length (one sentence shouldn't be more than ~200 chars)
+            if (!foundEnd && sentenceEnd - sentenceStart > 200) {
+                // Look for a space near the 200 char mark to break cleanly
+                const maxLength = sentenceStart + 200;
+                for (let i = maxLength; i > sentenceStart + 150; i--) {
+                    if (text[i] === ' ') {
+                        sentenceEnd = i;
+                        break;
+                    }
+                }
+            }
+            
+            // Extract exactly one sentence
+            let sentence = text.substring(sentenceStart, sentenceEnd).trim();
+            
+            // Clean up: remove any trailing sentence fragments if we accidentally included multiple sentences
+            // Check if there are multiple sentence-ending punctuations
+            const sentenceEndings = sentence.match(/[.!?]/g);
+            if (sentenceEndings && sentenceEndings.length > 1) {
+                // Find the first sentence-ending punctuation after the mention
+                const mentionInSentence = firstMention.index - sentenceStart;
+                for (let i = mentionInSentence; i < sentence.length; i++) {
+                    if ((sentence[i] === '.' || sentence[i] === '!' || sentence[i] === '?') && 
+                        (i + 1 >= sentence.length || sentence[i + 1] === ' ' || sentence[i + 1] === '\n')) {
+                        sentence = sentence.substring(0, i + 1).trim();
+                        break;
+                    }
+                }
+            }
+            
+            if (!sentence) {
+                return { error: 'Could not extract sentence' };
+            }
+            
+            // Highlight the matched term in the sentence (preserve original case)
+            const highlightedSentence = sentence.replace(
+                new RegExp(`(${escapeRegex(firstMention.term)})`, 'gi'),
+                '<mark>$1</mark>'
+            );
+            
+            return {
+                sentence: highlightedSentence,
+                count: mentions.length
+            };
+        }
+        
+        function escapeRegex(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        async function renderDocumentsList(documents) {
             const container = document.getElementById('refDocumentsList');
             
             if (!documents || documents.length === 0) {
@@ -12896,14 +13269,67 @@
                 return;
             }
             
-            container.innerHTML = documents.map(doc => `
-                <div class="side-sheet__document-item" onclick="showDocument('${doc.id}'); closePersonSideSheet();">
-                    <div class="side-sheet__document-title">${escapeHtml(doc.title)}</div>
-                    <div class="side-sheet__document-meta">
-                        ${doc.source_language} → ${doc.target_language} • ${formatDate(doc.date_processed)}
-                    </div>
+            // Show loading state
+            container.innerHTML = `
+                <div class="side-sheet__empty">
+                    <span class="material-icons">description</span>
+                    <p>Loading citations...</p>
                 </div>
-            `).join('');
+            `;
+            
+            // Fetch citation context for each document
+            const personName = currentReferenceData?.name || '';
+            const aliases = currentReferenceData?.aliases || [];
+            
+            const citationPromises = documents.map(async (doc) => {
+                try {
+                    const response = await fetch(`/documents/${doc.id}`);
+                    const data = await response.json();
+                    
+                    if (data.success && data.document) {
+                        const text = data.document.original_text || data.document.translated_text || '';
+                        const citation = extractCitationContext(text, personName, aliases);
+                        return {
+                            ...doc,
+                            citation: citation
+                        };
+                    }
+                } catch (error) {
+                    console.error(`Error fetching citation for ${doc.id}:`, error);
+                }
+                return { ...doc, citation: null };
+            });
+            
+            const documentsWithCitations = await Promise.all(citationPromises);
+            
+            // Render citations
+            container.innerHTML = documentsWithCitations.map(doc => {
+                let citationHtml = '';
+                
+                if (doc.citation) {
+                    if (doc.citation.error) {
+                        // Show why citation is missing
+                        const errorMsg = doc.citation.error === 'No text available' 
+                            ? 'Document text not available'
+                            : doc.citation.error === 'Reference not found in document text'
+                            ? 'Reference not found in text (may be in metadata only)'
+                            : doc.citation.error;
+                        citationHtml = `<div class="side-sheet__citation-error">${errorMsg}</div>`;
+                    } else if (doc.citation.sentence) {
+                        // Show the single sentence with citation count
+                        citationHtml = `<div class="side-sheet__citation-text">${doc.citation.sentence}${doc.citation.count > 1 ? ` <span class="side-sheet__citation-more">(and ${doc.citation.count - 1} more)</span>` : ''}</div>`;
+                    }
+                } else {
+                    citationHtml = `<div class="side-sheet__citation-error">Unable to load citation</div>`;
+                }
+                
+                return `
+                    <div class="side-sheet__document-item" onclick="showDocument('${doc.id}'); closePersonSideSheet();">
+                        <div class="side-sheet__document-title">${escapeHtml(doc.title)}</div>
+                        ${citationHtml}
+                    </div>
+                `;
+            }).join('');
         }
 
         function setupAliasInput() {
@@ -13791,10 +14217,12 @@
         // Initialize sort functionality
         function initializeSortChips() {
             const sortChip = document.getElementById('sortChip');
-            const sortOptions = document.querySelectorAll('.sort-option');
+            const sortOptions = document.querySelectorAll('#sortDropdown .sort-option');
             
             // Add click listener to sort chip
-            sortChip.addEventListener('click', handleSortChipClick);
+            if (sortChip) {
+                sortChip.addEventListener('click', handleSortChipClick);
+            }
             
             // Add click listeners to sort options
             sortOptions.forEach(option => {
@@ -13804,13 +14232,223 @@
             // Close dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 const sortContainer = document.querySelector('.sort-container');
-                if (!sortContainer.contains(e.target)) {
-                    document.getElementById('sortDropdown').style.display = 'none';
+                if (sortContainer && !sortContainer.contains(e.target)) {
+                    const dropdown = document.getElementById('sortDropdown');
+                    if (dropdown) dropdown.style.display = 'none';
                 }
             });
             
             // Set initial state
             updateSortChip();
+        }
+        
+        // Initialize reference filter functionality
+        function initializeReferenceFilters() {
+            // Reference search input
+            const referenceSearchInput = document.getElementById('referenceSearchInput');
+            const clearReferenceSearchIcon = document.getElementById('clearReferenceSearchIcon');
+            
+            if (referenceSearchInput) {
+                referenceSearchInput.addEventListener('input', () => {
+                    const hasValue = referenceSearchInput.value.trim().length > 0;
+                    if (clearReferenceSearchIcon) {
+                        clearReferenceSearchIcon.style.display = hasValue ? 'block' : 'none';
+                    }
+                    applyReferenceFilters();
+                });
+                
+                referenceSearchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyReferenceFilters();
+                    }
+                });
+            }
+            
+            if (clearReferenceSearchIcon) {
+                clearReferenceSearchIcon.addEventListener('click', () => {
+                    if (referenceSearchInput) {
+                        referenceSearchInput.value = '';
+                        clearReferenceSearchIcon.style.display = 'none';
+                        applyReferenceFilters();
+                    }
+                });
+            }
+            
+            // Type filter
+            const typeFilterChip = document.getElementById('referenceTypeFilter');
+            if (typeFilterChip) {
+                typeFilterChip.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleReferenceTypeFilter();
+                });
+            }
+            
+            // Type filter options
+            const typeOptions = document.querySelectorAll('#referenceTypeOptions .filter-option');
+            typeOptions.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const type = option.dataset.type;
+                    selectReferenceTypeFilter(type);
+                });
+            });
+            
+            // Reference sort
+            const referenceSortChip = document.getElementById('referenceSortChip');
+            const referenceSortOptions = document.querySelectorAll('#referenceSortDropdown .sort-option');
+            
+            if (referenceSortChip) {
+                referenceSortChip.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleReferenceSortChipClick();
+                });
+            }
+            
+            referenceSortOptions.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleReferenceSortOptionClick(option);
+                });
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#referenceTypeFilter') && !e.target.closest('#referenceTypeDropdown')) {
+                    const dropdown = document.getElementById('referenceTypeDropdown');
+                    if (dropdown) dropdown.style.display = 'none';
+                    if (typeFilterChip) typeFilterChip.classList.remove('active');
+                }
+                
+                if (!e.target.closest('#referenceSortChip') && !e.target.closest('#referenceSortDropdown')) {
+                    const dropdown = document.getElementById('referenceSortDropdown');
+                    if (dropdown) dropdown.style.display = 'none';
+                }
+            });
+        }
+        
+        function toggleReferenceTypeFilter() {
+            const dropdown = document.getElementById('referenceTypeDropdown');
+            const chip = document.getElementById('referenceTypeFilter');
+            
+            if (dropdown && chip) {
+                const isVisible = dropdown.style.display !== 'none';
+                if (isVisible) {
+                    dropdown.style.display = 'none';
+                    chip.classList.remove('active');
+                } else {
+                    dropdown.style.display = 'block';
+                    chip.classList.add('active');
+                }
+            }
+        }
+        
+        function selectReferenceTypeFilter(type) {
+            activeReferenceFilters.type = type;
+            const chip = document.getElementById('referenceTypeFilter');
+            const dropdown = document.getElementById('referenceTypeDropdown');
+            
+            if (chip) {
+                chip.classList.add('active');
+                const textElement = chip.querySelector('.filter-chip-text');
+                if (textElement) {
+                    const typeLabels = {
+                        'person': 'Person',
+                        'place': 'Place',
+                        'event': 'Event',
+                        'theme': 'Theme',
+                        'emotion': 'Emotion'
+                    };
+                    textElement.textContent = typeLabels[type] || 'Type';
+                }
+            }
+            
+            if (dropdown) dropdown.style.display = 'none';
+            if (chip) chip.classList.remove('active');
+            
+            applyReferenceFilters();
+        }
+        
+        function clearReferenceTypeFilter() {
+            activeReferenceFilters.type = null;
+            const chip = document.getElementById('referenceTypeFilter');
+            if (chip) {
+                chip.classList.remove('active');
+                const textElement = chip.querySelector('.filter-chip-text');
+                if (textElement) {
+                    textElement.textContent = 'Type';
+                }
+            }
+            const dropdown = document.getElementById('referenceTypeDropdown');
+            if (dropdown) dropdown.style.display = 'none';
+            applyReferenceFilters();
+        }
+        
+        function handleReferenceSortChipClick() {
+            const dropdown = document.getElementById('referenceSortDropdown');
+            const isVisible = dropdown && dropdown.style.display !== 'none';
+            
+            if (dropdown) {
+                dropdown.style.display = isVisible ? 'none' : 'block';
+            }
+        }
+        
+        function handleReferenceSortOptionClick(option) {
+            const sortField = option.dataset.sort;
+            const sortDirection = option.dataset.direction;
+            
+            currentReferenceSort.field = sortField;
+            currentReferenceSort.direction = sortDirection;
+            
+            updateReferenceSortChip();
+            const dropdown = document.getElementById('referenceSortDropdown');
+            if (dropdown) dropdown.style.display = 'none';
+            
+            applyReferenceSorting();
+        }
+        
+        function updateReferenceSortChip() {
+            const chip = document.getElementById('referenceSortChip');
+            if (!chip) return;
+            
+            // Update chip data attributes
+            chip.dataset.sort = currentReferenceSort.field;
+            chip.dataset.direction = currentReferenceSort.direction;
+            
+            const sortText = chip.querySelector('.sort-text');
+            if (sortText) {
+                const directionText = currentReferenceSort.direction === 'asc' ? '(a)' : '(d)';
+                switch (currentReferenceSort.field) {
+                    case 'count':
+                        sortText.textContent = `Count ${directionText}`;
+                        break;
+                    case 'name':
+                        sortText.textContent = `Name ${directionText}`;
+                        break;
+                    default:
+                        sortText.textContent = 'Sort';
+                }
+            }
+        }
+        
+        function resetReferenceFiltersAndSearch() {
+            activeReferenceFilters.type = null;
+            const searchInput = document.getElementById('referenceSearchInput');
+            if (searchInput) searchInput.value = '';
+            const clearIcon = document.getElementById('clearReferenceSearchIcon');
+            if (clearIcon) clearIcon.style.display = 'none';
+            
+            const typeChip = document.getElementById('referenceTypeFilter');
+            if (typeChip) {
+                typeChip.classList.remove('active');
+                const textElement = typeChip.querySelector('.filter-chip-text');
+                if (textElement) textElement.textContent = 'Type';
+            }
+            
+            const showAllLink = document.getElementById('showAllRefsLink');
+            if (showAllLink) showAllLink.style.display = 'none';
+            
+            applyReferenceFilters();
         }
 
         // Initialize the page
@@ -13826,6 +14464,12 @@
             
             // Initialize sort chips
             initializeSortChips();
+            
+            // Initialize reference filters
+            initializeReferenceFilters();
+            
+            // Initialize reference sort chip display
+            updateReferenceSortChip();
             
             // Initialize bulk status menu
             const bulkStatusMenuEl = document.getElementById('bulkStatusMenu');
