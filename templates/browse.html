@@ -1857,6 +1857,230 @@
             padding-top: var(--md-sys-spacing-2);
         }
 
+        /* Skeleton Loaders */
+        @keyframes shimmer {
+            0% {
+                background-position: -468px 0;
+            }
+            100% {
+                background-position: 468px 0;
+            }
+        }
+
+        .skeleton {
+            animation: shimmer 1.2s ease-in-out infinite;
+            background: linear-gradient(
+                to right,
+                var(--md-sys-color-surface-container) 0%,
+                var(--md-sys-color-surface-container-high) 20%,
+                var(--md-sys-color-surface-container) 40%,
+                var(--md-sys-color-surface-container) 100%
+            );
+            background-size: 800px 104px;
+            border-radius: var(--md-sys-shape-radius-sm);
+        }
+
+        .skeleton-card {
+            background: var(--md-sys-color-surface);
+            border-radius: var(--md-sys-shape-radius-md);
+            padding: var(--md-sys-spacing-4);
+            box-shadow: var(--md-sys-elevation-level1);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            pointer-events: none;
+        }
+
+        .skeleton-thumbnail {
+            width: 100%;
+            height: 120px;
+            margin-bottom: var(--md-sys-spacing-3);
+        }
+
+        .skeleton-title {
+            height: 20px;
+            width: 80%;
+            margin-bottom: var(--md-sys-spacing-2);
+        }
+
+        .skeleton-text {
+            height: 14px;
+            width: 100%;
+            margin-bottom: var(--md-sys-spacing-1);
+        }
+
+        .skeleton-text-short {
+            height: 14px;
+            width: 60%;
+        }
+
+        .skeleton-list-item {
+            display: flex;
+            align-items: center;
+            padding: var(--md-sys-spacing-4);
+            background: var(--md-sys-color-surface);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            pointer-events: none;
+        }
+
+        .skeleton-list-graphic {
+            width: 60px;
+            height: 80px;
+            margin-right: var(--md-sys-spacing-4);
+            flex-shrink: 0;
+        }
+
+        .skeleton-list-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--md-sys-spacing-2);
+        }
+
+        /* Responsive skeleton adjustments */
+        @media (min-width: 600px) {
+            .skeleton-card {
+                padding: var(--md-sys-spacing-5);
+            }
+            
+            .skeleton-thumbnail {
+                height: 140px;
+            }
+        }
+
+        @media (min-width: 840px) {
+            .skeleton-card {
+                padding: var(--md-sys-spacing-6);
+            }
+            
+            .skeleton-thumbnail {
+                height: 160px;
+            }
+        }
+
+        /* Pagination Controls */
+        .pagination-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--md-sys-spacing-4) 0;
+            margin-top: var(--md-sys-spacing-4);
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .pagination-info {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-4);
+        }
+
+        .pagination-nav-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-surface);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        .pagination-nav-btn:hover:not(:disabled) {
+            background: var(--md-sys-color-surface-container-high);
+            box-shadow: var(--md-sys-elevation-level1);
+        }
+
+        .pagination-nav-btn:active:not(:disabled) {
+            background: var(--md-sys-color-surface-container-highest);
+        }
+
+        .pagination-nav-btn:disabled {
+            opacity: 0.38;
+            cursor: not-allowed;
+        }
+
+        .pagination-indicator {
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            color: var(--md-sys-color-on-surface);
+            padding: 0 var(--md-sys-spacing-2);
+            min-width: 100px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .pagination-container {
+                flex-direction: column;
+                gap: var(--md-sys-spacing-3);
+                align-items: center;
+            }
+
+            .pagination-info {
+                font-size: 12px;
+            }
+        }
+
+        /* Editor Skeleton Loaders */
+        .editor-skeleton-container {
+            padding: var(--md-sys-spacing-6);
+            display: flex;
+            flex-direction: column;
+            gap: var(--md-sys-spacing-6);
+            min-height: 600px;
+        }
+
+        .editor-skeleton-header {
+            display: flex;
+            gap: var(--md-sys-spacing-4);
+            margin-bottom: var(--md-sys-spacing-4);
+        }
+
+        .editor-skeleton-image {
+            width: 300px;
+            height: 400px;
+            flex-shrink: 0;
+        }
+
+        .editor-skeleton-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--md-sys-spacing-3);
+        }
+
+        .editor-skeleton-tabs {
+            display: flex;
+            gap: var(--md-sys-spacing-2);
+            margin-bottom: var(--md-sys-spacing-4);
+        }
+
+        .editor-skeleton-tab {
+            width: 80px;
+            height: 40px;
+        }
+
+        @media (max-width: 840px) {
+            .editor-skeleton-header {
+                flex-direction: column;
+            }
+
+            .editor-skeleton-image {
+                width: 100%;
+                height: 300px;
+            }
+        }
+
         /* Responsive Documents Grid */
         @media (min-width: 600px) {
             .documents-grid {
@@ -5484,8 +5708,101 @@
                     </div>
                 </div>
                 <div id="documentsContainer">
-                    <div class="loading">
-                        <p>Loading documents...</p>
+                    <!-- Initial skeleton loaders -->
+                    <div class="documents-grid" id="initialSkeletons">
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-thumbnail"></div>
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Pagination Controls -->
+                <div class="pagination-container" id="paginationContainer" style="display: none;">
+                    <div class="pagination-info">
+                        <span id="paginationDocCount">Showing 1-48 of 176 documents</span>
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="pagination-nav-btn" id="prevPageBtn" onclick="prevPage()" aria-label="Previous page">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                        </button>
+                        <div class="pagination-indicator">
+                            <span id="pageIndicator">Page 1 of 1</span>
+                        </div>
+                        <button class="pagination-nav-btn" id="nextPageBtn" onclick="nextPage()" aria-label="Next page">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -5963,6 +6280,82 @@
         let currentView = 'grid'; // Default to grid view
         let selectedDocuments = new Set();
         
+        // Pagination state
+        let currentPage = 1;
+        const itemsPerPage = 48;
+        
+        // Get paginated documents from filtered results
+        function paginateDocuments() {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            return filteredDocuments.slice(startIndex, endIndex);
+        }
+        
+        // Calculate total pages
+        function getTotalPages() {
+            return Math.ceil(filteredDocuments.length / itemsPerPage);
+        }
+        
+        // Navigate to a specific page
+        function goToPage(pageNum) {
+            const totalPages = getTotalPages();
+            if (pageNum < 1 || pageNum > totalPages) return;
+            
+            currentPage = pageNum;
+            renderDocuments();
+            updatePaginationUI();
+            
+            // Scroll to top of document list
+            document.getElementById('documentsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Navigate to next page
+        function nextPage() {
+            const totalPages = getTotalPages();
+            if (currentPage < totalPages) {
+                goToPage(currentPage + 1);
+            }
+        }
+        
+        // Navigate to previous page
+        function prevPage() {
+            if (currentPage > 1) {
+                goToPage(currentPage - 1);
+            }
+        }
+        
+        // Update pagination UI
+        function updatePaginationUI() {
+            const totalPages = getTotalPages();
+            const totalDocs = filteredDocuments.length;
+            const startDoc = totalDocs === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+            const endDoc = Math.min(currentPage * itemsPerPage, totalDocs);
+            
+            // Update page indicator
+            const pageIndicator = document.getElementById('pageIndicator');
+            if (pageIndicator) {
+                pageIndicator.textContent = `Page ${currentPage} of ${totalPages || 1}`;
+            }
+            
+            // Update document count
+            const docCount = document.getElementById('paginationDocCount');
+            if (docCount) {
+                docCount.textContent = `Showing ${startDoc}-${endDoc} of ${totalDocs} documents`;
+            }
+            
+            // Update button states
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            
+            if (prevBtn) {
+                prevBtn.disabled = currentPage === 1;
+            }
+            
+            if (nextBtn) {
+                nextBtn.disabled = currentPage >= totalPages;
+            }
+        }
+        
         function toggleView(view) {
             currentView = view;
             
@@ -5984,6 +6377,7 @@
             console.log('Rendering documents...');
             const container = document.getElementById('documentsContainer');
             const titleElement = document.getElementById('documentsTitle');
+            const paginationContainer = document.getElementById('paginationContainer');
             console.log('Container found:', !!container);
             
             // Update document count in title
@@ -6002,13 +6396,20 @@
                         <p>${query ? `No documents match "${query}"` : 'Upload some documents to get started'}</p>
                     </div>
                 `;
+                // Hide pagination when no documents
+                if (paginationContainer) {
+                    paginationContainer.style.display = 'none';
+                }
                 return;
             }
+            
+            // Get paginated documents for current page
+            const paginatedDocs = paginateDocuments();
             
             if (currentView === 'grid') {
                 container.innerHTML = `
                     <div class="documents-grid">
-                        ${filteredDocuments.map(doc => `
+                        ${paginatedDocs.map(doc => `
                             <div class="document-card" onclick="showDocument('${doc.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); showDocument('${doc.id}');}" tabindex="0" role="button" aria-label="View document ${escapeHtml(doc.title)}">
                                 <div class="document-thumbnail">
                                     ${doc.page_count > 0 ? 
@@ -6039,7 +6440,7 @@
                 // List view using the original mdc-list structure
                 container.innerHTML = `
                     <div class="mdc-list">
-                        ${filteredDocuments.map(doc => `
+                        ${paginatedDocs.map(doc => `
                             <div class="mdc-list-item" data-doc-id="${doc.id}" onclick="showDocument('${doc.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); showDocument('${doc.id}');}" tabindex="0" role="button" aria-label="View document ${escapeHtml(doc.title)}">
                                 <div class="document-checkbox-container">
                                     <input type="checkbox" class="document-checkbox" data-doc-id="${doc.id}" onclick="event.stopPropagation();">
@@ -6089,6 +6490,17 @@
                         toggleDocumentSelection(docId, e.target.checked);
                     });
                 });
+            }
+            
+            // Show/update pagination controls
+            if (paginationContainer) {
+                const totalPages = getTotalPages();
+                if (totalPages > 1) {
+                    paginationContainer.style.display = 'flex';
+                    updatePaginationUI();
+                } else {
+                    paginationContainer.style.display = 'none';
+                }
             }
             
             // Update select all link state after rendering
@@ -6189,6 +6601,8 @@
         // Apply current sorting to filtered documents
         function applySorting() {
             filteredDocuments = sortDocuments(filteredDocuments, currentSort.field, currentSort.direction);
+            // Reset to first page when sorting
+            currentPage = 1;
             renderDocuments();
         }
 
@@ -6217,6 +6631,44 @@
         // Show document details (go directly to edit mode)
         async function showDocument(docId) {
             currentDocumentId = docId;
+            
+            // Show modal immediately with skeleton loader
+            const modal = document.getElementById('documentModal');
+            const modalTitle = document.getElementById('dialogTitle');
+            const modalContent = document.getElementById('modalContent');
+            
+            if (modal && modalContent) {
+                // Show loading skeleton
+                modalTitle.textContent = 'Loading document...';
+                modalContent.innerHTML = `
+                    <div class="editor-skeleton-container">
+                        <div class="editor-skeleton-tabs">
+                            <div class="skeleton editor-skeleton-tab"></div>
+                            <div class="skeleton editor-skeleton-tab"></div>
+                            <div class="skeleton editor-skeleton-tab"></div>
+                        </div>
+                        <div class="editor-skeleton-header">
+                            <div class="skeleton editor-skeleton-image"></div>
+                            <div class="editor-skeleton-content">
+                                <div class="skeleton skeleton-title" style="width: 60%; margin-bottom: 16px;"></div>
+                                <div class="skeleton skeleton-text"></div>
+                                <div class="skeleton skeleton-text"></div>
+                                <div class="skeleton skeleton-text"></div>
+                                <div class="skeleton skeleton-text-short"></div>
+                                <div class="skeleton skeleton-text" style="margin-top: 24px;"></div>
+                                <div class="skeleton skeleton-text"></div>
+                                <div class="skeleton skeleton-text"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Open the modal
+                modal.classList.add('mdc-dialog--open');
+                modal.classList.add('document-editor-dialog');
+                document.body.style.overflow = 'hidden';
+            }
+            
             try {
                 const response = await fetch(`/documents/${docId}`, {
                     credentials: 'same-origin' // Include cookies for session authentication
@@ -7121,13 +7573,13 @@
             
                 // Initialize image controls
                 currentDocumentId = doc.id;
-                currentPage = 1;
+                currentImagePage = 1;
                 currentZoom = 1;
-                totalPages = doc.page_count || 1;
+                totalImagePages = doc.page_count || 1;
                 
                 // Update controls after a short delay to ensure DOM is ready
                 setTimeout(() => {
-                    updatePageInfo();
+                    updateImagePageInfo();
                     updateZoomInfo();
                     applyZoom();
                 }, 100);
@@ -7149,21 +7601,21 @@
         }
 
         // Image navigation and zoom functionality
-        let currentPage = 1;
+        let currentImagePage = 1;
         let currentZoom = 1;
-        let totalPages = 1;
+        let totalImagePages = 1;
 
-        function updatePageInfo() {
+        function updateImagePageInfo() {
             const pageInfo = document.getElementById('pageInfo');
             if (pageInfo) {
-                pageInfo.textContent = `${currentPage} / ${totalPages}`;
+                pageInfo.textContent = `${currentImagePage} / ${totalImagePages}`;
             }
             
             const prevBtn = document.getElementById('prevPageBtn');
             const nextBtn = document.getElementById('nextPageBtn');
             
-            if (prevBtn) prevBtn.disabled = currentPage <= 1;
-            if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+            if (prevBtn) prevBtn.disabled = currentImagePage <= 1;
+            if (nextBtn) nextBtn.disabled = currentImagePage >= totalImagePages;
         }
 
         function updateZoomInfo() {
@@ -7173,23 +7625,23 @@
             }
         }
 
-        function previousPage() {
-            if (currentPage > 1) {
-                currentPage--;
-                loadPage(currentPage);
-                updatePageInfo();
+        function previousImagePage() {
+            if (currentImagePage > 1) {
+                currentImagePage--;
+                loadImagePage(currentImagePage);
+                updateImagePageInfo();
             }
         }
 
-        function nextPage() {
-            if (currentPage < totalPages) {
-                currentPage++;
-                loadPage(currentPage);
-                updatePageInfo();
+        function nextImagePage() {
+            if (currentImagePage < totalImagePages) {
+                currentImagePage++;
+                loadImagePage(currentImagePage);
+                updateImagePageInfo();
             }
         }
 
-        function loadPage(pageNumber) {
+        function loadImagePage(pageNumber) {
             const img = document.getElementById('documentImage');
             if (img && currentDocumentId) {
                 img.src = `/documents/${currentDocumentId}/images/${pageNumber}?t=${Date.now()}`;
@@ -9999,6 +10451,8 @@
             }
             
             filteredDocuments = filtered;
+            // Reset to first page when filters change
+            currentPage = 1;
             renderDocuments();
             updateShowAllVisibility();
         }
@@ -10039,7 +10493,7 @@
         }
 
         // Carousel state management
-        // Note: currentPage, totalPages, and currentZoom are already declared above
+        // Note: currentImagePage, totalImagePages, and currentZoom are already declared above
         
         // Zoom slider state
         let isDragging = false;
@@ -10054,11 +10508,11 @@
         // Initialize carousel for a document
         function initializeCarousel(docId, pageCount) {
             currentDocumentId = docId;
-            totalPages = pageCount || 1;
-            currentPage = 1;
+            totalImagePages = pageCount || 1;
+            currentImagePage = 1;
             
             updateCarouselUI();
-            loadDocumentImage(docId, currentPage);
+            loadDocumentImage(docId, currentImagePage);
             initializeZoomSlider();
         }
 
@@ -10070,10 +10524,10 @@
             const prevBtn = document.getElementById('prevPageBtn');
             const nextBtn = document.getElementById('nextPageBtn');
             
-            if (currentPageSpan) currentPageSpan.textContent = currentPage;
-            if (totalPagesSpan) totalPagesSpan.textContent = totalPages;
-            if (prevBtn) prevBtn.disabled = currentPage <= 1;
-            if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+            if (currentPageSpan) currentPageSpan.textContent = currentImagePage;
+            if (totalPagesSpan) totalPagesSpan.textContent = totalImagePages;
+            if (prevBtn) prevBtn.disabled = currentImagePage <= 1;
+            if (nextBtn) nextBtn.disabled = currentImagePage >= totalImagePages;
             
             // Update left column pagination controls (3-column layout)
             const currentPageSpanLeft = document.getElementById('currentPageLeft');
@@ -10081,19 +10535,19 @@
             const prevBtnLeft = document.getElementById('prevPageBtnLeft');
             const nextBtnLeft = document.getElementById('nextPageBtnLeft');
             
-            if (currentPageSpanLeft) currentPageSpanLeft.textContent = currentPage;
-            if (totalPagesSpanLeft) totalPagesSpanLeft.textContent = totalPages;
-            if (prevBtnLeft) prevBtnLeft.disabled = currentPage <= 1;
-            if (nextBtnLeft) nextBtnLeft.disabled = currentPage >= totalPages;
+            if (currentPageSpanLeft) currentPageSpanLeft.textContent = currentImagePage;
+            if (totalPagesSpanLeft) totalPagesSpanLeft.textContent = totalImagePages;
+            if (prevBtnLeft) prevBtnLeft.disabled = currentImagePage <= 1;
+            if (nextBtnLeft) nextBtnLeft.disabled = currentImagePage >= totalImagePages;
         }
 
         // Navigate between pages
         function navigatePage(direction) {
-            const newPage = currentPage + direction;
-            if (newPage >= 1 && newPage <= totalPages && currentDocumentId) {
-                currentPage = newPage;
+            const newPage = currentImagePage + direction;
+            if (newPage >= 1 && newPage <= totalImagePages && currentDocumentId) {
+                currentImagePage = newPage;
                 updateCarouselUI();
-                loadDocumentImage(currentDocumentId, currentPage);
+                loadDocumentImage(currentDocumentId, currentImagePage);
             }
         }
 
@@ -10101,7 +10555,7 @@
         async function loadDocumentImage(docId, pageNum = null) {
             const imageViewer = document.getElementById('imageViewer');
             const leftColImage = document.getElementById('documentImage');
-            const page = pageNum || currentPage;
+            const page = pageNum || currentImagePage;
             
             console.log('Loading image for docId:', docId, 'page:', page);
             
