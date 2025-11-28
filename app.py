@@ -724,7 +724,7 @@ def get_document_image(doc_id, page_num):
         if not doc:
             return "Document not found", 404
         
-        # If R2 is enabled, try to serve from R2
+        # If R2 is enabled, use public R2 URL
         if local_storage.use_r2 and local_storage.r2:
             # Determine image filename from page_images or fallback patterns
             image_name = None
@@ -738,22 +738,14 @@ def get_document_image(doc_id, page_num):
                 # Try standard naming pattern for pdftoppm
                 image_name = f"{doc_id}-{page_num}.png"
             
-            # Generate presigned URL from R2 (with caching)
+            # Use public R2 URL (no CORS issues, no presigning needed)
             if image_name:
                 try:
-                    # Check cache first
-                    presigned_url = get_cached_r2_url(image_name)
-                    if not presigned_url:
-                        # Generate new presigned URL
-                        presigned_url = local_storage.r2.get_image_url(image_name, expires_in=3600)
-                        if presigned_url:
-                            # Cache for 50 minutes
-                            cache_r2_url(image_name, presigned_url)
-                    
-                    if presigned_url:
-                        return redirect(presigned_url)
+                    # Direct public URL - fast and simple!
+                    public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
+                    return redirect(public_url)
                 except Exception as e:
-                    print(f"Error getting R2 URL for {image_name}: {e}")
+                    print(f"Error constructing R2 URL for {image_name}: {e}")
                     # Fall through to local fallback
         
         # Local storage mode or R2 fallback
