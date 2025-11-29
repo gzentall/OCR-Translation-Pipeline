@@ -767,10 +767,10 @@ def get_document_image(doc_id, page_num):
                     key = f'images/{image_name}'
                     try:
                         local_storage.r2.s3.head_object(Bucket=local_storage.r2.bucket_name, Key=key)
-                        # Found it! Redirect to public URL
-                        public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
-                        print(f"✅ [IMAGE DEBUG] Found image in R2: {image_name}")
-                        return redirect(public_url)
+                        # Found it! Use presigned URL instead of public URL (bucket may not be public)
+                        presigned_url = local_storage.r2.get_image_url(image_name, expires_in=3600)
+                        print(f"✅ [IMAGE DEBUG] Found image in R2: {image_name}, using presigned URL")
+                        return redirect(presigned_url)
                     except ClientError as e:
                         # Not found in R2, try next pattern
                         error_code = e.response.get('Error', {}).get('Code', '')
@@ -782,18 +782,25 @@ def get_document_image(doc_id, page_num):
                             print(f"⚠️ [IMAGE DEBUG] Error checking R2 for {image_name}: {e}")
                             continue
                 except Exception as e:
-                    # Network/connection error - try public URL anyway as fallback
-                    print(f"⚠️ [IMAGE DEBUG] Error accessing R2 for {image_name}, trying public URL: {e}")
-                    public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
-                    return redirect(public_url)
+                    # Network/connection error - try presigned URL anyway as fallback
+                    print(f"⚠️ [IMAGE DEBUG] Error accessing R2 for {image_name}, trying presigned URL: {e}")
+                    try:
+                        presigned_url = local_storage.r2.get_image_url(image_name, expires_in=3600)
+                        return redirect(presigned_url)
+                    except Exception as e2:
+                        print(f"❌ [IMAGE DEBUG] Failed to generate presigned URL: {e2}")
+                        continue
             
             # If we get here, none of the patterns were found via head_object
-            # Try redirecting to the first (most likely) pattern anyway
+            # Try generating presigned URL for the first (most likely) pattern anyway
             if possible_names:
                 fallback_name = possible_names[0]
-                public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{fallback_name}"
-                print(f"⚠️ [IMAGE DEBUG] No pattern confirmed in R2, trying fallback redirect: {fallback_name}")
-                return redirect(public_url)
+                try:
+                    presigned_url = local_storage.r2.get_image_url(fallback_name, expires_in=3600)
+                    print(f"⚠️ [IMAGE DEBUG] No pattern confirmed in R2, trying presigned URL fallback: {fallback_name}")
+                    return redirect(presigned_url)
+                except Exception as e:
+                    print(f"❌ [IMAGE DEBUG] Failed to generate presigned URL for fallback: {e}")
             else:
                 print(f"❌ [IMAGE DEBUG] No possible names generated for doc_id={doc_id}, page_num={page_num}")
         
