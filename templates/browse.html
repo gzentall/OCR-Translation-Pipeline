@@ -5860,6 +5860,29 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Sort Control -->
+                <div class="sort-container">
+                    <div class="sort-chip" id="referenceSortChip" data-sort="count" data-direction="desc">
+                        <i class="material-icons sort-icon">sort</i>
+                        <span class="sort-text">Count (d)</span>
+                        <i class="material-icons sort-arrow">keyboard_arrow_down</i>
+                    </div>
+                    <div class="sort-dropdown" id="referenceSortDropdown" style="display: none;">
+                        <div class="sort-option" data-sort="count" data-direction="asc">
+                            <span class="sort-option-text">Count (a)</span>
+                        </div>
+                        <div class="sort-option" data-sort="count" data-direction="desc">
+                            <span class="sort-option-text">Count (d)</span>
+                        </div>
+                        <div class="sort-option" data-sort="name" data-direction="asc">
+                            <span class="sort-option-text">Name (a)</span>
+                        </div>
+                        <div class="sort-option" data-sort="name" data-direction="desc">
+                            <span class="sort-option-text">Name (d)</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -6054,30 +6077,6 @@
                             <span id="peopleTitle">People References</span>
                             <a href="#" id="selectAllRefsLink" class="show-all-link" onclick="toggleSelectAllReferences(true); return false;" style="margin-left: 8px; font-size: 14px;">select all</a>
                         </h2>
-                    </div>
-                    <div class="sort-controls">
-                        <span class="sort-label">Sort:</span>
-                        <div class="sort-container">
-                            <div class="sort-chip" id="referenceSortChip" data-sort="count" data-direction="desc">
-                                <i class="material-icons sort-icon">sort</i>
-                                <span class="sort-text">Count (d)</span>
-                                <i class="material-icons sort-arrow">keyboard_arrow_down</i>
-                            </div>
-                            <div class="sort-dropdown" id="referenceSortDropdown" style="display: none;">
-                                <div class="sort-option" data-sort="count" data-direction="asc">
-                                    <span class="sort-option-text">Count (a)</span>
-                                </div>
-                                <div class="sort-option" data-sort="count" data-direction="desc">
-                                    <span class="sort-option-text">Count (d)</span>
-                                </div>
-                                <div class="sort-option" data-sort="name" data-direction="asc">
-                                    <span class="sort-option-text">Name (a)</span>
-                                </div>
-                                <div class="sort-option" data-sort="name" data-direction="desc">
-                                    <span class="sort-option-text">Name (d)</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div id="peopleContainer">
