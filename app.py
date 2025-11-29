@@ -753,6 +753,9 @@ def get_document_image(doc_id, page_num):
             # 3. Using doc_id pattern
             possible_names.append(f"{doc_id}-{page_num}.png")
             
+            # Log what we're trying
+            print(f"🔍 [IMAGE DEBUG] doc_id={doc_id}, page_num={page_num}, trying patterns: {possible_names}")
+            
             # Try each pattern - check R2 first, then redirect if found
             # If head_object fails, try public URL anyway (fallback)
             for image_name in possible_names:
@@ -766,20 +769,21 @@ def get_document_image(doc_id, page_num):
                         local_storage.r2.s3.head_object(Bucket=local_storage.r2.bucket_name, Key=key)
                         # Found it! Redirect to public URL
                         public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
-                        print(f"✅ Found image in R2: {image_name}")
+                        print(f"✅ [IMAGE DEBUG] Found image in R2: {image_name}")
                         return redirect(public_url)
                     except ClientError as e:
                         # Not found in R2, try next pattern
                         error_code = e.response.get('Error', {}).get('Code', '')
                         if error_code in ('404', 'NoSuchKey'):
+                            print(f"❌ [IMAGE DEBUG] {image_name} not found in R2 (404/NoSuchKey), trying next pattern")
                             continue  # Try next pattern
                         else:
                             # Other error, log but continue
-                            print(f"⚠️ Error checking R2 for {image_name}: {e}")
+                            print(f"⚠️ [IMAGE DEBUG] Error checking R2 for {image_name}: {e}")
                             continue
                 except Exception as e:
                     # Network/connection error - try public URL anyway as fallback
-                    print(f"⚠️ Error accessing R2 for {image_name}, trying public URL: {e}")
+                    print(f"⚠️ [IMAGE DEBUG] Error accessing R2 for {image_name}, trying public URL: {e}")
                     public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
                     return redirect(public_url)
             
@@ -788,8 +792,10 @@ def get_document_image(doc_id, page_num):
             if possible_names:
                 fallback_name = possible_names[0]
                 public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{fallback_name}"
-                print(f"⚠️ No pattern confirmed in R2, trying fallback: {fallback_name}")
+                print(f"⚠️ [IMAGE DEBUG] No pattern confirmed in R2, trying fallback redirect: {fallback_name}")
                 return redirect(public_url)
+            else:
+                print(f"❌ [IMAGE DEBUG] No possible names generated for doc_id={doc_id}, page_num={page_num}")
         
         # Local storage mode or R2 fallback
         # Check if document has page_images field
@@ -859,6 +865,11 @@ def get_document_image(doc_id, page_num):
         traceback.print_exc()
         return "Error serving image", 500
 
+
+@app.route('/debug/test')
+def debug_test():
+    """Simple test endpoint to verify routes are working."""
+    return jsonify({"status": "ok", "message": "Debug routes are working"})
 
 @app.route('/debug/r2-images/<doc_id>')
 @require_auth
