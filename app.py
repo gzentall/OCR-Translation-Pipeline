@@ -721,87 +721,27 @@ def get_document_image(doc_id, page_num):
         if not doc:
             return "Document not found", 404
         
-        # Determine possible image filenames - try multiple patterns
-        # Images might be named with doc_id or with title/filename
-        page_images = doc.get('page_images', [])
-        title = doc.get('title', '')
-        filename = doc.get('filename', '')
-        
-        # Extract base name from title or filename (e.g., "174-1936-04-16-ger" from "174-1936-04-16-ger.pdf")
-        title_base = None
-        if title:
-            # Remove any suffix after " - " (e.g., "174-1936-04-16-ger - 2025-11-10" -> "174-1936-04-16-ger")
-            title_base = title.split(' - ')[0].strip()
-        elif filename:
-            title_base = Path(filename).stem
-        
-        # Build list of possible image names to try
-        possible_image_names = []
-        
-        # 1. From page_images path (if available)
-        if page_images and len(page_images) >= page_num:
-            image_path = Path(page_images[page_num - 1])
-            possible_image_names.append(image_path.name)
-        
-        # 2. Using doc_id pattern (e.g., doc_20251126_145234-1.png)
-        possible_image_names.append(f"{doc_id}-{page_num}.png")
-        
-        # 3. Using title/filename base (e.g., 174-1936-04-16-ger-1.png)
-        if title_base:
-            possible_image_names.append(f"{title_base}-{page_num}.png")
-        
-        # 4. Try with underscore separator
-        if title_base:
-            possible_image_names.append(f"{title_base}_{page_num}.png")
-        
-        # Remove duplicates while preserving order
-        seen = set()
-        unique_image_names = []
-        for name in possible_image_names:
-            if name and name not in seen:
-                seen.add(name)
-                unique_image_names.append(name)
-        
-        # If R2 is enabled, try each possible image name
+        # If R2 is enabled, use public R2 URL (simple redirect - restore old working behavior)
         # Allow disabling R2 image serving via environment variable (useful if images aren't uploaded yet)
         use_r2_images = local_storage.use_r2 and local_storage.r2 and os.getenv('USE_R2_IMAGES', 'true').lower() == 'true'
         
-        image_found_in_r2 = False
-        found_image_name = None
-        
         if use_r2_images:
-            for image_name in unique_image_names:
-                try:
-                    # Check if image exists in R2
-                    key = f'images/{image_name}'
-                    try:
-                        local_storage.r2.s3.head_object(Bucket=local_storage.r2.bucket_name, Key=key)
-                        # Image exists in R2 - use public URL
-                        image_found_in_r2 = True
-                        found_image_name = image_name
-                        public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
-                        print(f"Found image in R2 via head_object: {image_name}")
-                        return redirect(public_url)
-                    except ClientError as e:
-                        # Image doesn't exist in R2, try next name
-                        error_code = e.response.get('Error', {}).get('Code', '')
-                        if error_code not in ('404', 'NoSuchKey'):
-                            print(f"Error checking R2 for {image_name}: {e}")
-                        continue
-                except Exception as e:
-                    # Network error, timeout, or other non-ClientError exception
-                    # Log but don't skip R2 entirely - we'll try public URL as fallback
-                    print(f"Error accessing R2 for {image_name} (will try public URL as fallback): {e}")
-                    continue
+            # Determine image filename from page_images or fallback pattern
+            page_images = doc.get('page_images', [])
+            image_name = None
             
-            # If we get here, head_object() checks didn't find the image
-            # But if R2 is enabled, try the R2 public URL anyway (restore old behavior as fallback)
-            # This handles cases where head_object() fails but the image actually exists in R2
-            if not image_found_in_r2 and unique_image_names:
-                # Use the first (most likely) pattern - typically from page_images or doc_id
-                fallback_image_name = unique_image_names[0]
-                public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{fallback_image_name}"
-                print(f"head_object() didn't find image, trying R2 public URL as fallback: {fallback_image_name}")
+            if page_images and len(page_images) >= page_num:
+                # Extract just the filename from the path
+                image_path = Path(page_images[page_num - 1])
+                image_name = image_path.name
+            else:
+                # Try standard naming pattern for pdftoppm
+                image_name = f"{doc_id}-{page_num}.png"
+            
+            # Use public R2 URL (no CORS issues, no presigning needed, no existence check)
+            # This is the simple approach that worked before
+            if image_name:
+                public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
                 return redirect(public_url)
         
         # Local storage mode or R2 fallback
