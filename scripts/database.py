@@ -115,7 +115,8 @@ class User(Base):
             'is_active': self.is_active,
             'last_sign_in': self.last_sign_in.isoformat() if self.last_sign_in else None,
             'created_at': self.created_at.isoformat() if self.created_at else None,
-            'has_password': self.password_hash is not None
+            'has_password': self.password_hash is not None,
+            'has_invite_token': self.invite_token is not None
         }
 
 

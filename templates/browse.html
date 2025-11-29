@@ -3758,6 +3758,29 @@
             padding-bottom: 16px !important;
         }
         
+        .invite-status-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            background-color: var(--md-sys-color-surface-container-high);
+            border-left: 4px solid var(--md-sys-color-primary);
+        }
+        
+        .invite-status-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            color: var(--md-sys-color-on-surface);
+        }
+        
+        .invite-status-text {
+            font-size: 14px;
+            line-height: 20px;
+        }
+        
         .user-edit-dialog .form-grid {
             margin-bottom: 16px !important;
         }
@@ -12052,6 +12075,32 @@
             const initials = getUserInitials(user);
             const roleDisplay = getRoleDisplayName(user.role);
             
+            // Check invite status for existing users
+            let inviteBanner = '';
+            if (!isNew && user.has_invite_token && !user.has_password) {
+                // User has invite token but no password = not activated
+                const createdDate = user.created_at ? new Date(user.created_at) : null;
+                const daysSinceInvite = createdDate ? Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24)) : 0;
+                const isExpired = daysSinceInvite >= 7; // Invites expire after 7 days
+                
+                const bannerMessage = isExpired 
+                    ? "This user's invite has expired."
+                    : "This user has not activated their account.";
+                
+                inviteBanner = `
+                    <div class="invite-status-banner">
+                        <div class="invite-status-content">
+                            <span class="material-icons" style="font-size: 20px; margin-right: 8px;">${isExpired ? 'warning' : 'info'}</span>
+                            <span class="invite-status-text">${bannerMessage}</span>
+                        </div>
+                        <button type="button" class="mdc-button mdc-button--text" onclick="resendUserInvite(${user.id})" style="min-width: auto; padding: 0 8px;">
+                            <span class="mdc-button__ripple"></span>
+                            <span class="mdc-button__label">Resend invite</span>
+                        </button>
+                    </div>
+                `;
+            }
+            
             modal.innerHTML = `
                 <div class="mdc-dialog__container">
                     <div class="mdc-dialog__surface">
@@ -12067,6 +12116,8 @@
                                     <div class="user-email">${user.email || ''}</div>
                                 </div>
                             </div>
+                            
+                            ${inviteBanner}
                             
                             <div class="user-form-fields">
                                 <div class="user-form-row">
@@ -12187,6 +12238,36 @@
                     const menu = document.getElementById('userActionsMenuDropdown');
                     if (menu) menu.remove();
                 }, 300);
+            }
+        }
+        
+        async function resendUserInvite(userId) {
+            if (!confirm('Send a new invitation email to this user?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/users/${userId}/reactivate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(data.message || 'Invitation sent successfully');
+                    // Reload users list to update the UI
+                    loadUsers();
+                    // Close the dialog
+                    closeUserDialog();
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to send invitation'));
+                }
+            } catch (error) {
+                console.error('Error resending invite:', error);
+                alert('Error sending invitation. Please try again.');
             }
         }
         

@@ -563,8 +563,8 @@ def reactivate_user(user_id):
             # Generate new invite token
             invite_token = secrets.token_urlsafe(32)
             
-            # Reactivate user
-            user.is_active = True
+            # Resend invite - keep user inactive until they activate
+            user.is_active = False  # Keep inactive until they set password
             user.invite_token = invite_token
             user.password_hash = None  # Clear password so they can set a new one
             user.updated_at = datetime.utcnow()
@@ -581,7 +581,7 @@ def reactivate_user(user_id):
         
         return jsonify({
             "success": True,
-            "message": "User reactivated and invitation sent" if email_sent else "User reactivated (email not sent)",
+            "message": "Invitation sent successfully" if email_sent else "Invitation sent (email not sent)",
             "email_sent": email_sent
         })
             

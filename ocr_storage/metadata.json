@@ -2177,17 +2177,11 @@
       "recipient": null
     },
     "doc_20251127_110849": {
+      "filename": "178-1942-11-06-fre.pdf",
       "title": "178-1942-11-06-fre",
-      "date_processed": "2025-11-27T11:08:49.353814",
-      "source_language": "unknown",
-      "target_language": "en",
-      "file_size": 0,
-      "people_count": 0,
-      "summary": "WHO: The sender of the letter is writing to their family members, addressing them as \"Mes tr\u00e8s tr\u00e8s ...",
-      "page_count": 0,
-      "status": "editing",
-      "sender": "Betty Zentall",
-      "recipient": "Etienne Aigner"
+      "source_language": null,
+      "uploaded_at": "2025-11-27T11:08:49.352869",
+      "page_count": 3
     }
   },
   "people": {
@@ -2920,9 +2914,11 @@
         "doc_20251116_191018",
         "doc_20251116_191020",
         "doc_20251116_191026",
-        "doc_20251116_191037"
+        "doc_20251116_191037",
+        "doc_20251127_110849"
       ],
-      "first_mentioned": "2025-11-22T16:38:53.781699"
+      "first_mentioned": "2025-11-22T16:38:53.781699",
+      "document_count": 8
     },
     "prohaska": {
       "aliases": [
@@ -4085,6 +4081,60 @@
       ],
       "first_mentioned": "2025-11-22T16:38:53.781183",
       "secondary_references": []
+    },
+    "lucien": {
+      "aliases": [
+        "Lucien"
+      ],
+      "documents": [
+        "doc_20251127_110849"
+      ],
+      "document_count": 1
+    },
+    "mady": {
+      "aliases": [
+        "Mady"
+      ],
+      "documents": [
+        "doc_20251127_110849"
+      ],
+      "document_count": 1
+    },
+    "tomy": {
+      "aliases": [
+        "Tomy"
+      ],
+      "documents": [
+        "doc_20251127_110849"
+      ],
+      "document_count": 1
+    },
+    "bob": {
+      "aliases": [
+        "Bob"
+      ],
+      "documents": [
+        "doc_20251127_110849"
+      ],
+      "document_count": 1
+    },
+    "etienne": {
+      "aliases": [
+        "Etienne"
+      ],
+      "documents": [
+        "doc_20251127_110849"
+      ],
+      "document_count": 1
+    },
+    "mother": {
+      "aliases": [
+        "Mother"
+      ],
+      "documents": [
+        "doc_20251127_110849"
+      ],
+      "document_count": 1
     }
   },
   "last_updated": "2025-11-27T12:41:55.235861",
