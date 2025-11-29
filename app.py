@@ -16,7 +16,7 @@ import secrets
 import bcrypt
 import time
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from functools import wraps
 from flask import Flask, request, jsonify, render_template, send_file, redirect, session, make_response
 from werkzeug.utils import secure_filename
@@ -220,25 +220,52 @@ def require_role(min_role='Viewer'):
 
 
 def format_relative_time(dt):
-    """Format a datetime as relative time (e.g., '2 hours ago')"""
+    """Format a datetime as relative time (e.g., '2 hours ago')
+    
+    Uses total time difference for accurate calculations instead of component-wise differences.
+    """
     if not dt:
         return "Never signed in"
     
     now = datetime.utcnow()
-    diff = relativedelta(now, dt)
     
-    if diff.years > 0:
-        return f"{diff.years} year{'s' if diff.years != 1 else ''} ago"
-    elif diff.months > 0:
-        return f"{diff.months} month{'s' if diff.months != 1 else ''} ago"
-    elif diff.days > 0:
-        return f"{diff.days} day{'s' if diff.days != 1 else ''} ago"
-    elif diff.hours > 0:
-        return f"{diff.hours} hour{'s' if diff.hours != 1 else ''} ago"
-    elif diff.minutes > 0:
-        return f"{diff.minutes} minute{'s' if diff.minutes != 1 else ''} ago"
-    else:
+    # Handle both timezone-aware and naive datetimes
+    if dt.tzinfo is not None:
+        # Convert timezone-aware datetime to UTC naive
+        dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+    
+    # Calculate total time difference
+    delta = now - dt
+    
+    # Handle negative differences (future dates) - shouldn't happen but be safe
+    if delta.total_seconds() < 0:
         return "Just now"
+    
+    total_seconds = delta.total_seconds()
+    
+    # Convert to appropriate units based on total difference
+    if total_seconds < 60:
+        return "Just now"
+    elif total_seconds < 3600:  # Less than 1 hour
+        minutes = int(total_seconds / 60)
+        return f"{minutes} minute{'s' if minutes != 1 else ''} ago"
+    elif total_seconds < 86400:  # Less than 1 day
+        hours = int(total_seconds / 3600)
+        return f"{hours} hour{'s' if hours != 1 else ''} ago"
+    elif total_seconds < 2592000:  # Less than 30 days (approximate month)
+        days = int(total_seconds / 86400)
+        return f"{days} day{'s' if days != 1 else ''} ago"
+    else:
+        # For months and years, use relativedelta to handle variable month lengths
+        diff = relativedelta(now, dt)
+        if diff.years > 0:
+            return f"{diff.years} year{'s' if diff.years != 1 else ''} ago"
+        elif diff.months > 0:
+            return f"{diff.months} month{'s' if diff.months != 1 else ''} ago"
+        else:
+            # Fallback to days
+            days = int(total_seconds / 86400)
+            return f"{days} day{'s' if days != 1 else ''} ago"
 
 
 @app.route('/')
