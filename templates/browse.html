@@ -12242,10 +12242,6 @@
         }
         
         async function resendUserInvite(userId) {
-            if (!confirm('Send a new invitation email to this user?')) {
-                return;
-            }
-            
             try {
                 const response = await fetch(`/api/users/${userId}/reactivate`, {
                     method: 'POST',
@@ -12257,17 +12253,18 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert(data.message || 'Invitation sent successfully');
+                    // Close the dialog immediately
+                    closeUserDialog();
                     // Reload users list to update the UI
                     loadUsers();
-                    // Close the dialog
-                    closeUserDialog();
+                    // Show success toast message
+                    showSnackbar(data.message || 'Invitation sent successfully');
                 } else {
-                    alert('Error: ' + (data.error || 'Failed to send invitation'));
+                    showSnackbar('Error: ' + (data.error || 'Failed to send invitation'));
                 }
             } catch (error) {
                 console.error('Error resending invite:', error);
-                alert('Error sending invitation. Please try again.');
+                showSnackbar('Error sending invitation. Please try again.');
             }
         }
         
