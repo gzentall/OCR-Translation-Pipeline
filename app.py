@@ -726,22 +726,69 @@ def get_document_image(doc_id, page_num):
         use_r2_images = local_storage.use_r2 and local_storage.r2 and os.getenv('USE_R2_IMAGES', 'true').lower() == 'true'
         
         if use_r2_images:
-            # Determine image filename from page_images or fallback pattern
+            # Build list of possible image names to try (in order of likelihood)
             page_images = doc.get('page_images', [])
-            image_name = None
+            title = doc.get('title', '')
+            filename = doc.get('filename', '')
             
+            # Extract base name from title or filename
+            title_base = None
+            if title:
+                title_base = title.split(' - ')[0].strip()
+            elif filename:
+                title_base = Path(filename).stem
+            
+            # Build list of possible image names
+            possible_names = []
+            
+            # 1. From page_images (most reliable)
             if page_images and len(page_images) >= page_num:
-                # Extract just the filename from the path
                 image_path = Path(page_images[page_num - 1])
-                image_name = image_path.name
-            else:
-                # Try standard naming pattern for pdftoppm
-                image_name = f"{doc_id}-{page_num}.png"
+                possible_names.append(image_path.name)
             
-            # Use public R2 URL (no CORS issues, no presigning needed, no existence check)
-            # This is the simple approach that worked before
-            if image_name:
-                public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
+            # 2. Using title/filename base (common pattern)
+            if title_base:
+                possible_names.append(f"{title_base}-{page_num}.png")
+            
+            # 3. Using doc_id pattern
+            possible_names.append(f"{doc_id}-{page_num}.png")
+            
+            # Try each pattern - check R2 first, then redirect if found
+            # If head_object fails, try public URL anyway (fallback)
+            for image_name in possible_names:
+                if not image_name:
+                    continue
+                
+                # First try to verify existence in R2
+                try:
+                    key = f'images/{image_name}'
+                    try:
+                        local_storage.r2.s3.head_object(Bucket=local_storage.r2.bucket_name, Key=key)
+                        # Found it! Redirect to public URL
+                        public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
+                        print(f"✅ Found image in R2: {image_name}")
+                        return redirect(public_url)
+                    except ClientError as e:
+                        # Not found in R2, try next pattern
+                        error_code = e.response.get('Error', {}).get('Code', '')
+                        if error_code in ('404', 'NoSuchKey'):
+                            continue  # Try next pattern
+                        else:
+                            # Other error, log but continue
+                            print(f"⚠️ Error checking R2 for {image_name}: {e}")
+                            continue
+                except Exception as e:
+                    # Network/connection error - try public URL anyway as fallback
+                    print(f"⚠️ Error accessing R2 for {image_name}, trying public URL: {e}")
+                    public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
+                    return redirect(public_url)
+            
+            # If we get here, none of the patterns were found via head_object
+            # Try redirecting to the first (most likely) pattern anyway
+            if possible_names:
+                fallback_name = possible_names[0]
+                public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{fallback_name}"
+                print(f"⚠️ No pattern confirmed in R2, trying fallback: {fallback_name}")
                 return redirect(public_url)
         
         # Local storage mode or R2 fallback
@@ -811,6 +858,77 @@ def get_document_image(doc_id, page_num):
         import traceback
         traceback.print_exc()
         return "Error serving image", 500
+
+
+@app.route('/debug/r2-images/<doc_id>')
+@require_auth
+def debug_r2_images(doc_id):
+    """Debug endpoint to check what images exist in R2 for a document."""
+    try:
+        doc = local_storage.get_document(doc_id)
+        if not doc:
+            return jsonify({"error": "Document not found"}), 404
+        
+        result = {
+            "doc_id": doc_id,
+            "title": doc.get('title', ''),
+            "filename": doc.get('filename', ''),
+            "page_images": doc.get('page_images', []),
+            "page_count": doc.get('page_count', 0)
+        }
+        
+        # Get expected image names
+        page_images = doc.get('page_images', [])
+        title = doc.get('title', '')
+        filename = doc.get('filename', '')
+        
+        title_base = None
+        if title:
+            title_base = title.split(' - ')[0].strip()
+        elif filename:
+            title_base = Path(filename).stem
+        
+        expected_names = []
+        if page_images:
+            for img_path in page_images:
+                expected_names.append(Path(img_path).name)
+        if title_base:
+            expected_names.append(f"{title_base}-1.png")
+        expected_names.append(f"{doc_id}-1.png")
+        
+        result["expected_names"] = list(set(expected_names))  # Remove duplicates
+        
+        # Check R2 if enabled
+        if local_storage.use_r2 and local_storage.r2:
+            try:
+                # List all images in R2
+                r2_images = local_storage.r2.list_images()
+                result["r2_total_images"] = len(r2_images)
+                
+                # Check which expected names exist
+                found_in_r2 = []
+                missing_in_r2 = []
+                
+                for name in expected_names:
+                    if name in r2_images:
+                        found_in_r2.append(name)
+                    else:
+                        missing_in_r2.append(name)
+                
+                result["found_in_r2"] = found_in_r2
+                result["missing_in_r2"] = missing_in_r2
+                
+                # Show sample of R2 images (first 20)
+                result["r2_sample_images"] = sorted(r2_images)[:20]
+                
+            except Exception as e:
+                result["r2_error"] = str(e)
+        else:
+            result["r2_enabled"] = False
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/upload', methods=['POST'])
