@@ -1233,6 +1233,15 @@ def list_documents():
                 else:
                     doc_data['page_count'] = 0
                 
+                # Add summary from full document (needed for list display)
+                if full_doc and 'summary' in full_doc:
+                    doc_data['summary'] = full_doc['summary']
+                elif 'summary' in metadata:
+                    # Fallback to metadata summary if full doc doesn't have it
+                    doc_data['summary'] = metadata.get('summary', '')
+                else:
+                    doc_data['summary'] = ''
+                
                 document_list.append(doc_data)
             except Exception as e:
                 # Log error but continue processing other documents
