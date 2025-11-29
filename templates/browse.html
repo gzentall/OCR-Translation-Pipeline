@@ -1158,23 +1158,29 @@
             margin: 0 auto;
         }
 
-
-            /* Compact Search, Sort, Filter Bar */
-            .compact-search-filter-bar {
+        /* Compact Search, Sort, Filter Bar */
+        .compact-search-filter-bar {
             background: var(--md-sys-color-surface-container-lowest);
-                border-radius: 0;
-                padding: 12px 24px;
-                margin-bottom: 0;
-                border: none;
-                border-bottom: 1px solid var(--md-sys-color-outline-variant);
-                display: flex;
-                align-items: center;
-                gap: 16px;
-                flex-wrap: nowrap;
-                min-height: 48px;
-                width: 100%;
-                box-sizing: border-box;
-            }
+            border-radius: 0;
+            padding: 0;
+            margin-bottom: 0;
+            border: none;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .compact-search-filter-bar .filter-bar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px var(--md-sys-spacing-6);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: nowrap;
+            min-height: 48px;
+            box-sizing: border-box;
+        }
 
             .search-input-container {
                 flex: 1;
@@ -1241,9 +1247,10 @@
 
             /* Responsive adjustments for smaller screens */
             @media (max-width: 599px) {
-                .compact-search-filter-bar {
+                .compact-search-filter-bar .filter-bar-content {
                     flex-wrap: wrap;
                     gap: 8px;
+                    padding: 12px var(--md-sys-spacing-4);
                 }
                 
                 .search-input-container {
@@ -5693,13 +5700,14 @@
 
     <!-- Compact Search, Sort, Filter Bar -->
     <div class="compact-search-filter-bar" id="documentFilterBar">
-        <div class="search-input-container">
-            <span class="material-icons search-icon">search</span>
-            <input type="text" class="search-input" id="searchInput" placeholder="Search documents..." autocomplete="off">
-            <span class="material-icons clear-icon" id="clearSearchIcon" style="display: none;">close</span>
-                    </div>
-        
-        <div class="filter-chips-container">
+        <div class="filter-bar-content">
+            <div class="search-input-container">
+                <span class="material-icons search-icon">search</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search documents..." autocomplete="off">
+                <span class="material-icons clear-icon" id="clearSearchIcon" style="display: none;">close</span>
+            </div>
+            
+            <div class="filter-chips-container">
                     <a href="#" id="showAllLink" class="show-all-link" onclick="resetFiltersAndSearch(); return false;" style="display: none; margin-right: 12px;">show all</a>
                     <div class="filter-chip-wrapper">
                         <div class="filter-chip" id="senderFilter" data-filter="sender">
@@ -5815,40 +5823,43 @@
                         </div>
                     </div>
                 </div>
-        
             </div>
+        </div>
+    </div>
 
     <!-- Reference Filter Bar (shown when References tab is active) -->
     <div class="compact-search-filter-bar" id="referenceFilterBar" style="display: none;">
-        <div class="search-input-container">
-            <span class="material-icons search-icon">search</span>
-            <input type="text" class="search-input" id="referenceSearchInput" placeholder="Search references..." autocomplete="off">
-            <span class="material-icons clear-icon" id="clearReferenceSearchIcon" style="display: none;">close</span>
-        </div>
-        
-        <div class="filter-chips-container">
-            <a href="#" id="showAllRefsLink" class="show-all-link" onclick="resetReferenceFiltersAndSearch(); return false;" style="display: none; margin-right: 12px;">show all</a>
+        <div class="filter-bar-content">
+            <div class="search-input-container">
+                <span class="material-icons search-icon">search</span>
+                <input type="text" class="search-input" id="referenceSearchInput" placeholder="Search references..." autocomplete="off">
+                <span class="material-icons clear-icon" id="clearReferenceSearchIcon" style="display: none;">close</span>
+            </div>
             
-            <!-- Type Filter -->
-            <div class="filter-chip-wrapper">
-                <div class="filter-chip" id="referenceTypeFilter" data-filter="type">
-                    <span class="filter-chip-text">Type</span>
-                    <i class="material-icons filter-chip-arrow">keyboard_arrow_down</i>
-                </div>
-                <div class="filter-dropdown" id="referenceTypeDropdown" style="display: none;">
-                    <div class="filter-dropdown-header">
-                        <span class="filter-dropdown-title">Filter by Type</span>
-                        <button class="filter-clear-btn" onclick="clearReferenceTypeFilter()">
-                            <i class="material-icons">clear</i>
-                        </button>
+            <div class="filter-chips-container">
+                <a href="#" id="showAllRefsLink" class="show-all-link" onclick="resetReferenceFiltersAndSearch(); return false;" style="display: none; margin-right: 12px;">show all</a>
+                
+                <!-- Type Filter -->
+                <div class="filter-chip-wrapper">
+                    <div class="filter-chip" id="referenceTypeFilter" data-filter="type">
+                        <span class="filter-chip-text">Type</span>
+                        <i class="material-icons filter-chip-arrow">keyboard_arrow_down</i>
                     </div>
-                    <div class="filter-dropdown-content">
-                        <div class="filter-options" id="referenceTypeOptions">
-                            <div class="filter-option" data-type="person">Person</div>
-                            <div class="filter-option" data-type="place">Place</div>
-                            <div class="filter-option" data-type="event">Event</div>
-                            <div class="filter-option" data-type="theme">Theme</div>
-                            <div class="filter-option" data-type="emotion">Emotion</div>
+                    <div class="filter-dropdown" id="referenceTypeDropdown" style="display: none;">
+                        <div class="filter-dropdown-header">
+                            <span class="filter-dropdown-title">Filter by Type</span>
+                            <button class="filter-clear-btn" onclick="clearReferenceTypeFilter()">
+                                <i class="material-icons">clear</i>
+                            </button>
+                        </div>
+                        <div class="filter-dropdown-content">
+                            <div class="filter-options" id="referenceTypeOptions">
+                                <div class="filter-option" data-type="person">Person</div>
+                                <div class="filter-option" data-type="place">Place</div>
+                                <div class="filter-option" data-type="event">Event</div>
+                                <div class="filter-option" data-type="theme">Theme</div>
+                                <div class="filter-option" data-type="emotion">Emotion</div>
+                            </div>
                         </div>
                     </div>
                 </div>
