@@ -766,6 +766,9 @@ def get_document_image(doc_id, page_num):
         # Allow disabling R2 image serving via environment variable (useful if images aren't uploaded yet)
         use_r2_images = local_storage.use_r2 and local_storage.r2 and os.getenv('USE_R2_IMAGES', 'true').lower() == 'true'
         
+        image_found_in_r2 = False
+        found_image_name = None
+        
         if use_r2_images:
             for image_name in unique_image_names:
                 try:
@@ -774,8 +777,10 @@ def get_document_image(doc_id, page_num):
                     try:
                         local_storage.r2.s3.head_object(Bucket=local_storage.r2.bucket_name, Key=key)
                         # Image exists in R2 - use public URL
+                        image_found_in_r2 = True
+                        found_image_name = image_name
                         public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
-                        print(f"Found image in R2: {image_name}")
+                        print(f"Found image in R2 via head_object: {image_name}")
                         return redirect(public_url)
                     except ClientError as e:
                         # Image doesn't exist in R2, try next name
@@ -784,12 +789,20 @@ def get_document_image(doc_id, page_num):
                             print(f"Error checking R2 for {image_name}: {e}")
                         continue
                 except Exception as e:
-                    print(f"Error accessing R2 for {image_name}: {e}")
+                    # Network error, timeout, or other non-ClientError exception
+                    # Log but don't skip R2 entirely - we'll try public URL as fallback
+                    print(f"Error accessing R2 for {image_name} (will try public URL as fallback): {e}")
                     continue
             
-            # If we get here, none of the R2 patterns matched
-            print(f"Image not found in R2 for doc {doc_id} page {page_num}, trying patterns: {unique_image_names}")
-            # Fall through to local fallback
+            # If we get here, head_object() checks didn't find the image
+            # But if R2 is enabled, try the R2 public URL anyway (restore old behavior as fallback)
+            # This handles cases where head_object() fails but the image actually exists in R2
+            if not image_found_in_r2 and unique_image_names:
+                # Use the first (most likely) pattern - typically from page_images or doc_id
+                fallback_image_name = unique_image_names[0]
+                public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{fallback_image_name}"
+                print(f"head_object() didn't find image, trying R2 public URL as fallback: {fallback_image_name}")
+                return redirect(public_url)
         
         # Local storage mode or R2 fallback
         # Check if document has page_images field
