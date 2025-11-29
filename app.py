@@ -36,6 +36,7 @@ from scripts.envelope_extractor import EnvelopeExtractor
 from scripts.database import DatabaseSession, User, Document, Reference, ReferenceType, UserRole
 from sqlalchemy import text
 from scripts.email_service import send_user_invite
+from botocore.exceptions import ClientError
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB max file size
@@ -720,29 +721,75 @@ def get_document_image(doc_id, page_num):
         if not doc:
             return "Document not found", 404
         
-        # If R2 is enabled, use public R2 URL
-        if local_storage.use_r2 and local_storage.r2:
-            # Determine image filename from page_images or fallback patterns
-            image_name = None
-            page_images = doc.get('page_images', [])
-            
-            if page_images and len(page_images) >= page_num:
-                # Extract just the filename from the path
-                image_path = Path(page_images[page_num - 1])
-                image_name = image_path.name
-            else:
-                # Try standard naming pattern for pdftoppm
-                image_name = f"{doc_id}-{page_num}.png"
-            
-            # Use public R2 URL (no CORS issues, no presigning needed)
-            if image_name:
+        # Determine possible image filenames - try multiple patterns
+        # Images might be named with doc_id or with title/filename
+        page_images = doc.get('page_images', [])
+        title = doc.get('title', '')
+        filename = doc.get('filename', '')
+        
+        # Extract base name from title or filename (e.g., "174-1936-04-16-ger" from "174-1936-04-16-ger.pdf")
+        title_base = None
+        if title:
+            # Remove any suffix after " - " (e.g., "174-1936-04-16-ger - 2025-11-10" -> "174-1936-04-16-ger")
+            title_base = title.split(' - ')[0].strip()
+        elif filename:
+            title_base = Path(filename).stem
+        
+        # Build list of possible image names to try
+        possible_image_names = []
+        
+        # 1. From page_images path (if available)
+        if page_images and len(page_images) >= page_num:
+            image_path = Path(page_images[page_num - 1])
+            possible_image_names.append(image_path.name)
+        
+        # 2. Using doc_id pattern (e.g., doc_20251126_145234-1.png)
+        possible_image_names.append(f"{doc_id}-{page_num}.png")
+        
+        # 3. Using title/filename base (e.g., 174-1936-04-16-ger-1.png)
+        if title_base:
+            possible_image_names.append(f"{title_base}-{page_num}.png")
+        
+        # 4. Try with underscore separator
+        if title_base:
+            possible_image_names.append(f"{title_base}_{page_num}.png")
+        
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_image_names = []
+        for name in possible_image_names:
+            if name and name not in seen:
+                seen.add(name)
+                unique_image_names.append(name)
+        
+        # If R2 is enabled, try each possible image name
+        # Allow disabling R2 image serving via environment variable (useful if images aren't uploaded yet)
+        use_r2_images = local_storage.use_r2 and local_storage.r2 and os.getenv('USE_R2_IMAGES', 'true').lower() == 'true'
+        
+        if use_r2_images:
+            for image_name in unique_image_names:
                 try:
-                    # Direct public URL - fast and simple!
-                    public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
-                    return redirect(public_url)
+                    # Check if image exists in R2
+                    key = f'images/{image_name}'
+                    try:
+                        local_storage.r2.s3.head_object(Bucket=local_storage.r2.bucket_name, Key=key)
+                        # Image exists in R2 - use public URL
+                        public_url = f"https://pub-4533eea0990d4b77acecebbc5e2521d7.r2.dev/images/{image_name}"
+                        print(f"Found image in R2: {image_name}")
+                        return redirect(public_url)
+                    except ClientError as e:
+                        # Image doesn't exist in R2, try next name
+                        error_code = e.response.get('Error', {}).get('Code', '')
+                        if error_code not in ('404', 'NoSuchKey'):
+                            print(f"Error checking R2 for {image_name}: {e}")
+                        continue
                 except Exception as e:
-                    print(f"Error constructing R2 URL for {image_name}: {e}")
-                    # Fall through to local fallback
+                    print(f"Error accessing R2 for {image_name}: {e}")
+                    continue
+            
+            # If we get here, none of the R2 patterns matched
+            print(f"Image not found in R2 for doc {doc_id} page {page_num}, trying patterns: {unique_image_names}")
+            # Fall through to local fallback
         
         # Local storage mode or R2 fallback
         # Check if document has page_images field
@@ -756,29 +803,60 @@ def get_document_image(doc_id, page_num):
         # Fallback: Look for image files in the work directory using various patterns
         work_dir = Path("letters/work")
         
-        # Try various naming patterns (pdftoppm uses hyphen separator)
-        image_patterns = [
+        # Build comprehensive list of patterns to try
+        image_patterns = []
+        
+        # Patterns using doc_id
+        image_patterns.extend([
             f"{doc_id}-{page_num}.png",              # pdftoppm default: doc_id-1.png
             f"{doc_id}_page_{page_num:03d}.png",      # doc_id_page_001.png
             f"{doc_id}_page_{page_num}.png",          # doc_id_page_1.png
             f"{doc_id}_{page_num}.png",               # doc_id_1.png
             f"{doc_id}_page_{page_num:02d}.png"       # doc_id_page_01.png
-        ]
+        ])
+        
+        # Patterns using title/filename base (if available)
+        if title_base:
+            image_patterns.extend([
+                f"{title_base}-{page_num}.png",       # title-1.png (most common)
+                f"{title_base}_{page_num}.png",       # title_1.png
+                f"{title_base}_page_{page_num:03d}.png",  # title_page_001.png
+                f"{title_base}_page_{page_num}.png",  # title_page_1.png
+                f"{title_base}_page_{page_num:02d}.png"   # title_page_01.png
+            ])
+        
+        # Also try patterns from page_images if available
+        if page_images and len(page_images) >= page_num:
+            image_path_from_list = Path(page_images[page_num - 1])
+            # Try absolute path first
+            if image_path_from_list.exists():
+                image_patterns.insert(0, str(image_path_from_list))
+            # Also try just the filename in work_dir
+            image_patterns.insert(0, image_path_from_list.name)
         
         image_path = None
         for pattern in image_patterns:
-            test_path = work_dir / pattern
+            # Handle both absolute paths and relative paths
+            if Path(pattern).is_absolute():
+                test_path = Path(pattern)
+            else:
+                test_path = work_dir / pattern
+            
             if test_path.exists():
                 image_path = test_path
+                print(f"Found image using pattern: {pattern}")
                 break
         
         if not image_path:
+            print(f"Image not found for doc {doc_id} page {page_num}. Tried patterns: {image_patterns[:10]}...")
             return "Image not found", 404
         
         return send_file(str(image_path), mimetype='image/png')
         
     except Exception as e:
         print(f"Error serving image: {e}")
+        import traceback
+        traceback.print_exc()
         return "Error serving image", 500
 
 
