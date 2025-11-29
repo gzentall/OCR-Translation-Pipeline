@@ -1176,6 +1176,7 @@
             padding: 12px var(--md-sys-spacing-6);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 16px;
             flex-wrap: nowrap;
             min-height: 48px;
@@ -1183,10 +1184,11 @@
         }
 
             .search-input-container {
-                flex: 1;
+                flex: 0 1 auto;
                 min-width: 200px;
+                max-width: 400px;
                 position: relative;
-            display: flex;
+                display: flex;
                 align-items: center;
             }
 
@@ -1234,6 +1236,7 @@
             display: flex;
             gap: 6px;
             flex-shrink: 0;
+            margin-left: auto;
         }
 
         .filter-chip-wrapper {
