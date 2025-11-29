@@ -572,39 +572,20 @@
             font-size: 16px;
         }
 
-        .profile-dropdown {
-            position: fixed; /* Always fixed for portaling */
-            background: var(--md-sys-color-surface-container);
-            border-radius: 12px; /* M3 spec: 12dp radius */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 
-                        0 1px 3px 1px rgba(0, 0, 0, 0.15); /* M3 elevation 1 */
+        /* Profile menu MDC Menu styling */
+        #profileMenu {
             min-width: 200px;
             z-index: 1000;
             overflow: hidden;
-            
-            /* Hidden by default */
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            
-            /* Smooth transition */
-            transition: opacity 150ms ease-out, visibility 150ms;
         }
 
-        .profile-dropdown.is-open {
-            opacity: 1 !important;
-            visibility: visible !important;
-            pointer-events: auto !important;
-            display: block !important;
-        }
-        
-
-        .profile-header {
+        #profileMenu .profile-header {
             padding: 16px;
             border-bottom: 1px solid var(--md-sys-color-outline-variant);
             display: flex;
             align-items: center;
             gap: 12px;
+            background: var(--md-sys-color-surface-container);
         }
 
         .profile-avatar {
@@ -637,8 +618,95 @@
             color: var(--md-sys-color-on-surface-variant);
         }
 
-        .profile-actions {
-            padding: 8px 0;
+        /* Profile menu list items - Material Design 3 styling */
+        /* Override general menu styles with higher specificity */
+        #profileMenu.mdc-menu .mdc-list {
+            padding: 0 !important; /* Remove default list padding */
+            margin: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            overflow: visible !important;
+        }
+        
+        /* Remove any list container styling that makes it look like a separate component */
+        #profileMenu.mdc-menu {
+            background: var(--md-sys-color-surface-container) !important;
+            border-radius: 12px !important; /* M3 menu radius */
+            overflow: hidden !important;
+        }
+
+        #profileMenu.mdc-menu .mdc-list-item.profile-action-item {
+            cursor: pointer !important;
+            min-height: 48px !important; /* M3 menu item height */
+            height: 48px !important;
+            padding: 12px 16px !important; /* M3 spec: 12dp vertical, 16dp horizontal */
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important; /* M3 spec: 12dp gap between icon and text */
+            color: var(--md-sys-color-on-surface) !important;
+            transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1) !important;
+            border-radius: 0 !important;
+            border: none !important;
+            border-top: none !important;
+            border-bottom: none !important;
+            border-left: none !important;
+            border-right: none !important;
+            background: transparent !important;
+            position: relative !important;
+            box-shadow: none !important;
+        }
+        
+        /* Remove borders from all list items in profile menu */
+        #profileMenu.mdc-menu .mdc-list-item.profile-action-item:first-child,
+        #profileMenu.mdc-menu .mdc-list-item.profile-action-item:last-child {
+            border: none !important;
+            border-top: none !important;
+            border-bottom: none !important;
+        }
+
+        #profileMenu.mdc-menu .mdc-list-item.profile-action-item:hover {
+            background-color: var(--md-sys-color-surface-container-high) !important;
+        }
+
+        #profileMenu.mdc-menu .mdc-list-item.profile-action-item:active {
+            background-color: var(--md-sys-color-primary-container) !important;
+            color: var(--md-sys-color-on-primary-container) !important;
+        }
+
+        #profileMenu.mdc-menu .mdc-list-item.profile-action-item:focus-visible {
+            outline: 2px solid var(--md-sys-color-primary) !important;
+            outline-offset: -2px !important;
+        }
+
+        #profileMenu.mdc-menu .mdc-list-item.profile-action-item .mdc-list-item__graphic {
+            margin-right: 0 !important; /* Gap handles spacing */
+            margin-left: 0 !important;
+            width: 24px !important;
+            height: 24px !important;
+            font-size: 24px !important;
+            color: inherit !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+
+        #profileMenu.mdc-menu .mdc-list-item.profile-action-item .mdc-list-item__text {
+            font-family: var(--md-sys-typescale-label-large-font) !important;
+            font-size: var(--md-sys-typescale-label-large-size) !important;
+            font-weight: var(--md-sys-typescale-label-large-weight) !important;
+            line-height: var(--md-sys-typescale-label-large-line-height) !important;
+            letter-spacing: var(--md-sys-typescale-label-large-tracking) !important;
+            color: inherit !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        #profileMenu.mdc-menu .mdc-list-item.profile-action-item .mdc-list-item__ripple {
+            border-radius: 0 !important; /* Full width ripple */
         }
 
         .profile-action {
@@ -5535,10 +5603,10 @@
                 <span class="mdc-button__label">Upload</span>
             </button>
             <div class="profile-menu-container">
-                <button class="avatar-button" onclick="toggleProfileMenu()">
+                <button class="avatar-button" id="profileMenuButton">
                     <div class="avatar" id="userAvatar">U</div>
                 </button>
-                <div class="profile-dropdown" id="profileDropdown">
+                <div class="mdc-menu mdc-menu-surface" id="profileMenu">
                     <div class="profile-header">
                         <div class="profile-avatar" id="profileAvatar">U</div>
                         <div class="profile-info">
@@ -5546,16 +5614,18 @@
                             <div class="profile-role" id="profileRole">Viewer</div>
                         </div>
                     </div>
-                    <div class="profile-actions">
-                        <button class="profile-action" onclick="logout()">
-                            <span class="material-icons">logout</span>
-                            <span id="logoutText">Logout</span>
-                        </button>
-                        <button class="profile-action" onclick="clearAuthData()" id="clearAuthButton" style="display: none;">
-                            <span class="material-icons">clear</span>
-                            Clear Auth Data
-                        </button>
-                    </div>
+                    <ul class="mdc-list" role="menu" aria-hidden="true">
+                        <li class="mdc-list-item profile-action-item" role="menuitem" onclick="logout()">
+                            <span class="mdc-list-item__ripple"></span>
+                            <span class="mdc-list-item__graphic material-icons">logout</span>
+                            <span class="mdc-list-item__text" id="logoutText">Logout</span>
+                        </li>
+                        <li class="mdc-list-item profile-action-item" role="menuitem" onclick="clearAuthData()" id="clearAuthButton" style="display: none;">
+                            <span class="mdc-list-item__ripple"></span>
+                            <span class="mdc-list-item__graphic material-icons">clear</span>
+                            <span class="mdc-list-item__text">Clear Auth Data</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -12417,88 +12487,51 @@
             };
         }
 
-        // Global variables for menu management
-        let activeMenu = null;
-        let activeMenuTrigger = null;
-        let repositionHandler = null;
+        // Profile menu MDC Menu instance
+        let profileMenuComponent = null;
 
-        // Profile menu functions
-        function toggleProfileMenu() {
-            const dropdown = document.getElementById('profileDropdown');
-            const avatarButton = document.querySelector('.avatar-button');
+        // Initialize profile menu with MDC Menu
+        function initializeProfileMenu() {
+            const profileMenuButton = document.getElementById('profileMenuButton');
+            const profileMenu = document.getElementById('profileMenu');
             
-            // Check if elements exist
-            if (!dropdown || !avatarButton) {
+            if (!profileMenuButton || !profileMenu) {
+                console.warn('Profile menu elements not found');
                 return;
             }
             
-            const isHidden = !dropdown.classList.contains('is-open');
+            if (typeof mdc === 'undefined' || !mdc.menu || !mdc.menu.MDCMenu) {
+                console.warn('MDC Menu not available');
+                return;
+            }
             
-            if (isHidden) {
-                // Remove inline display style if it exists
-                dropdown.style.display = '';
+            try {
+                // Initialize MDC Menu
+                profileMenuComponent = new mdc.menu.MDCMenu(profileMenu);
                 
-                // Show via class first (so offsetWidth/offsetHeight are accurate)
-                dropdown.classList.add('is-open');
+                // Set anchor element (the avatar button)
+                profileMenuComponent.setAnchorElement(profileMenuButton);
                 
-                // Store references for reposition handler
-                activeMenu = dropdown;
-                activeMenuTrigger = avatarButton;
+                // Set anchor corner to BOTTOM_END (below and right-aligned)
+                profileMenuComponent.setAnchorCorner(mdc.menu.Corner.BOTTOM_END);
                 
-                // Initial position
-                positionMenuM3(dropdown, avatarButton, {
-                    margin: 8,
-                    minWidth: 200,
-                    preferredPosition: 'below',
-                    align: 'end' // Right-align the menu with the button
+                // Set anchor margin (8px below button, 0px on sides)
+                profileMenuComponent.setAnchorMargin({top: 8, right: 0, bottom: 0, left: 0});
+                
+                // Handle button click to toggle menu
+                profileMenuButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (profileMenuComponent) {
+                        profileMenuComponent.open = !profileMenuComponent.open;
+                    }
                 });
                 
-                // Add reposition handler
-                repositionHandler = () => {
-                    if (activeMenu && activeMenuTrigger) {
-                        positionMenuM3(activeMenu, activeMenuTrigger, {
-                            margin: 8,
-                            minWidth: 200,
-                            preferredPosition: 'below',
-                            align: 'end'
-                        });
-                    }
-                };
+                // Handle menu item clicks (logout, clear auth)
+                // Note: onclick handlers in HTML will still work, but we can also listen here if needed
                 
-                window.addEventListener('scroll', repositionHandler, { passive: true, capture: true });
-                window.addEventListener('resize', repositionHandler, { passive: true });
-                
-                setTimeout(() => {
-                    document.addEventListener('click', closeProfileMenuOnOutsideClick);
-                }, 0);
-            } else {
-                closeProfileMenu();
-            }
-        }
-
-        function closeProfileMenu() {
-            const dropdown = document.getElementById('profileDropdown');
-            dropdown.classList.remove('is-open');
-            
-            // Clean up handlers
-            if (repositionHandler) {
-                window.removeEventListener('scroll', repositionHandler, { capture: true });
-                window.removeEventListener('resize', repositionHandler);
-                repositionHandler = null;
-            }
-            
-            activeMenu = null;
-            activeMenuTrigger = null;
-            
-            document.removeEventListener('click', closeProfileMenuOnOutsideClick);
-        }
-
-        function closeProfileMenuOnOutsideClick(event) {
-            const dropdown = document.getElementById('profileDropdown');
-            const avatarButton = document.querySelector('.avatar-button');
-            
-            if (!dropdown.contains(event.target) && !avatarButton.contains(event.target)) {
-                closeProfileMenu();
+                console.log('Profile menu initialized with MDC Menu');
+            } catch (error) {
+                console.error('Error initializing profile menu:', error);
             }
         }
 
@@ -12535,7 +12568,17 @@
         
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize user info regardless of auth state
+            // Check if user is authenticated (from server-side template data)
+            const user = {{ user|tojson if user else 'null' }};
+            
+            // If no user data, redirect to login
+            if (!user || !user.id) {
+                console.log('User not authenticated, redirecting to login');
+                window.location.href = '/login';
+                return;
+            }
+            
+            // Initialize user info
             initializeUserInfo();
         });
 
@@ -14470,6 +14513,9 @@
             
             // Initialize reference sort chip display
             updateReferenceSortChip();
+            
+            // Initialize profile menu with MDC Menu
+            initializeProfileMenu();
             
             // Initialize bulk status menu
             const bulkStatusMenuEl = document.getElementById('bulkStatusMenu');

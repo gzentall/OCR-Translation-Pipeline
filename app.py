@@ -241,20 +241,16 @@ def format_relative_time(dt):
 
 
 @app.route('/')
+@require_auth
 def index():
     """Serve the main application page (Documents tab)."""
-    # Get user info from session
-    user = None
-    if session.get('authenticated'):
-        user = {
-            'id': session.get('user_id'),
-            'username': session.get('username'),
-            'role': session.get('role')
-        }
-        print(f"DEBUG: User authenticated - {user}")  # Debug log
-    else:
-        print("DEBUG: No authenticated user in session")  # Debug log
-        print(f"DEBUG: Session data: {dict(session)}")  # Debug log
+    # Get user info from session (user is authenticated due to @require_auth decorator)
+    user = {
+        'id': session.get('user_id'),
+        'username': session.get('username'),
+        'role': session.get('role')
+    }
+    print(f"DEBUG: User authenticated - {user}")  # Debug log
     
     return render_template('browse.html', user=user)
 

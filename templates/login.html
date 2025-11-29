@@ -9,16 +9,165 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Material Design CSS -->
     <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <!-- Google Fonts - Material Design 3 Type Scale -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Flex:wght@100..900&display=swap" rel="stylesheet">
     <!-- Design Tokens -->
-    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
     
     <style>
+        :root {
+            /* Material Design 3 Color System */
+            --md-sys-color-primary: #6750a4;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #eaddff;
+            --md-sys-color-on-primary-container: #21005d;
+            
+            --md-sys-color-secondary: #625b71;
+            --md-sys-color-on-secondary: #ffffff;
+            --md-sys-color-secondary-container: #e8def8;
+            --md-sys-color-on-secondary-container: #1d192b;
+            
+            --md-sys-color-tertiary: #7d5260;
+            --md-sys-color-on-tertiary: #ffffff;
+            --md-sys-color-tertiary-container: #ffd8e4;
+            --md-sys-color-on-tertiary-container: #31111d;
+            
+            --md-sys-color-error: #ba1a1a;
+            --md-sys-color-on-error: #ffffff;
+            --md-sys-color-error-container: #ffdad6;
+            --md-sys-color-on-error-container: #410002;
+            
+            --md-sys-color-surface: #fffbfe;
+            --md-sys-color-on-surface: #1c1b1f;
+            --md-sys-color-surface-variant: #e7e0ec;
+            --md-sys-color-on-surface-variant: #49454f;
+            
+            --md-sys-color-outline: #79747e;
+            --md-sys-color-outline-variant: #cac4d0;
+            
+            --md-sys-color-background: #fffbfe;
+            --md-sys-color-on-background: #1c1b1f;
+            
+            --md-sys-color-surface-container-lowest: #ffffff;
+            --md-sys-color-surface-container-low: #f7f2fa;
+            --md-sys-color-surface-container: #f3edf7;
+            --md-sys-color-surface-container-high: #ece6f0;
+            --md-sys-color-surface-container-highest: #e6e0e9;
+            
+            /* Legacy support for existing components */
+            --mdc-theme-primary: var(--md-sys-color-primary);
+            --mdc-theme-secondary: var(--md-sys-color-secondary);
+            --mdc-theme-surface: var(--md-sys-color-surface);
+            --mdc-theme-background: var(--md-sys-color-background);
+            --mdc-theme-on-primary: var(--md-sys-color-on-primary);
+            --mdc-theme-on-secondary: var(--md-sys-color-on-secondary);
+            --mdc-theme-on-surface: var(--md-sys-color-on-surface);
+            --mdc-theme-on-background: var(--md-sys-color-on-background);
+        }
+
+        /* Material Design 3 Typography */
+        :root {
+            --md-sys-typescale-display-large-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-display-large-size: 57px;
+            --md-sys-typescale-display-large-weight: 400;
+            --md-sys-typescale-display-large-line-height: 64px;
+            --md-sys-typescale-display-large-tracking: -0.25px;
+            
+            --md-sys-typescale-display-medium-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-display-medium-size: 45px;
+            --md-sys-typescale-display-medium-weight: 400;
+            --md-sys-typescale-display-medium-line-height: 52px;
+            --md-sys-typescale-display-medium-tracking: 0px;
+            
+            --md-sys-typescale-display-small-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-display-small-size: 36px;
+            --md-sys-typescale-display-small-weight: 400;
+            --md-sys-typescale-display-small-line-height: 44px;
+            --md-sys-typescale-display-small-tracking: 0px;
+            
+            --md-sys-typescale-headline-large-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-headline-large-size: 32px;
+            --md-sys-typescale-headline-large-weight: 400;
+            --md-sys-typescale-headline-large-line-height: 40px;
+            --md-sys-typescale-headline-large-tracking: 0px;
+            
+            --md-sys-typescale-headline-medium-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-headline-medium-size: 28px;
+            --md-sys-typescale-headline-medium-weight: 400;
+            --md-sys-typescale-headline-medium-line-height: 36px;
+            --md-sys-typescale-headline-medium-tracking: 0px;
+            
+            --md-sys-typescale-headline-small-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-headline-small-size: 24px;
+            --md-sys-typescale-headline-small-weight: 400;
+            --md-sys-typescale-headline-small-line-height: 32px;
+            --md-sys-typescale-headline-small-tracking: 0px;
+            
+            --md-sys-typescale-title-large-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-title-large-size: 22px;
+            --md-sys-typescale-title-large-weight: 400;
+            --md-sys-typescale-title-large-line-height: 28px;
+            --md-sys-typescale-title-large-tracking: 0px;
+            
+            --md-sys-typescale-title-medium-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-title-medium-size: 16px;
+            --md-sys-typescale-title-medium-weight: 500;
+            --md-sys-typescale-title-medium-line-height: 24px;
+            --md-sys-typescale-title-medium-tracking: 0.15px;
+            
+            --md-sys-typescale-title-small-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-title-small-size: 14px;
+            --md-sys-typescale-title-small-weight: 500;
+            --md-sys-typescale-title-small-line-height: 20px;
+            --md-sys-typescale-title-small-tracking: 0.1px;
+            
+            --md-sys-typescale-body-large-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-body-large-size: 16px;
+            --md-sys-typescale-body-large-weight: 400;
+            --md-sys-typescale-body-large-line-height: 24px;
+            --md-sys-typescale-body-large-tracking: 0.5px;
+            
+            --md-sys-typescale-body-medium-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-body-medium-size: 14px;
+            --md-sys-typescale-body-medium-weight: 400;
+            --md-sys-typescale-body-medium-line-height: 20px;
+            --md-sys-typescale-body-medium-tracking: 0.25px;
+            
+            --md-sys-typescale-body-small-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-body-small-size: 12px;
+            --md-sys-typescale-body-small-weight: 400;
+            --md-sys-typescale-body-small-line-height: 16px;
+            --md-sys-typescale-body-small-tracking: 0.4px;
+            
+            --md-sys-typescale-label-large-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-label-large-size: 14px;
+            --md-sys-typescale-label-large-weight: 500;
+            --md-sys-typescale-label-large-line-height: 20px;
+            --md-sys-typescale-label-large-tracking: 0.1px;
+            
+            --md-sys-typescale-label-medium-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-label-medium-size: 12px;
+            --md-sys-typescale-label-medium-weight: 500;
+            --md-sys-typescale-label-medium-line-height: 16px;
+            --md-sys-typescale-label-medium-tracking: 0.5px;
+            
+            --md-sys-typescale-label-small-font: 'Roboto Flex', sans-serif;
+            --md-sys-typescale-label-small-size: 11px;
+            --md-sys-typescale-label-small-weight: 500;
+            --md-sys-typescale-label-small-line-height: 16px;
+            --md-sys-typescale-label-small-tracking: 0.5px;
+        }
+
         body {
             font-family: var(--md-sys-typescale-body-large-font);
-            background: var(--md-sys-color-surface);
-            color: var(--md-sys-color-on-surface);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
             margin: 0;
             padding: 0;
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -27,11 +176,12 @@
         
         .login-container {
             background: var(--md-sys-color-surface-container);
-            border-radius: 16px;
+            border-radius: 28px; /* M3 large shape radius */
             padding: 48px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); /* M3 elevation 1 */
             min-width: 400px;
             max-width: 500px;
+            width: 100%;
         }
         
         .login-header {
@@ -49,6 +199,8 @@
             font-family: var(--md-sys-typescale-headline-medium-font);
             font-size: var(--md-sys-typescale-headline-medium-size);
             font-weight: var(--md-sys-typescale-headline-medium-weight);
+            line-height: var(--md-sys-typescale-headline-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-headline-medium-tracking);
             margin: 0 0 8px 0;
             color: var(--md-sys-color-on-surface);
         }
@@ -56,6 +208,9 @@
         .login-subtitle {
             font-family: var(--md-sys-typescale-body-medium-font);
             font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: var(--md-sys-typescale-body-medium-weight);
+            line-height: var(--md-sys-typescale-body-medium-line-height);
+            letter-spacing: var(--md-sys-typescale-body-medium-tracking);
             color: var(--md-sys-color-on-surface-variant);
             margin: 0;
         }
@@ -64,8 +219,45 @@
             margin-bottom: 24px;
         }
         
+        /* M3 Text Field Styling */
         .mdc-text-field {
             width: 100%;
+            margin-bottom: 0;
+        }
+        
+        .mdc-text-field__input {
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
+            color: var(--md-sys-color-on-surface);
+        }
+        
+        .mdc-floating-label {
+            font-family: var(--md-sys-typescale-body-large-font);
+            font-size: var(--md-sys-typescale-body-large-size);
+            font-weight: var(--md-sys-typescale-body-large-weight);
+            line-height: var(--md-sys-typescale-body-large-line-height);
+            letter-spacing: var(--md-sys-typescale-body-large-tracking);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        
+        .mdc-text-field--outlined .mdc-notched-outline__leading,
+        .mdc-text-field--outlined .mdc-notched-outline__notch,
+        .mdc-text-field--outlined .mdc-notched-outline__trailing {
+            border-color: var(--md-sys-color-outline);
+        }
+        
+        .mdc-text-field--focused .mdc-notched-outline__leading,
+        .mdc-text-field--focused .mdc-notched-outline__notch,
+        .mdc-text-field--focused .mdc-notched-outline__trailing {
+            border-color: var(--md-sys-color-primary);
+            border-width: 2px;
+        }
+        
+        .mdc-text-field--focused .mdc-floating-label {
+            color: var(--md-sys-color-primary);
         }
         
         .login-actions {
@@ -75,18 +267,48 @@
             margin-top: 32px;
         }
         
+        /* M3 Button Styling */
         .mdc-button {
             width: 100%;
+            min-width: 64px;
+            height: 40px;
+            border-radius: 20px; /* M3 button shape */
+            font-family: var(--md-sys-typescale-label-large-font);
+            font-size: var(--md-sys-typescale-label-large-size);
+            font-weight: var(--md-sys-typescale-label-large-weight);
+            line-height: var(--md-sys-typescale-label-large-line-height);
+            letter-spacing: var(--md-sys-typescale-label-large-tracking);
+            text-transform: none;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
         }
         
-        .demo-note {
-            background: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-            padding: 16px;
-            border-radius: 8px;
-            margin-top: 24px;
-            font-size: 14px;
-            text-align: center;
+        .mdc-button--raised {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); /* M3 elevation 1 */
+        }
+        
+        .mdc-button--raised:hover {
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.12); /* M3 elevation 2 */
+        }
+        
+        .mdc-button--raised:active {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); /* M3 elevation 1 */
+        }
+        
+        .error-message {
+            color: var(--md-sys-color-error);
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: var(--md-sys-color-error-container);
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
         }
     </style>
 </head>
@@ -100,14 +322,14 @@
             <p class="login-subtitle">Sign in to access your documents</p>
         </div>
         
-        <form id="loginForm">
+        <form id="loginForm" method="POST">
             <div class="form-group">
-                <div class="mdc-text-field mdc-text-field--outlined">
-                    <input type="text" id="username" class="mdc-text-field__input" required>
+                <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                    <input type="text" id="username" name="username" class="mdc-text-field__input" required autocomplete="username">
                     <div class="mdc-notched-outline">
                         <div class="mdc-notched-outline__leading"></div>
                         <div class="mdc-notched-outline__notch">
-                            <label class="mdc-floating-label">Username</label>
+                            <label class="mdc-floating-label" for="username">Username</label>
                         </div>
                         <div class="mdc-notched-outline__trailing"></div>
                     </div>
@@ -115,29 +337,31 @@
             </div>
             
             <div class="form-group">
-                <div class="mdc-text-field mdc-text-field--outlined">
-                    <input type="password" id="password" class="mdc-text-field__input" required>
+                <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                    <input type="password" id="password" name="password" class="mdc-text-field__input" required autocomplete="current-password">
                     <div class="mdc-notched-outline">
                         <div class="mdc-notched-outline__leading"></div>
                         <div class="mdc-notched-outline__notch">
-                            <label class="mdc-floating-label">Password</label>
+                            <label class="mdc-floating-label" for="password">Password</label>
                         </div>
                         <div class="mdc-notched-outline__trailing"></div>
                     </div>
                 </div>
             </div>
+            
+            {% if error %}
+            <div class="error-message show">
+                {{ error }}
+            </div>
+            {% endif %}
             
             <div class="login-actions">
-                <button type="submit" class="mdc-button mdc-button--raised">
+                <button type="submit" class="mdc-button mdc-button--raised" data-mdc-auto-init="MDCRipple">
                     <span class="mdc-button__ripple"></span>
                     <span class="mdc-button__label">Sign In</span>
                 </button>
             </div>
         </form>
-        
-        <div class="demo-note">
-            <strong>Demo Mode:</strong> Try username: <code>gzentall</code> with password: <code>password123</code>
-        </div>
     </div>
     
     <!-- Material Design JavaScript -->
@@ -153,8 +377,21 @@
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const submitButton = this.querySelector('button[type="submit"]');
+            const errorMessage = document.querySelector('.error-message');
+            
+            // Hide any previous error
+            if (errorMessage) {
+                errorMessage.classList.remove('show');
+            }
             
             if (username && password) {
+                // Disable button during submission
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.querySelector('.mdc-button__label').textContent = 'Signing in...';
+                }
+                
                 // Create form data and submit to server
                 const formData = new FormData();
                 formData.append('username', username);
@@ -169,21 +406,57 @@
                         // Successful login - redirect to main app
                         window.location.href = response.url;
                     } else {
-                        // Login failed
-                        alert('Invalid username or password');
+                        // Login failed - show error
+                        return response.text().then(html => {
+                            // Parse error from response if possible
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const errorElement = doc.querySelector('.error-message');
+                            
+                            if (errorElement && errorMessage) {
+                                errorMessage.textContent = errorElement.textContent || 'Invalid username or password';
+                                errorMessage.classList.add('show');
+                            } else if (errorMessage) {
+                                errorMessage.textContent = 'Invalid username or password';
+                                errorMessage.classList.add('show');
+                            }
+                            
+                            // Re-enable button
+                            if (submitButton) {
+                                submitButton.disabled = false;
+                                submitButton.querySelector('.mdc-button__label').textContent = 'Sign In';
+                            }
+                        });
                     }
                 })
                 .catch(error => {
                     console.error('Login error:', error);
-                    alert('Login failed. Please try again.');
+                    if (errorMessage) {
+                        errorMessage.textContent = 'Login failed. Please try again.';
+                        errorMessage.classList.add('show');
+                    }
+                    
+                    // Re-enable button
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.querySelector('.mdc-button__label').textContent = 'Sign In';
+                    }
                 });
             } else {
-                alert('Please enter both username and password');
+                if (errorMessage) {
+                    errorMessage.textContent = 'Please enter both username and password';
+                    errorMessage.classList.add('show');
+                }
             }
         });
         
         // Auto-focus username field
-        document.getElementById('username').focus();
+        window.addEventListener('load', function() {
+            const usernameField = document.getElementById('username');
+            if (usernameField) {
+                usernameField.focus();
+            }
+        });
     </script>
 </body>
 </html>
