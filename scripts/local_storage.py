@@ -561,7 +561,14 @@ class LocalOCRStorage:
             context_list.append(note_obj)
             doc["context_notes"] = context_list
 
-            # Persist back to document file
+            # Save updated document to R2 and/or local
+            if self.use_r2 and self.r2:
+                try:
+                    self.r2.save_document(letter_id, doc)
+                except Exception as e:
+                    print(f"⚠️  Error saving document {letter_id} to R2: {e}")
+            
+            # Always save locally as well (backup in R2 mode, primary in local mode)
             doc_file = self.documents_dir / f"{letter_id}.json"
             with open(doc_file, 'w') as f:
                 json.dump(doc, f, indent=2)
@@ -614,7 +621,14 @@ class LocalOCRStorage:
             if updated_note is None:
                 return None
 
-            # Persist changes
+            # Save updated document to R2 and/or local
+            if self.use_r2 and self.r2:
+                try:
+                    self.r2.save_document(letter_id, doc)
+                except Exception as e:
+                    print(f"⚠️  Error saving document {letter_id} to R2: {e}")
+            
+            # Always save locally as well (backup in R2 mode, primary in local mode)
             doc_file = self.documents_dir / f"{letter_id}.json"
             with open(doc_file, 'w') as f:
                 json.dump(doc, f, indent=2)
@@ -643,7 +657,15 @@ class LocalOCRStorage:
                 return False
 
             doc["context_notes"] = filtered
-            # Persist changes
+            
+            # Save updated document to R2 and/or local
+            if self.use_r2 and self.r2:
+                try:
+                    self.r2.save_document(letter_id, doc)
+                except Exception as e:
+                    print(f"⚠️  Error saving document {letter_id} to R2: {e}")
+            
+            # Always save locally as well (backup in R2 mode, primary in local mode)
             doc_file = self.documents_dir / f"{letter_id}.json"
             with open(doc_file, 'w') as f:
                 json.dump(doc, f, indent=2)
