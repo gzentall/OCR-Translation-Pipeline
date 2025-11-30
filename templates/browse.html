@@ -12077,6 +12077,9 @@
                 if (notificationsMenuComponent && notificationsMenuComponent.open) {
                     loadNotifications();
                 }
+            }, 30000);
+        }
+        
         // Load and display comments
         async function loadComments() {
             console.log('💬 loadComments() called for document:', window.currentDocumentId);
