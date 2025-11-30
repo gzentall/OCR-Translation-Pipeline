@@ -11868,6 +11868,215 @@
             });
         }
         
+        // ===== Notifications Menu =====
+        let notificationsMenuComponent = null;
+        let notificationPollInterval = null;
+
+        // Load notifications
+        async function loadNotifications() {
+            try {
+                const res = await fetch('/api/notifications', {
+                    credentials: 'same-origin'
+                });
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        console.warn('Not authenticated, skipping notifications');
+                        return;
+                    }
+                    throw new Error(`HTTP ${res.status}`);
+                }
+                const data = await res.json();
+                
+                if (data.success) {
+                    renderNotifications(data.notifications || []);
+                } else {
+                    console.error('Failed to load notifications:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+            }
+        }
+
+        // Update notification badge count
+        async function updateNotificationBadge() {
+            try {
+                const res = await fetch('/api/notifications/count', {
+                    credentials: 'same-origin'
+                });
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        // Not authenticated, hide badge
+                        const badge = document.getElementById('notificationsBadge');
+                        if (badge) badge.classList.add('hidden');
+                        return;
+                    }
+                    throw new Error(`HTTP ${res.status}`);
+                }
+                const data = await res.json();
+                
+                if (data.success) {
+                    const badge = document.getElementById('notificationsBadge');
+                    if (badge) {
+                        const count = data.count || 0;
+                        badge.textContent = count > 99 ? '99+' : count.toString();
+                        if (count > 0) {
+                            badge.classList.remove('hidden');
+                        } else {
+                            badge.classList.add('hidden');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating notification badge:', error);
+            }
+        }
+
+        // Render notifications list
+        function renderNotifications(notifications) {
+            const list = document.getElementById('notificationsList');
+            if (!list) return;
+            
+            if (notifications.length === 0) {
+                list.innerHTML = `
+                    <div class="notifications-empty">
+                        <span class="material-icons">notifications_none</span>
+                        <p>No notifications</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = notifications.map(notification => {
+                const date = new Date(notification.created_at);
+                const timeAgo = formatRelativeTime(date);
+                const preview = notification.comment_preview || '';
+                const previewText = preview.length > 100 ? preview.substring(0, 100) + '...' : preview;
+                
+                return `
+                    <div class="notification-item ${notification.read ? '' : 'unread'}" 
+                         onclick="handleNotificationClick(${notification.id}, '${notification.document_id}', '${notification.comment_id}')">
+                        <div class="notification-item-header">
+                            <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                                ${!notification.read ? '<div class="notification-item-unread-dot"></div>' : ''}
+                                <div style="flex: 1;">
+                                    <div class="notification-item-title">
+                                        ${escapeHtml(notification.commenter_name)} mentioned you
+                                    </div>
+                                    <div class="notification-item-time">${timeAgo}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notification-item-preview">${escapeHtml(previewText)}</div>
+                        <div class="notification-item-document">${escapeHtml(notification.document_title)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Format relative time (e.g., "2 hours ago")
+        function formatRelativeTime(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+            
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        // Handle notification click
+        async function handleNotificationClick(notificationId, documentId, commentId) {
+            // Mark as read
+            try {
+                await fetch(`/api/notifications/${notificationId}/read`, {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+            
+            // Update badge
+            await updateNotificationBadge();
+            
+            // Close menu
+            if (notificationsMenuComponent) {
+                notificationsMenuComponent.open = false;
+            }
+            
+            // Open document with comment highlighted
+            if (documentId) {
+                showDocument(documentId, 'comments', commentId);
+            }
+        }
+
+        // Toggle notifications menu
+        function toggleNotificationsMenu() {
+            const menu = document.getElementById('notificationsMenu');
+            const button = document.getElementById('notificationsButton');
+            
+            if (!menu || !button) return;
+            
+            if (!notificationsMenuComponent) {
+                // Initialize MDC Menu if not already done
+                if (typeof mdc !== 'undefined' && mdc.menu && mdc.menu.MDCMenu) {
+                    notificationsMenuComponent = new mdc.menu.MDCMenu(menu);
+                    notificationsMenuComponent.setAnchorElement(button);
+                    notificationsMenuComponent.setAnchorCorner(mdc.menu.Corner.BOTTOM_END);
+                    notificationsMenuComponent.setAnchorMargin({top: 8, right: 0, bottom: 0, left: 0});
+                } else {
+                    // Fallback: simple toggle
+                    const isVisible = menu.style.display !== 'none';
+                    menu.style.display = isVisible ? 'none' : 'block';
+                    return;
+                }
+            }
+            
+            // Load notifications when opening
+            if (!notificationsMenuComponent.open) {
+                loadNotifications();
+            }
+            
+            notificationsMenuComponent.open = !notificationsMenuComponent.open;
+        }
+
+        // Mark all notifications as read
+        async function markAllNotificationsRead() {
+            try {
+                const res = await fetch('/api/notifications/read-all', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    await loadNotifications();
+                    await updateNotificationBadge();
+                    showSnackbar(`${data.count || 0} notifications marked as read`, 'success');
+                }
+            } catch (error) {
+                console.error('Error marking all notifications as read:', error);
+                showSnackbar('Error marking notifications as read', 'error');
+            }
+        }
+
+        // Initialize notifications polling
+        function initializeNotificationsPolling() {
+            // Update badge immediately
+            updateNotificationBadge();
+            
+            // Poll every 30 seconds
+            notificationPollInterval = setInterval(() => {
+                updateNotificationBadge();
+                // Reload notifications if menu is open
+                if (notificationsMenuComponent && notificationsMenuComponent.open) {
+                    loadNotifications();
+                }
         // Load and display comments
         async function loadComments() {
             console.log('💬 loadComments() called for document:', window.currentDocumentId);
@@ -15488,217 +15697,4 @@
         });
     </script>
 </body>
-
-        // ===== Notifications Menu =====
-        let notificationsMenuComponent = null;
-        let notificationPollInterval = null;
-
-        // Load notifications
-        async function loadNotifications() {
-            try {
-                const res = await fetch('/api/notifications', {
-                    credentials: 'same-origin'
-                });
-                if (!res.ok) {
-                    if (res.status === 401) {
-                        console.warn('Not authenticated, skipping notifications');
-                        return;
-                    }
-                    throw new Error(`HTTP ${res.status}`);
-                }
-                const data = await res.json();
-                
-                if (data.success) {
-                    renderNotifications(data.notifications || []);
-                } else {
-                    console.error('Failed to load notifications:', data.error);
-                }
-            } catch (error) {
-                console.error('Error loading notifications:', error);
-            }
-        }
-
-        // Update notification badge count
-        async function updateNotificationBadge() {
-            try {
-                const res = await fetch('/api/notifications/count', {
-                    credentials: 'same-origin'
-                });
-                if (!res.ok) {
-                    if (res.status === 401) {
-                        // Not authenticated, hide badge
-                        const badge = document.getElementById('notificationsBadge');
-                        if (badge) badge.classList.add('hidden');
-                        return;
-                    }
-                    throw new Error(`HTTP ${res.status}`);
-                }
-                const data = await res.json();
-                
-                if (data.success) {
-                    const badge = document.getElementById('notificationsBadge');
-                    if (badge) {
-                        const count = data.count || 0;
-                        badge.textContent = count > 99 ? '99+' : count.toString();
-                        if (count > 0) {
-                            badge.classList.remove('hidden');
-                        } else {
-                            badge.classList.add('hidden');
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error updating notification badge:', error);
-            }
-        }
-
-        // Render notifications list
-        function renderNotifications(notifications) {
-            const list = document.getElementById('notificationsList');
-            if (!list) return;
-            
-            if (notifications.length === 0) {
-                list.innerHTML = `
-                    <div class="notifications-empty">
-                        <span class="material-icons">notifications_none</span>
-                        <p>No notifications</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            list.innerHTML = notifications.map(notification => {
-                const date = new Date(notification.created_at);
-                const timeAgo = formatRelativeTime(date);
-                const preview = notification.comment_preview || '';
-                const previewText = preview.length > 100 ? preview.substring(0, 100) + '...' : preview;
-                
-                return `
-                    <div class="notification-item ${notification.read ? '' : 'unread'}" 
-                         onclick="handleNotificationClick(${notification.id}, '${notification.document_id}', '${notification.comment_id}')">
-                        <div class="notification-item-header">
-                            <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                                ${!notification.read ? '<div class="notification-item-unread-dot"></div>' : ''}
-                                <div style="flex: 1;">
-                                    <div class="notification-item-title">
-                                        ${escapeHtml(notification.commenter_name)} mentioned you
-                                    </div>
-                                    <div class="notification-item-time">${timeAgo}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="notification-item-preview">${escapeHtml(previewText)}</div>
-                        <div class="notification-item-document">${escapeHtml(notification.document_title)}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Format relative time (e.g., "2 hours ago")
-        function formatRelativeTime(date) {
-            const now = new Date();
-            const diffMs = now - date;
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMs / 3600000);
-            const diffDays = Math.floor(diffMs / 86400000);
-            
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-            if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-            if (diffDays < 7) return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
-            
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        }
-
-        // Handle notification click
-        async function handleNotificationClick(notificationId, documentId, commentId) {
-            // Mark as read
-            try {
-                await fetch(`/api/notifications/${notificationId}/read`, {
-                    method: 'POST',
-                    credentials: 'same-origin'
-                });
-            } catch (error) {
-                console.error('Error marking notification as read:', error);
-            }
-            
-            // Update badge
-            await updateNotificationBadge();
-            
-            // Close menu
-            if (notificationsMenuComponent) {
-                notificationsMenuComponent.open = false;
-            }
-            
-            // Open document with comment highlighted
-            if (documentId) {
-                showDocument(documentId, 'comments', commentId);
-            }
-        }
-
-        // Toggle notifications menu
-        function toggleNotificationsMenu() {
-            const menu = document.getElementById('notificationsMenu');
-            const button = document.getElementById('notificationsButton');
-            
-            if (!menu || !button) return;
-            
-            if (!notificationsMenuComponent) {
-                // Initialize MDC Menu if not already done
-                if (typeof mdc !== 'undefined' && mdc.menu && mdc.menu.MDCMenu) {
-                    notificationsMenuComponent = new mdc.menu.MDCMenu(menu);
-                    notificationsMenuComponent.setAnchorElement(button);
-                    notificationsMenuComponent.setAnchorCorner(mdc.menu.Corner.BOTTOM_END);
-                    notificationsMenuComponent.setAnchorMargin({top: 8, right: 0, bottom: 0, left: 0});
-                } else {
-                    // Fallback: simple toggle
-                    const isVisible = menu.style.display !== 'none';
-                    menu.style.display = isVisible ? 'none' : 'block';
-                    return;
-                }
-            }
-            
-            // Load notifications when opening
-            if (!notificationsMenuComponent.open) {
-                loadNotifications();
-            }
-            
-            notificationsMenuComponent.open = !notificationsMenuComponent.open;
-        }
-
-        // Mark all notifications as read
-        async function markAllNotificationsRead() {
-            try {
-                const res = await fetch('/api/notifications/read-all', {
-                    method: 'POST',
-                    credentials: 'same-origin'
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    await loadNotifications();
-                    await updateNotificationBadge();
-                    showSnackbar(`${data.count || 0} notifications marked as read`, 'success');
-                }
-            } catch (error) {
-                console.error('Error marking all notifications as read:', error);
-                showSnackbar('Error marking notifications as read', 'error');
-            }
-        }
-
-        // Initialize notifications polling
-        function initializeNotificationsPolling() {
-            // Update badge immediately
-            updateNotificationBadge();
-            
-            // Poll every 30 seconds
-            notificationPollInterval = setInterval(() => {
-                updateNotificationBadge();
-                // Reload notifications if menu is open
-                if (notificationsMenuComponent && notificationsMenuComponent.open) {
-                    loadNotifications();
-                }
-            }, 30000);
-        }
-        
 </html>
