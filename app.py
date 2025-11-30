@@ -1671,6 +1671,32 @@ def list_documents():
 @app.route('/documents/<doc_id>')
 def get_document(doc_id):
     """Get a specific document by ID."""
+    # Check if this is a browser request with query parameters (deep link)
+    # If so, redirect to main page with query params
+    if request.args.get('tab') or request.args.get('comment'):
+        # This is a deep link from email - redirect to main page
+        tab = request.args.get('tab', '')
+        comment = request.args.get('comment', '')
+        redirect_url = f'/?doc={doc_id}'
+        if tab:
+            redirect_url += f'&tab={tab}'
+        if comment:
+            redirect_url += f'&comment={comment}'
+        return redirect(redirect_url)
+    
+    # Check if this is an API request (has Accept: application/json header)
+    # or if it's an AJAX request
+    is_api_request = (
+        request.headers.get('Accept', '').startswith('application/json') or
+        request.headers.get('X-Requested-With') == 'XMLHttpRequest' or
+        request.is_json
+    )
+    
+    # If not an API request, redirect to main page
+    if not is_api_request:
+        return redirect(f'/?doc={doc_id}')
+    
+    # API request - return JSON
     try:
         document = local_storage.get_document(doc_id)
         if document:

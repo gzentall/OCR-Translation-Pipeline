@@ -10377,12 +10377,14 @@
             const comment = urlParams.get('comment');
             
             if (docId) {
-                // Remove params from URL
+                // Remove params from URL after reading them
                 const newUrl = window.location.pathname;
                 window.history.replaceState({}, '', newUrl);
                 
-                // Open document with deep link params
-                showDocument(docId, tab, comment);
+                // Wait a bit for page to fully load, then open document
+                setTimeout(() => {
+                    showDocument(docId, tab, comment);
+                }, 500);
             }
         }
 
