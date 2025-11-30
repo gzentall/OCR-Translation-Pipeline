@@ -533,8 +533,15 @@ class LocalOCRStorage:
     # -----------------------------
     # Context Notes (Per-letter)
     # -----------------------------
-    def add_context_note(self, letter_id: str, username: str, note: str) -> Optional[Dict]:
-        """Add a context note to a letter and return created note."""
+    def add_context_note(self, letter_id: str, username: str, note: str, mentioned_user_ids: Optional[List[int]] = None) -> Optional[Dict]:
+        """Add a context note to a letter and return created note.
+        
+        Args:
+            letter_id: Document ID
+            username: Username of commenter
+            note: Comment text
+            mentioned_user_ids: Optional list of user IDs mentioned in the comment
+        """
         try:
             # Ensure document exists
             if letter_id not in self.metadata["documents"]:
@@ -555,7 +562,8 @@ class LocalOCRStorage:
                 "letterId": letter_id,
                 "username": username,
                 "note": note,
-                "createdAt": created_at
+                "createdAt": created_at,
+                "mentioned_users": mentioned_user_ids or []  # Array of user IDs
             }
 
             context_list.append(note_obj)

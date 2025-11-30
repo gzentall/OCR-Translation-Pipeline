@@ -44,3 +44,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5001", "--timeout", "300", "app:app"]
 
 
+

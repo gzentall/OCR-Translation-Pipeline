@@ -64,3 +64,4 @@ echo "  3. Start Next.js: cd ocr-auth && npm run dev"
 
 
 
+

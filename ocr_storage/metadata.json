@@ -1139,7 +1139,7 @@
       "date_processed": "2025-11-16T19:10:58.011747",
       "source_language": "German",
       "target_language": "English",
-      "status": "new",
+      "status": "editing",
       "page_count": 5,
       "people_count": 4,
       "sender": "Robert Zentall",
@@ -1353,7 +1353,7 @@
       "people_count": 9,
       "summary": "WHO: The sender of the document is not explicitly mentioned, but it appears to be addressed to someo...",
       "page_count": 0,
-      "status": "new",
+      "status": "editing",
       "sender": null,
       "recipient": null
     },
@@ -1977,8 +1977,8 @@
       "people_count": 15,
       "summary": "WHO: The sender of the letter is Betty, writing to her dear little one, presumably her spouse or par...",
       "page_count": 0,
-      "status": "new",
-      "sender": "Betty Zentall",
+      "status": "editing",
+      "sender": "Lucien",
       "recipient": "Betty Zentall"
     },
     "doc_20251126_161246": {
@@ -2172,16 +2172,28 @@
       "people_count": 21,
       "summary": "WHO: The text is written by an unidentified sender in Hannover on October 16, 3, to the recipient in...",
       "page_count": 0,
-      "status": "new",
+      "status": "editing",
       "sender": "Robert Zentall",
-      "recipient": null
+      "recipient": "Betty Zentall"
     },
     "doc_20251127_110849": {
       "filename": "178-1942-11-06-fre.pdf",
       "title": "178-1942-11-06-fre",
       "source_language": null,
       "uploaded_at": "2025-11-27T11:08:49.352869",
-      "page_count": 3
+      "page_count": 3,
+      "summary": "WHO: The sender of the letter is writing to their family members, addressing them as \"Mes tr\u00e8s tr\u00e8s ..."
+    },
+    "doc_20251129_135820": {
+      "title": "179-1942-08-15-fre_9711d76d",
+      "date_processed": "2025-11-29T13:58:20.046615",
+      "source_language": "unknown",
+      "target_language": "en",
+      "file_size": 0,
+      "people_count": 0,
+      "summary": "Summary generation failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-p...",
+      "page_count": 0,
+      "status": "new"
     }
   },
   "people": {
@@ -2395,7 +2407,8 @@
         "doc_20251116_190948",
         "doc_20251110_064239",
         "doc_20251116_191046",
-        "doc_20251116_191053"
+        "doc_20251116_191053",
+        "doc_20251127_110849"
       ],
       "first_mentioned": "2025-11-22T16:38:53.749041"
     },
@@ -2587,20 +2600,6 @@
         "doc_20251116_190935"
       ],
       "first_mentioned": "2025-11-22T16:38:53.770543"
-    },
-    "pista": {
-      "aliases": [
-        "Pista"
-      ],
-      "context": "Mentioned in relation to needing fuel",
-      "type": "person",
-      "documents": [
-        "doc_20251116_190936",
-        "doc_20251116_191006",
-        "doc_20251116_191008",
-        "doc_20251116_191046"
-      ],
-      "first_mentioned": "2025-11-22T16:38:53.770687"
     },
     "w": {
       "aliases": [
@@ -2952,21 +2951,6 @@
         "doc_20251116_190954"
       ],
       "first_mentioned": "2025-11-22T16:38:53.782877"
-    },
-    "laci": {
-      "aliases": [
-        "Laci"
-      ],
-      "context": "nickname for the recipient's baby",
-      "type": "person",
-      "documents": [
-        "doc_20251116_190958",
-        "doc_20251116_191006",
-        "doc_20251116_191045",
-        "doc_20251116_191050",
-        "doc_20251116_191108"
-      ],
-      "first_mentioned": "2025-11-22T16:38:53.783094"
     },
     "l bousquet": {
       "aliases": [
@@ -3958,20 +3942,10 @@
       "context": "addressed as a loved one, possibly a partner or close family member",
       "type": "person",
       "documents": [
-        "doc_20251116_191102"
+        "doc_20251116_191102",
+        "doc_20251126_145133"
       ],
       "first_mentioned": "2025-11-22T16:38:53.795820"
-    },
-    "zabalein": {
-      "aliases": [
-        "Zabalein"
-      ],
-      "context": "term of endearment used for the recipient",
-      "type": "person",
-      "documents": [
-        "doc_20251116_191104"
-      ],
-      "first_mentioned": "2025-11-22T16:38:53.795907"
     },
     "falimpoferte": {
       "aliases": [
@@ -4030,16 +4004,21 @@
     },
     "lucien aigner": {
       "aliases": [
-        "Lucien Aigner",
+        "lucien aigner",
         "Lucien",
-        "lucien aigner"
+        "Lucien Aigner"
       ],
       "context": "Received a letter from him, concerned about Betty and Robert",
       "type": "person",
       "documents": [
+        "doc_20251116_191108",
         "doc_20251116_190952",
+        "doc_20251116_191050",
+        "doc_20251116_190958",
+        "doc_20251116_191045",
         "doc_20251116_190954",
-        "doc_20251116_191002"
+        "doc_20251116_191002",
+        "doc_20251116_191006"
       ],
       "first_mentioned": "2025-11-22T16:38:53.778776",
       "secondary_references": []
@@ -4063,21 +4042,25 @@
     },
     "\u00e9tienne aigner": {
       "aliases": [
-        "\u00c9tienne Aigner",
-        "\u00c9tienne",
-        "Etienne",
-        "etienne aigner",
+        "\u00e9tienne aigner",
         "Etienne Aigner",
-        "\u00e9tienne aigner"
+        "Pista",
+        "Etienne",
+        "\u00c9tienne",
+        "etienne aigner",
+        "\u00c9tienne Aigner"
       ],
       "context": "Test person",
       "type": "person",
       "documents": [
+        "doc_20251116_191035",
+        "doc_20251116_191046",
+        "doc_20251116_190936",
         "doc_20251116_191038",
         "doc_20251116_190954",
-        "doc_20251116_191035",
         "doc_20251116_191008",
-        "doc_20251110_064128"
+        "doc_20251110_064128",
+        "doc_20251116_191006"
       ],
       "first_mentioned": "2025-11-22T16:38:53.781183",
       "secondary_references": []
@@ -4135,10 +4118,49 @@
         "doc_20251127_110849"
       ],
       "document_count": 1
+    },
+    "babalein": {
+      "aliases": [
+        "Babalein",
+        "Zabalein",
+        "babalein"
+      ],
+      "context": "term of endearment used for the recipient",
+      "type": "person",
+      "documents": [
+        "doc_20251116_191104"
+      ],
+      "first_mentioned": "2025-11-22T16:38:53.795907",
+      "secondary_references": []
     }
   },
-  "last_updated": "2025-11-27T12:41:55.235861",
-  "context_notes": {},
+  "last_updated": "2025-11-30T07:18:31.769766",
+  "context_notes": {
+    "ctx_20251129_133113109385": {
+      "letterId": "doc_20251127_110849",
+      "createdAt": "2025-11-29T13:31:13.109437"
+    },
+    "ctx_20251129_133138094590": {
+      "letterId": "doc_20251127_110849",
+      "createdAt": "2025-11-29T13:31:38.094627"
+    },
+    "ctx_20251129_133144498103": {
+      "letterId": "doc_20251127_110849",
+      "createdAt": "2025-11-29T13:31:44.498166"
+    },
+    "ctx_20251130_070722913378": {
+      "letterId": "doc_20251129_135820",
+      "createdAt": "2025-11-30T07:07:22.913423"
+    },
+    "ctx_20251130_071242069112": {
+      "letterId": "doc_20251129_135820",
+      "createdAt": "2025-11-30T07:12:42.069135"
+    },
+    "ctx_20251130_071831768371": {
+      "letterId": "doc_20251129_135820",
+      "createdAt": "2025-11-30T07:18:31.768421"
+    }
+  },
   "references": {
     "d578fd65-f55a-4bb5-a66c-cb3685805444": {
       "id": "d578fd65-f55a-4bb5-a66c-cb3685805444",

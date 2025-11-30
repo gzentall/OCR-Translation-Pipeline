@@ -299,6 +299,169 @@ def send_password_reset(email: str, first_name: str, reset_token: str) -> bool:
         return False
 
 
+def send_mention_notification(email: str, first_name: str, commenter_name: str, document_title: str, doc_id: str, comment_id: str) -> bool:
+    """
+    Send email notification when a user is mentioned in a comment.
+    
+    Args:
+        email: Recipient email address
+        first_name: Recipient's first name
+        commenter_name: Name of the user who mentioned them
+        document_title: Title of the document
+        doc_id: Document ID
+        comment_id: Comment ID for deep linking
+    
+    Returns:
+        True if email sent successfully, False otherwise
+    """
+    
+    if not RESEND_API_KEY:
+        print("Warning: RESEND_API_KEY not configured. Email not sent.")
+        print(f"Mention notification for {email}: {APP_URL}/documents/{doc_id}?tab=comments&comment={comment_id}")
+        return False
+    
+    deep_link = f"{APP_URL}/documents/{doc_id}?tab=comments&comment={comment_id}"
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {{
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                margin: 0;
+                padding: 0;
+                background-color: #f5f5f5;
+            }}
+            .container {{
+                max-width: 600px;
+                margin: 40px auto;
+                background-color: #ffffff;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }}
+            .header {{
+                background-color: #6750a4;
+                color: #ffffff;
+                padding: 30px;
+                text-align: center;
+            }}
+            .header h1 {{
+                margin: 0;
+                font-size: 24px;
+                font-weight: 500;
+            }}
+            .content {{
+                padding: 40px 30px;
+            }}
+            .content h2 {{
+                color: #1c1b1f;
+                font-size: 20px;
+                font-weight: 500;
+                margin-top: 0;
+            }}
+            .content p {{
+                color: #49454f;
+                margin: 16px 0;
+            }}
+            .button {{
+                display: inline-block;
+                background-color: #6750a4;
+                color: #ffffff;
+                text-decoration: none;
+                padding: 12px 32px;
+                border-radius: 20px;
+                font-weight: 500;
+                margin: 24px 0;
+            }}
+            .button:hover {{
+                background-color: #5542a6;
+            }}
+            .footer {{
+                background-color: #f3edf7;
+                padding: 20px 30px;
+                text-align: center;
+                color: #79747e;
+                font-size: 14px;
+            }}
+            .document-info {{
+                background-color: #f3edf7;
+                border-left: 4px solid #6750a4;
+                padding: 12px 16px;
+                margin: 20px 0;
+                border-radius: 4px;
+            }}
+            .document-info p {{
+                margin: 0;
+                color: #49454f;
+                font-size: 14px;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>You've been mentioned</h1>
+            </div>
+            <div class="content">
+                <h2>Hi {first_name},</h2>
+                <p><strong>{commenter_name}</strong> mentioned you in a comment on a document.</p>
+                <div class="document-info">
+                    <p><strong>Document:</strong> {document_title}</p>
+                </div>
+                <p>Click the button below to view the comment:</p>
+                <center>
+                    <a href="{deep_link}" class="button">View Comment</a>
+                </center>
+                <p>If you're having trouble clicking the button, you can copy and paste this link into your browser:</p>
+                <p style="font-size: 12px; color: #79747e; word-break: break-all;">{deep_link}</p>
+            </div>
+            <div class="footer">
+                <p>&copy; 2024 Postmark. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    
+    # Plain text version
+    text_content = f"""
+    Hi {first_name},
+    
+    {commenter_name} mentioned you in a comment on a document.
+    
+    Document: {document_title}
+    
+    View the comment here: {deep_link}
+    
+    © 2024 Postmark. All rights reserved.
+    """
+    
+    try:
+        params = {
+            "from": "Postmark <gabe@zentall.com>",
+            "to": [email],
+            "subject": f"{commenter_name} mentioned you in a comment",
+            "html": html_content,
+            "text": text_content
+        }
+        
+        response = resend.Emails.send(params)
+        print(f"✓ Mention notification email sent to {email}")
+        print(f"  Message ID: {response.get('id', 'N/A')}")
+        return True
+        
+    except Exception as e:
+        print(f"✗ Error sending mention notification email to {email}: {e}")
+        print(f"  💡 DEEP LINK (copy this): {deep_link}")
+        return False
+
+
 if __name__ == '__main__':
     # Test email service
     print("Testing email service...")

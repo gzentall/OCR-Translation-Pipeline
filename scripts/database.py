@@ -251,6 +251,43 @@ class Reference(Base):
         return list(instance_docs)
 
 
+class Notification(Base):
+    """Notification model for user mentions in comments"""
+    __tablename__ = 'notifications'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False, index=True)
+    type = Column(String(50), nullable=False, default='mention')  # 'mention', 'comment', etc.
+    comment_id = Column(String(100), nullable=False)  # Comment ID from document JSON
+    document_id = Column(String(100), nullable=False, index=True)  # Document ID
+    document_title = Column(String(500), nullable=False)
+    commenter_name = Column(String(255), nullable=False)
+    comment_preview = Column(Text, nullable=True)  # First 2-3 lines of comment
+    read = Column(Boolean, default=False, nullable=False, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    
+    # Relationship to user
+    user = relationship('User', backref='notifications')
+    
+    def __repr__(self):
+        return f"<Notification(id={self.id}, user_id={self.user_id}, read={self.read})>"
+    
+    def to_dict(self):
+        """Convert notification to dictionary for API responses"""
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'type': self.type,
+            'comment_id': self.comment_id,
+            'document_id': self.document_id,
+            'document_title': self.document_title,
+            'commenter_name': self.commenter_name,
+            'comment_preview': self.comment_preview,
+            'read': self.read,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
+
+
 # Database utility functions
 def get_db():
     """Get database session. Use with context manager or remember to close."""

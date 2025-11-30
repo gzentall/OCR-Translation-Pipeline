@@ -33,10 +33,18 @@ from scripts.local_storage import LocalOCRStorage
 from scripts.fallback_ai_processor import FallbackAIProcessor
 from scripts.geoapify_client import GeoapifyClient
 from scripts.envelope_extractor import EnvelopeExtractor
-from scripts.database import DatabaseSession, User, Document, Reference, ReferenceType, UserRole
+from scripts.database import DatabaseSession, User, Document, Reference, ReferenceType, UserRole, Notification
 from sqlalchemy import text
-from scripts.email_service import send_user_invite
+from scripts.email_service import send_user_invite, send_mention_notification
 from botocore.exceptions import ClientError
+# Import enhanced processing components
+from scripts.batch_processor import BatchOCRProcessor
+from scripts.ai_processor import AIProcessor
+from scripts.translate_google import translate_text
+from scripts.extract_references import ReferenceExtractor
+from scripts.extract_references_enhanced import extract_references_with_context
+import json
+import openai
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB max file size
@@ -78,9 +86,42 @@ for directory in [INBOX_DIR, WORK_DIR, OUT_DIR, EN_DIR]:
 
 # Initialize local storage, AI processor, Geoapify client, and envelope extractor
 local_storage = LocalOCRStorage()
-ai_processor = FallbackAIProcessor()
+try:
+    ai_processor = AIProcessor()
+except Exception as e:
+    print(f"Warning: Could not initialize AIProcessor, using fallback: {e}")
+    ai_processor = FallbackAIProcessor()
 geoapify_client = GeoapifyClient()
 envelope_extractor = EnvelopeExtractor()
+
+# Initialize enhanced processing components
+context_file = PROJECT_ROOT / "context" / "reference_data.json"
+context_data = {}
+if context_file.exists():
+    try:
+        with open(context_file, 'r') as f:
+            context_data = json.load(f)
+        print(f"✅ Loaded context file with {len(context_data)} entries")
+    except Exception as e:
+        print(f"⚠️  Could not load context file: {e}")
+
+# Initialize batch processor and reference extractor (lazy initialization)
+batch_processor = None
+ref_extractor = None
+
+def get_batch_processor():
+    """Get or create BatchOCRProcessor instance."""
+    global batch_processor
+    if batch_processor is None:
+        batch_processor = BatchOCRProcessor(provider='openai', context_file=str(context_file))
+    return batch_processor
+
+def get_ref_extractor():
+    """Get or create ReferenceExtractor instance."""
+    global ref_extractor
+    if ref_extractor is None:
+        ref_extractor = ReferenceExtractor()
+    return ref_extractor
 
 # R2 URL Cache - Cache presigned URLs for 50 minutes (they're valid for 1 hour)
 # Structure: {image_key: (url, expiry_timestamp)}
@@ -167,6 +208,9 @@ def require_auth(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('authenticated'):
+            # Check if this is an API endpoint (starts with /api)
+            if request.path.startswith('/api'):
+                return jsonify({'success': False, 'error': 'Authentication required'}), 401
             return redirect('/login')
         return f(*args, **kwargs)
     return decorated_function
@@ -383,12 +427,45 @@ def login():
             
             print(f"DEBUG: Login successful for {user.email}")
             
+            # Check for redirect parameter
+            next_url = request.args.get('next') or request.form.get('next')
+            if next_url:
+                # Validate next URL (prevent open redirect attacks)
+                # Only allow relative URLs
+                if next_url.startswith('/') and not next_url.startswith('//'):
+                    return redirect(next_url)
+            
             # Redirect to main app
             return redirect('/')
     
     return render_template('login.html')
 
 # User Management API Endpoints
+
+@app.route('/api/users/active', methods=['GET'])
+@require_auth
+def get_active_users():
+    """Get list of active users for @mention autocomplete (any authenticated user)."""
+    try:
+        with DatabaseSession() as db:
+            # Get only active users
+            users = db.query(User).filter_by(is_active=True).order_by(User.first_name, User.last_name).all()
+            
+            users_data = []
+            for user in users:
+                users_data.append({
+                    'id': user.id,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'username': f"{user.first_name} {user.last_name}"  # Full name for display
+                })
+            
+            return jsonify({"users": users_data, "success": True})
+    except Exception as e:
+        print(f"Error getting active users: {e}")
+        return jsonify({"error": str(e), "success": False}), 500
+
 
 @app.route('/api/users', methods=['GET'])
 @require_role('Admin')
@@ -976,9 +1053,437 @@ def debug_r2_images(doc_id):
         return jsonify({"error": str(e)}), 500
 
 
+# Helper functions for enhanced document processing
+
+def parse_filename(filename: str) -> dict:
+    """Parse document filename to extract metadata.
+    
+    Expected format: NNN-YYYY-MM-DD-lang.pdf
+    Example: 002-1938-01-05-ger.pdf
+    """
+    stem = Path(filename).stem
+    parts = stem.split('-')
+    
+    metadata = {
+        'number': parts[0] if len(parts) > 0 else None,
+        'date': None,
+        'language': parts[-1] if len(parts) > 0 else 'unknown'
+    }
+    
+    # Try to parse date from middle parts
+    if len(parts) >= 4:
+        try:
+            year = parts[1]
+            month = parts[2] if len(parts[2]) == 2 else '01'
+            day = parts[3] if len(parts[3]) == 2 else '01'
+            metadata['date'] = f"{year}-{month}-{day}"
+        except:
+            pass
+    
+    return metadata
+
+
+def decode_html_entities(text: str) -> str:
+    """Decode HTML entities in text (&#39; → ', &amp; → &, etc.)."""
+    if not text or not isinstance(text, str):
+        return text
+    return html.unescape(text)
+
+
+def extract_pdf_images(pdf_path: Path, output_dir: Path) -> list:
+    """Extract images from PDF using pdftoppm."""
+    # Create unique prefix for this PDF
+    pdf_id = pdf_path.stem
+    output_prefix = output_dir / pdf_id
+    
+    try:
+        # Run pdftoppm to extract pages as PNG images
+        subprocess.run([
+            'pdftoppm',
+            '-png',
+            '-r', '300',  # 300 DPI for good quality
+            str(pdf_path),
+            str(output_prefix)
+        ], check=True, capture_output=True)
+        
+        # Find generated images
+        images = sorted(output_dir.glob(f"{pdf_id}-*.png"))
+        return [str(img.relative_to(PROJECT_ROOT)) for img in images]
+        
+    except subprocess.CalledProcessError as e:
+        print(f"Error extracting images: {e}")
+        return []
+    except FileNotFoundError:
+        print("pdftoppm not found. Install poppler-utils to extract images.")
+        return []
+
+
+def review_and_refine_translation(translated_text: str, original_ocr_text: str, 
+                                  context: dict, source_lang: str) -> tuple:
+    """Review and refine Google Translate output using LLM with context.
+    
+    Args:
+        translated_text: Google Translate output (already HTML decoded)
+        original_ocr_text: Original OCR text (for reference)
+        context: Context document (reference_data.json)
+        source_lang: Source language code
+        
+    Returns:
+        Tuple of (refined_translation, metadata_hints)
+    """
+    try:
+        # Get OpenAI API key
+        api_key = os.getenv('OPENAI_API_KEY')
+        if not api_key:
+            key_file = PROJECT_ROOT / '.openai_api_key'
+            if key_file.exists():
+                api_key = key_file.read_text().strip()
+            else:
+                print("⚠️  OpenAI API key not found, skipping translation refinement")
+                return translated_text, {}
+        
+        client = openai.OpenAI(api_key=api_key)
+        
+        # Build context string from reference_data.json
+        context_str = ""
+        if context:
+            people_list = []
+            places_list = []
+            if isinstance(context, dict):
+                for key, value in context.items():
+                    if isinstance(value, dict):
+                        if value.get('type') == 'person' or 'variations' in value:
+                            people_list.append(key)
+                        elif value.get('type') == 'place' or 'location' in str(value).lower():
+                            places_list.append(key)
+            
+            context_str = f"""
+Known People: {', '.join(people_list[:20]) if people_list else 'None specified'}
+Known Places: {', '.join(places_list[:20]) if places_list else 'None specified'}
+"""
+        
+        # Build prompt for translation refinement
+        prompt = f"""You are reviewing and refining a machine translation of a historical document from {source_lang} to English.
+
+CONTEXT ABOUT THE COLLECTION:
+{context_str}
+
+ORIGINAL OCR TEXT (for reference, may contain errors):
+{original_ocr_text[:1000]}
+
+GOOGLE TRANSLATE OUTPUT (to be refined):
+{translated_text[:4000]}
+
+Your task:
+1. Fix any mistranslations or awkward phrasings
+2. Use context about known people and places to correct names and locations
+3. Improve historical context and terminology accuracy
+4. Preserve formatting, line breaks, and structure EXACTLY
+5. Keep the same tone and style
+6. Do NOT translate the OCR text directly - refine the existing translation
+
+Return ONLY the refined translation text, no explanations or JSON formatting."""
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an expert translator specializing in historical documents. Your task is to refine machine translations while preserving accuracy and historical context."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,
+            max_tokens=4000
+        )
+        
+        refined_text = response.choices[0].message.content.strip()
+        
+        # Extract metadata hints from the refined text (basic extraction)
+        metadata_hints = {}
+        # This could be enhanced to extract sender/recipient hints, but for now return empty
+        
+        return refined_text, metadata_hints
+        
+    except Exception as e:
+        print(f"⚠️  Translation refinement error: {e}")
+        return translated_text, {}
+
+
+def process_uploaded_document(pdf_path: Path, work_dir: Path) -> dict:
+    """Process a single uploaded PDF document through the complete enhanced pipeline.
+    
+    Args:
+        pdf_path: Path to the uploaded PDF file
+        work_dir: Working directory for temporary files
+        
+    Returns:
+        Document data dictionary or None on error
+    """
+    doc_id = None
+    try:
+        print(f"[DEBUG] Processing document: {pdf_path.name}")
+        
+        # Parse filename for metadata
+        file_metadata = parse_filename(pdf_path.name)
+        source_lang = file_metadata.get('language', 'unknown')
+        
+        # Get processors
+        batch_proc = get_batch_processor()
+        ref_ext = get_ref_extractor()
+        
+        # Step 1: Run Enhanced OCR with context-aware correction
+        print(f"[DEBUG] Running enhanced OCR...")
+        try:
+            metadata_for_ocr = {
+                'language': source_lang,
+                'context': context_data,
+                'filename': pdf_path.name
+            }
+            
+            ocr_result = batch_proc.run_ocr_on_pdf(pdf_path)
+            if not ocr_result:
+                print("[ERROR] OCR failed")
+                return None
+            
+            raw_text = ocr_result['text']
+            print(f"[DEBUG] OCR complete ({len(raw_text)} chars)")
+            
+            # Apply LLM correction with context
+            print(f"[DEBUG] Applying context-aware correction...")
+            enhanced = batch_proc.processor.correct_with_context(raw_text, metadata_for_ocr)
+            original_text = enhanced.get('corrected_text', raw_text)
+            print(f"[DEBUG] Text corrected ({len(original_text)} chars)")
+            
+            if not original_text or len(original_text) < 50:
+                print("[ERROR] OCR produced insufficient text")
+                return None
+        except Exception as e:
+            print(f"[ERROR] OCR processing failed: {e}")
+            import traceback
+            traceback.print_exc()
+            return None
+        
+        # Step 2: Extract images for display
+        print(f"[DEBUG] Extracting images...")
+        try:
+            image_paths = extract_pdf_images(pdf_path, work_dir)
+            if not image_paths:
+                image_paths = []
+            print(f"[DEBUG] Extracted {len(image_paths)} page(s)")
+        except Exception as e:
+            print(f"[WARNING] Image extraction failed: {e}")
+            image_paths = []
+        
+        # Step 3: Translate
+        print(f"[DEBUG] Translating...")
+        try:
+            translated_text = translate_document(original_text, source_lang)
+            
+            # Ensure translation is a string
+            if isinstance(translated_text, (list, tuple)):
+                translated_text = translated_text[0] if translated_text else ''
+            
+            if not translated_text:
+                print("[WARNING] Translation returned empty, using original text")
+                translated_text = original_text
+        except Exception as e:
+            print(f"[WARNING] Translation failed: {e}, using original text")
+            translated_text = original_text
+        
+        # Step 4: Decode HTML entities
+        print(f"[DEBUG] Decoding HTML entities...")
+        try:
+            original_text = decode_html_entities(original_text)
+            translated_text = decode_html_entities(translated_text)
+            raw_text = decode_html_entities(raw_text)
+        except Exception as e:
+            print(f"[WARNING] HTML entity decoding failed: {e}")
+        
+        # Step 5: LLM Translation Review and Refinement
+        print(f"[DEBUG] Reviewing and refining translation...")
+        try:
+            refined_text, metadata_hints = review_and_refine_translation(
+                translated_text, original_text, context_data, source_lang
+            )
+            refined_text = decode_html_entities(refined_text)
+        except Exception as e:
+            print(f"[WARNING] Translation refinement failed: {e}, using translated text")
+            refined_text = translated_text
+        
+        # Step 6: Extract metadata (sender, recipient, locations)
+        print(f"[DEBUG] Extracting metadata...")
+        try:
+            metadata = envelope_extractor.extract_metadata(original_text)
+        except Exception as e:
+            print(f"[WARNING] Metadata extraction failed: {e}")
+            metadata = {}
+        
+        # Step 7: Extract references with context
+        print(f"[DEBUG] Extracting references...")
+        try:
+            references = extract_references_with_context(
+                ai_processor,
+                refined_text,  # Use refined translation for reference extraction
+                document_date=file_metadata.get('date'),
+                sender=metadata.get('sender'),
+                recipient=metadata.get('recipient'),
+                sender_location=metadata.get('sender_location'),
+                recipient_location=metadata.get('recipient_location')
+            )
+            
+            # Convert tuple format (name, context) to simple and detailed formats
+            simple_refs = {}
+            detailed_refs = {}
+            for ref_type in ['people', 'places', 'events', 'themes', 'emotions']:
+                ref_list = references.get(ref_type, [])
+                simple_refs[ref_type] = []
+                detailed_refs[ref_type] = []
+                for item in ref_list:
+                    if isinstance(item, tuple) and len(item) >= 2:
+                        name, context = item[0], item[1]
+                        simple_refs[ref_type].append(name)
+                        detailed_refs[ref_type].append({'name': name, 'context': context})
+                    elif isinstance(item, dict):
+                        name = item.get('name', str(item))
+                        context = item.get('context', '')
+                        simple_refs[ref_type].append(name)
+                        detailed_refs[ref_type].append({'name': name, 'context': context})
+                    else:
+                        name = str(item)
+                        simple_refs[ref_type].append(name)
+                        detailed_refs[ref_type].append({'name': name, 'context': ''})
+        except Exception as e:
+            print(f"[WARNING] Reference extraction error: {e}")
+            import traceback
+            traceback.print_exc()
+            simple_refs = {}
+            detailed_refs = {}
+        
+        # Step 8: Generate summary using refined translation
+        print(f"[DEBUG] Generating summary...")
+        try:
+            summary = ai_processor.generate_summary(refined_text, source_lang)
+            summary = decode_html_entities(summary)
+        except Exception as e:
+            print(f"[WARNING] Summary generation error: {e}")
+            summary = "No summary available"
+        
+        # Generate document ID
+        doc_id = f"doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
+        # Prepare document data
+        title = pdf_path.stem
+        title = decode_html_entities(title)
+        
+        doc_data = {
+            'id': doc_id,
+            'filename': pdf_path.name,
+            'title': title,
+            'raw_text': raw_text,
+            'original_text': original_text,
+            'translated_text': translated_text,
+            'refined_text': refined_text,
+            'summary': summary,
+            'language': source_lang,
+            'date': file_metadata.get('date'),
+            'sender': metadata.get('sender'),
+            'recipient': metadata.get('recipient'),
+            'sender_location': metadata.get('sender_location'),
+            'recipient_location': metadata.get('recipient_location'),
+            'references': simple_refs,
+            'people': simple_refs.get('people', []),
+            'page_images': image_paths,
+            'page_count': len(image_paths),
+            'source_file': str(pdf_path),
+            'status': 'new',
+            'reviews': [],
+            'created_at': datetime.now().isoformat(),
+            'updated_at': datetime.now().isoformat()
+        }
+        
+        # Save document
+        print(f"[DEBUG] Saving document...")
+        try:
+            local_storage.add_document(doc_data, doc_id=doc_id)
+        except Exception as e:
+            print(f"[ERROR] Failed to save document: {e}")
+            import traceback
+            traceback.print_exc()
+            return None
+        
+        # Add references to global metadata
+        print(f"[DEBUG] Adding references to metadata...")
+        ref_count = 0
+        try:
+            for ref_type, ref_list in detailed_refs.items():
+                singular_type = ref_type.rstrip('s') if ref_type != 'themes' else 'theme'
+                for ref_data in ref_list:
+                    ref_name = ref_data.get('name', '')
+                    if ref_name:
+                        try:
+                            local_storage.add_reference(
+                                ref_type=singular_type,
+                                name=ref_name,
+                                aliases=[],
+                                notes=ref_data.get('context', '')
+                            )
+                            local_storage.add_reference_to_document(doc_id, ref_name)
+                            ref_count += 1
+                        except Exception as e:
+                            print(f"[WARNING] Could not add reference '{ref_name}': {e}")
+        except Exception as e:
+            print(f"[WARNING] Failed to add references to metadata: {e}")
+        
+        print(f"[DEBUG] Added {ref_count} references to metadata")
+        print(f"[DEBUG] Document {doc_id} saved successfully!")
+        
+        return doc_data
+        
+    except Exception as e:
+        print(f"[ERROR] Error processing document: {e}")
+        import traceback
+        traceback.print_exc()
+        # Try to clean up if doc_id was created
+        if doc_id:
+            try:
+                local_storage.delete_document(doc_id)
+            except:
+                pass
+        return None
+
+
+def translate_document(text: str, source_lang: str) -> str:
+    """Translate document text to English."""
+    if source_lang == 'eng' or not text:
+        return text
+    
+    # Map ISO 639-2 (3-letter) to ISO 639-1 (2-letter) codes
+    lang_map = {
+        'ger': 'de',   # German
+        'fre': 'fr',   # French
+        'spa': 'es',   # Spanish
+        'ita': 'it',   # Italian
+        'pol': 'pl',   # Polish
+        'rus': 'ru',   # Russian
+        'eng': 'en'    # English
+    }
+    
+    google_lang = lang_map.get(source_lang, source_lang)
+    
+    try:
+        translated = translate_text(text, target_language='en', source_language=google_lang)
+        
+        # Google Translate returns tuple (text, detected_lang) - extract just text
+        if isinstance(translated, (list, tuple)):
+            translated = translated[0]
+        
+        return translated
+    except Exception as e:
+        print(f"Translation error: {e}")
+        return text
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    """Handle PDF file upload and processing."""
+    """Handle PDF file upload and processing with enhanced pipeline."""
     try:
         if 'file' not in request.files:
             return jsonify({'error': 'No file provided'}), 400
@@ -1003,135 +1508,29 @@ def upload_file():
     file.save(str(pdf_path))
     
     try:
-        print(f"[DEBUG] Starting OCR processing for: {pdf_path}")
+        print(f"[DEBUG] Starting enhanced processing for: {pdf_path}")
         
-        # Generate document ID for image naming
-        doc_id = f"doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        # Process document through enhanced pipeline
+        doc_data = process_uploaded_document(pdf_path, WORK_DIR)
         
-        # Run OCR - pass relative path to the script
-        relative_pdf_path = f"letters/inbox/{unique_filename}"
-        success, stdout, stderr = run_ocr_script(relative_pdf_path, doc_id)
-        print(f"[DEBUG] OCR result - success: {success}, stdout: {stdout[:200]}, stderr: {stderr[:200]}")
-        
-        if not success:
+        if not doc_data:
             return jsonify({
-                'error': 'OCR processing failed',
-                'details': stderr,
-                'stdout': stdout
+                'error': 'Document processing failed',
+                'details': 'See server logs for details'
             }), 500
         
-        # Find the generated text file
-        text_filename = f"{name}_{unique_id}.vision.txt"
-        text_path = WORK_DIR / text_filename
-        print(f"[DEBUG] Looking for OCR text file: {text_path}")
-        
-        if not text_path.exists():
-            # List files in work directory for debugging
-            work_files = list(WORK_DIR.glob("*.txt"))
-            return jsonify({
-                'error': 'OCR text file not found',
-                'details': f'Expected: {text_path}',
-                'available_files': [str(f) for f in work_files]
-            }), 500
-        
-        print(f"[DEBUG] Starting translation for: {text_path}")
-        
-        # Run translation
-        success, stdout, stderr = run_translation_script(text_path)
-        print(f"[DEBUG] Translation result - success: {success}, stdout: {stdout[:200]}, stderr: {stderr[:200]}")
-        
-        if not success:
-            return jsonify({
-                'error': 'Translation failed',
-                'details': stderr,
-                'stdout': stdout
-            }), 500
-        
-        # Find the translated file
-        translated_filename = f"{name}_{unique_id}.translated.txt"
-        translated_path = WORK_DIR / translated_filename
-        print(f"[DEBUG] Looking for translated file: {translated_path}")
-        
-        if not translated_path.exists():
-            # List files in work directory for debugging
-            work_files = list(WORK_DIR.glob("*.txt"))
-            return jsonify({
-                'error': 'Translated file not found',
-                'details': f'Expected: {translated_path}',
-                'available_files': [str(f) for f in work_files]
-            }), 500
-        
-        # Move translated file to output directory
-        final_translated_path = EN_DIR / translated_filename
-        print(f"[DEBUG] Moving translated file to: {final_translated_path}")
-        shutil.move(str(translated_path), str(final_translated_path))
-        
-        # Read the translated content
-        with open(final_translated_path, 'r', encoding='utf-8') as f:
-            translated_content = f.read()
-        
-        # Decode HTML entities (like &#39; for apostrophes)
-        translated_content = html.unescape(translated_content)
-        
-        # Read the original OCR text for storage
-        original_text = ""
-        if text_path.exists():
-            with open(text_path, 'r', encoding='utf-8') as f:
-                original_text = f.read()
-        
-        print(f"[DEBUG] Successfully processed file, content length: {len(translated_content)}")
-        
-        # Process with AI and store locally
-        try:
-            print("[DEBUG] Processing document with AI...")
-            ai_result = ai_processor.process_document(
-                translated_content, 
-                source_language="unknown",  # We could detect this from the translation script
-                document_date=datetime.now().isoformat()
-            )
-            
-            # Prepare document data for storage
-            document_data = {
-                "title": f"{name} - {datetime.now().strftime('%Y-%m-%d')}",
-                "date_processed": datetime.now().isoformat(),
-                "source_language": "unknown",  # Could be detected from translation script
-                "target_language": "en",
-                "original_text": original_text,
-                "translated_text": translated_content,
-                "file_size": pdf_path.stat().st_size if pdf_path.exists() else 0,
-                "summary": ai_result.get("summary", ""),
-                "people": ai_result.get("people", [])
-            }
-            
-            # Store in local database with the same doc_id used for images
-            doc_id = local_storage.add_document(document_data, doc_id)
-            print(f"[DEBUG] Document stored with ID: {doc_id}")
-            
-        except Exception as e:
-            print(f"[WARNING] AI processing failed: {e}")
-            # Still store the document without AI processing
-            document_data = {
-                "title": f"{name} - {datetime.now().strftime('%Y-%m-%d')}",
-                "date_processed": datetime.now().isoformat(),
-                "source_language": "unknown",
-                "target_language": "en",
-                "original_text": original_text,
-                "translated_text": translated_content,
-                "file_size": pdf_path.stat().st_size if pdf_path.exists() else 0,
-                "summary": "AI processing failed - manual review required",
-                "people": []
-            }
-            doc_id = local_storage.add_document(document_data, doc_id)
-            print(f"[DEBUG] Document stored without AI processing, ID: {doc_id}")
+        # Get refined text for response (fallback to translated_text if refined_text not available)
+        display_text = doc_data.get('refined_text') or doc_data.get('translated_text', '')
         
         return jsonify({
             'success': True,
             'message': 'File processed successfully',
             'original_filename': filename,
-            'translated_content': translated_content,
-            'download_url': f'/download/{translated_filename}',
-            'stored_document_id': doc_id,
-            'ai_processed': 'summary' in locals() and ai_result.get("summary", "") != "AI processing failed - manual review required"
+            'translated_content': display_text,
+            'stored_document_id': doc_data.get('id'),
+            'ai_processed': True,
+            'summary': doc_data.get('summary', ''),
+            'people': doc_data.get('people', [])
         })
     
     except Exception as e:
@@ -2019,7 +2418,8 @@ def add_document_comment(doc_id):
     try:
         # Get user info from session
         username = session.get('username')
-        if not username:
+        user_id = session.get('user_id')
+        if not username or not user_id:
             return jsonify({
                 'success': False,
                 'error': 'Authentication required'
@@ -2039,12 +2439,68 @@ def add_document_comment(doc_id):
                 'error': 'Comment text is required'
             }), 400
         
-        comment = local_storage.add_context_note(doc_id, username, note)
+        # Get mentioned user IDs from request
+        mentioned_user_ids = data.get('mentioned_user_ids', [])
+        if not isinstance(mentioned_user_ids, list):
+            mentioned_user_ids = []
+        
+        # Add comment with mentions
+        comment = local_storage.add_context_note(doc_id, username, note, mentioned_user_ids)
         
         if comment:
+            # Get document info for notifications
+            doc = local_storage.get_document(doc_id)
+            document_title = doc.get('title', 'Untitled Document') if doc else 'Untitled Document'
+            comment_id = comment.get('id')
+            comment_preview = note[:200] + '...' if len(note) > 200 else note
+            
+            # Create notifications and send emails for mentioned users
+            if mentioned_user_ids:
+                with DatabaseSession() as db:
+                    # Get mentioned users
+                    mentioned_users = db.query(User).filter(
+                        User.id.in_(mentioned_user_ids),
+                        User.is_active == True
+                    ).all()
+                    
+                    for mentioned_user in mentioned_users:
+                        # Skip if user mentioned themselves
+                        if mentioned_user.id == user_id:
+                            continue
+                        
+                        # Create notification
+                        notification = Notification(
+                            user_id=mentioned_user.id,
+                            type='mention',
+                            comment_id=comment_id,
+                            document_id=doc_id,
+                            document_title=document_title,
+                            commenter_name=username,
+                            comment_preview=comment_preview,
+                            read=False
+                        )
+                        db.add(notification)
+                        
+                        # Send email notification
+                        try:
+                            send_mention_notification(
+                                email=mentioned_user.email,
+                                first_name=mentioned_user.first_name,
+                                commenter_name=username,
+                                document_title=document_title,
+                                doc_id=doc_id,
+                                comment_id=comment_id
+                            )
+                        except Exception as e:
+                            print(f"Error sending mention notification to {mentioned_user.email}: {e}")
+                            # Don't fail comment creation if email fails
+                    
+                    db.commit()
+            
             return jsonify({
                 'success': True,
-                'comment': comment
+                'comment': comment,
+                'mentioned_users': mentioned_user_ids
             })
         else:
             return jsonify({
@@ -2112,6 +2568,143 @@ def delete_document_comment(doc_id, comment_id):
                 'error': 'Comment not found or deletion failed'
             }), 404
     except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+# ===== Notifications API =====
+
+@app.route('/api/notifications', methods=['GET'])
+@require_auth
+def get_notifications():
+    """Get user's notifications (most recent 20, unread first)."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Authentication required'
+            }), 401
+        
+        with DatabaseSession() as db:
+            # Get notifications: unread first, then by created_at desc, limit 20
+            notifications = db.query(Notification).filter_by(user_id=user_id).order_by(
+                Notification.read.asc(),  # Unread first (False < True)
+                Notification.created_at.desc()
+            ).limit(20).all()
+            
+            notifications_data = [n.to_dict() for n in notifications]
+            
+            return jsonify({
+                'success': True,
+                'notifications': notifications_data
+            })
+    except Exception as e:
+        print(f"Error getting notifications: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/notifications/count', methods=['GET'])
+@require_auth
+def get_notification_count():
+    """Get count of unread notifications for current user."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Authentication required'
+            }), 401
+        
+        with DatabaseSession() as db:
+            count = db.query(Notification).filter_by(
+                user_id=user_id,
+                read=False
+            ).count()
+            
+            return jsonify({
+                'success': True,
+                'count': count
+            })
+    except Exception as e:
+        print(f"Error getting notification count: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/notifications/<int:notification_id>/read', methods=['POST'])
+@require_auth
+def mark_notification_read(notification_id):
+    """Mark a notification as read."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Authentication required'
+            }), 401
+        
+        with DatabaseSession() as db:
+            notification = db.query(Notification).filter_by(
+                id=notification_id,
+                user_id=user_id  # Ensure user owns this notification
+            ).first()
+            
+            if not notification:
+                return jsonify({
+                    'success': False,
+                    'error': 'Notification not found'
+                }), 404
+            
+            notification.read = True
+            db.commit()
+            
+            return jsonify({
+                'success': True,
+                'message': 'Notification marked as read'
+            })
+    except Exception as e:
+        print(f"Error marking notification as read: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/notifications/read-all', methods=['POST'])
+@require_auth
+def mark_all_notifications_read():
+    """Mark all notifications as read for current user."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Authentication required'
+            }), 401
+        
+        with DatabaseSession() as db:
+            updated = db.query(Notification).filter_by(
+                user_id=user_id,
+                read=False
+            ).update({'read': True})
+            
+            db.commit()
+            
+            return jsonify({
+                'success': True,
+                'message': f'{updated} notifications marked as read',
+                'count': updated
+            })
+    except Exception as e:
+        print(f"Error marking all notifications as read: {e}")
         return jsonify({
             'success': False,
             'error': str(e)

@@ -538,6 +538,182 @@
             border-radius: 20px;
         }
 
+        /* Notifications Menu Styles */
+        .notifications-menu-container {
+            position: relative;
+            z-index: 3; /* App bar level - above content and tabs */
+        }
+
+        .notifications-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+            position: relative;
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notifications-button:hover {
+            background-color: var(--md-sys-color-surface-container-high);
+        }
+
+        .notifications-button .material-icons {
+            font-size: 24px;
+        }
+
+        .notifications-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background-color: var(--md-sys-color-error);
+            color: var(--md-sys-color-on-error);
+            border-radius: 10px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--md-sys-color-surface);
+            box-sizing: border-box;
+        }
+
+        .notifications-badge.hidden {
+            display: none;
+        }
+
+        .notifications-menu {
+            min-width: 360px;
+            max-width: 400px;
+            max-height: 500px;
+            z-index: 1000;
+            overflow: hidden;
+            background: var(--md-sys-color-surface);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .notifications-menu-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--md-sys-color-surface-container);
+        }
+
+        .notifications-menu-title {
+            font-weight: 500;
+            font-size: 16px;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .notifications-menu-mark-all {
+            background: none;
+            border: none;
+            color: var(--md-sys-color-primary);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .notifications-menu-mark-all:hover {
+            background-color: var(--md-sys-color-surface-container-high);
+        }
+
+        .notifications-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            cursor: pointer;
+            transition: background-color 0.15s;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .notification-item:hover {
+            background-color: var(--md-sys-color-surface-container-high);
+        }
+
+        .notification-item.unread {
+            background-color: var(--md-sys-color-primary-container);
+        }
+
+        .notification-item.unread:hover {
+            background-color: var(--md-sys-color-surface-container-high);
+        }
+
+        .notification-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .notification-item-title {
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface);
+            flex: 1;
+        }
+
+        .notification-item-time {
+            font-size: 12px;
+            color: var(--md-sys-color-on-surface-variant);
+            white-space: nowrap;
+        }
+
+        .notification-item-preview {
+            font-size: 13px;
+            color: var(--md-sys-color-on-surface-variant);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .notification-item-document {
+            font-size: 12px;
+            color: var(--md-sys-color-primary);
+            margin-top: 4px;
+        }
+
+        .notification-item-unread-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--md-sys-color-primary);
+            flex-shrink: 0;
+        }
+
+        .notifications-empty {
+            padding: 32px 16px;
+            text-align: center;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .notifications-empty .material-icons {
+            font-size: 48px;
+            opacity: 0.5;
+            margin-bottom: 8px;
+        }
+
         /* Profile Menu Styles */
         .profile-menu-container {
             position: relative;
@@ -4976,6 +5152,71 @@
             font-size: 20px;
         }
 
+        /* Mention Autocomplete Styles */
+        .comment-input-container {
+            position: relative;
+        }
+
+        .mention-autocomplete {
+            position: absolute;
+            bottom: 100%;
+            left: var(--md-sys-spacing-3);
+            right: var(--md-sys-spacing-3);
+            background: var(--md-sys-color-surface);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--md-sys-shape-radius-md);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-bottom: var(--md-sys-spacing-2);
+            display: none;
+        }
+
+        .mention-autocomplete.visible {
+            display: block;
+        }
+
+        .mention-autocomplete-item {
+            padding: var(--md-sys-spacing-3) var(--md-sys-spacing-4);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: var(--md-sys-spacing-1);
+            transition: background-color 0.15s ease;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .mention-autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .mention-autocomplete-item:hover,
+        .mention-autocomplete-item.selected {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .mention-autocomplete-item-name {
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .mention-autocomplete-item-email {
+            font-family: var(--md-sys-typescale-body-small-font);
+            font-size: var(--md-sys-typescale-body-small-size);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .mention-autocomplete-empty {
+            padding: var(--md-sys-spacing-4);
+            text-align: center;
+            color: var(--md-sys-color-on-surface-variant);
+            font-family: var(--md-sys-typescale-body-medium-font);
+            font-size: var(--md-sys-typescale-body-medium-size);
+        }
+
         .comments-empty {
             text-align: center;
             padding: var(--md-sys-spacing-8) var(--md-sys-spacing-4);
@@ -4991,6 +5232,27 @@
         .comments-empty-text {
             font-family: var(--md-sys-typescale-body-large-font);
             font-size: var(--md-sys-typescale-body-large-size);
+        }
+
+        /* Mention Tags/Badges in Comments */
+        .comment-mention-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            margin: 0 2px;
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            vertical-align: baseline;
+            white-space: nowrap;
+        }
+
+        .comment-mention-tag::before {
+            content: '@';
+            margin-right: 2px;
+            opacity: 0.8;
         }
 
         /* Text Tab Switch Styles */
@@ -5716,6 +5978,24 @@
                 <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">Upload</span>
             </button>
+            <div class="notifications-menu-container">
+                <button class="notifications-button" id="notificationsButton" onclick="toggleNotificationsMenu()">
+                    <span class="material-icons">notifications</span>
+                    <span class="notifications-badge hidden" id="notificationsBadge">0</span>
+                </button>
+                <div class="mdc-menu mdc-menu-surface notifications-menu" id="notificationsMenu">
+                    <div class="notifications-menu-header">
+                        <div class="notifications-menu-title">Notifications</div>
+                        <button class="notifications-menu-mark-all" onclick="markAllNotificationsRead()">Mark all as read</button>
+                    </div>
+                    <div class="notifications-list" id="notificationsList">
+                        <div class="notifications-empty">
+                            <span class="material-icons">notifications_none</span>
+                            <p>No notifications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="profile-menu-container">
                 <button class="avatar-button" id="profileMenuButton">
                     <div class="avatar" id="userAvatar">U</div>
@@ -6919,8 +7199,12 @@
         }
 
         // Show document details (go directly to edit mode)
-        async function showDocument(docId) {
+        async function showDocument(docId, tabName = null, commentId = null) {
             currentDocumentId = docId;
+            
+            // Store deep link params for use after modal loads
+            window.deepLinkTab = tabName;
+            window.deepLinkCommentId = commentId;
             
             // Show modal immediately with skeleton loader
             const modal = document.getElementById('documentModal');
@@ -8432,10 +8716,13 @@
                                             <!-- Comments will be loaded here -->
                                         </div>
                                         <div class="comment-input-container">
+                                            <div class="mention-autocomplete" id="mentionAutocomplete">
+                                                <div class="mention-autocomplete-empty">No users found</div>
+                                            </div>
                                             <textarea 
                                                 id="newCommentInput" 
                                                 class="comment-input" 
-                                                placeholder="Add a comment..."
+                                                placeholder="Add a comment... (use @ to mention users)"
                                             ></textarea>
                                             <button id="submitCommentBtn" class="comment-submit-btn" title="Send comment">
                                                 <span class="material-icons">send</span>
@@ -8624,7 +8911,22 @@
                 
                 // Initialize comments
                 setTimeout(() => {
-                    loadComments();
+                    loadComments().then(() => {
+                        // Handle deep link after comments load
+                        if (window.deepLinkTab) {
+                            switchToTab(window.deepLinkTab);
+                        }
+                        if (window.deepLinkCommentId) {
+                            scrollToComment(window.deepLinkCommentId);
+                        }
+                        // Clear deep link params
+                        window.deepLinkTab = null;
+                        window.deepLinkCommentId = null;
+                    });
+                    // Initialize mention autocomplete after modal content is loaded
+                    setTimeout(() => {
+                        initMentionAutocomplete();
+                    }, 100);
                     setupCommentInput();
                 }, 100);
                 
@@ -10022,29 +10324,66 @@
                     });
                     
                     const targetPanel = document.getElementById(`${targetTab}-tab`);
+                    
                     if (targetPanel) {
                         targetPanel.classList.add('active');
                         targetPanel.style.display = 'block'; // Force show with inline style
-                        console.log('Added active to panel:', targetPanel.id);
-                        
-                        // Load history data when history tab is activated
-                        if (targetTab === 'history') {
-                            loadHistory();
-                        }
+                        console.log('Activated panel:', targetPanel.id);
                     } else {
-                        console.error('Target panel not found:', `${targetTab}-tab`);
-                    }
-                    
-                    // Initialize carousel when image tab is clicked
-                    if (targetTab === 'image' && window.currentDocumentId) {
-                        // Get the current document data to initialize carousel
-                        const currentDoc = allDocuments.find(d => d.id === window.currentDocumentId);
-                        if (currentDoc) {
-                            initializeCarousel(currentDoc.id, currentDoc.page_count || 1);
-                        }
+                        console.warn('Target panel not found:', `${targetTab}-tab`);
                     }
                 });
             });
+        }
+
+        // Switch to a specific tab programmatically
+        function switchToTab(tabName) {
+            const modal = document.getElementById('documentModal');
+            if (!modal) return;
+            
+            const tab = modal.querySelector(`.mdc-tab[data-tab="${tabName}"]`);
+            if (tab) {
+                tab.click();
+            } else {
+                console.warn('Tab not found:', tabName);
+            }
+        }
+
+        // Scroll to and highlight a comment
+        function scrollToComment(commentId) {
+            if (!commentId) return;
+            
+            setTimeout(() => {
+                const commentCard = document.querySelector(`[data-comment-id="${commentId}"]`);
+                if (commentCard) {
+                    commentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Add highlight animation
+                    commentCard.style.transition = 'background-color 0.3s';
+                    commentCard.style.backgroundColor = 'var(--md-sys-color-primary-container)';
+                    setTimeout(() => {
+                        commentCard.style.backgroundColor = '';
+                    }, 2000);
+                } else {
+                    console.warn('Comment not found:', commentId);
+                }
+            }, 500); // Wait for comments to load
+        }
+
+        // Handle deep link parameters from URL
+        function handleDeepLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const docId = urlParams.get('doc');
+            const tab = urlParams.get('tab');
+            const comment = urlParams.get('comment');
+            
+            if (docId) {
+                // Remove params from URL
+                const newUrl = window.location.pathname;
+                window.history.replaceState({}, '', newUrl);
+                
+                // Open document with deep link params
+                showDocument(docId, tab, comment);
+            }
         }
 
         // Initialize Geoapify location autocomplete
@@ -11248,6 +11587,285 @@
 
         // ===== Comments Functions =====
         
+        // ===== @Mention Autocomplete =====
+        let activeUsers = [];
+        let mentionAutocompleteState = {
+            isOpen: false,
+            query: '',
+            selectedIndex: -1,
+            currentInput: null,
+            cursorPosition: 0
+        };
+
+        // Load active users for autocomplete
+        async function loadActiveUsers() {
+            try {
+                const res = await fetch('/api/users/active', {
+                    credentials: 'same-origin'
+                });
+                const data = await res.json();
+                if (data.success) {
+                    activeUsers = data.users || [];
+                    console.log('✓ Loaded', activeUsers.length, 'active users for mentions');
+                }
+            } catch (error) {
+                console.error('Error loading active users:', error);
+            }
+        }
+
+        // Initialize mention autocomplete on comment inputs
+        function initMentionAutocomplete() {
+            const commentInputs = document.querySelectorAll('#newCommentInput');
+            commentInputs.forEach(input => {
+                // Check if already initialized
+                if (input.dataset.mentionInitialized === 'true') return;
+                
+                // Ensure autocomplete element exists
+                const container = input.closest('.comment-input-container');
+                if (container) {
+                    let autocomplete = container.querySelector('.mention-autocomplete');
+                    if (!autocomplete) {
+                        autocomplete = document.createElement('div');
+                        autocomplete.className = 'mention-autocomplete';
+                        autocomplete.id = 'mentionAutocomplete';
+                        container.insertBefore(autocomplete, input);
+                    }
+                }
+                
+                input.addEventListener('input', handleCommentInput);
+                input.addEventListener('keydown', handleCommentKeydown);
+                input.addEventListener('blur', () => {
+                    // Delay closing to allow click on autocomplete item
+                    setTimeout(() => {
+                        closeMentionAutocomplete();
+                    }, 200);
+                });
+                
+                // Mark as initialized
+                input.dataset.mentionInitialized = 'true';
+            });
+        }
+
+        function handleCommentInput(e) {
+            const input = e.target;
+            const value = input.value;
+            const cursorPos = input.selectionStart || input.value.length;
+            
+            // Find @ symbol before cursor
+            const textBeforeCursor = value.substring(0, cursorPos);
+            const lastAtIndex = textBeforeCursor.lastIndexOf('@');
+            
+            if (lastAtIndex !== -1) {
+                // Check if there's a space after @ (meaning @ is not active)
+                const textAfterAt = textBeforeCursor.substring(lastAtIndex + 1);
+                if (!textAfterAt.includes(' ') && !textAfterAt.includes('\n')) {
+                    // We have an active @ mention
+                    const query = textAfterAt.toLowerCase();
+                    console.log('@ mention detected, query:', query);
+                    mentionAutocompleteState.isOpen = true;
+                    mentionAutocompleteState.query = query;
+                    mentionAutocompleteState.currentInput = input;
+                    mentionAutocompleteState.cursorPosition = cursorPos;
+                    mentionAutocompleteState.selectedIndex = -1;
+                    
+                    showMentionAutocomplete(input, query);
+                    return;
+                }
+            }
+            
+            // No active @ mention
+            closeMentionAutocomplete();
+        }
+
+        function handleCommentKeydown(e) {
+            if (!mentionAutocompleteState.isOpen) return;
+            
+            const input = e.target;
+            const container = input.closest('.comment-input-container');
+            if (!container) return;
+            
+            const autocomplete = container.querySelector('.mention-autocomplete');
+            if (!autocomplete || !autocomplete.classList.contains('visible')) return;
+            
+            const items = autocomplete.querySelectorAll('.mention-autocomplete-item');
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                mentionAutocompleteState.selectedIndex = Math.min(
+                    mentionAutocompleteState.selectedIndex + 1,
+                    items.length - 1
+                );
+                updateAutocompleteSelection(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                mentionAutocompleteState.selectedIndex = Math.max(
+                    mentionAutocompleteState.selectedIndex - 1,
+                    -1
+                );
+                updateAutocompleteSelection(items);
+            } else if (e.key === 'Enter' || e.key === 'Tab') {
+                e.preventDefault();
+                if (mentionAutocompleteState.selectedIndex >= 0 && items[mentionAutocompleteState.selectedIndex]) {
+                    selectMentionUser(items[mentionAutocompleteState.selectedIndex]);
+                } else if (items.length > 0) {
+                    // Select first item if none selected
+                    selectMentionUser(items[0]);
+                }
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                closeMentionAutocomplete();
+            }
+        }
+
+        function showMentionAutocomplete(input, query) {
+            // Find autocomplete element relative to this input's container
+            const container = input.closest('.comment-input-container');
+            if (!container) {
+                console.warn('No comment-input-container found');
+                return;
+            }
+            
+            let autocomplete = container.querySelector('.mention-autocomplete');
+            if (!autocomplete) {
+                // Create autocomplete if it doesn't exist
+                autocomplete = document.createElement('div');
+                autocomplete.className = 'mention-autocomplete';
+                container.insertBefore(autocomplete, input);
+                console.log('Created autocomplete element');
+            }
+            
+            // Filter users based on query
+            const filteredUsers = activeUsers.filter(user => {
+                const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
+                const email = user.email.toLowerCase();
+                return fullName.includes(query) || email.includes(query);
+            });
+            
+            console.log(`Found ${filteredUsers.length} users matching "${query}"`);
+            
+            if (filteredUsers.length === 0) {
+                autocomplete.innerHTML = '<div class="mention-autocomplete-empty">No users found</div>';
+            } else {
+                autocomplete.innerHTML = filteredUsers.map((user, index) => {
+                    const fullName = `${user.first_name} ${user.last_name}`;
+                    const highlightName = highlightMatch(fullName, query);
+                    return `
+                        <div class="mention-autocomplete-item" data-user-id="${user.id}" data-username="${fullName}">
+                            <div class="mention-autocomplete-item-name">${highlightName}</div>
+                            <div class="mention-autocomplete-item-email">${user.email}</div>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Add click handlers
+                autocomplete.querySelectorAll('.mention-autocomplete-item').forEach(item => {
+                    item.addEventListener('click', () => selectMentionUser(item));
+                });
+            }
+            
+            autocomplete.classList.add('visible');
+            console.log('Autocomplete shown');
+        }
+
+        function highlightMatch(text, query) {
+            if (!query) return escapeHtml(text);
+            const regex = new RegExp(`(${escapeHtml(query)})`, 'gi');
+            return escapeHtml(text).replace(regex, '<strong>$1</strong>');
+        }
+
+        function updateAutocompleteSelection(items) {
+            items.forEach((item, index) => {
+                if (index === mentionAutocompleteState.selectedIndex) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function selectMentionUser(item) {
+            const input = mentionAutocompleteState.currentInput;
+            if (!input) return;
+            
+            const username = item.dataset.username;
+            const value = input.value;
+            // Get current cursor position (may have changed)
+            const cursorPos = input.selectionStart || input.value.length;
+            
+            // Find @ symbol position before cursor
+            const textBeforeCursor = value.substring(0, cursorPos);
+            const lastAtIndex = textBeforeCursor.lastIndexOf('@');
+            
+            if (lastAtIndex !== -1) {
+                // Get text after @ to replace
+                const textAfterAt = textBeforeCursor.substring(lastAtIndex + 1);
+                const textBeforeAt = value.substring(0, lastAtIndex);
+                const textAfterCursor = value.substring(cursorPos);
+                
+                // Replace @query with @username
+                const newValue = textBeforeAt + `@${username} ` + textAfterCursor;
+                
+                input.value = newValue;
+                
+                // Set cursor position after inserted mention
+                const newCursorPos = lastAtIndex + username.length + 2; // +2 for @ and space
+                input.setSelectionRange(newCursorPos, newCursorPos);
+                input.focus();
+                
+                // Trigger input event to update any listeners
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+            
+            closeMentionAutocomplete();
+        }
+
+        function closeMentionAutocomplete() {
+            // Close all autocomplete dropdowns
+            document.querySelectorAll('.mention-autocomplete').forEach(autocomplete => {
+                autocomplete.classList.remove('visible');
+            });
+            mentionAutocompleteState.isOpen = false;
+            mentionAutocompleteState.query = '';
+            mentionAutocompleteState.currentInput = null;
+            mentionAutocompleteState.selectedIndex = -1;
+        }
+
+        // Parse mentions from comment text and return user IDs
+        function parseMentionsFromText(text) {
+            const mentionedUserIds = [];
+            const mentionPattern = /@([A-Za-z]+ [A-Za-z]+)/g;
+            let match;
+            
+            while ((match = mentionPattern.exec(text)) !== null) {
+                const mentionedName = match[1].trim();
+                // Find user by full name
+                const user = activeUsers.find(u => 
+                    `${u.first_name} ${u.last_name}` === mentionedName
+                );
+                if (user) {
+                    mentionedUserIds.push(user.id);
+                }
+            }
+            
+            // Remove duplicates
+            return [...new Set(mentionedUserIds)];
+        }
+
+        // Convert @mentions in text to styled tags
+        function formatMentionsInText(text) {
+            if (!text) return '';
+            
+            // Pattern to match @First Last (with word boundaries)
+            const mentionPattern = /@([A-Za-z]+ [A-Za-z]+)/g;
+            
+            // Replace mentions with styled tags
+            return text.replace(mentionPattern, (match, name) => {
+                const escapedName = escapeHtml(name);
+                return `<span class="comment-mention-tag">${escapedName}</span>`;
+            });
+        }
+        
         // Load and display comments
         async function loadComments() {
             console.log('💬 loadComments() called for document:', window.currentDocumentId);
@@ -11319,10 +11937,21 @@
             // Get initials for avatar
             const initials = comment.username ? comment.username.substring(0, 2).toUpperCase() : 'U';
             
-            // Convert markdown to HTML using marked.js
-            const htmlContent = typeof marked !== 'undefined' && marked.parse ? 
-                                marked.parse(comment.note) : 
-                                escapeHtml(comment.note).replace(/\n/g, '<br>');
+            // Process comment text
+            let htmlContent;
+            
+            if (typeof marked !== 'undefined' && marked.parse) {
+                // Use markdown parser
+                htmlContent = marked.parse(comment.note);
+            } else {
+                // Simple HTML escaping
+                htmlContent = escapeHtml(comment.note).replace(/\n/g, '<br>');
+            }
+            
+            // Format @mentions as tags (after markdown processing to preserve HTML)
+            const finalContent = htmlContent.replace(/@([A-Za-z]+ [A-Za-z]+)/g, (match, name) => {
+                return `<span class="comment-mention-tag">${escapeHtml(name)}</span>`;
+            });
             
             return `
                 <div class="comment-card" data-comment-id="${comment.id}">
@@ -11340,7 +11969,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="comment-body">${htmlContent}</div>
+                    <div class="comment-body">${finalContent}</div>
                 </div>
             `;
         }
@@ -11387,6 +12016,10 @@
             
             console.log('📝 Posting comment:', noteText.substring(0, 50) + '...');
             
+            // Parse mentions from comment text
+            const mentionedUserIds = parseMentionsFromText(noteText);
+            console.log('👥 Mentioned users:', mentionedUserIds);
+            
             // Find the corresponding submit button
             const submitBtns = document.querySelectorAll('#submitCommentBtn');
             const submitBtn = Array.from(submitBtns).find(btn => btn.offsetParent !== null);
@@ -11399,7 +12032,10 @@
                     headers: { 
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ note: noteText }),
+                    body: JSON.stringify({ 
+                        note: noteText,
+                        mentioned_user_ids: mentionedUserIds
+                    }),
                     credentials: 'same-origin'
                 });
                 
@@ -11424,6 +12060,8 @@
                     });
                     
                     await loadComments(); // Reload comments
+                    // Reinitialize autocomplete after comment is added
+                    initMentionAutocomplete();
                 } else {
                     showError(data.error || 'Failed to add comment');
                 }
@@ -14752,6 +15390,17 @@
             // Initialize profile menu with MDC Menu
             initializeProfileMenu();
             
+            // Initialize @mention autocomplete
+            loadActiveUsers().then(() => {
+                initMentionAutocomplete();
+            });
+            
+            // Initialize notifications menu and polling
+            initializeNotificationsPolling();
+            
+            // Handle deep link on page load
+            handleDeepLink();
+            
             // Initialize bulk status menu
             const bulkStatusMenuEl = document.getElementById('bulkStatusMenu');
             if (bulkStatusMenuEl && typeof mdc !== 'undefined' && mdc.menu && mdc.menu.MDCMenu) {
@@ -14837,4 +15486,217 @@
         });
     </script>
 </body>
+
+        // ===== Notifications Menu =====
+        let notificationsMenuComponent = null;
+        let notificationPollInterval = null;
+
+        // Load notifications
+        async function loadNotifications() {
+            try {
+                const res = await fetch('/api/notifications', {
+                    credentials: 'same-origin'
+                });
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        console.warn('Not authenticated, skipping notifications');
+                        return;
+                    }
+                    throw new Error(`HTTP ${res.status}`);
+                }
+                const data = await res.json();
+                
+                if (data.success) {
+                    renderNotifications(data.notifications || []);
+                } else {
+                    console.error('Failed to load notifications:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+            }
+        }
+
+        // Update notification badge count
+        async function updateNotificationBadge() {
+            try {
+                const res = await fetch('/api/notifications/count', {
+                    credentials: 'same-origin'
+                });
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        // Not authenticated, hide badge
+                        const badge = document.getElementById('notificationsBadge');
+                        if (badge) badge.classList.add('hidden');
+                        return;
+                    }
+                    throw new Error(`HTTP ${res.status}`);
+                }
+                const data = await res.json();
+                
+                if (data.success) {
+                    const badge = document.getElementById('notificationsBadge');
+                    if (badge) {
+                        const count = data.count || 0;
+                        badge.textContent = count > 99 ? '99+' : count.toString();
+                        if (count > 0) {
+                            badge.classList.remove('hidden');
+                        } else {
+                            badge.classList.add('hidden');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating notification badge:', error);
+            }
+        }
+
+        // Render notifications list
+        function renderNotifications(notifications) {
+            const list = document.getElementById('notificationsList');
+            if (!list) return;
+            
+            if (notifications.length === 0) {
+                list.innerHTML = `
+                    <div class="notifications-empty">
+                        <span class="material-icons">notifications_none</span>
+                        <p>No notifications</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = notifications.map(notification => {
+                const date = new Date(notification.created_at);
+                const timeAgo = formatRelativeTime(date);
+                const preview = notification.comment_preview || '';
+                const previewText = preview.length > 100 ? preview.substring(0, 100) + '...' : preview;
+                
+                return `
+                    <div class="notification-item ${notification.read ? '' : 'unread'}" 
+                         onclick="handleNotificationClick(${notification.id}, '${notification.document_id}', '${notification.comment_id}')">
+                        <div class="notification-item-header">
+                            <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                                ${!notification.read ? '<div class="notification-item-unread-dot"></div>' : ''}
+                                <div style="flex: 1;">
+                                    <div class="notification-item-title">
+                                        ${escapeHtml(notification.commenter_name)} mentioned you
+                                    </div>
+                                    <div class="notification-item-time">${timeAgo}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notification-item-preview">${escapeHtml(previewText)}</div>
+                        <div class="notification-item-document">${escapeHtml(notification.document_title)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Format relative time (e.g., "2 hours ago")
+        function formatRelativeTime(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+            
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        // Handle notification click
+        async function handleNotificationClick(notificationId, documentId, commentId) {
+            // Mark as read
+            try {
+                await fetch(`/api/notifications/${notificationId}/read`, {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+            
+            // Update badge
+            await updateNotificationBadge();
+            
+            // Close menu
+            if (notificationsMenuComponent) {
+                notificationsMenuComponent.open = false;
+            }
+            
+            // Open document with comment highlighted
+            if (documentId) {
+                showDocument(documentId, 'comments', commentId);
+            }
+        }
+
+        // Toggle notifications menu
+        function toggleNotificationsMenu() {
+            const menu = document.getElementById('notificationsMenu');
+            const button = document.getElementById('notificationsButton');
+            
+            if (!menu || !button) return;
+            
+            if (!notificationsMenuComponent) {
+                // Initialize MDC Menu if not already done
+                if (typeof mdc !== 'undefined' && mdc.menu && mdc.menu.MDCMenu) {
+                    notificationsMenuComponent = new mdc.menu.MDCMenu(menu);
+                    notificationsMenuComponent.setAnchorElement(button);
+                    notificationsMenuComponent.setAnchorCorner(mdc.menu.Corner.BOTTOM_END);
+                    notificationsMenuComponent.setAnchorMargin({top: 8, right: 0, bottom: 0, left: 0});
+                } else {
+                    // Fallback: simple toggle
+                    const isVisible = menu.style.display !== 'none';
+                    menu.style.display = isVisible ? 'none' : 'block';
+                    return;
+                }
+            }
+            
+            // Load notifications when opening
+            if (!notificationsMenuComponent.open) {
+                loadNotifications();
+            }
+            
+            notificationsMenuComponent.open = !notificationsMenuComponent.open;
+        }
+
+        // Mark all notifications as read
+        async function markAllNotificationsRead() {
+            try {
+                const res = await fetch('/api/notifications/read-all', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    await loadNotifications();
+                    await updateNotificationBadge();
+                    showSnackbar(`${data.count || 0} notifications marked as read`, 'success');
+                }
+            } catch (error) {
+                console.error('Error marking all notifications as read:', error);
+                showSnackbar('Error marking notifications as read', 'error');
+            }
+        }
+
+        // Initialize notifications polling
+        function initializeNotificationsPolling() {
+            // Update badge immediately
+            updateNotificationBadge();
+            
+            // Poll every 30 seconds
+            notificationPollInterval = setInterval(() => {
+                updateNotificationBadge();
+                // Reload notifications if menu is open
+                if (notificationsMenuComponent && notificationsMenuComponent.open) {
+                    loadNotifications();
+                }
+            }, 30000);
+        }
+        
 </html>

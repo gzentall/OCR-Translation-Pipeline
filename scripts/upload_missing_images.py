@@ -80,3 +80,4 @@ if failed:
     print(f"   Failed: {failed}")
 print(f"   Total in R2: {len(r2_images) + uploaded}")
 
+

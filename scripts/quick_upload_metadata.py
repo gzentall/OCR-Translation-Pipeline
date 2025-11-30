@@ -44,3 +44,4 @@ print(f"✅ Metadata uploaded to R2!")
 print(f"   Documents: {len(metadata['documents'])}")
 print(f"   People: {len(metadata.get('people', {}))}")
 
+

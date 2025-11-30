@@ -165,3 +165,4 @@ After CORS is configured:
 
 **Next Step:** Configure CORS in Cloudflare R2 Dashboard now!
 
+
