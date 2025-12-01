@@ -11981,9 +11981,14 @@
                 const preview = notification.comment_preview || '';
                 const previewText = preview.length > 100 ? preview.substring(0, 100) + '...' : preview;
                 
+                // Escape IDs for use in JavaScript strings (escape quotes and backslashes)
+                const escapeJsString = (str) => String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+                const safeDocId = escapeJsString(notification.document_id);
+                const safeCommentId = escapeJsString(notification.comment_id);
+                
                 return `
                     <div class="notification-item ${notification.read ? '' : 'unread'}" 
-                         onclick="handleNotificationClick(${notification.id}, '${notification.document_id}', '${notification.comment_id}')">
+                         onclick="handleNotificationClick(${notification.id}, '${safeDocId}', '${safeCommentId}')">
                         <div class="notification-item-header">
                             <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
                                 ${!notification.read ? '<div class="notification-item-unread-dot"></div>' : ''}
@@ -12020,7 +12025,9 @@
 
         // Handle notification click
         async function handleNotificationClick(notificationId, documentId, commentId) {
-            // Mark as read
+            console.log('handleNotificationClick called:', { notificationId, documentId, commentId });
+            
+            // Mark as read first
             try {
                 await fetch(`/api/notifications/${notificationId}/read`, {
                     method: 'POST',
@@ -12040,7 +12047,35 @@
             
             // Open document with comment highlighted
             if (documentId) {
-                showDocument(documentId, 'comments', commentId);
+                // First verify the document exists before trying to open it
+                try {
+                    const checkResponse = await fetch(`/documents/${documentId}`, {
+                        credentials: 'same-origin',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    if (checkResponse.status === 404) {
+                        showError(`Document not found. It may have been deleted.`);
+                        return;
+                    }
+                    
+                    if (!checkResponse.ok) {
+                        const errorData = await checkResponse.json().catch(() => ({ error: 'Unknown error' }));
+                        showError(`Failed to load document: ${errorData.error || 'Unknown error'}`);
+                        return;
+                    }
+                    
+                    // Document exists, open it
+                    showDocument(documentId, 'comments', commentId);
+                } catch (error) {
+                    console.error('Error checking document existence:', error);
+                    showError(`Error loading document: ${error.message}`);
+                }
+            } else {
+                showError('Invalid notification: missing document ID');
             }
         }
 
