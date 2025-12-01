@@ -7200,6 +7200,7 @@
 
         // Show document details (go directly to edit mode)
         async function showDocument(docId, tabName = null, commentId = null) {
+            console.log('showDocument called with:', { docId, tabName, commentId });
             currentDocumentId = docId;
             
             // Store deep link params for use after modal loads
@@ -7211,42 +7212,55 @@
             const modalTitle = document.getElementById('dialogTitle');
             const modalContent = document.getElementById('modalContent');
             
-            if (modal && modalContent) {
-                // Show loading skeleton
-                modalTitle.textContent = 'Loading document...';
-                modalContent.innerHTML = `
-                    <div class="editor-skeleton-container">
-                        <div class="editor-skeleton-tabs">
-                            <div class="skeleton editor-skeleton-tab"></div>
-                            <div class="skeleton editor-skeleton-tab"></div>
-                            <div class="skeleton editor-skeleton-tab"></div>
-                        </div>
-                        <div class="editor-skeleton-header">
-                            <div class="skeleton editor-skeleton-image"></div>
-                            <div class="editor-skeleton-content">
-                                <div class="skeleton skeleton-title" style="width: 60%; margin-bottom: 16px;"></div>
-                                <div class="skeleton skeleton-text"></div>
-                                <div class="skeleton skeleton-text"></div>
-                                <div class="skeleton skeleton-text"></div>
-                                <div class="skeleton skeleton-text-short"></div>
-                                <div class="skeleton skeleton-text" style="margin-top: 24px;"></div>
-                                <div class="skeleton skeleton-text"></div>
-                                <div class="skeleton skeleton-text"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                // Open the modal
-                modal.classList.add('mdc-dialog--open');
-                modal.classList.add('document-editor-dialog');
-                document.body.style.overflow = 'hidden';
+            if (!modal || !modalTitle || !modalContent) {
+                console.error('Modal elements not found:', { modal: !!modal, modalTitle: !!modalTitle, modalContent: !!modalContent });
+                showError('Document editor modal not found. Please refresh the page.');
+                return;
             }
             
+            // Show loading skeleton
+            modalTitle.textContent = 'Loading document...';
+            modalContent.innerHTML = `
+                <div class="editor-skeleton-container">
+                    <div class="editor-skeleton-tabs">
+                        <div class="skeleton editor-skeleton-tab"></div>
+                        <div class="skeleton editor-skeleton-tab"></div>
+                        <div class="skeleton editor-skeleton-tab"></div>
+                    </div>
+                    <div class="editor-skeleton-header">
+                        <div class="skeleton editor-skeleton-image"></div>
+                        <div class="editor-skeleton-content">
+                            <div class="skeleton skeleton-title" style="width: 60%; margin-bottom: 16px;"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text-short"></div>
+                            <div class="skeleton skeleton-text" style="margin-top: 24px;"></div>
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Open the modal
+            modal.classList.add('mdc-dialog--open');
+            modal.classList.add('document-editor-dialog');
+            document.body.style.overflow = 'hidden';
+            
             try {
+                console.log('Fetching document:', docId);
                 const response = await fetch(`/documents/${docId}`, {
-                    credentials: 'same-origin' // Include cookies for session authentication
+                    credentials: 'same-origin', // Include cookies for session authentication
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
                 });
+                
+                console.log('Response status:', response.status, response.statusText);
+                console.log('Response redirected:', response.redirected);
+                console.log('Response URL:', response.url);
                 
                 // Check if we got redirected to login (302)
                 if (response.redirected && response.url.includes('/login')) {
@@ -7257,19 +7271,34 @@
                     return;
                 }
                 
+                // Check if response is actually JSON
+                const contentType = response.headers.get('content-type');
+                console.log('Response content-type:', contentType);
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    console.error('Non-JSON response received:', text.substring(0, 500));
+                    throw new Error('Expected JSON response but got: ' + contentType);
+                }
+                
                 const data = await response.json();
+                console.log('Document data received:', data);
                 
                 if (data.success) {
                     const doc = data.document;
+                    console.log('Document loaded successfully, opening editor...');
                     document.getElementById('dialogTitle').textContent = `Edit: ${doc.title}`;
                     
                     // Go directly to edit mode
                     await showEditModal(doc);
                 } else {
+                    console.error('Document load failed:', data.error);
                     showError('Failed to load document: ' + data.error);
                 }
             } catch (error) {
+                console.error('Error loading document:', error);
                 showError('Error loading document: ' + error.message);
+                // Close modal on error
+                closeModal();
             }
         }
 
