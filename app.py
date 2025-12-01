@@ -2348,12 +2348,39 @@ def add_document_review(doc_id):
 
 @app.route('/documents/<doc_id>/reviews', methods=['GET'])
 def get_document_reviews(doc_id):
-    """Get all reviews for a document."""
+    """Get all reviews for a document with user info."""
     try:
         reviews = local_storage.get_reviews(doc_id)
+        
+        # Get user IDs from reviews
+        user_ids = [review.get('userId') for review in reviews if review.get('userId')]
+        
+        # Fetch user info for reviewers
+        reviewers_info = {}
+        if user_ids:
+            with DatabaseSession() as db:
+                users = db.query(User).filter(User.id.in_(user_ids)).all()
+                for user in users:
+                    reviewers_info[str(user.id)] = {
+                        'id': user.id,
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'email': user.email,
+                        'username': f"{user.first_name} {user.last_name}"
+                    }
+        
+        # Enhance reviews with user info
+        enhanced_reviews = []
+        for review in reviews:
+            enhanced_review = review.copy()
+            user_id_str = str(review.get('userId', ''))
+            if user_id_str in reviewers_info:
+                enhanced_review['user_info'] = reviewers_info[user_id_str]
+            enhanced_reviews.append(enhanced_review)
+        
         return jsonify({
             'success': True,
-            'reviews': reviews
+            'reviews': enhanced_reviews
         })
     except Exception as e:
         return jsonify({
