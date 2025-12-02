@@ -127,6 +127,11 @@ DOCUMENT TEXT:
 Return only valid JSON, no other text.
 """
     
+    # Check if ai_processor has a client (real AIProcessor) or is fallback
+    if not hasattr(ai_processor, 'client') or ai_processor.client is None:
+        print(f"      ⚠️  AI processor does not support reference extraction (using fallback), skipping enhanced extraction")
+        return {"people": [], "places": [], "events": [], "themes": [], "emotions": []}
+    
     try:
         response = ai_processor.client.chat.completions.create(
             model="gpt-4-turbo-preview",
@@ -163,10 +168,13 @@ Return only valid JSON, no other text.
         
     except json.JSONDecodeError as e:
         print(f"      ❌ Error decoding JSON from LLM: {e}")
-        print(f"      Raw response: {content[:200]}...")
+        if 'content' in locals():
+            print(f"      Raw response: {content[:200]}...")
         return {"people": [], "places": [], "events": [], "themes": [], "emotions": []}
     except Exception as e:
         print(f"      ❌ Error extracting references: {e}")
+        import traceback
+        traceback.print_exc()
         return {"people": [], "places": [], "events": [], "themes": [], "emotions": []}
 
 

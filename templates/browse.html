@@ -3190,18 +3190,44 @@
             bottom: var(--md-sys-spacing-6);
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: var(--md-sys-color-surface-container-lowest);
-            border: 1px solid var(--md-sys-color-outline-variant);
+            background: #000000; /* Black background */
+            border: 1px solid rgba(255, 255, 255, 0.12); /* Dark theme outline */
             border-radius: 16px;
-            padding: var(--md-sys-spacing-3);
-            box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12);
+            padding: var(--md-sys-spacing-3) var(--md-sys-spacing-4);
+            box-shadow: 0 8px 10px 1px rgba(0,0,0,0.3), 0 3px 14px 2px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
-            gap: var(--md-sys-spacing-2);
+            justify-content: space-between;
+            gap: var(--md-sys-spacing-4);
             z-index: 1000; /* Dropdown level */
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+            width: 100%;
+            max-width: var(--container-max-width-desktop);
+            box-sizing: border-box;
+        }
+        
+        /* Match container padding on toolbar */
+        @media (min-width: 600px) {
+            .floating-toolbar {
+                padding-left: calc(var(--grid-gap-tablet) + var(--md-sys-spacing-4));
+                padding-right: calc(var(--grid-gap-tablet) + var(--md-sys-spacing-4));
+            }
+        }
+        
+        @media (min-width: 840px) {
+            .floating-toolbar {
+                padding-left: calc(var(--grid-gap-desktop) + var(--md-sys-spacing-4));
+                padding-right: calc(var(--grid-gap-desktop) + var(--md-sys-spacing-4));
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .floating-toolbar {
+                padding-left: calc(var(--grid-gap-large) + var(--md-sys-spacing-4));
+                padding-right: calc(var(--grid-gap-large) + var(--md-sys-spacing-4));
+            }
         }
 
         .floating-toolbar.show {
@@ -3210,60 +3236,132 @@
             visibility: visible;
         }
 
+        .floating-toolbar__left {
+            display: flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-2);
+        }
+
         .floating-toolbar__selection-count {
             font-family: var(--md-sys-typescale-body-medium-font);
             font-size: var(--md-sys-typescale-body-medium-size);
             font-weight: var(--md-sys-typescale-body-medium-weight);
             line-height: var(--md-sys-typescale-body-medium-line-height);
             letter-spacing: var(--md-sys-typescale-body-medium-tracking);
-            color: var(--md-sys-color-on-surface);
-            margin-right: var(--md-sys-spacing-2);
+            color: rgba(255, 255, 255, 0.87); /* Dark theme on-surface */
             white-space: nowrap;
         }
 
+        .floating-toolbar__deselect-link {
+            color: rgba(255, 255, 255, 0.6); /* Dark theme on-surface-variant */
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: var(--md-sys-typescale-body-medium-size);
+            transition: color 0.2s;
+        }
+
+        .floating-toolbar__deselect-link:hover {
+            color: rgba(255, 255, 255, 0.87);
+        }
+
+        .floating-toolbar__right {
+            display: flex;
+            align-items: center;
+            gap: var(--md-sys-spacing-2);
+        }
+
         .floating-toolbar__action {
-            background: none;
-            border: 1px solid var(--md-sys-color-outline);
-            border-radius: 8px;
-            padding: var(--md-sys-spacing-2) var(--md-sys-spacing-3);
-            color: var(--md-sys-color-on-surface);
+            /* M3 Dark Theme Button Styles */
+            background: rgba(255, 255, 255, 0.08); /* Dark theme surface-variant */
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px; /* M3 button group style */
+            padding: 10px 16px;
+            color: rgba(255, 255, 255, 0.87); /* Dark theme on-surface */
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: var(--md-sys-spacing-1);
+            gap: 8px;
             transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
             font-family: var(--md-sys-typescale-label-large-font);
             font-size: var(--md-sys-typescale-label-large-size);
             font-weight: var(--md-sys-typescale-label-large-weight);
             line-height: var(--md-sys-typescale-label-large-line-height);
             letter-spacing: var(--md-sys-typescale-label-large-tracking);
+            min-height: 40px;
+        }
+        
+        /* Ensure no action icons are shown (icons removed from HTML, this is a safeguard) */
+        .floating-toolbar__action .material-icons:not(:last-child) {
+            display: none;
         }
 
         .floating-toolbar__action:hover {
-            background: var(--md-sys-color-surface-container-high);
-            border-color: var(--md-sys-color-primary);
+            background: rgba(255, 255, 255, 0.12); /* Dark theme hover state */
+        }
+
+        .floating-toolbar__action:active {
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        .floating-toolbar__action .material-icons {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
         }
 
         .floating-toolbar__action.merge {
-            background: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-on-primary-container);
-            border-color: var(--md-sys-color-primary);
+            background: rgba(103, 80, 164, 0.12); /* Primary container dark */
+            color: rgba(211, 196, 255, 0.87); /* On-primary-container dark */
+            border-color: rgba(211, 196, 255, 0.3);
         }
 
         .floating-toolbar__action.merge:hover {
-            background: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
+            background: rgba(103, 80, 164, 0.2);
         }
 
         .floating-toolbar__action.delete {
-            background: var(--md-sys-color-error-container);
-            color: var(--md-sys-color-on-error-container);
-            border-color: var(--md-sys-color-error);
+            background: rgba(186, 26, 26, 0.12); /* Error container dark */
+            color: rgba(255, 218, 214, 0.87); /* On-error-container dark */
+            border-color: rgba(255, 218, 214, 0.3);
         }
 
         .floating-toolbar__action.delete:hover {
-            background: var(--md-sys-color-error);
-            color: var(--md-sys-color-on-error);
+            background: rgba(186, 26, 26, 0.2);
+        }
+
+        /* Dark theme menu styling for bulk actions */
+        #bulkStatusMenu.mdc-menu-surface {
+            background: #1e1e1e !important; /* Dark surface */
+            color: rgba(255, 255, 255, 0.87) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        #bulkStatusMenu .mdc-list {
+            background: transparent !important;
+            padding: 8px 0 !important;
+        }
+
+        /* M3 Standard Menu Item Height: 48px */
+        #bulkStatusMenu .mdc-list-item {
+            color: rgba(255, 255, 255, 0.87) !important;
+            background: transparent !important;
+            height: 48px !important;
+            min-height: 48px !important;
+            padding: 0 16px !important;
+        }
+
+        #bulkStatusMenu .mdc-list-item__text {
+            color: rgba(255, 255, 255, 0.87) !important;
+        }
+
+        #bulkStatusMenu .mdc-list-item:hover,
+        #bulkStatusMenu .mdc-list-item:focus {
+            background: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        #bulkStatusMenu .mdc-list-item.mdc-list-item--selected {
+            background: rgba(255, 255, 255, 0.12) !important;
         }
 
         .floating-toolbar__action .material-icons {
@@ -4877,7 +4975,7 @@
         /* Multi-Column Document Editor Layout */
         .document-editor-layout {
             display: grid;
-            gap: var(--md-sys-spacing-4);
+            gap: 0; /* No gap between columns */
             height: 100%;
             min-height: 500px;
         }
@@ -4887,6 +4985,7 @@
             height: 100%;
             min-height: 0;
             flex: 1;
+            gap: 0;
         }
 
         /* 3-Column Layout (Desktop) */
@@ -4924,7 +5023,9 @@
             display: flex;
             flex-direction: column;
             min-height: 0;
-            overflow: hidden; /* Keep hidden to constrain children */
+            overflow: hidden; /* No scrolling on the section itself */
+            border-left: 1px solid var(--md-sys-color-outline-variant);
+            border-right: 1px solid var(--md-sys-color-outline-variant);
         }
 
         /* Comments section - see detailed styles below */
@@ -5334,28 +5435,45 @@
             opacity: 0.8;
         }
 
-        /* Text Tab Switch Styles */
+        /* Text Tab Switch Styles - only apply when active */
         #text-tab {
-            display: flex;
             flex-direction: column;
             height: 100%;
             overflow: hidden;
+            padding: 0; /* Override generic tab-panel padding */
+            min-height: 0; /* Allow flex shrinking */
+        }
+        
+        #text-tab.active {
+            display: flex !important;
+        }
+        
+        #text-tab:not(.active) {
+            display: none !important;
         }
 
         .text-tab-header {
-            display: flex;
+            display: flex !important;
+            visibility: visible !important;
             align-items: center;
             justify-content: flex-end;
-            padding: var(--md-sys-spacing-3) var(--md-sys-spacing-4);
+            padding: 8px 12px; /* Compact padding */
             border-bottom: 1px solid var(--md-sys-color-outline-variant);
             background: var(--md-sys-color-surface-container-lowest);
             flex-shrink: 0;
+            min-height: 40px; /* Ensure minimum height for switch */
+        }
+        
+        /* Ensure text tab header is visible in dialog */
+        .mdc-dialog .text-tab-header {
+            display: flex !important;
+            visibility: visible !important;
         }
 
         .text-switch-label {
             display: flex;
             align-items: center;
-            gap: var(--md-sys-spacing-3);
+            gap: 8px;
             cursor: pointer;
         }
 
@@ -5367,12 +5485,12 @@
         }
         
         .text-tab-textarea {
-            flex: 1;
-            width: 100%;
-            height: 100%;
-            min-height: 0;
+            flex: 1 1 auto !important;
+            width: 100% !important;
+            min-height: 0; /* Allow shrinking */
+            max-height: none;
             border: none;
-            padding: var(--md-sys-spacing-4);
+            padding: 12px;
             font-family: var(--md-sys-typescale-body-medium-font);
             font-size: var(--md-sys-typescale-body-medium-size);
             line-height: var(--md-sys-typescale-body-medium-line-height);
@@ -5381,12 +5499,44 @@
             resize: none;
             outline: none;
             box-sizing: border-box;
+            overflow-y: auto; /* Only the textarea scrolls */
+        }
+        
+        /* Make text tab fill available space in dialog */
+        .mdc-dialog #text-tab.tab-panel.active {
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 !important;
+            height: 100% !important;
+            max-height: none !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+        
+        /* Summary tab should scroll */
+        #summary-tab.active {
+            display: block !important;
+            overflow-y: auto !important;
+            max-height: calc(100vh - 300px);
+        }
+        
+        /* History tab should scroll */
+        #history-tab.active {
+            display: block !important;
+            overflow-y: auto !important;
+            max-height: calc(100vh - 300px);
+        }
+        
+        /* Ensure non-active tabs are hidden */
+        .tab-panel:not(.active) {
+            display: none !important;
+            visibility: hidden !important;
         }
 
         /* Responsive Layout Adjustments */
         @media (max-width: 599px) {
             .document-editor-layout {
-                gap: var(--md-sys-spacing-3);
+                gap: 0;
                 min-height: 400px;
             }
             
@@ -5437,13 +5587,13 @@
 
         @media (min-width: 600px) and (max-width: 839px) {
             .document-editor-layout {
-                gap: var(--md-sys-spacing-4);
+                gap: 0;
             }
         }
 
         @media (min-width: 840px) {
             .document-editor-layout {
-                gap: var(--md-sys-spacing-5);
+                gap: 0;
             }
             
             .editor-comments-section {
@@ -5462,8 +5612,7 @@
             min-width: 500px !important;
             flex: 1; /* Take remaining space in flex container */
             min-height: 0; /* Allow flex shrinking */
-            overflow-y: auto; /* Enable vertical scrolling */
-            /* Remove display: block !important to allow JavaScript to control visibility */
+            overflow: visible; /* Let individual tab panels handle scrolling */
             visibility: visible !important;
             opacity: 1 !important;
             padding: 0 !important;
@@ -5732,10 +5881,12 @@
         
         /* Remove spacing for references tab - filter bar should be flush with section */
         
-        /* Ensure tab content in editor is scrollable */
+        /* Tab content in editor - let panels handle their own scrolling */
         .editor-tabs-section .tab-content {
-            display: block !important; /* Always visible in editor, panels control visibility */
-            padding: var(--md-sys-spacing-4);
+            display: block !important;
+            padding: 0;
+            overflow: visible;
+            height: 100%;
         }
 
         .image-viewer {
@@ -6500,47 +6651,53 @@
 
     <!-- Floating Toolbar for Selection Actions -->
     <div class="floating-toolbar" id="floatingToolbar">
-        <div class="floating-toolbar__selection-count" id="selectionCount">0 selected</div>
-        <button class="floating-toolbar__action merge" onclick="openMergeModal()" id="mergeButton">
-            <span class="material-icons">merge</span>
-            <span>Merge</span>
-        </button>
-        <button class="floating-toolbar__action delete" onclick="deleteSelectedReferences()" id="deleteButton">
-            <span class="material-icons">delete</span>
-            <span>Delete</span>
-        </button>
+        <div class="floating-toolbar__left">
+            <div class="floating-toolbar__selection-count" id="selectionCount">0 selected</div>
+            <a href="#" class="floating-toolbar__deselect-link" id="deselectAllRefsLink" onclick="event.preventDefault(); clearReferenceSelection();">Deselect all</a>
+        </div>
+        <div class="floating-toolbar__right">
+            <button class="floating-toolbar__action merge" id="mergeButton">
+                <span>Merge</span>
+            </button>
+            <button class="floating-toolbar__action delete" id="deleteButton">
+                <span>Delete</span>
+            </button>
+        </div>
     </div>
     
     <!-- Floating Toolbar for Document Bulk Actions -->
     <div class="floating-toolbar" id="documentBulkToolbar">
-        <div class="floating-toolbar__selection-count" id="documentSelectionCount">0 selected</div>
-        <div class="mdc-menu-surface--anchor">
-            <button class="floating-toolbar__action" id="bulkStatusButton">
-                <span class="material-icons">edit</span>
-                <span>Change Status</span>
-                <span class="material-icons" style="font-size: 18px; margin-left: 4px;">arrow_drop_up</span>
-            </button>
-            <div class="mdc-menu mdc-menu-surface" id="bulkStatusMenu" style="min-width: 200px;">
-                <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
-                    <li class="mdc-list-item" role="menuitem" data-status="new">
-                        <span class="mdc-list-item__ripple"></span>
-                        <span class="mdc-list-item__text">New</span>
-                    </li>
-                    <li class="mdc-list-item" role="menuitem" data-status="editing">
-                        <span class="mdc-list-item__ripple"></span>
-                        <span class="mdc-list-item__text">Editing</span>
-                    </li>
-                    <li class="mdc-list-item" role="menuitem" data-status="final">
-                        <span class="mdc-list-item__ripple"></span>
-                        <span class="mdc-list-item__text">Final</span>
-                    </li>
-                </ul>
-            </div>
+        <div class="floating-toolbar__left">
+            <div class="floating-toolbar__selection-count" id="documentSelectionCount">0 selected</div>
+            <a href="#" class="floating-toolbar__deselect-link" id="deselectAllLink" onclick="event.preventDefault(); clearDocumentSelection();">Deselect all</a>
         </div>
-        <button class="floating-toolbar__action delete" onclick="deleteSelectedDocuments()">
-            <span class="material-icons">delete</span>
-            <span>Delete</span>
-        </button>
+        <div class="floating-toolbar__right">
+            <div class="mdc-menu-surface--anchor">
+                <button class="floating-toolbar__action" id="bulkStatusButton">
+                    <span>Change Status</span>
+                    <span class="material-icons" style="font-size: 18px; margin-left: 4px;">arrow_drop_up</span>
+                </button>
+                <div class="mdc-menu mdc-menu-surface" id="bulkStatusMenu" style="min-width: 200px;">
+                    <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
+                        <li class="mdc-list-item" role="menuitem" data-status="new">
+                            <span class="mdc-list-item__ripple"></span>
+                            <span class="mdc-list-item__text">New</span>
+                        </li>
+                        <li class="mdc-list-item" role="menuitem" data-status="editing">
+                            <span class="mdc-list-item__ripple"></span>
+                            <span class="mdc-list-item__text">Editing</span>
+                        </li>
+                        <li class="mdc-list-item" role="menuitem" data-status="final">
+                            <span class="mdc-list-item__ripple"></span>
+                            <span class="mdc-list-item__text">Final</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <button class="floating-toolbar__action delete" id="bulkDeleteButton">
+                <span>Delete</span>
+            </button>
+        </div>
     </div>
 
     <!-- Merge Modal -->
@@ -7773,6 +7930,8 @@
             if (selectedDocuments.size === 0) return;
             
             const count = selectedDocuments.size;
+            
+            // Ask for confirmation (destructive action)
             if (!confirm(`Delete ${count} document${count > 1 ? 's' : ''}? This cannot be undone.`)) {
                 return;
             }
@@ -7783,6 +7942,8 @@
             
             try {
                 await Promise.all(deletePromises);
+                
+                // Close toolbar, deselect all, show toast
                 clearDocumentSelection();
                 await loadDocuments();
                 showSnackbar(`${count} document${count > 1 ? 's' : ''} deleted`);
@@ -7799,6 +7960,11 @@
             
             const count = selectedDocuments.size;
             
+            // Close the menu
+            if (bulkStatusMenu) {
+                bulkStatusMenu.open = false;
+            }
+            
             const updatePromises = Array.from(selectedDocuments).map(docId =>
                 fetch(`/documents/${docId}/status`, {
                     method: 'PUT',
@@ -7809,8 +7975,6 @@
             
             try {
                 await Promise.all(updatePromises);
-                clearDocumentSelection();
-                await loadDocuments();
                 
                 // Format status for display
                 const statusLabels = {
@@ -7819,6 +7983,10 @@
                     'final': 'Final'
                 };
                 const statusDisplay = statusLabels[newStatus] || newStatus;
+                
+                // Close toolbar, deselect all, show toast
+                clearDocumentSelection();
+                await loadDocuments();
                 showSnackbar(`${count} document${count > 1 ? 's' : ''} updated to ${statusDisplay}`);
             } catch (error) {
                 showSnackbar('Error updating documents: ' + error.message);
@@ -10445,6 +10613,12 @@
                         targetPanel.classList.add('active');
                         targetPanel.style.display = 'block'; // Force show with inline style
                         console.log('Activated panel:', targetPanel.id);
+                        
+                        // Load history when switching to history tab
+                        if (targetTab === 'history') {
+                            console.log('History tab activated, loading history...');
+                            loadHistory();
+                        }
                     } else {
                         console.warn('Target panel not found:', `${targetTab}-tab`);
                     }
@@ -14879,6 +15053,11 @@
             selectedPeople.clear();
             updateSelectionUI();
         }
+        
+        // Alias for consistency with document selection
+        function clearReferenceSelection() {
+            clearSelection();
+        }
 
         // Merge functionality
         function openMergeModal() {
@@ -15002,8 +15181,12 @@
             }
             
             const deleteButton = document.getElementById('deleteButton');
+            const originalText = deleteButton.querySelector('span')?.textContent || 'Delete';
             deleteButton.disabled = true;
-            deleteButton.querySelector('span:last-child').textContent = 'Deleting...';
+            const textSpan = deleteButton.querySelector('span');
+            if (textSpan) {
+                textSpan.textContent = 'Deleting...';
+            }
             
             try {
                 // Delete each selected person
@@ -15035,7 +15218,10 @@
                 showSnackbar('Error deleting references: ' + error.message);
             } finally {
                 deleteButton.disabled = false;
-                deleteButton.querySelector('span:last-child').textContent = 'Delete';
+                const textSpan = deleteButton.querySelector('span');
+                if (textSpan) {
+                    textSpan.textContent = originalText;
+                }
             }
         }
 
@@ -15871,6 +16057,23 @@
                         applyBulkStatusChange(status);
                     }
                 });
+            }
+            
+            // Initialize delete button
+            const bulkDeleteButton = document.getElementById('bulkDeleteButton');
+            if (bulkDeleteButton) {
+                bulkDeleteButton.addEventListener('click', deleteSelectedDocuments);
+            }
+            
+            // Initialize reference toolbar buttons
+            const mergeButton = document.getElementById('mergeButton');
+            if (mergeButton) {
+                mergeButton.addEventListener('click', openMergeModal);
+            }
+            
+            const deleteRefButton = document.getElementById('deleteButton');
+            if (deleteRefButton) {
+                deleteRefButton.addEventListener('click', deleteSelectedReferences);
             }
             
             // Side sheet event listeners

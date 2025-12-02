@@ -19,25 +19,53 @@ class AIProcessor:
     
     def __init__(self, openai_api_key: str = None):
         """Initialize AI processor with OpenAI API key."""
-        self.api_key = openai_api_key or self._get_api_key()
-        openai.api_key = self.api_key
-        self.client = openai.OpenAI(api_key=self.api_key)
+        try:
+            self.api_key = openai_api_key or self._get_api_key()
+            openai.api_key = self.api_key
+            self.client = openai.OpenAI(api_key=self.api_key)
+        except (ValueError, Exception) as e:
+            # If API key validation fails, raise to allow fallback
+            print(f"⚠️  AIProcessor initialization failed: {e}")
+            raise
         
         # Person name tracking
         self.known_people = {}  # normalized_name -> {aliases, first_mentioned, context}
         self.name_variations = {}  # variation -> normalized_name
+    
+    def _validate_api_key(self, api_key: str) -> str:
+        """Validate and clean OpenAI API key."""
+        if not api_key:
+            raise ValueError("API key is empty")
+        
+        # Strip all whitespace including newlines, tabs, etc.
+        api_key = ''.join(api_key.split())
+        
+        # Remove any quotes that might have been included
+        api_key = api_key.strip('"\'')
+        
+        # Validate format
+        if not api_key.startswith('sk-'):
+            raise ValueError(f"Invalid API key format. OpenAI keys should start with 'sk-'. Got: {api_key[:10]}...")
+        
+        if len(api_key) < 20:
+            raise ValueError("API key appears too short (minimum 20 characters)")
+        
+        # Note: OpenAI now uses project keys (sk-proj-*) which are valid
+        # We accept both regular keys (sk-*) and project keys (sk-proj-*)
+        return api_key
     
     def _get_api_key(self) -> str:
         """Get OpenAI API key from environment or file."""
         # Try environment variable first
         api_key = os.getenv('OPENAI_API_KEY')
         if api_key:
-            return api_key
+            return self._validate_api_key(api_key)
         
         # Try to read from file
         key_file = Path('.openai_api_key')
         if key_file.exists():
-            return key_file.read_text().strip()
+            api_key = key_file.read_text().strip()
+            return self._validate_api_key(api_key)
         
         raise ValueError("OpenAI API key not found. Set OPENAI_API_KEY environment variable or create .openai_api_key file")
     
@@ -74,9 +102,16 @@ class AIProcessor:
             
             return response.choices[0].message.content.strip()
             
+        except openai.AuthenticationError as e:
+            print(f"OpenAI API authentication error: {e}")
+            print("Check that your API key is valid and has proper permissions.")
+            return None  # Don't return error message as summary
+        except openai.APIError as e:
+            print(f"OpenAI API error: {e}")
+            return None  # Don't return error message as summary
         except Exception as e:
             print(f"Error generating summary: {e}")
-            return f"Summary generation failed: {str(e)}"
+            return None  # Don't return error message as summary
     
     def extract_people_names(self, text: str) -> List[Dict[str, str]]:
         """Extract person names from text using AI."""

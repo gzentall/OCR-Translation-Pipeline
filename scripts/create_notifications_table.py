@@ -23,3 +23,4 @@ if __name__ == '__main__':
         print(f"✗ Error creating notifications table: {e}")
         sys.exit(1)
 
+

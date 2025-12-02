@@ -2182,16 +2182,18 @@
       "source_language": null,
       "uploaded_at": "2025-11-27T11:08:49.352869",
       "page_count": 3,
-      "summary": "WHO: The sender of the letter is writing to their family members, addressing them as \"Mes tr\u00e8s tr\u00e8s ..."
+      "summary": "WHO: The sender of the letter is writing to their family members, addressing them as \"Mes tr\u00e8s tr\u00e8s ...",
+      "sender": "Betty Zentall",
+      "recipient": "Etienne Aigner"
     },
-    "doc_20251129_135820": {
-      "title": "179-1942-08-15-fre_9711d76d",
-      "date_processed": "2025-11-29T13:58:20.046615",
+    "doc_20251201_134055": {
+      "title": "179-1942-08-15-fre",
+      "date_processed": "2025-12-01T13:40:55.284006",
       "source_language": "unknown",
       "target_language": "en",
       "file_size": 0,
-      "people_count": 0,
-      "summary": "Summary generation failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-p...",
+      "people_count": 1,
+      "summary": "WHO: The text is a letter from an individual named Lucien to an unknown recipient, discussing variou...",
       "page_count": 0,
       "status": "new"
     }
@@ -4132,9 +4134,18 @@
       ],
       "first_mentioned": "2025-11-22T16:38:53.795907",
       "secondary_references": []
+    },
+    "Lucien Aigner": {
+      "aliases": [
+        "Lucien Aigner"
+      ],
+      "first_mentioned": "2025-12-01T13:40:55.284033",
+      "documents": [
+        "doc_20251201_134055"
+      ]
     }
   },
-  "last_updated": "2025-11-30T07:18:31.769766",
+  "last_updated": "2025-12-01T13:40:55.589190",
   "context_notes": {
     "ctx_20251129_133113109385": {
       "letterId": "doc_20251127_110849",
@@ -51657,6 +51668,606 @@
       "mergedIntoId": null,
       "createdAt": "2025-11-27T11:08:49.915292",
       "updatedAt": "2025-11-27T11:08:49.915292"
+    },
+    "70c1a600-ce3b-4264-9cac-69a619064fd1": {
+      "id": "70c1a600-ce3b-4264-9cac-69a619064fd1",
+      "type": "people",
+      "name": "Elisabeth Aigner",
+      "aliases": [
+        "Elisabeth Aigner"
+      ],
+      "notes": "recipient, sister",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:27:37.682784",
+      "updatedAt": "2025-12-01T10:27:37.682784"
+    },
+    "aecfa89d-dea8-493b-aa7e-5fb12c455d44": {
+      "id": "aecfa89d-dea8-493b-aa7e-5fb12c455d44",
+      "type": "people",
+      "name": "Laci",
+      "aliases": [
+        "Laci"
+      ],
+      "notes": "sender, brother",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:27:37.706733",
+      "updatedAt": "2025-12-01T10:27:37.706733"
+    },
+    "78e8cacc-1d77-48c3-a06d-b808f78c6d04": {
+      "id": "78e8cacc-1d77-48c3-a06d-b808f78c6d04",
+      "type": "people",
+      "name": "Mama",
+      "aliases": [
+        "Mama"
+      ],
+      "notes": "family, mother",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:27:37.728708",
+      "updatedAt": "2025-12-01T10:27:37.728708"
+    },
+    "6f3d1f1e-047e-4c56-8d3c-7e0e696bc5dc": {
+      "id": "6f3d1f1e-047e-4c56-8d3c-7e0e696bc5dc",
+      "type": "people",
+      "name": "Pista",
+      "aliases": [
+        "Pista"
+      ],
+      "notes": "family, brother",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:27:37.750598",
+      "updatedAt": "2025-12-01T10:27:37.750598"
+    },
+    "1d748fb5-0238-441c-ad6c-7240b3c177f7": {
+      "id": "1d748fb5-0238-441c-ad6c-7240b3c177f7",
+      "type": "place",
+      "name": "Balaton, Hungary",
+      "aliases": [
+        "Balaton, Hungary"
+      ],
+      "notes": "sender location, vacation spot",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:27:37.772625",
+      "updatedAt": "2025-12-01T10:27:37.772625"
+    },
+    "4b77ddaa-d79e-46af-a92d-466e05705a56": {
+      "id": "4b77ddaa-d79e-46af-a92d-466e05705a56",
+      "type": "place",
+      "name": "Budapest IX. L\u00f3nyai U.17, Hungary",
+      "aliases": [
+        "Budapest IX. L\u00f3nyai U.17, Hungary"
+      ],
+      "notes": "recipient address, home",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:27:37.794531",
+      "updatedAt": "2025-12-01T10:27:37.794531"
+    },
+    "db1225ee-c0ba-4a21-92ef-b5e1612be777": {
+      "id": "db1225ee-c0ba-4a21-92ef-b5e1612be777",
+      "type": "theme",
+      "name": "Family communication",
+      "aliases": [
+        "Family communication"
+      ],
+      "notes": "letter exchange",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:27:37.816280",
+      "updatedAt": "2025-12-01T10:27:37.816280"
+    },
+    "cc0c454a-16a6-478f-8884-6820e6c74ad8": {
+      "id": "cc0c454a-16a6-478f-8884-6820e6c74ad8",
+      "type": "theme",
+      "name": "Recovery and relaxation",
+      "aliases": [
+        "Recovery and relaxation"
+      ],
+      "notes": "recuperating well with the elders",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:27:37.838243",
+      "updatedAt": "2025-12-01T10:27:37.838243"
+    },
+    "0cebf7eb-a8c3-4775-a556-842f300870dc": {
+      "id": "0cebf7eb-a8c3-4775-a556-842f300870dc",
+      "type": "emotion",
+      "name": "Anticipation",
+      "aliases": [
+        "Anticipation"
+      ],
+      "notes": "looking forward to Budapest visit",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:27:37.860009",
+      "updatedAt": "2025-12-01T10:27:37.860009"
+    },
+    "aced67d9-d712-440f-b535-51f087a6ea2d": {
+      "id": "aced67d9-d712-440f-b535-51f087a6ea2d",
+      "type": "emotion",
+      "name": "Longing",
+      "aliases": [
+        "Longing"
+      ],
+      "notes": "wishing recipient was present",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:27:37.882090",
+      "updatedAt": "2025-12-01T10:27:37.882090"
+    },
+    "d99e6540-6fc3-40a7-bf82-3db5354945b3": {
+      "id": "d99e6540-6fc3-40a7-bf82-3db5354945b3",
+      "type": "people",
+      "name": "Laci",
+      "aliases": [
+        "Laci"
+      ],
+      "notes": "sender, brother",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.320244",
+      "updatedAt": "2025-12-01T10:36:11.320244"
+    },
+    "92566582-0f13-4328-961f-6e2168999ef0": {
+      "id": "92566582-0f13-4328-961f-6e2168999ef0",
+      "type": "people",
+      "name": "Elisabeth Aigner",
+      "aliases": [
+        "Elisabeth Aigner"
+      ],
+      "notes": "recipient, sister",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.348466",
+      "updatedAt": "2025-12-01T10:36:11.348466"
+    },
+    "f70cfc69-4eb4-4857-a44d-e19c63b9d2b4": {
+      "id": "f70cfc69-4eb4-4857-a44d-e19c63b9d2b4",
+      "type": "people",
+      "name": "Mama",
+      "aliases": [
+        "Mama"
+      ],
+      "notes": "family, mother",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.372543",
+      "updatedAt": "2025-12-01T10:36:11.372543"
+    },
+    "0fc17bf6-4d71-4aed-bf53-ccc6c79b1dda": {
+      "id": "0fc17bf6-4d71-4aed-bf53-ccc6c79b1dda",
+      "type": "people",
+      "name": "Pista",
+      "aliases": [
+        "Pista"
+      ],
+      "notes": "family, brother",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.395681",
+      "updatedAt": "2025-12-01T10:36:11.395681"
+    },
+    "be9e9960-f912-4673-9ba0-3c845c74b043": {
+      "id": "be9e9960-f912-4673-9ba0-3c845c74b043",
+      "type": "place",
+      "name": "Balaton, Hungary",
+      "aliases": [
+        "Balaton, Hungary"
+      ],
+      "notes": "sender location, vacation spot",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.417748",
+      "updatedAt": "2025-12-01T10:36:11.417748"
+    },
+    "33f50059-ae8a-461a-a11a-ad9dc402c986": {
+      "id": "33f50059-ae8a-461a-a11a-ad9dc402c986",
+      "type": "place",
+      "name": "Budapest IX. L\u00f3nyai U.17, Hungary",
+      "aliases": [
+        "Budapest IX. L\u00f3nyai U.17, Hungary"
+      ],
+      "notes": "recipient location, home address",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.440111",
+      "updatedAt": "2025-12-01T10:36:11.440111"
+    },
+    "1a3621b8-1a54-4119-8258-21f040c52fbf": {
+      "id": "1a3621b8-1a54-4119-8258-21f040c52fbf",
+      "type": "event",
+      "name": "Laci's visit to Budapest",
+      "aliases": [
+        "Laci's visit to Budapest"
+      ],
+      "notes": "planned travel, in 4 days from letter date",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.461872",
+      "updatedAt": "2025-12-01T10:36:11.461872"
+    },
+    "2a255142-200f-432e-95b0-3d642eab0784": {
+      "id": "2a255142-200f-432e-95b0-3d642eab0784",
+      "type": "theme",
+      "name": "Family communication",
+      "aliases": [
+        "Family communication"
+      ],
+      "notes": "keeping in touch through letters",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.484104",
+      "updatedAt": "2025-12-01T10:36:11.484104"
+    },
+    "7df975b7-a55d-4991-ad8c-ef5aa876ba65": {
+      "id": "7df975b7-a55d-4991-ad8c-ef5aa876ba65",
+      "type": "theme",
+      "name": "Vacation",
+      "aliases": [
+        "Vacation"
+      ],
+      "notes": "Laci resting at Balaton",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.506369",
+      "updatedAt": "2025-12-01T10:36:11.506369"
+    },
+    "ce7758c6-e740-4ab7-b790-36bf73e6fe5e": {
+      "id": "ce7758c6-e740-4ab7-b790-36bf73e6fe5e",
+      "type": "emotion",
+      "name": "Excitement",
+      "aliases": [
+        "Excitement"
+      ],
+      "notes": "Laci's anticipation of visiting Budapest",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.528274",
+      "updatedAt": "2025-12-01T10:36:11.528274"
+    },
+    "0297af88-b7e8-425c-9a7f-08ff616715e1": {
+      "id": "0297af88-b7e8-425c-9a7f-08ff616715e1",
+      "type": "emotion",
+      "name": "Longing",
+      "aliases": [
+        "Longing"
+      ],
+      "notes": "wishing Elisabeth could be at Balaton",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:36:11.550524",
+      "updatedAt": "2025-12-01T10:36:11.550524"
+    },
+    "97c01ca4-13c9-48b9-b858-7c7e304f6db4": {
+      "id": "97c01ca4-13c9-48b9-b858-7c7e304f6db4",
+      "type": "people",
+      "name": "Robert Zentall",
+      "aliases": [
+        "Robert Zentall"
+      ],
+      "notes": "sender, grandfather",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.112515",
+      "updatedAt": "2025-12-01T10:44:09.112515"
+    },
+    "e33a496b-79b2-49db-9ab1-07273a9287c0": {
+      "id": "e33a496b-79b2-49db-9ab1-07273a9287c0",
+      "type": "people",
+      "name": "Betty Zentall",
+      "aliases": [
+        "Betty Zentall"
+      ],
+      "notes": "recipient, grandmother",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.139503",
+      "updatedAt": "2025-12-01T10:44:09.139503"
+    },
+    "696c4f17-5c71-4b41-88a2-5da8064787c6": {
+      "id": "696c4f17-5c71-4b41-88a2-5da8064787c6",
+      "type": "people",
+      "name": "Lucien Aigner",
+      "aliases": [
+        "Lucien Aigner"
+      ],
+      "notes": "Betty's brother, mentioned in context of advice",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.163783",
+      "updatedAt": "2025-12-01T10:44:09.163783"
+    },
+    "e7a23f7b-9545-4c02-bd10-1f8ca20c8932": {
+      "id": "e7a23f7b-9545-4c02-bd10-1f8ca20c8932",
+      "type": "place",
+      "name": "Agde, France",
+      "aliases": [
+        "Agde, France"
+      ],
+      "notes": "sender location, military station",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.186410",
+      "updatedAt": "2025-12-01T10:44:09.186410"
+    },
+    "b831d071-bd43-4494-a10f-784ba5c854e8": {
+      "id": "b831d071-bd43-4494-a10f-784ba5c854e8",
+      "type": "place",
+      "name": "Paris, France",
+      "aliases": [
+        "Paris, France"
+      ],
+      "notes": "recipient location, home",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.209203",
+      "updatedAt": "2025-12-01T10:44:09.209203"
+    },
+    "ce33a046-cf39-4863-81bf-14ad0d2ac141": {
+      "id": "ce33a046-cf39-4863-81bf-14ad0d2ac141",
+      "type": "place",
+      "name": "Marseille",
+      "aliases": [
+        "Marseille"
+      ],
+      "notes": "mentioned in context of Lucien's location or movement",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.232198",
+      "updatedAt": "2025-12-01T10:44:09.232198"
+    },
+    "804def23-599f-4bf7-9fbc-c5faba6c40d2": {
+      "id": "804def23-599f-4bf7-9fbc-c5faba6c40d2",
+      "type": "event",
+      "name": "Robert's three-day leave",
+      "aliases": [
+        "Robert's three-day leave"
+      ],
+      "notes": "temporary leave from military duties",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.255259",
+      "updatedAt": "2025-12-01T10:44:09.255259"
+    },
+    "f095b03f-f24b-4cbd-ad2b-5b77ee3a3f39": {
+      "id": "f095b03f-f24b-4cbd-ad2b-5b77ee3a3f39",
+      "type": "event",
+      "name": "Lucien's potential move",
+      "aliases": [
+        "Lucien's potential move"
+      ],
+      "notes": "decision-making about relocation or action",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.278345",
+      "updatedAt": "2025-12-01T10:44:09.278345"
+    },
+    "3f301091-1f3f-41be-b30c-92e3a8f339e3": {
+      "id": "3f301091-1f3f-41be-b30c-92e3a8f339e3",
+      "type": "theme",
+      "name": "War anxiety",
+      "aliases": [
+        "War anxiety"
+      ],
+      "notes": "general stress and difficulties of wartime",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.301214",
+      "updatedAt": "2025-12-01T10:44:09.301214"
+    },
+    "32878ad4-f07f-4283-babb-86dd9d7be53d": {
+      "id": "32878ad4-f07f-4283-babb-86dd9d7be53d",
+      "type": "theme",
+      "name": "Separation",
+      "aliases": [
+        "Separation"
+      ],
+      "notes": "physical distance between Robert and Betty",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.324383",
+      "updatedAt": "2025-12-01T10:44:09.324383"
+    },
+    "92948085-172c-40aa-bee6-a7613c9bef2d": {
+      "id": "92948085-172c-40aa-bee6-a7613c9bef2d",
+      "type": "theme",
+      "name": "Daily life challenges",
+      "aliases": [
+        "Daily life challenges"
+      ],
+      "notes": "mentions of supplies and living conditions",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.347649",
+      "updatedAt": "2025-12-01T10:44:09.347649"
+    },
+    "1f144a6e-d49b-428a-a4e1-417ae79af1c0": {
+      "id": "1f144a6e-d49b-428a-a4e1-417ae79af1c0",
+      "type": "theme",
+      "name": "Family advice and decisions",
+      "aliases": [
+        "Family advice and decisions"
+      ],
+      "notes": "discussions about Lucien's situation",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.370273",
+      "updatedAt": "2025-12-01T10:44:09.370273"
+    },
+    "67f17a52-1370-4a88-80a1-665922e59e32": {
+      "id": "67f17a52-1370-4a88-80a1-665922e59e32",
+      "type": "emotion",
+      "name": "Love",
+      "aliases": [
+        "Love"
+      ],
+      "notes": "expressed towards Betty",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.393106",
+      "updatedAt": "2025-12-01T10:44:09.393106"
+    },
+    "b52063dd-0d22-471d-b928-46af82799806": {
+      "id": "b52063dd-0d22-471d-b928-46af82799806",
+      "type": "emotion",
+      "name": "Worry",
+      "aliases": [
+        "Worry"
+      ],
+      "notes": "concern for family's well-being and future decisions",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.416277",
+      "updatedAt": "2025-12-01T10:44:09.416277"
+    },
+    "dbbc8f6b-8951-4f14-a3d0-abaa8243bc20": {
+      "id": "dbbc8f6b-8951-4f14-a3d0-abaa8243bc20",
+      "type": "emotion",
+      "name": "Frustration",
+      "aliases": [
+        "Frustration"
+      ],
+      "notes": "with the war and its impact on daily life",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T10:44:09.439525",
+      "updatedAt": "2025-12-01T10:44:09.439525"
+    },
+    "ee79549e-9cfa-42e5-8565-e6ed45d590ec": {
+      "id": "ee79549e-9cfa-42e5-8565-e6ed45d590ec",
+      "type": "place",
+      "name": "Agde, France",
+      "aliases": [
+        "Agde, France"
+      ],
+      "notes": "sender location, military station",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T12:29:30.908452",
+      "updatedAt": "2025-12-01T12:29:30.908452"
+    },
+    "90fc6ea8-8658-407d-94eb-a3341ea06dcd": {
+      "id": "90fc6ea8-8658-407d-94eb-a3341ea06dcd",
+      "type": "place",
+      "name": "Paris, France",
+      "aliases": [
+        "Paris, France"
+      ],
+      "notes": "recipient location, home",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T12:29:30.933894",
+      "updatedAt": "2025-12-01T12:29:30.933894"
+    },
+    "19771230-6815-40cc-b987-c016f55cfcec": {
+      "id": "19771230-6815-40cc-b987-c016f55cfcec",
+      "type": "people",
+      "name": "Lucien Aigner",
+      "aliases": [
+        "Lucien Aigner"
+      ],
+      "notes": "Betty's brother, mentioned in context of travel and decisions",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.327466",
+      "updatedAt": "2025-12-01T13:40:55.327466"
+    },
+    "80d0d73e-b6c1-4bcc-8499-9547c1e39072": {
+      "id": "80d0d73e-b6c1-4bcc-8499-9547c1e39072",
+      "type": "place",
+      "name": "Agde, France",
+      "aliases": [
+        "Agde, France"
+      ],
+      "notes": "sender location, military station",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.357329",
+      "updatedAt": "2025-12-01T13:40:55.357329"
+    },
+    "bc0f008b-5003-4f19-95cb-2bd9a428ded6": {
+      "id": "bc0f008b-5003-4f19-95cb-2bd9a428ded6",
+      "type": "place",
+      "name": "Paris, France",
+      "aliases": [
+        "Paris, France"
+      ],
+      "notes": "recipient location, Betty's residence",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.382355",
+      "updatedAt": "2025-12-01T13:40:55.382355"
+    },
+    "dda57410-9d48-4f9d-869f-6b4d0e16ecce": {
+      "id": "dda57410-9d48-4f9d-869f-6b4d0e16ecce",
+      "type": "place",
+      "name": "Marseille",
+      "aliases": [
+        "Marseille"
+      ],
+      "notes": "mentioned in context of Lucien's travel",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.405278",
+      "updatedAt": "2025-12-01T13:40:55.405278"
+    },
+    "19271f0c-3d40-4373-aae7-10909617a90d": {
+      "id": "19271f0c-3d40-4373-aae7-10909617a90d",
+      "type": "event",
+      "name": "Lucien's travel decision",
+      "aliases": [
+        "Lucien's travel decision"
+      ],
+      "notes": "discussion about travel choices, no specific date",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.430235",
+      "updatedAt": "2025-12-01T13:40:55.430235"
+    },
+    "aa4ff3d6-6fd0-4aa8-a255-7fced3012562": {
+      "id": "aa4ff3d6-6fd0-4aa8-a255-7fced3012562",
+      "type": "event",
+      "name": "Robert's military service",
+      "aliases": [
+        "Robert's military service"
+      ],
+      "notes": "ongoing, referenced through fatigue and location",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.453040",
+      "updatedAt": "2025-12-01T13:40:55.453040"
+    },
+    "4274dc3b-24bc-4e1d-8bbf-b57f65f5024e": {
+      "id": "4274dc3b-24bc-4e1d-8bbf-b57f65f5024e",
+      "type": "theme",
+      "name": "War anxiety",
+      "aliases": [
+        "War anxiety"
+      ],
+      "notes": "general concern over travel and safety",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.475422",
+      "updatedAt": "2025-12-01T13:40:55.475422"
+    },
+    "6100194e-35e5-48b2-9f5c-8245111110dd": {
+      "id": "6100194e-35e5-48b2-9f5c-8245111110dd",
+      "type": "theme",
+      "name": "Family separation",
+      "aliases": [
+        "Family separation"
+      ],
+      "notes": "Robert's deployment and its impact on family",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.498006",
+      "updatedAt": "2025-12-01T13:40:55.498006"
+    },
+    "c37c32f4-53c6-4a21-b298-d71ad02414de": {
+      "id": "c37c32f4-53c6-4a21-b298-d71ad02414de",
+      "type": "theme",
+      "name": "Decision making",
+      "aliases": [
+        "Decision making"
+      ],
+      "notes": "Lucien's travel and potential move",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.520544",
+      "updatedAt": "2025-12-01T13:40:55.520544"
+    },
+    "054a951a-4a2c-4408-9db5-db8f4e2c5483": {
+      "id": "054a951a-4a2c-4408-9db5-db8f4e2c5483",
+      "type": "emotion",
+      "name": "Worry",
+      "aliases": [
+        "Worry"
+      ],
+      "notes": "concern over Lucien's travel decisions",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.543409",
+      "updatedAt": "2025-12-01T13:40:55.543409"
+    },
+    "81a9a309-fd99-4264-8b63-f881e6549be6": {
+      "id": "81a9a309-fd99-4264-8b63-f881e6549be6",
+      "type": "emotion",
+      "name": "Frustration",
+      "aliases": [
+        "Frustration"
+      ],
+      "notes": "difficulty in making decisions, mentioned indirectly",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.566404",
+      "updatedAt": "2025-12-01T13:40:55.566404"
+    },
+    "8f945ded-a93c-4594-b5a5-398c9c5d549c": {
+      "id": "8f945ded-a93c-4594-b5a5-398c9c5d549c",
+      "type": "emotion",
+      "name": "Longing",
+      "aliases": [
+        "Longing"
+      ],
+      "notes": "implicit in the context of separation and communication",
+      "mergedIntoId": null,
+      "createdAt": "2025-12-01T13:40:55.589188",
+      "updatedAt": "2025-12-01T13:40:55.589188"
     }
   }
 }

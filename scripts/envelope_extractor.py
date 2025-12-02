@@ -27,7 +27,12 @@ class EnvelopeExtractor:
     def __init__(self, project_root: Optional[Path] = None):
         """Initialize the envelope extractor."""
         self.project_root = project_root or Path(__file__).parent.parent
-        self.openai_client = self._init_openai()
+        self.openai_client = None
+        try:
+            self.openai_client = self._init_openai()
+        except Exception as e:
+            print(f"⚠️  EnvelopeExtractor: Could not initialize OpenAI client: {e}")
+            print("⚠️  Metadata extraction will be disabled")
         
     def _init_openai(self):
         """Initialize OpenAI client."""
@@ -40,7 +45,30 @@ class EnvelopeExtractor:
         if not api_key:
             raise ValueError("OPENAI_API_KEY not found")
         
+        # Validate and clean API key (same as AIProcessor)
+        api_key = self._validate_api_key(api_key)
+        
         return openai.OpenAI(api_key=api_key)
+    
+    def _validate_api_key(self, api_key: str) -> str:
+        """Validate and clean OpenAI API key."""
+        if not api_key:
+            raise ValueError("API key is empty")
+        
+        # Strip all whitespace including newlines
+        api_key = ''.join(api_key.split())
+        
+        # Remove any quotes that might have been included
+        api_key = api_key.strip('"\'')
+        
+        # Validate format - accept both regular keys (sk-*) and project keys (sk-proj-*)
+        if not api_key.startswith('sk-'):
+            raise ValueError(f"Invalid API key format. OpenAI keys should start with 'sk-'. Got: {api_key[:10]}...")
+        
+        if len(api_key) < 20:
+            raise ValueError("API key appears too short (minimum 20 characters)")
+        
+        return api_key
     
     def run_ocr_on_image(self, image_path: Path) -> Optional[str]:
         """
@@ -131,6 +159,24 @@ Return JSON:
 
 Return ONLY valid JSON, no other text."""
 
+        # Check if OpenAI client is available
+        if not self.openai_client:
+            print(f"  ⚠️  OpenAI client not available, skipping metadata extraction")
+            return {
+                'sender': 'Unknown',
+                'sender_location': 'Unknown',
+                'recipient': 'Unknown',
+                'receiver': 'Unknown',  # Keep both for compatibility
+                'recipient_location': 'Unknown',
+                'receiver_location': 'Unknown',  # Keep both for compatibility
+                'date': 'Unknown',
+                'postal_markings': [],
+                'return_address': 'Unknown',
+                'delivery_address': 'Unknown',
+                'confidence': 0,
+                'notes': 'Metadata extraction disabled - OpenAI API key not available'
+            }
+        
         try:
             response = self.openai_client.chat.completions.create(
                 model="gpt-4o",
@@ -154,13 +200,58 @@ Return ONLY valid JSON, no other text."""
             result['document_name'] = document_name
             result['source'] = 'envelope_ocr'
             
+            # Ensure both 'receiver' and 'recipient' are present for compatibility
+            if 'receiver' in result and 'recipient' not in result:
+                result['recipient'] = result['receiver']
+            if 'recipient' in result and 'receiver' not in result:
+                result['receiver'] = result['recipient']
+            if 'receiver_location' in result and 'recipient_location' not in result:
+                result['recipient_location'] = result['receiver_location']
+            if 'recipient_location' in result and 'receiver_location' not in result:
+                result['receiver_location'] = result['recipient_location']
+            
             return result
             
-        except Exception as e:
-            print(f"  ❌ Metadata extraction error: {e}")
+        except openai.AuthenticationError as e:
+            print(f"  ❌ Metadata extraction authentication error: {e}")
             return {
                 'sender': 'Unknown',
                 'sender_location': 'Unknown',
+                'recipient': 'Unknown',
+                'receiver': 'Unknown',
+                'recipient_location': 'Unknown',
+                'receiver_location': 'Unknown',
+                'date': 'Unknown',
+                'postal_markings': [],
+                'return_address': 'Unknown',
+                'delivery_address': 'Unknown',
+                'confidence': 0,
+                'notes': f'Metadata extraction failed - authentication error: {str(e)}'
+            }
+        except openai.APIError as e:
+            print(f"  ❌ Metadata extraction API error: {e}")
+            return {
+                'sender': 'Unknown',
+                'sender_location': 'Unknown',
+                'recipient': 'Unknown',
+                'receiver': 'Unknown',
+                'recipient_location': 'Unknown',
+                'receiver_location': 'Unknown',
+                'date': 'Unknown',
+                'postal_markings': [],
+                'return_address': 'Unknown',
+                'delivery_address': 'Unknown',
+                'confidence': 0,
+                'notes': f'Metadata extraction failed - API error: {str(e)}'
+            }
+        except Exception as e:
+            print(f"  ❌ Metadata extraction error: {e}")
+            import traceback
+            traceback.print_exc()
+            return {
+                'sender': 'Unknown',
+                'sender_location': 'Unknown',
+                'recipient': 'Unknown',
                 'receiver': 'Unknown',
                 'receiver_location': 'Unknown',
                 'date': 'Unknown',

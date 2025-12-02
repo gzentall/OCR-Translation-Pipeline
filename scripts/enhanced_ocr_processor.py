@@ -284,6 +284,19 @@ Important: Return ONLY the JSON, no other text before or after."""
             
             corrected = response.choices[0].message.content.strip()
             
+            # SAFEGUARD: If corrected text is significantly shorter than original (< 30%),
+            # something went wrong - fall back to original
+            if len(corrected) < len(ocr_text) * 0.3:
+                print(f"  ⚠️ Corrected text too short ({len(corrected)} chars vs {len(ocr_text)} original), using original")
+                return {
+                    'corrected_text': ocr_text,
+                    'confidence': 50,
+                    'corrections': [],
+                    'uncertain_segments': [],
+                    'provider_used': 'openai-simple-fallback',
+                    'error': 'Corrected text too short - using original'
+                }
+            
             # Count approximate corrections by comparing word differences
             original_words = set(ocr_text.lower().split())
             corrected_words = set(corrected.lower().split())

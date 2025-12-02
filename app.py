@@ -1058,16 +1058,28 @@ def debug_r2_images(doc_id):
 def parse_filename(filename: str) -> dict:
     """Parse document filename to extract metadata.
     
-    Expected format: NNN-YYYY-MM-DD-lang.pdf
-    Example: 002-1938-01-05-ger.pdf
+    Expected format: NNN-YYYY-MM-DD-lang.pdf or NNN-YYYY-MM-DD-lang_uniqueid.pdf
+    Example: 002-1938-01-05-ger.pdf or 179-1942-08-15-fre_32f4d356.pdf
     """
     stem = Path(filename).stem
+    
+    # Remove unique ID suffix if present (e.g., "fre_32f4d356" -> "fre")
+    # The unique ID is appended with underscore during upload
+    if '_' in stem:
+        stem = stem.rsplit('_', 1)[0]  # Remove last underscore and everything after
+    
     parts = stem.split('-')
+    
+    # Extract language code (last part after removing unique ID)
+    lang_code = parts[-1] if len(parts) > 0 else 'unknown'
+    # Validate it's a known language code (3 letters)
+    if len(lang_code) != 3 or not lang_code.isalpha():
+        lang_code = 'unknown'
     
     metadata = {
         'number': parts[0] if len(parts) > 0 else None,
         'date': None,
-        'language': parts[-1] if len(parts) > 0 else 'unknown'
+        'language': lang_code
     }
     
     # Try to parse date from middle parts
@@ -1118,6 +1130,80 @@ def extract_pdf_images(pdf_path: Path, output_dir: Path) -> list:
         return []
 
 
+def translate_with_llm(original_text: str, source_lang: str, context: dict) -> str:
+    """Translate text directly using LLM when Google Translate fails.
+    
+    Args:
+        original_text: Original OCR text to translate
+        source_lang: Source language code (e.g., 'fre', 'ger')
+        context: Context document for reference
+        
+    Returns:
+        Translated English text, or original text if translation fails
+    """
+    try:
+        global ai_processor
+        if ai_processor is None or not hasattr(ai_processor, 'client') or ai_processor.client is None:
+            print("⚠️  AI processor not available for LLM translation")
+            return original_text
+        
+        client = ai_processor.client
+        
+        # Map language codes to full names
+        lang_names = {
+            'fre': 'French', 'fra': 'French',
+            'ger': 'German', 'deu': 'German',
+            'hun': 'Hungarian', 'pol': 'Polish',
+            'rus': 'Russian', 'yid': 'Yiddish'
+        }
+        source_lang_name = lang_names.get(source_lang, source_lang)
+        
+        # Build context string
+        context_str = ""
+        if context:
+            people_list = [k for k, v in context.items() if isinstance(v, dict) and (v.get('type') == 'person' or 'variations' in v)][:15]
+            places_list = [k for k, v in context.items() if isinstance(v, dict) and (v.get('type') == 'place' or 'location' in str(v).lower())][:15]
+            if people_list or places_list:
+                context_str = f"\nKnown people: {', '.join(people_list)}\nKnown places: {', '.join(places_list)}"
+        
+        prompt = f"""Translate this {source_lang_name} text to English. This is a historical document (WWII era correspondence).
+{context_str}
+
+IMPORTANT:
+- Translate accurately and completely
+- Preserve all formatting, line breaks, and structure
+- Keep proper names as they appear (don't translate names)
+- If text is unclear or illegible, indicate with [illegible] or [unclear]
+- Return ONLY the English translation, no explanations
+
+TEXT TO TRANSLATE:
+{original_text[:6000]}"""
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an expert translator specializing in historical documents and WWII-era correspondence."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,
+            max_tokens=4000
+        )
+        
+        translated = response.choices[0].message.content.strip()
+        
+        # Sanity check - translation should be reasonably similar in length
+        if len(translated) < len(original_text) * 0.3:
+            print(f"⚠️  LLM translation too short ({len(translated)} chars vs {len(original_text)} original)")
+            return original_text
+        
+        print(f"✅ LLM translation successful ({len(translated)} chars)")
+        return translated
+        
+    except Exception as e:
+        print(f"⚠️  LLM translation failed: {e}")
+        return original_text
+
+
 def review_and_refine_translation(translated_text: str, original_ocr_text: str, 
                                   context: dict, source_lang: str) -> tuple:
     """Review and refine Google Translate output using LLM with context.
@@ -1132,17 +1218,22 @@ def review_and_refine_translation(translated_text: str, original_ocr_text: str,
         Tuple of (refined_translation, metadata_hints)
     """
     try:
-        # Get OpenAI API key
-        api_key = os.getenv('OPENAI_API_KEY')
-        if not api_key:
-            key_file = PROJECT_ROOT / '.openai_api_key'
-            if key_file.exists():
-                api_key = key_file.read_text().strip()
-            else:
-                print("⚠️  OpenAI API key not found, skipping translation refinement")
-                return translated_text, {}
+        # Use the global ai_processor if available and valid, otherwise skip
+        global ai_processor
+        if ai_processor is None:
+            print("⚠️  AI processor is None, skipping translation refinement")
+            return translated_text, {}
         
-        client = openai.OpenAI(api_key=api_key)
+        if not hasattr(ai_processor, 'client'):
+            print("⚠️  AI processor does not have client attribute (using fallback), skipping translation refinement")
+            return translated_text, {}
+        
+        if ai_processor.client is None:
+            print("⚠️  AI processor client is None, skipping translation refinement")
+            return translated_text, {}
+        
+        # Use the validated client from ai_processor
+        client = ai_processor.client
         
         # Build context string from reference_data.json
         context_str = ""
@@ -1202,8 +1293,17 @@ Return ONLY the refined translation text, no explanations or JSON formatting."""
         
         return refined_text, metadata_hints
         
+    except openai.AuthenticationError as e:
+        print(f"⚠️  Translation refinement authentication error: {e}")
+        print("⚠️  Invalid API key - skipping translation refinement")
+        return translated_text, {}
+    except openai.APIError as e:
+        print(f"⚠️  Translation refinement API error: {e}")
+        return translated_text, {}
     except Exception as e:
         print(f"⚠️  Translation refinement error: {e}")
+        import traceback
+        traceback.print_exc()
         return translated_text, {}
 
 
@@ -1253,8 +1353,13 @@ def process_uploaded_document(pdf_path: Path, work_dir: Path) -> dict:
             print(f"[DEBUG] Text corrected ({len(original_text)} chars)")
             
             if not original_text or len(original_text) < 50:
-                print("[ERROR] OCR produced insufficient text")
-                return None
+                # If corrected text is too short but raw OCR was OK, use raw OCR
+                if raw_text and len(raw_text) >= 50:
+                    print(f"[WARNING] Corrected text too short ({len(original_text) if original_text else 0} chars), using raw OCR ({len(raw_text)} chars)")
+                    original_text = raw_text
+                else:
+                    print(f"[ERROR] OCR produced insufficient text ({len(original_text) if original_text else 0} chars, raw: {len(raw_text) if raw_text else 0} chars)")
+                    return None
         except Exception as e:
             print(f"[ERROR] OCR processing failed: {e}")
             import traceback
@@ -1274,6 +1379,7 @@ def process_uploaded_document(pdf_path: Path, work_dir: Path) -> dict:
         
         # Step 3: Translate
         print(f"[DEBUG] Translating...")
+        translation_succeeded = False
         try:
             translated_text = translate_document(original_text, source_lang)
             
@@ -1282,10 +1388,12 @@ def process_uploaded_document(pdf_path: Path, work_dir: Path) -> dict:
                 translated_text = translated_text[0] if translated_text else ''
             
             if not translated_text:
-                print("[WARNING] Translation returned empty, using original text")
+                print("[WARNING] Translation returned empty")
                 translated_text = original_text
+            else:
+                translation_succeeded = True
         except Exception as e:
-            print(f"[WARNING] Translation failed: {e}, using original text")
+            print(f"[WARNING] Translation failed: {e}")
             translated_text = original_text
         
         # Step 4: Decode HTML entities
@@ -1298,26 +1406,51 @@ def process_uploaded_document(pdf_path: Path, work_dir: Path) -> dict:
             print(f"[WARNING] HTML entity decoding failed: {e}")
         
         # Step 5: LLM Translation Review and Refinement
+        # Only refine if translation actually succeeded - otherwise we'd be feeding
+        # untranslated text to the refinement prompt, causing confused output
         print(f"[DEBUG] Reviewing and refining translation...")
-        try:
-            refined_text, metadata_hints = review_and_refine_translation(
-                translated_text, original_text, context_data, source_lang
-            )
-            refined_text = decode_html_entities(refined_text)
-        except Exception as e:
-            print(f"[WARNING] Translation refinement failed: {e}, using translated text")
-            refined_text = translated_text
+        if translation_succeeded:
+            try:
+                refined_text, metadata_hints = review_and_refine_translation(
+                    translated_text, original_text, context_data, source_lang
+                )
+                refined_text = decode_html_entities(refined_text)
+            except Exception as e:
+                print(f"[WARNING] Translation refinement failed: {e}, using translated text")
+                refined_text = translated_text
+        else:
+            # Translation failed - try direct LLM translation instead
+            print(f"[DEBUG] Google Translate failed, attempting LLM translation...")
+            refined_text = translate_with_llm(original_text, source_lang, context_data)
+            if not refined_text or refined_text == original_text:
+                print(f"[WARNING] LLM translation also failed, using original text")
+                refined_text = original_text
         
         # Step 6: Extract metadata (sender, recipient, locations)
         print(f"[DEBUG] Extracting metadata...")
         try:
-            metadata = envelope_extractor.extract_metadata(original_text)
+            metadata = envelope_extractor.extract_metadata(original_text, pdf_path.name)
+            # Ensure 'recipient' field exists (envelope_extractor may return 'receiver')
+            if 'receiver' in metadata and 'recipient' not in metadata:
+                metadata['recipient'] = metadata['receiver']
+            if 'receiver_location' in metadata and 'recipient_location' not in metadata:
+                metadata['recipient_location'] = metadata['receiver_location']
+            print(f"[DEBUG] Metadata extracted: sender={metadata.get('sender', 'Unknown')}, recipient={metadata.get('recipient', metadata.get('receiver', 'Unknown'))}")
         except Exception as e:
             print(f"[WARNING] Metadata extraction failed: {e}")
+            import traceback
+            traceback.print_exc()
             metadata = {}
         
         # Step 7: Extract references with context
         print(f"[DEBUG] Extracting references...")
+        # Initialize defaults
+        simple_refs = {}
+        detailed_refs = {}
+        for ref_type in ['people', 'places', 'events', 'themes', 'emotions']:
+            simple_refs[ref_type] = []
+            detailed_refs[ref_type] = []
+        
         try:
             references = extract_references_with_context(
                 ai_processor,
@@ -1330,68 +1463,80 @@ def process_uploaded_document(pdf_path: Path, work_dir: Path) -> dict:
             )
             
             # Convert tuple format (name, context) to simple and detailed formats
-            simple_refs = {}
-            detailed_refs = {}
-            for ref_type in ['people', 'places', 'events', 'themes', 'emotions']:
-                ref_list = references.get(ref_type, [])
-                simple_refs[ref_type] = []
-                detailed_refs[ref_type] = []
-                for item in ref_list:
-                    if isinstance(item, tuple) and len(item) >= 2:
-                        name, context = item[0], item[1]
-                        simple_refs[ref_type].append(name)
-                        detailed_refs[ref_type].append({'name': name, 'context': context})
-                    elif isinstance(item, dict):
-                        name = item.get('name', str(item))
-                        context = item.get('context', '')
-                        simple_refs[ref_type].append(name)
-                        detailed_refs[ref_type].append({'name': name, 'context': context})
-                    else:
-                        name = str(item)
-                        simple_refs[ref_type].append(name)
-                        detailed_refs[ref_type].append({'name': name, 'context': ''})
+            if references:
+                for ref_type in ['people', 'places', 'events', 'themes', 'emotions']:
+                    ref_list = references.get(ref_type, [])
+                    simple_refs[ref_type] = []
+                    detailed_refs[ref_type] = []
+                    for item in ref_list:
+                        if isinstance(item, tuple) and len(item) >= 2:
+                            name, context = item[0], item[1]
+                            simple_refs[ref_type].append(name)
+                            detailed_refs[ref_type].append({'name': name, 'context': context})
+                        elif isinstance(item, dict):
+                            name = item.get('name', str(item))
+                            context = item.get('context', '')
+                            simple_refs[ref_type].append(name)
+                            detailed_refs[ref_type].append({'name': name, 'context': context})
+                        else:
+                            name = str(item)
+                            simple_refs[ref_type].append(name)
+                            detailed_refs[ref_type].append({'name': name, 'context': ''})
         except Exception as e:
             print(f"[WARNING] Reference extraction error: {e}")
             import traceback
             traceback.print_exc()
-            simple_refs = {}
-            detailed_refs = {}
+            # Keep initialized empty dicts
         
         # Step 8: Generate summary using refined translation
         print(f"[DEBUG] Generating summary...")
         try:
             summary = ai_processor.generate_summary(refined_text, source_lang)
-            summary = decode_html_entities(summary)
+            
+            # Check if summary generation failed (returns None or error message)
+            if summary is None or (isinstance(summary, str) and summary.startswith("Summary generation failed")):
+                print(f"[WARNING] Summary generation failed or returned None")
+                summary = "Summary unavailable - AI processing error"
+            else:
+                summary = decode_html_entities(summary)
         except Exception as e:
             print(f"[WARNING] Summary generation error: {e}")
-            summary = "No summary available"
+            summary = "Summary unavailable - AI processing error"
         
         # Generate document ID
         doc_id = f"doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         
-        # Prepare document data
+        # Prepare document data with defaults for all fields
         title = pdf_path.stem
         title = decode_html_entities(title)
         
+        # Ensure all text fields have defaults (empty string if None)
+        raw_text = raw_text or ''
+        original_text = original_text or ''
+        translated_text = translated_text or original_text or ''  # Fallback to original if translation failed
+        refined_text = refined_text or translated_text or original_text or ''  # Fallback chain
+        summary = summary or 'Summary unavailable - processing incomplete'
+        
+        # Ensure metadata has defaults
         doc_data = {
             'id': doc_id,
             'filename': pdf_path.name,
-            'title': title,
+            'title': title or 'Untitled Document',
             'raw_text': raw_text,
             'original_text': original_text,
             'translated_text': translated_text,
             'refined_text': refined_text,
             'summary': summary,
-            'language': source_lang,
-            'date': file_metadata.get('date'),
-            'sender': metadata.get('sender'),
-            'recipient': metadata.get('recipient'),
-            'sender_location': metadata.get('sender_location'),
-            'recipient_location': metadata.get('recipient_location'),
-            'references': simple_refs,
-            'people': simple_refs.get('people', []),
-            'page_images': image_paths,
-            'page_count': len(image_paths),
+            'language': source_lang or 'unknown',
+            'date': file_metadata.get('date') or '',
+            'sender': metadata.get('sender') or '',
+            'recipient': metadata.get('recipient') or '',
+            'sender_location': metadata.get('sender_location') or '',
+            'recipient_location': metadata.get('recipient_location') or '',
+            'references': simple_refs or {},
+            'people': simple_refs.get('people', []) if simple_refs else [],
+            'page_images': image_paths or [],
+            'page_count': len(image_paths) if image_paths else 0,
             'source_file': str(pdf_path),
             'status': 'new',
             'reviews': [],
@@ -1400,9 +1545,19 @@ def process_uploaded_document(pdf_path: Path, work_dir: Path) -> dict:
         }
         
         # Save document
-        print(f"[DEBUG] Saving document...")
+        print(f"[DEBUG] Saving document with ID: {doc_id}...")
         try:
-            local_storage.add_document(doc_data, doc_id=doc_id)
+            saved_id = local_storage.add_document(doc_data, doc_id=doc_id)
+            print(f"[DEBUG] Document saved successfully with ID: {saved_id}")
+            
+            # Log the upload event in document history
+            local_storage.log_history(
+                saved_id,
+                'System',
+                'uploaded',
+                'document was uploaded and processed'
+            )
+            print(f"[DEBUG] Logged upload event in history")
         except Exception as e:
             print(f"[ERROR] Failed to save document: {e}")
             import traceback
@@ -1434,19 +1589,22 @@ def process_uploaded_document(pdf_path: Path, work_dir: Path) -> dict:
         
         print(f"[DEBUG] Added {ref_count} references to metadata")
         print(f"[DEBUG] Document {doc_id} saved successfully!")
+        print(f"[DEBUG] Returning doc_data with id: {doc_data.get('id')}")
         
         return doc_data
         
     except Exception as e:
         print(f"[ERROR] Error processing document: {e}")
         import traceback
-        traceback.print_exc()
+        error_traceback = traceback.format_exc()
+        print(f"[ERROR] Full traceback:\n{error_traceback}")
         # Try to clean up if doc_id was created
         if doc_id:
             try:
+                print(f"[DEBUG] Attempting to clean up document {doc_id}")
                 local_storage.delete_document(doc_id)
-            except:
-                pass
+            except Exception as cleanup_error:
+                print(f"[WARNING] Failed to clean up document {doc_id}: {cleanup_error}")
         return None
 
 
@@ -1484,28 +1642,43 @@ def translate_document(text: str, source_lang: str) -> str:
 @app.route('/upload', methods=['POST'])
 def upload_file():
     """Handle PDF file upload and processing with enhanced pipeline."""
+    print(f"[DEBUG] Upload endpoint called")
     try:
+        print(f"[DEBUG] Checking request.files...")
         if 'file' not in request.files:
+            print(f"[DEBUG] No 'file' in request.files")
             return jsonify({'error': 'No file provided'}), 400
         
         file = request.files['file']
+        print(f"[DEBUG] File received: {file.filename}")
         if file.filename == '':
+            print(f"[DEBUG] Empty filename")
             return jsonify({'error': 'No file selected'}), 400
         
         if not allowed_file(file.filename):
+            print(f"[DEBUG] File not allowed: {file.filename}")
             return jsonify({'error': 'Only PDF files are allowed'}), 400
     except Exception as e:
+        print(f"[ERROR] File validation exception: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': f'File validation failed: {str(e)}'}), 400
     
-    # Generate unique filename to avoid conflicts
-    unique_id = str(uuid.uuid4())[:8]
+    # Use original filename (file is deleted after processing, so conflicts are rare)
     filename = secure_filename(file.filename)
-    name, ext = os.path.splitext(filename)
-    unique_filename = f"{name}_{unique_id}{ext}"
+    print(f"[DEBUG] Using filename: {filename}")
     
     # Save uploaded file
-    pdf_path = INBOX_DIR / unique_filename
-    file.save(str(pdf_path))
+    pdf_path = INBOX_DIR / filename
+    print(f"[DEBUG] Saving file to: {pdf_path}")
+    try:
+        file.save(str(pdf_path))
+        print(f"[DEBUG] File saved successfully")
+    except Exception as e:
+        print(f"[ERROR] Failed to save file: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': f'Failed to save uploaded file: {str(e)}'}), 500
     
     try:
         print(f"[DEBUG] Starting enhanced processing for: {pdf_path}")
@@ -1545,8 +1718,12 @@ def upload_file():
     
     finally:
         # Clean up uploaded file
-        if pdf_path.exists():
-            pdf_path.unlink()
+        try:
+            if 'pdf_path' in locals() and pdf_path.exists():
+                pdf_path.unlink()
+                print(f"[DEBUG] Cleaned up uploaded file: {pdf_path}")
+        except Exception as cleanup_error:
+            print(f"[WARNING] Failed to clean up file: {cleanup_error}")
 
 
 @app.route('/download/<filename>')
@@ -1710,9 +1887,14 @@ def get_document(doc_id):
                 'error': 'Document not found'
             }), 404
     except Exception as e:
+        import traceback
+        error_traceback = traceback.format_exc()
+        print(f"[ERROR] Error retrieving document {doc_id}: {e}")
+        print(f"[ERROR] Traceback: {error_traceback}")
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': str(e),
+            'traceback': error_traceback
         }), 500
 
 
