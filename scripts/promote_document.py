@@ -133,12 +133,15 @@ class DocumentPromoter:
         
         try:
             # Upload document JSON
-            success = self.r2_storage.save_document(doc, doc_id)
+            success = self.r2_storage.save_document(doc_id, doc)
             if not success:
                 print(f"  ❌ Failed to upload document")
                 return False
             
             print(f"     ✅ Document uploaded")
+            
+            # Update R2 metadata index
+            self._update_r2_metadata(doc_id, doc)
             
             # Upload images if requested
             if with_images:
@@ -216,6 +219,35 @@ class DocumentPromoter:
                 print(f"  - {doc_id}")
         
         return stats
+    
+    def _update_r2_metadata(self, doc_id: str, doc: Dict):
+        """Update the R2 metadata index with document info."""
+        try:
+            # Get current metadata from R2
+            metadata = self.r2_storage.get_metadata()
+            
+            # Add/update document entry
+            if 'documents' not in metadata:
+                metadata['documents'] = {}
+            
+            metadata['documents'][doc_id] = {
+                "title": doc.get("title", "Untitled"),
+                "date_processed": doc.get("created_at", datetime.now().isoformat()),
+                "source_language": doc.get("language", "unknown"),
+                "target_language": "en",
+                "file_size": 0,
+                "people_count": len(doc.get("people", [])),
+                "summary": doc.get("summary", "")[:100] + "..." if len(doc.get("summary", "")) > 100 else doc.get("summary", ""),
+                "page_count": doc.get("page_count", 0),
+                "status": doc.get("status", "new")
+            }
+            
+            # Save updated metadata
+            self.r2_storage.save_metadata(metadata)
+            print(f"     ✅ Metadata index updated")
+            
+        except Exception as e:
+            print(f"     ⚠️  Failed to update metadata index: {e}")
     
     def check_r2_status(self, doc_id: str) -> bool:
         """Check if a document exists in R2."""
