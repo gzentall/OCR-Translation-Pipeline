@@ -845,16 +845,19 @@ def get_document_image(doc_id, page_num):
             # Build list of possible image names
             possible_names = []
             
-            # 1. From page_images (most reliable)
+            # 1. Doc ID subfolder pattern (used by promote_document.py)
+            possible_names.append(f"{doc_id}/page_{page_num}.png")
+            
+            # 2. From page_images (most reliable for older docs)
             if page_images and len(page_images) >= page_num:
                 image_path = Path(page_images[page_num - 1])
                 possible_names.append(image_path.name)
             
-            # 2. Using title/filename base (common pattern)
+            # 3. Using title/filename base (common pattern)
             if title_base:
                 possible_names.append(f"{title_base}-{page_num}.png")
             
-            # 3. Using doc_id pattern
+            # 4. Using doc_id pattern (flat)
             possible_names.append(f"{doc_id}-{page_num}.png")
             
             # Log what we're trying
