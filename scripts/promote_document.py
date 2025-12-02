@@ -154,15 +154,10 @@ class DocumentPromoter:
                             # Extract page number from filename
                             # Format: letters/work/179-1942-08-15-fre-1.png
                             page_num = img_file.stem.split('-')[-1]
-                            r2_key = f"images/{doc_id}/page_{page_num}.png"
+                            image_name = f"{doc_id}/page_{page_num}.png"
                             
                             with open(img_file, 'rb') as f:
-                                self.r2_storage.client.put_object(
-                                    Bucket=self.r2_storage.bucket,
-                                    Key=r2_key,
-                                    Body=f.read(),
-                                    ContentType='image/png'
-                                )
+                                self.r2_storage.upload_image(image_name, f.read())
                             uploaded += 1
                     
                     print(f"     ✅ Uploaded {uploaded}/{len(images)} images")
@@ -282,7 +277,8 @@ Examples:
     parser.add_argument('--all', action='store_true', help='Promote all local documents')
     parser.add_argument('--recent', type=int, metavar='DAYS', help='Promote documents from the last N days')
     parser.add_argument('--dry-run', action='store_true', help='Simulate promotion without uploading')
-    parser.add_argument('--with-images', action='store_true', help='Also upload page images')
+    parser.add_argument('--with-images', action='store_true', default=True, help='Upload page images (default: True)')
+    parser.add_argument('--no-images', action='store_true', help='Skip uploading page images')
     parser.add_argument('--list', action='store_true', help='List documents instead of promoting')
     
     args = parser.parse_args()
@@ -335,7 +331,9 @@ Examples:
         print("No documents to promote.")
         sys.exit(0)
     
-    stats = promoter.promote_documents(doc_ids, with_images=args.with_images)
+    # Images are included by default unless --no-images is specified
+    include_images = args.with_images and not args.no_images
+    stats = promoter.promote_documents(doc_ids, with_images=include_images)
     
     # Exit with error code if any failed
     if stats['failed'] > 0:
