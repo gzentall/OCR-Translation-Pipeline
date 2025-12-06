@@ -660,7 +660,9 @@ def get_active_users():
                     'email': user.email,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
-                    'username': f"{user.first_name} {user.last_name}"  # Full name for display
+                    'username': f"{user.first_name} {user.last_name}",  # Full name for display
+                    'avatar_url': user.avatar_url,
+                    'initials': user.get_initials()
                 })
             
             return jsonify({"users": users_data, "success": True})
@@ -2887,8 +2889,15 @@ def add_document_comment(doc_id):
         # Check if this is a context comment (for LLM reprocessing)
         is_context = data.get('is_context', False)
         
+        # Get user's avatar URL
+        avatar_url = None
+        with DatabaseSession() as db:
+            user = db.query(User).filter_by(id=user_id).first()
+            if user:
+                avatar_url = user.avatar_url
+        
         # Add comment with mentions and context flag
-        comment = local_storage.add_context_note(doc_id, username, note, mentioned_user_ids, is_context)
+        comment = local_storage.add_context_note(doc_id, username, note, mentioned_user_ids, is_context, avatar_url)
         
         if comment:
             # Get document info for notifications

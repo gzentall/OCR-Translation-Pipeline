@@ -563,7 +563,8 @@ class LocalOCRStorage:
     # -----------------------------
     def add_context_note(self, letter_id: str, username: str, note: str, 
                          mentioned_user_ids: Optional[List[int]] = None,
-                         is_context: bool = False) -> Optional[Dict]:
+                         is_context: bool = False,
+                         avatar_url: Optional[str] = None) -> Optional[Dict]:
         """Add a context note to a letter and return created note.
         
         Args:
@@ -572,6 +573,7 @@ class LocalOCRStorage:
             note: Comment text
             mentioned_user_ids: Optional list of user IDs mentioned in the comment
             is_context: If True, this comment provides context for LLM reprocessing
+            avatar_url: Optional URL to commenter's avatar image
         """
         try:
             # Ensure document exists
@@ -595,7 +597,8 @@ class LocalOCRStorage:
                 "note": note,
                 "createdAt": created_at,
                 "mentioned_users": mentioned_user_ids or [],  # Array of user IDs
-                "is_context": is_context  # True if this comment provides context for LLM
+                "is_context": is_context,  # True if this comment provides context for LLM
+                "avatar_url": avatar_url  # URL to commenter's avatar image
             }
 
             context_list.append(note_obj)

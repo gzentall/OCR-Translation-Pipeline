@@ -5395,8 +5395,9 @@
             padding: var(--md-sys-spacing-3) var(--md-sys-spacing-4);
             cursor: pointer;
             display: flex;
-            flex-direction: column;
-            gap: var(--md-sys-spacing-1);
+            flex-direction: row;
+            align-items: center;
+            gap: var(--md-sys-spacing-3);
             transition: background-color 0.15s ease;
             border-bottom: 1px solid var(--md-sys-color-outline-variant);
         }
@@ -5408,6 +5409,34 @@
         .mention-autocomplete-item:hover,
         .mention-autocomplete-item.selected {
             background: var(--md-sys-color-surface-container-high);
+        }
+
+        .mention-autocomplete-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .mention-autocomplete-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mention-autocomplete-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
         }
 
         .mention-autocomplete-item-name {
@@ -13031,10 +13060,23 @@
                 autocomplete.innerHTML = filteredUsers.map((user, index) => {
                     const fullName = `${user.first_name} ${user.last_name}`;
                     const highlightName = highlightMatch(fullName, query);
+                    const initials = user.initials || fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                    
+                    // Build avatar HTML
+                    let avatarHtml;
+                    if (user.avatar_url) {
+                        avatarHtml = `<div class="mention-autocomplete-avatar"><img src="${escapeHtml(user.avatar_url)}" alt=""></div>`;
+                    } else {
+                        avatarHtml = `<div class="mention-autocomplete-avatar">${initials}</div>`;
+                    }
+                    
                     return `
                         <div class="mention-autocomplete-item" data-user-id="${user.id}" data-username="${fullName}">
-                            <div class="mention-autocomplete-item-name">${highlightName}</div>
-                            <div class="mention-autocomplete-item-email">${user.email}</div>
+                            ${avatarHtml}
+                            <div class="mention-autocomplete-item-info">
+                                <div class="mention-autocomplete-item-name">${highlightName}</div>
+                                <div class="mention-autocomplete-item-email">${user.email}</div>
+                            </div>
                         </div>
                     `;
                 }).join('');
@@ -13466,6 +13508,14 @@
             // Get initials for avatar
             const initials = comment.username ? comment.username.substring(0, 2).toUpperCase() : 'U';
             
+            // Build avatar HTML - use image if available, otherwise initials
+            let avatarHtml;
+            if (comment.avatar_url) {
+                avatarHtml = `<div class="comment-avatar"><img src="${escapeHtml(comment.avatar_url)}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>`;
+            } else {
+                avatarHtml = `<div class="comment-avatar">${initials}</div>`;
+            }
+            
             // Check if this is a context comment
             const isContext = comment.is_context === true;
             const contextBadge = isContext ? 
@@ -13491,7 +13541,7 @@
                 <div class="comment-card${isContext ? ' context-comment' : ''}" data-comment-id="${comment.id}" data-is-context="${isContext}">
                     <div class="comment-header">
                         <div class="comment-author">
-                            <div class="comment-avatar">${initials}</div>
+                            ${avatarHtml}
                             <div class="comment-metadata">
                                 <div class="comment-username">${escapeHtml(comment.username)}${contextBadge}</div>
                                 <div class="comment-timestamp">${formattedDate} at ${formattedTime}</div>
