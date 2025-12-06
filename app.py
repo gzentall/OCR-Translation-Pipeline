@@ -2790,10 +2790,51 @@ def update_document_comment(doc_id, comment_id):
 
 
 @app.route('/documents/<doc_id>/comments/<comment_id>', methods=['DELETE'])
+@require_auth
 def delete_document_comment(doc_id, comment_id):
     """Delete a comment."""
     try:
+        print(f"[DEBUG] Attempting to delete comment {comment_id} from doc {doc_id}")
+        
+        # First check if the comment exists in the document directly
+        doc = local_storage.get_document(doc_id)
+        if not doc:
+            print(f"[DEBUG] Document {doc_id} not found")
+            return jsonify({
+                'success': False,
+                'error': f'Document {doc_id} not found'
+            }), 404
+        
+        # Check if comment exists in document's context_notes
+        context_notes = doc.get('context_notes', [])
+        comment_exists = any(note.get('id') == comment_id for note in context_notes)
+        
+        if not comment_exists:
+            print(f"[DEBUG] Comment {comment_id} not found in document's context_notes")
+            return jsonify({
+                'success': False,
+                'error': f'Comment {comment_id} not found in document'
+            }), 404
+        
+        # Try the standard deletion method first
         success = local_storage.delete_context_note(comment_id)
+        
+        if not success:
+            # Fallback: directly remove from document if metadata index is out of sync
+            print(f"[DEBUG] Standard deletion failed, trying direct removal")
+            filtered_notes = [n for n in context_notes if n.get('id') != comment_id]
+            if len(filtered_notes) < len(context_notes):
+                doc['context_notes'] = filtered_notes
+                # Save the updated document
+                if local_storage.use_r2 and local_storage.r2:
+                    local_storage.r2.save_document(doc_id, doc)
+                # Also update local if exists
+                doc_file = local_storage.documents_dir / f"{doc_id}.json"
+                if doc_file.parent.exists():
+                    with open(doc_file, 'w') as f:
+                        json.dump(doc, f, indent=2)
+                success = True
+                print(f"[DEBUG] Direct removal successful")
         
         if success:
             return jsonify({
@@ -2806,6 +2847,9 @@ def delete_document_comment(doc_id, comment_id):
                 'error': 'Comment not found or deletion failed'
             }), 404
     except Exception as e:
+        print(f"[ERROR] Failed to delete comment: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'success': False,
             'error': str(e)
