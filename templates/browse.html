@@ -5240,7 +5240,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s ease, color 0.2s ease;
+            transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+            opacity: 0;
+        }
+
+        .comment-card:hover .comment-action-btn {
+            opacity: 1;
         }
 
         .comment-action-btn:hover {
@@ -5594,27 +5599,36 @@
             background: color-mix(in srgb, var(--md-sys-color-tertiary-container) 30%, transparent);
         }
 
-        /* Context Filter Button */
-        .context-filter-btn {
-            padding: 4px 12px;
+        /* Context Filter Toggle */
+        .context-filter-toggle {
+            display: flex;
             margin-left: auto;
-            background: none;
             border: 1px solid var(--md-sys-color-outline);
             border-radius: var(--md-sys-shape-radius-full);
+            overflow: hidden;
+        }
+
+        .context-filter-btn {
+            padding: 4px 12px;
+            background: none;
+            border: none;
             color: var(--md-sys-color-on-surface-variant);
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .context-filter-btn:hover {
+        .context-filter-btn:first-child {
+            border-right: 1px solid var(--md-sys-color-outline);
+        }
+
+        .context-filter-btn:hover:not(.active) {
             background: var(--md-sys-color-surface-variant);
         }
 
         .context-filter-btn.active {
             background: var(--md-sys-color-tertiary-container);
             color: var(--md-sys-color-on-tertiary-container);
-            border-color: var(--md-sys-color-tertiary);
         }
 
         /* Reprocess Dialog Modal */
@@ -9515,7 +9529,10 @@
                                     <div class="comments-header">
                                         <span class="material-icons">comment</span>
                                         <h3>Comments</h3>
-                                        <button class="context-filter-btn" id="contextFilterBtn" onclick="toggleContextFilter()">Context only</button>
+                                        <div class="context-filter-toggle">
+                                            <button class="context-filter-btn active" data-filter="all" onclick="setContextFilter('all')">All</button>
+                                            <button class="context-filter-btn" data-filter="context" onclick="setContextFilter('context')">Context</button>
+                                        </div>
                                     </div>
                                     <div class="comments-content">
                                         <div class="comments-list" id="commentsList">
@@ -9572,7 +9589,10 @@
                             <div class="comments-header">
                                 <span class="material-icons">comment</span>
                                 <h3>Comments</h3>
-                                <button class="context-filter-btn" id="contextFilterBtn" onclick="toggleContextFilter()">Context only</button>
+                                <div class="context-filter-toggle">
+                                    <button class="context-filter-btn active" data-filter="all" onclick="setContextFilter('all')">All</button>
+                                    <button class="context-filter-btn" data-filter="context" onclick="setContextFilter('context')">Context</button>
+                                </div>
                             </div>
                             <div class="comments-content">
                                 <div class="comments-list" id="commentsList">
@@ -13470,13 +13490,13 @@
         
         let contextFilterActive = false;
         
-        function toggleContextFilter() {
-            contextFilterActive = !contextFilterActive;
+        function setContextFilter(filter) {
+            contextFilterActive = (filter === 'context');
             
             // Update filter button state
             const filterBtns = document.querySelectorAll('.context-filter-btn');
             filterBtns.forEach(btn => {
-                if (contextFilterActive) {
+                if (btn.dataset.filter === filter) {
                     btn.classList.add('active');
                 } else {
                     btn.classList.remove('active');
