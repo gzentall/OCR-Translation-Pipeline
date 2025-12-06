@@ -14681,6 +14681,14 @@
             const initials = getUserInitials(user);
             const roleDisplay = getRoleDisplayName(user.role);
             
+            // Build avatar HTML - use image if available
+            let dialogAvatarHtml;
+            if (user.avatar_url) {
+                dialogAvatarHtml = `<div class="user-avatar"><img src="${user.avatar_url}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>`;
+            } else {
+                dialogAvatarHtml = `<div class="user-avatar">${initials}</div>`;
+            }
+            
             // Check invite status for existing users
             let inviteBanner = '';
             if (!isNew && user.has_invite_token && !user.has_password) {
@@ -14716,7 +14724,7 @@
                         
                         <div class="mdc-dialog__content">
                             <div class="user-header">
-                                <div class="user-avatar">${initials}</div>
+                                ${dialogAvatarHtml}
                                 <div class="user-info">
                                     <div class="user-name">${user.first_name || ''} ${user.last_name || ''}</div>
                                     <div class="user-email">${user.email || ''}</div>
