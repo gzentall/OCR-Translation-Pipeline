@@ -15550,12 +15550,27 @@
             const roleDisplay = getRoleDisplayName(userInfo.role || 'GUEST');
             
             
-            // Update avatar
+            // Update avatar - check for custom avatar image
             const userAvatar = document.getElementById('userAvatar');
-            if (userAvatar) {
-                userAvatar.textContent = initials;
+            const profileAvatar = document.getElementById('profileAvatar');
+            
+            if (userInfo.avatar_url) {
+                // Use custom avatar image
+                if (userAvatar) {
+                    userAvatar.innerHTML = `<img src="${userInfo.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                }
+                if (profileAvatar) {
+                    profileAvatar.innerHTML = `<img src="${userInfo.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                }
+            } else {
+                // Use initials
+                if (userAvatar) {
+                    userAvatar.textContent = initials;
+                }
+                if (profileAvatar) {
+                    profileAvatar.textContent = initials;
+                }
             }
-            document.getElementById('profileAvatar').textContent = initials;
             
             // Update profile info
             const fullName = `${userInfo.first_name || ''} ${userInfo.last_name || ''}`.trim() || userInfo.username || userInfo.name || 'User';
