@@ -239,3 +239,4 @@ except Exception as e:
    - Verify the OpenAI API is accessible from your server
    - Test with a simple API call to verify connectivity
 
+

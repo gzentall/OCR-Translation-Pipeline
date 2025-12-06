@@ -15,6 +15,7 @@ import sys
 import secrets
 import bcrypt
 import time
+import threading
 from pathlib import Path
 from datetime import datetime, timezone
 from functools import wraps
@@ -2682,8 +2683,11 @@ def add_document_comment(doc_id):
         if not isinstance(mentioned_user_ids, list):
             mentioned_user_ids = []
         
-        # Add comment with mentions
-        comment = local_storage.add_context_note(doc_id, username, note, mentioned_user_ids)
+        # Check if this is a context comment (for LLM reprocessing)
+        is_context = data.get('is_context', False)
+        
+        # Add comment with mentions and context flag
+        comment = local_storage.add_context_note(doc_id, username, note, mentioned_user_ids, is_context)
         
         if comment:
             # Get document info for notifications
@@ -2738,7 +2742,9 @@ def add_document_comment(doc_id):
             return jsonify({
                 'success': True,
                 'comment': comment,
-                'mentioned_users': mentioned_user_ids
+                'mentioned_users': mentioned_user_ids,
+                'is_context': is_context,
+                'show_reprocess_dialog': is_context  # Frontend should show reprocess dialog if this is a context comment
             })
         else:
             return jsonify({
@@ -2807,14 +2813,21 @@ def delete_document_comment(doc_id, comment_id):
         
         # Check if comment exists in document's context_notes
         context_notes = doc.get('context_notes', [])
-        comment_exists = any(note.get('id') == comment_id for note in context_notes)
+        deleted_comment = None
+        for note in context_notes:
+            if note.get('id') == comment_id:
+                deleted_comment = note
+                break
         
-        if not comment_exists:
+        if not deleted_comment:
             print(f"[DEBUG] Comment {comment_id} not found in document's context_notes")
             return jsonify({
                 'success': False,
                 'error': f'Comment {comment_id} not found in document'
             }), 404
+        
+        # Check if this was a context comment (for reprocess dialog)
+        was_context_comment = deleted_comment.get('is_context', False)
         
         # Try the standard deletion method first
         success = local_storage.delete_context_note(comment_id)
@@ -2839,7 +2852,9 @@ def delete_document_comment(doc_id, comment_id):
         if success:
             return jsonify({
                 'success': True,
-                'message': 'Comment deleted successfully'
+                'message': 'Comment deleted successfully',
+                'was_context_comment': was_context_comment,
+                'show_reprocess_dialog': was_context_comment  # Show dialog if context was removed
             })
         else:
             return jsonify({
@@ -2854,6 +2869,265 @@ def delete_document_comment(doc_id, comment_id):
             'success': False,
             'error': str(e)
         }), 500
+
+
+# ===== Document Reprocessing API =====
+
+@app.route('/documents/<doc_id>/status', methods=['GET'])
+def get_document_status(doc_id):
+    """Get the processing status of a document."""
+    try:
+        status = local_storage.get_processing_status(doc_id)
+        return jsonify({
+            'success': True,
+            **status
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/documents/<doc_id>/reprocess', methods=['POST'])
+@require_auth
+def reprocess_document(doc_id):
+    """Trigger reprocessing of a document with context.
+    
+    Request body:
+    {
+        "fields": ["translation", "summary", "sender", "recipient", "references"],
+        "use_raw_ocr": false  // If true, re-run from raw OCR text
+    }
+    """
+    try:
+        # Check document exists
+        doc = local_storage.get_document(doc_id)
+        if not doc:
+            return jsonify({
+                'success': False,
+                'error': 'Document not found'
+            }), 404
+        
+        # Check if already processing
+        current_status = local_storage.get_processing_status(doc_id)
+        if current_status.get('status') == 'processing':
+            return jsonify({
+                'success': False,
+                'error': 'Document is already being processed'
+            }), 409
+        
+        data = request.get_json() or {}
+        fields = data.get('fields', ['translation', 'summary', 'sender', 'recipient', 'references'])
+        use_raw_ocr = data.get('use_raw_ocr', False)
+        
+        # Validate fields
+        valid_fields = {'translation', 'summary', 'sender', 'recipient', 'references'}
+        invalid_fields = set(fields) - valid_fields
+        if invalid_fields:
+            return jsonify({
+                'success': False,
+                'error': f'Invalid fields: {invalid_fields}'
+            }), 400
+        
+        # Set status to processing
+        local_storage.set_processing_status(doc_id, 'processing')
+        
+        # Get user info for history logging
+        username = session.get('username', 'system')
+        
+        # Start background processing
+        thread = threading.Thread(
+            target=reprocess_document_async,
+            args=(doc_id, fields, use_raw_ocr, username)
+        )
+        thread.daemon = True
+        thread.start()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Document reprocessing started',
+            'fields': fields,
+            'use_raw_ocr': use_raw_ocr
+        })
+    except Exception as e:
+        print(f"[ERROR] Failed to start reprocessing: {e}")
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+def reprocess_document_async(doc_id: str, fields: list, use_raw_ocr: bool, username: str):
+    """Background function to reprocess a document with context.
+    
+    Args:
+        doc_id: Document ID to reprocess
+        fields: List of fields to regenerate
+        use_raw_ocr: If True, re-run from raw OCR text
+        username: Username for history logging
+    """
+    try:
+        print(f"[REPROCESS] Starting reprocessing for document {doc_id}")
+        print(f"[REPROCESS] Fields: {fields}, use_raw_ocr: {use_raw_ocr}")
+        
+        # Get the document
+        doc = local_storage.get_document(doc_id)
+        if not doc:
+            print(f"[REPROCESS] Document {doc_id} not found")
+            local_storage.set_processing_status(doc_id, 'error', 'Document not found')
+            return
+        
+        # Collect document context (all is_context=True comments)
+        doc_context_comments = local_storage.get_document_context_comments(doc_id)
+        document_context = "\n".join([
+            f"- {c.get('username', 'Editor')}: {c.get('note', '')}" 
+            for c in doc_context_comments
+        ])
+        print(f"[REPROCESS] Found {len(doc_context_comments)} context comments")
+        
+        # Merge with global context
+        merged_context = dict(context_data)  # Start with global context
+        if document_context:
+            merged_context['document_specific_context'] = document_context
+        
+        # Get source text
+        if use_raw_ocr and doc.get('raw_text'):
+            source_text = doc.get('raw_text')
+            print(f"[REPROCESS] Using raw OCR text ({len(source_text)} chars)")
+        else:
+            source_text = doc.get('original_text', '')
+            print(f"[REPROCESS] Using original text ({len(source_text)} chars)")
+        
+        source_lang = doc.get('language', 'unknown')
+        results = {'success': [], 'failed': []}
+        
+        # Reprocess each requested field
+        if 'translation' in fields:
+            try:
+                print(f"[REPROCESS] Regenerating translation...")
+                # Try LLM translation with context
+                translated = translate_with_llm(source_text, source_lang, merged_context)
+                if translated and translated != source_text:
+                    doc['translated_text'] = translated
+                    results['success'].append('translation')
+                    print(f"[REPROCESS] Translation successful ({len(translated)} chars)")
+                else:
+                    results['failed'].append('translation')
+                    print(f"[REPROCESS] Translation returned same text or failed")
+            except Exception as e:
+                print(f"[REPROCESS] Translation failed: {e}")
+                results['failed'].append('translation')
+        
+        if 'summary' in fields:
+            try:
+                print(f"[REPROCESS] Regenerating summary...")
+                text_for_summary = doc.get('translated_text') or source_text
+                
+                # Build context string for summary
+                context_str = ""
+                if document_context:
+                    context_str = f"\n\nEditor-provided context:\n{document_context}"
+                
+                summary = ai_processor.generate_summary(text_for_summary + context_str)
+                if summary and not summary.startswith("Summary generation failed"):
+                    doc['summary'] = summary
+                    results['success'].append('summary')
+                    print(f"[REPROCESS] Summary successful")
+                else:
+                    results['failed'].append('summary')
+                    print(f"[REPROCESS] Summary generation returned error")
+            except Exception as e:
+                print(f"[REPROCESS] Summary failed: {e}")
+                results['failed'].append('summary')
+        
+        if 'sender' in fields or 'recipient' in fields:
+            try:
+                print(f"[REPROCESS] Regenerating metadata (sender/recipient)...")
+                # Use envelope extractor with context
+                metadata = envelope_extractor.extract_metadata(
+                    source_text + (f"\n\nContext: {document_context}" if document_context else ""),
+                    doc.get('filename', '')
+                )
+                
+                if 'sender' in fields and metadata.get('sender'):
+                    doc['sender'] = metadata.get('sender')
+                    doc['sender_location'] = metadata.get('sender_location', '')
+                    results['success'].append('sender')
+                    print(f"[REPROCESS] Sender extracted: {doc['sender']}")
+                elif 'sender' in fields:
+                    results['failed'].append('sender')
+                
+                if 'recipient' in fields and metadata.get('recipient'):
+                    doc['recipient'] = metadata.get('recipient')
+                    doc['recipient_location'] = metadata.get('recipient_location', '')
+                    results['success'].append('recipient')
+                    print(f"[REPROCESS] Recipient extracted: {doc['recipient']}")
+                elif 'recipient' in fields:
+                    results['failed'].append('recipient')
+            except Exception as e:
+                print(f"[REPROCESS] Metadata extraction failed: {e}")
+                if 'sender' in fields:
+                    results['failed'].append('sender')
+                if 'recipient' in fields:
+                    results['failed'].append('recipient')
+        
+        if 'references' in fields:
+            try:
+                print(f"[REPROCESS] Regenerating references...")
+                text_for_refs = doc.get('translated_text') or source_text
+                
+                references = extract_references_with_context(
+                    ai_processor,
+                    text_for_refs + (f"\n\nContext: {document_context}" if document_context else ""),
+                    document_date=doc.get('date'),
+                    sender=doc.get('sender'),
+                    recipient=doc.get('recipient'),
+                    sender_location=doc.get('sender_location'),
+                    recipient_location=doc.get('recipient_location')
+                )
+                
+                if references:
+                    simple_refs = references.get('simple', references)
+                    doc['references'] = simple_refs
+                    doc['people'] = simple_refs.get('people', [])
+                    results['success'].append('references')
+                    print(f"[REPROCESS] References extracted: {len(doc.get('people', []))} people")
+                else:
+                    results['failed'].append('references')
+            except Exception as e:
+                print(f"[REPROCESS] Reference extraction failed: {e}")
+                results['failed'].append('references')
+        
+        # Update document timestamp
+        doc['updated_at'] = datetime.now().isoformat()
+        doc['last_reprocessed'] = datetime.now().isoformat()
+        doc['last_reprocessed_by'] = username
+        
+        # Save the updated document
+        local_storage.save_document(doc_id, doc)
+        print(f"[REPROCESS] Document saved")
+        
+        # Log to history
+        history_message = f"Reprocessed: {', '.join(results['success'])}"
+        if results['failed']:
+            history_message += f" (failed: {', '.join(results['failed'])})"
+        local_storage.log_history(doc_id, 'reprocessed', username, history_message)
+        
+        # Set status to ready
+        if results['failed'] and not results['success']:
+            local_storage.set_processing_status(doc_id, 'error', f"All fields failed: {', '.join(results['failed'])}")
+        else:
+            local_storage.set_processing_status(doc_id, 'ready')
+        
+        print(f"[REPROCESS] Completed. Success: {results['success']}, Failed: {results['failed']}")
+        
+    except Exception as e:
+        print(f"[REPROCESS] Fatal error: {e}")
+        traceback.print_exc()
+        local_storage.set_processing_status(doc_id, 'error', str(e))
+        local_storage.log_history(doc_id, 'reprocess_error', username, f"Reprocessing failed: {str(e)}")
 
 
 # ===== Notifications API =====

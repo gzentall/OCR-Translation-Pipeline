@@ -285,6 +285,34 @@ class LocalOCRStorage:
         
         return None
     
+    def save_document(self, doc_id: str, document: Dict) -> bool:
+        """Save a complete document to R2 and/or local storage.
+        
+        Args:
+            doc_id: Document ID
+            document: Complete document data to save
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            # Save to R2 if enabled
+            if self.use_r2 and self.r2:
+                try:
+                    self.r2.save_document(doc_id, document)
+                except Exception as e:
+                    print(f"⚠️  Error saving document {doc_id} to R2: {e}")
+            
+            # Always save locally as well (backup in R2 mode, primary in local mode)
+            doc_file = self.documents_dir / f"{doc_id}.json"
+            with open(doc_file, 'w') as f:
+                json.dump(document, f, indent=2)
+            
+            return True
+        except Exception as e:
+            print(f"Error saving document {doc_id}: {e}")
+            return False
+    
     def update_document(self, doc_id: str, updates: Dict, regenerate_summary: bool = False) -> bool:
         """Update a document with new data in R2 or local storage."""
         try:
@@ -533,7 +561,9 @@ class LocalOCRStorage:
     # -----------------------------
     # Context Notes (Per-letter)
     # -----------------------------
-    def add_context_note(self, letter_id: str, username: str, note: str, mentioned_user_ids: Optional[List[int]] = None) -> Optional[Dict]:
+    def add_context_note(self, letter_id: str, username: str, note: str, 
+                         mentioned_user_ids: Optional[List[int]] = None,
+                         is_context: bool = False) -> Optional[Dict]:
         """Add a context note to a letter and return created note.
         
         Args:
@@ -541,6 +571,7 @@ class LocalOCRStorage:
             username: Username of commenter
             note: Comment text
             mentioned_user_ids: Optional list of user IDs mentioned in the comment
+            is_context: If True, this comment provides context for LLM reprocessing
         """
         try:
             # Ensure document exists
@@ -563,7 +594,8 @@ class LocalOCRStorage:
                 "username": username,
                 "note": note,
                 "createdAt": created_at,
-                "mentioned_users": mentioned_user_ids or []  # Array of user IDs
+                "mentioned_users": mentioned_user_ids or [],  # Array of user IDs
+                "is_context": is_context  # True if this comment provides context for LLM
             }
 
             context_list.append(note_obj)
@@ -685,6 +717,77 @@ class LocalOCRStorage:
         except Exception as e:
             print(f"Error deleting context note {context_id}: {e}")
             return False
+
+    # -----------------------------
+    # Processing Status Management
+    # -----------------------------
+    def set_processing_status(self, doc_id: str, status: str, error: str = None) -> bool:
+        """Set the processing status of a document.
+        
+        Args:
+            doc_id: Document ID
+            status: One of 'ready', 'processing', 'error'
+            error: Error message if status is 'error'
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            doc = self.get_document(doc_id)
+            if doc is None:
+                return False
+            
+            doc["processing_status"] = status
+            doc["processing_error"] = error if status == "error" else None
+            if status == "processing":
+                doc["processing_started"] = datetime.now().isoformat()
+            elif status in ("ready", "error"):
+                doc["last_processed"] = datetime.now().isoformat()
+            
+            # Save the document
+            self.save_document(doc_id, doc)
+            return True
+        except Exception as e:
+            print(f"Error setting processing status for {doc_id}: {e}")
+            return False
+    
+    def get_processing_status(self, doc_id: str) -> Dict:
+        """Get the processing status of a document.
+        
+        Returns:
+            Dict with 'status', 'error', 'last_processed' fields
+        """
+        try:
+            doc = self.get_document(doc_id)
+            if doc is None:
+                return {"status": "unknown", "error": "Document not found"}
+            
+            return {
+                "status": doc.get("processing_status", "ready"),
+                "error": doc.get("processing_error"),
+                "last_processed": doc.get("last_processed"),
+                "processing_started": doc.get("processing_started")
+            }
+        except Exception as e:
+            print(f"Error getting processing status for {doc_id}: {e}")
+            return {"status": "error", "error": str(e)}
+    
+    def get_document_context_comments(self, doc_id: str) -> List[Dict]:
+        """Get all context comments (is_context=True) for a document.
+        
+        Returns:
+            List of context comments that can be used for LLM processing
+        """
+        try:
+            doc = self.get_document(doc_id)
+            if doc is None:
+                return []
+            
+            all_notes = doc.get("context_notes", [])
+            return [note for note in all_notes if note.get("is_context", False)]
+        except Exception as e:
+            print(f"Error getting context comments for {doc_id}: {e}")
+            return []
     
     def get_people(self) -> Dict:
         """Get all people with their metadata."""

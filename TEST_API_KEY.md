@@ -108,3 +108,4 @@ The remaining issue is likely:
 3. **Upload a test document** and check the logs
 4. **Verify metadata extraction** shows actual names instead of "Unknown"
 
+

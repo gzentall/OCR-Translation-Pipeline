@@ -987,7 +987,7 @@
 
         .mdc-dialog.document-editor-dialog .mdc-dialog__content {
             flex: 1;
-            padding: var(--md-sys-spacing-4);
+            padding: 0;
             overflow-y: auto; /* Allow vertical scroll for main content */
             overflow-x: visible; /* Allow horizontal overflow for dropdowns */
             display: flex;
@@ -1003,25 +1003,31 @@
         /* Responsive breakpoints for document editor dialog */
         @media (max-width: 599px) {
             .mdc-dialog.document-editor-dialog .mdc-dialog__header,
-            .mdc-dialog.document-editor-dialog .mdc-dialog__content,
             .mdc-dialog.document-editor-dialog .mdc-dialog__actions {
                 padding: var(--md-sys-spacing-3);
+            }
+            .mdc-dialog.document-editor-dialog .mdc-dialog__content {
+                padding: 0;
             }
         }
 
         @media (min-width: 600px) and (max-width: 839px) {
             .mdc-dialog.document-editor-dialog .mdc-dialog__header,
-            .mdc-dialog.document-editor-dialog .mdc-dialog__content,
             .mdc-dialog.document-editor-dialog .mdc-dialog__actions {
                 padding: var(--md-sys-spacing-4);
+            }
+            .mdc-dialog.document-editor-dialog .mdc-dialog__content {
+                padding: 0;
             }
         }
 
         @media (min-width: 840px) {
             .mdc-dialog.document-editor-dialog .mdc-dialog__header,
-            .mdc-dialog.document-editor-dialog .mdc-dialog__content,
             .mdc-dialog.document-editor-dialog .mdc-dialog__actions {
                 padding: var(--md-sys-spacing-5);
+            }
+            .mdc-dialog.document-editor-dialog .mdc-dialog__content {
+                padding: 0;
             }
         }
 
@@ -5048,7 +5054,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: var(--md-sys-spacing-3);
+            padding: 8px 12px;
             border-bottom: 1px solid var(--md-sys-color-outline-variant);
             flex-shrink: 0;
         }
@@ -5090,7 +5096,7 @@
             justify-content: center;
             background: var(--md-sys-color-surface-container);
             overflow: auto;
-            padding: var(--md-sys-spacing-4);
+            padding: 0;
             min-height: 0;
         }
 
@@ -5113,11 +5119,11 @@
         .editor-comments-section {
             grid-area: comments;
             background: var(--md-sys-color-surface-container-lowest);
-            border-radius: var(--md-sys-shape-radius-md);
             display: flex;
             flex-direction: column;
             min-height: 0;
             overflow: hidden;
+            padding: 0;
         }
 
         .comments-header {
@@ -5441,6 +5447,401 @@
             opacity: 0.8;
         }
 
+        /* Comment Input Footer */
+        .comment-input-footer {
+            display: flex;
+            flex-direction: column;
+            margin-top: auto;
+            background: var(--md-sys-color-surface);
+        }
+
+        .comment-input-divider {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 1px;
+            background: var(--md-sys-color-outline-variant);
+        }
+
+        .comment-type-toggle {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            display: inline-flex;
+            border: 2px solid var(--md-sys-color-outline);
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--md-sys-color-surface);
+        }
+
+        .comment-type-btn {
+            padding: 5px 14px;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border-radius: 18px;
+        }
+
+        .comment-type-btn.active {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+
+        .comment-type-btn:not(.active):hover {
+            background: var(--md-sys-color-surface-container);
+        }
+
+        /* Compact comment input area - centered vertically */
+        .comments-section .comment-input-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 0 8px;
+            gap: 8px;
+        }
+
+        .comments-section .comment-input {
+            flex: 1;
+            min-height: 36px;
+            padding: 8px 12px;
+            resize: none;
+            border: 2px solid var(--md-sys-color-outline);
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .comments-section .comment-submit-btn {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 50%;
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .comments-section .comment-submit-btn .material-icons {
+            font-size: 20px;
+        }
+
+        /* Remove padding from comments column */
+        .comments-section {
+            padding: 0 !important;
+        }
+
+        .comments-section .comments-header {
+            padding: 12px;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .comments-section .comments-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .comments-section .comments-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        /* Context Comment Badge */
+        .comment-context-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            margin-left: 8px;
+            background: var(--md-sys-color-tertiary-container);
+            color: var(--md-sys-color-on-tertiary-container);
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Context Comment Card Styling */
+        .comment-card.context-comment {
+            border-left: 3px solid var(--md-sys-color-tertiary);
+            background: color-mix(in srgb, var(--md-sys-color-tertiary-container) 30%, transparent);
+        }
+
+        /* Context Filter Button */
+        .context-filter-btn {
+            padding: 4px 12px;
+            margin-left: auto;
+            background: none;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--md-sys-shape-radius-full);
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .context-filter-btn:hover {
+            background: var(--md-sys-color-surface-variant);
+        }
+
+        .context-filter-btn.active {
+            background: var(--md-sys-color-tertiary-container);
+            color: var(--md-sys-color-on-tertiary-container);
+            border-color: var(--md-sys-color-tertiary);
+        }
+
+        /* Reprocess Dialog Modal */
+        .reprocess-dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+
+        .reprocess-dialog-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .reprocess-dialog {
+            background: var(--md-sys-color-surface);
+            border-radius: var(--md-sys-shape-radius-xl);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 480px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .reprocess-dialog-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .reprocess-dialog-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .reprocess-dialog-body {
+            padding: 20px 24px;
+        }
+
+        .reprocess-dialog-body p {
+            margin: 0 0 16px;
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .reprocess-fields-group {
+            margin-bottom: 20px;
+        }
+
+        .reprocess-fields-group h4 {
+            margin: 0 0 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .reprocess-field-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            background: var(--md-sys-color-surface-container);
+            border-radius: var(--md-sys-shape-radius-md);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reprocess-field-option:hover {
+            background: var(--md-sys-color-surface-container-high);
+        }
+
+        .reprocess-field-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--md-sys-color-primary);
+        }
+
+        .reprocess-field-option label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .reprocess-field-option .field-desc {
+            font-size: 12px;
+            color: var(--md-sys-color-on-surface-variant);
+            margin-top: 2px;
+        }
+
+        .reprocess-ocr-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: var(--md-sys-shape-radius-md);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            margin-top: 16px;
+        }
+
+        .reprocess-ocr-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: var(--md-sys-color-tertiary);
+        }
+
+        .reprocess-ocr-option .ocr-option-content {
+            flex: 1;
+        }
+
+        .reprocess-ocr-option label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            cursor: pointer;
+        }
+
+        .reprocess-ocr-option .ocr-option-desc {
+            font-size: 12px;
+            color: var(--md-sys-color-on-surface-variant);
+            margin-top: 4px;
+        }
+
+        .reprocess-dialog-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px 20px;
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .reprocess-dialog-footer button {
+            padding: 10px 24px;
+            border-radius: var(--md-sys-shape-radius-full);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reprocess-btn-skip {
+            background: none;
+            border: 1px solid var(--md-sys-color-outline);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .reprocess-btn-skip:hover {
+            background: var(--md-sys-color-surface-variant);
+        }
+
+        .reprocess-btn-submit {
+            background: var(--md-sys-color-primary);
+            border: none;
+            color: var(--md-sys-color-on-primary);
+        }
+
+        .reprocess-btn-submit:hover {
+            background: var(--md-sys-color-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .reprocess-btn-submit:disabled {
+            background: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: not-allowed;
+        }
+
+        /* Document Processing Status Badge */
+        .document-processing-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: var(--md-sys-color-tertiary-container);
+            color: var(--md-sys-color-on-tertiary-container);
+            border-radius: var(--md-sys-shape-radius-full);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .document-processing-badge .material-icons {
+            font-size: 16px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .document-error-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: var(--md-sys-color-error-container);
+            color: var(--md-sys-color-on-error-container);
+            border-radius: var(--md-sys-shape-radius-full);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .document-error-badge .material-icons {
+            font-size: 16px;
+        }
+
+        /* Processing Document Card */
+        .document-card.processing {
+            opacity: 0.7;
+            pointer-events: auto;
+            cursor: not-allowed;
+        }
+
+        .document-card.processing:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .mdc-list-item.processing {
+            opacity: 0.7;
+            pointer-events: auto;
+            cursor: not-allowed;
+        }
+
+        .mdc-list-item.processing:hover {
+            background: transparent;
+        }
+
         /* Text Tab Switch Styles - only apply when active */
         #text-tab {
             flex-direction: column;
@@ -5546,10 +5947,6 @@
                 min-height: 400px;
             }
             
-            .editor-comments-section {
-                padding: var(--md-sys-spacing-3);
-            }
-            
             .comments-textarea {
                 min-height: 200px;
             }
@@ -5600,10 +5997,6 @@
         @media (min-width: 840px) {
             .document-editor-layout {
                 gap: 0;
-            }
-            
-            .editor-comments-section {
-                padding: var(--md-sys-spacing-5);
             }
         }
 
@@ -6950,6 +7343,69 @@
         </div>
     </div>
 
+    <!-- Reprocess Dialog Modal -->
+    <div class="reprocess-dialog-overlay" id="reprocessDialogOverlay">
+        <div class="reprocess-dialog">
+        <div class="reprocess-dialog-header">
+            <h3>Reprocess Document</h3>
+        </div>
+            <div class="reprocess-dialog-body">
+                <p id="reprocessDialogMessage">You've added context to this document. Would you like to reprocess any fields using this new context?</p>
+                
+                <div class="reprocess-fields-group">
+                    <h4>Select fields to regenerate:</h4>
+                    <div class="reprocess-field-option">
+                        <input type="checkbox" id="reprocessTranslation" checked>
+                        <label for="reprocessTranslation">
+                            <div>Translation</div>
+                            <div class="field-desc">Re-translate with context-aware names and places</div>
+                        </label>
+                    </div>
+                    <div class="reprocess-field-option">
+                        <input type="checkbox" id="reprocessSummary" checked>
+                        <label for="reprocessSummary">
+                            <div>Summary</div>
+                            <div class="field-desc">Generate a new summary with context</div>
+                        </label>
+                    </div>
+                    <div class="reprocess-field-option">
+                        <input type="checkbox" id="reprocessSender">
+                        <label for="reprocessSender">
+                            <div>Sender / Location</div>
+                            <div class="field-desc">Re-extract sender metadata</div>
+                        </label>
+                    </div>
+                    <div class="reprocess-field-option">
+                        <input type="checkbox" id="reprocessRecipient">
+                        <label for="reprocessRecipient">
+                            <div>Recipient / Location</div>
+                            <div class="field-desc">Re-extract recipient metadata</div>
+                        </label>
+                    </div>
+                    <div class="reprocess-field-option">
+                        <input type="checkbox" id="reprocessReferences">
+                        <label for="reprocessReferences">
+                            <div>References</div>
+                            <div class="field-desc">Re-extract people, places, and entities</div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="reprocess-ocr-option">
+                    <input type="checkbox" id="reprocessUseRawOcr">
+                    <div class="ocr-option-content">
+                        <label for="reprocessUseRawOcr">Re-run from raw OCR</label>
+                        <div class="ocr-option-desc">Re-run the full processing pipeline including OCR correction. Takes longer but may produce better results.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="reprocess-dialog-footer">
+                <button class="reprocess-btn-skip" onclick="closeReprocessDialog()">Skip</button>
+                <button class="reprocess-btn-submit" id="reprocessSubmitBtn" onclick="submitReprocess()">Reprocess</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Material Components JavaScript -->
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     
@@ -7222,8 +7678,14 @@
             if (currentView === 'grid') {
                 container.innerHTML = `
                     <div class="documents-grid">
-                        ${paginatedDocs.map(doc => `
-                            <div class="document-card" onclick="showDocument('${doc.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); showDocument('${doc.id}');}" tabindex="0" role="button" aria-label="View document ${escapeHtml(doc.title)}">
+                        ${paginatedDocs.map(doc => {
+                            const isProcessing = doc.processing_status === 'processing';
+                            const hasError = doc.processing_status === 'error';
+                            const clickHandler = isProcessing ? 
+                                `showToast('This document is being reprocessed. Please wait...', 'info')` : 
+                                `showDocument('${doc.id}')`;
+                            return `
+                            <div class="document-card${isProcessing ? ' processing' : ''}" onclick="${clickHandler}" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); ${clickHandler};}" tabindex="0" role="button" aria-label="View document ${escapeHtml(doc.title)}">
                                 <div class="document-thumbnail">
                                     ${doc.page_count > 0 ? 
                                         `<img src="/documents/${doc.id}/images/1?t=${Date.now()}" 
@@ -7235,7 +7697,19 @@
                                     <div class="document-page-badge">${doc.page_count || 0}</div>
                                 </div>
                                 <div class="document-content">
-                                    <div class="document-status-badge ${getStatusInfo(doc.status).class}">${getStatusInfo(doc.status).display}</div>
+                                    ${isProcessing ? `
+                                        <div class="document-processing-badge">
+                                            <span class="material-icons">autorenew</span>
+                                            Reprocessing
+                                        </div>
+                                    ` : hasError ? `
+                                        <div class="document-error-badge" title="${escapeHtml(doc.processing_error || 'Unknown error')}">
+                                            <span class="material-icons">error</span>
+                                            Error
+                                        </div>
+                                    ` : `
+                                        <div class="document-status-badge ${getStatusInfo(doc.status).class}">${getStatusInfo(doc.status).display}</div>
+                                    `}
                                     <div class="document-title">${escapeHtml(doc.title || doc.id || 'Untitled Document')}</div>
                                     <div class="document-summary">
                                         ${doc.summary ? escapeHtml(doc.summary).substring(0, 100) + (doc.summary.length > 100 ? '...' : '') : 'No summary available'}
@@ -7247,15 +7721,21 @@
                                     ` : ''}
                                 </div>
                             </div>
-                        `).join('')}
+                        `;}).join('')}
                     </div>
                 `;
             } else {
                 // List view using the original mdc-list structure
                 container.innerHTML = `
                     <div class="mdc-list">
-                        ${paginatedDocs.map(doc => `
-                            <div class="mdc-list-item" data-doc-id="${doc.id}" onclick="showDocument('${doc.id}')" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); showDocument('${doc.id}');}" tabindex="0" role="button" aria-label="View document ${escapeHtml(doc.title)}">
+                        ${paginatedDocs.map(doc => {
+                            const isProcessing = doc.processing_status === 'processing';
+                            const hasError = doc.processing_status === 'error';
+                            const clickHandler = isProcessing ? 
+                                `showToast('This document is being reprocessed. Please wait...', 'info')` : 
+                                `showDocument('${doc.id}')`;
+                            return `
+                            <div class="mdc-list-item${isProcessing ? ' processing' : ''}" data-doc-id="${doc.id}" onclick="${clickHandler}" onkeydown="if(event.key==='Enter'||event.key===' ') {event.preventDefault(); ${clickHandler};}" tabindex="0" role="button" aria-label="View document ${escapeHtml(doc.title)}">
                                 <div class="document-checkbox-container">
                                     <input type="checkbox" class="document-checkbox" data-doc-id="${doc.id}" onclick="event.stopPropagation();">
                                 </div>
@@ -7272,7 +7752,19 @@
                                 <div class="mdc-list-item__text">
                                     <div class="mdc-list-item__primary-text">
                                         <span>${escapeHtml(doc.title || doc.id || 'Untitled Document')}</span>
-                                        <span class="document-status-badge ${getStatusInfo(doc.status).class}">${getStatusInfo(doc.status).display}</span>
+                                        ${isProcessing ? `
+                                            <span class="document-processing-badge">
+                                                <span class="material-icons">autorenew</span>
+                                                Reprocessing
+                                            </span>
+                                        ` : hasError ? `
+                                            <span class="document-error-badge" title="${escapeHtml(doc.processing_error || 'Unknown error')}">
+                                                <span class="material-icons">error</span>
+                                                Error
+                                            </span>
+                                        ` : `
+                                            <span class="document-status-badge ${getStatusInfo(doc.status).class}">${getStatusInfo(doc.status).display}</span>
+                                        `}
                                     </div>
                                     <div class="mdc-list-item__secondary-text">
                                         ${doc.summary ? escapeHtml(doc.summary).substring(0, 100) + (doc.summary.length > 100 ? '...' : '') : 'No summary available'}
@@ -7284,7 +7776,7 @@
                                     ` : ''}
                                 </div>
                             </div>
-                        `).join('')}
+                        `;}).join('')}
                     </div>
                 `;
                 
@@ -8997,23 +9489,33 @@
                                     <div class="comments-header">
                                         <span class="material-icons">comment</span>
                                         <h3>Comments</h3>
+                                        <button class="context-filter-btn" id="contextFilterBtn" onclick="toggleContextFilter()">Context only</button>
                                     </div>
                                     <div class="comments-content">
                                         <div class="comments-list" id="commentsList">
                                             <!-- Comments will be loaded here -->
                                         </div>
-                                        <div class="comment-input-container">
-                                            <div class="mention-autocomplete" id="mentionAutocomplete">
-                                                <div class="mention-autocomplete-empty">No users found</div>
+                                        <div class="comment-input-footer">
+                                            <div class="comment-input-divider">
+                                                <div class="comment-type-toggle">
+                                                    <button type="button" class="comment-type-btn active" data-type="comment" onclick="setCommentType('comment')">Comment</button>
+                                                    <button type="button" class="comment-type-btn" data-type="context" onclick="setCommentType('context')">Context</button>
+                                                </div>
                                             </div>
-                                            <textarea 
-                                                id="newCommentInput" 
-                                                class="comment-input" 
-                                                placeholder="Add a comment... (use @ to mention users)"
-                                            ></textarea>
-                                            <button id="submitCommentBtn" class="comment-submit-btn" title="Send comment">
-                                                <span class="material-icons">send</span>
-                                            </button>
+                                            <div class="comment-input-container">
+                                                <div class="mention-autocomplete" id="mentionAutocomplete">
+                                                    <div class="mention-autocomplete-empty">No users found</div>
+                                                </div>
+                                                <textarea 
+                                                    id="newCommentInput" 
+                                                    class="comment-input" 
+                                                    placeholder="Add a comment"
+                                                    rows="1"
+                                                ></textarea>
+                                                <button id="submitCommentBtn" class="comment-submit-btn" title="Send">
+                                                    <span class="material-icons">send</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -9044,20 +9546,30 @@
                             <div class="comments-header">
                                 <span class="material-icons">comment</span>
                                 <h3>Comments</h3>
+                                <button class="context-filter-btn" id="contextFilterBtn" onclick="toggleContextFilter()">Context only</button>
                             </div>
                             <div class="comments-content">
                                 <div class="comments-list" id="commentsList">
                                     <!-- Comments will be loaded here -->
                                 </div>
-                                <div class="comment-input-container">
-                                    <textarea 
-                                        id="newCommentInput" 
-                                        class="comment-input" 
-                                        placeholder="Add a comment..."
-                                    ></textarea>
-                                    <button id="submitCommentBtn" class="comment-submit-btn" title="Send comment">
-                                        <span class="material-icons">send</span>
-                                    </button>
+                                <div class="comment-input-footer">
+                                    <div class="comment-input-divider">
+                                        <div class="comment-type-toggle">
+                                            <button type="button" class="comment-type-btn active" data-type="comment" onclick="setCommentType('comment')">Comment</button>
+                                            <button type="button" class="comment-type-btn" data-type="context" onclick="setCommentType('context')">Context</button>
+                                        </div>
+                                    </div>
+                                    <div class="comment-input-container">
+                                        <textarea 
+                                            id="newCommentInput" 
+                                            class="comment-input" 
+                                            placeholder="Add a comment"
+                                            rows="1"
+                                        ></textarea>
+                                        <button id="submitCommentBtn" class="comment-submit-btn" title="Send">
+                                            <span class="material-icons">send</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -12519,14 +13031,22 @@
                     throw new Error(data.error || 'Failed to load comments');
                 }
                 
-                const comments = data.comments || [];
+                let comments = data.comments || [];
                 console.log('✓ Loaded', comments.length, 'comments');
                 
+                // Apply context filter if active
+                if (contextFilterActive) {
+                    comments = comments.filter(c => c.is_context === true);
+                    console.log('🔍 Filtered to', comments.length, 'context comments');
+                }
+                
                 if (comments.length === 0) {
+                    const emptyMessage = contextFilterActive ? 
+                        'No context comments yet' : 'No comments yet';
                     commentsList.innerHTML = `
                         <div class="comments-empty">
                             <span class="material-icons">chat_bubble_outline</span>
-                            <p class="comments-empty-text">No comments yet</p>
+                            <p class="comments-empty-text">${emptyMessage}</p>
                         </div>
                     `;
                     return;
@@ -12564,6 +13084,11 @@
             // Get initials for avatar
             const initials = comment.username ? comment.username.substring(0, 2).toUpperCase() : 'U';
             
+            // Check if this is a context comment
+            const isContext = comment.is_context === true;
+            const contextBadge = isContext ? 
+                '<span class="comment-context-badge">Context</span>' : '';
+            
             // Process comment text
             let htmlContent;
             
@@ -12581,12 +13106,12 @@
             });
             
             return `
-                <div class="comment-card" data-comment-id="${comment.id}">
+                <div class="comment-card${isContext ? ' context-comment' : ''}" data-comment-id="${comment.id}" data-is-context="${isContext}">
                     <div class="comment-header">
                         <div class="comment-author">
                             <div class="comment-avatar">${initials}</div>
                             <div class="comment-metadata">
-                                <div class="comment-username">${escapeHtml(comment.username)}</div>
+                                <div class="comment-username">${escapeHtml(comment.username)}${contextBadge}</div>
                                 <div class="comment-timestamp">${formattedDate} at ${formattedTime}</div>
                             </div>
                         </div>
@@ -12647,6 +13172,10 @@
             const mentionedUserIds = parseMentionsFromText(noteText);
             console.log('👥 Mentioned users:', mentionedUserIds);
             
+            // Check if this is a context comment (from toggle state)
+            const isContext = currentCommentType === 'context';
+            console.log('🧠 Is context comment:', isContext);
+            
             // Find the corresponding submit button
             const submitBtns = document.querySelectorAll('#submitCommentBtn');
             const submitBtn = Array.from(submitBtns).find(btn => btn.offsetParent !== null);
@@ -12661,7 +13190,8 @@
                     },
                     body: JSON.stringify({ 
                         note: noteText,
-                        mentioned_user_ids: mentionedUserIds
+                        mentioned_user_ids: mentionedUserIds,
+                        is_context: isContext
                     }),
                     credentials: 'same-origin'
                 });
@@ -12686,9 +13216,17 @@
                         input.style.height = 'auto';
                     });
                     
+                    // Reset to Comment mode
+                    setCommentType('comment');
+                    
                     await loadComments(); // Reload comments
                     // Reinitialize autocomplete after comment is added
                     initMentionAutocomplete();
+                    
+                    // Show reprocess dialog if this was a context comment
+                    if (data.show_reprocess_dialog) {
+                        showReprocessDialog('added');
+                    }
                 } else {
                     showError(data.error || 'Failed to add comment');
                 }
@@ -12715,6 +13253,11 @@
                 
                 if (data.success) {
                     await loadComments(); // Reload comments
+                    
+                    // Show reprocess dialog if a context comment was deleted
+                    if (data.show_reprocess_dialog) {
+                        showReprocessDialog('removed');
+                    }
                 } else {
                     showError(data.error || 'Failed to delete comment');
                 }
@@ -12723,6 +13266,207 @@
                 console.error('Error deleting comment:', error);
                 showError('Error deleting comment: ' + error.message);
             }
+        }
+        
+        // ===== Comment Type Toggle =====
+        
+        let currentCommentType = 'comment'; // 'comment' or 'context'
+        
+        function setCommentType(type) {
+            currentCommentType = type;
+            
+            // Update all toggle buttons
+            document.querySelectorAll('.comment-type-btn').forEach(btn => {
+                if (btn.dataset.type === type) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Update placeholder text
+            const placeholders = {
+                'comment': 'Add a comment',
+                'context': 'Add context'
+            };
+            
+            document.querySelectorAll('#newCommentInput').forEach(input => {
+                input.placeholder = placeholders[type];
+            });
+        }
+        
+        // ===== Reprocess Dialog Functions =====
+        
+        let reprocessDocId = null;
+        
+        function showReprocessDialog(action = 'added') {
+            reprocessDocId = window.currentDocumentId;
+            const overlay = document.getElementById('reprocessDialogOverlay');
+            const message = document.getElementById('reprocessDialogMessage');
+            
+            if (action === 'added') {
+                message.textContent = "You've added context to this document. Would you like to reprocess any fields using this new context?";
+            } else if (action === 'removed') {
+                message.textContent = "You've removed context from this document. Would you like to reprocess any fields without this context?";
+            }
+            
+            // Reset checkboxes to defaults
+            document.getElementById('reprocessTranslation').checked = true;
+            document.getElementById('reprocessSummary').checked = true;
+            document.getElementById('reprocessSender').checked = false;
+            document.getElementById('reprocessRecipient').checked = false;
+            document.getElementById('reprocessReferences').checked = false;
+            document.getElementById('reprocessUseRawOcr').checked = false;
+            
+            overlay.classList.add('visible');
+        }
+        
+        function closeReprocessDialog() {
+            const overlay = document.getElementById('reprocessDialogOverlay');
+            overlay.classList.remove('visible');
+            reprocessDocId = null;
+        }
+        
+        async function submitReprocess() {
+            if (!reprocessDocId) {
+                console.error('No document ID for reprocessing');
+                return;
+            }
+            
+            // Collect selected fields
+            const fields = [];
+            if (document.getElementById('reprocessTranslation').checked) fields.push('translation');
+            if (document.getElementById('reprocessSummary').checked) fields.push('summary');
+            if (document.getElementById('reprocessSender').checked) fields.push('sender');
+            if (document.getElementById('reprocessRecipient').checked) fields.push('recipient');
+            if (document.getElementById('reprocessReferences').checked) fields.push('references');
+            
+            if (fields.length === 0) {
+                showToast('Please select at least one field to reprocess', 'error');
+                return;
+            }
+            
+            const useRawOcr = document.getElementById('reprocessUseRawOcr').checked;
+            
+            // Disable submit button
+            const submitBtn = document.getElementById('reprocessSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Starting...';
+            
+            try {
+                const res = await fetch(`/documents/${reprocessDocId}/reprocess`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fields: fields,
+                        use_raw_ocr: useRawOcr
+                    }),
+                    credentials: 'same-origin'
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    const docIdToTrack = reprocessDocId;
+                    closeReprocessDialog();
+                    
+                    // Close the document editor
+                    closeModal();
+                    
+                    // Update the document in the list to show processing status
+                    const docIndex = allDocuments.findIndex(d => d.id === docIdToTrack);
+                    if (docIndex !== -1) {
+                        allDocuments[docIndex].processing_status = 'processing';
+                        renderDocuments();
+                    }
+                    
+                    // Show toast on the document list screen
+                    showToast('Document reprocessing started...', 'success');
+                    
+                    // Start polling for status
+                    pollDocumentStatus(docIdToTrack);
+                } else {
+                    showToast(data.error || 'Failed to start reprocessing', 'error');
+                }
+            } catch (error) {
+                console.error('Error starting reprocess:', error);
+                showToast('Error starting reprocess: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Reprocess';
+            }
+        }
+        
+        // Poll document status during reprocessing
+        async function pollDocumentStatus(docId) {
+            const maxAttempts = 60; // 5 minutes with 5-second intervals
+            let attempts = 0;
+            
+            const checkStatus = async () => {
+                try {
+                    const res = await fetch(`/documents/${docId}/status`);
+                    const data = await res.json();
+                    
+                    if (data.status === 'ready') {
+                        showToast('Document reprocessing complete!', 'success');
+                        // Reload document if it's currently open
+                        if (window.currentDocumentId === docId) {
+                            const doc = allDocuments.find(d => d.id === docId);
+                            if (doc) {
+                                showDocument(docId);
+                            }
+                        }
+                        // Refresh document list to update any status badges
+                        loadDocuments();
+                        return;
+                    } else if (data.status === 'error') {
+                        showToast('Reprocessing failed: ' + (data.error || 'Unknown error'), 'error');
+                        loadDocuments();
+                        return;
+                    }
+                    
+                    // Still processing, check again
+                    attempts++;
+                    if (attempts < maxAttempts) {
+                        setTimeout(checkStatus, 5000); // Check every 5 seconds
+                    } else {
+                        showToast('Reprocessing is taking longer than expected. Check back later.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error checking status:', error);
+                }
+            };
+            
+            // Start polling after a short delay
+            setTimeout(checkStatus, 2000);
+        }
+        
+        // ===== Toast Notification Functions =====
+        
+        function showToast(message, type = 'info') {
+            // Use the existing MDC snackbar for consistency
+            showSnackbar(message);
+        }
+        
+        // ===== Context Filter Functions =====
+        
+        let contextFilterActive = false;
+        
+        function toggleContextFilter() {
+            contextFilterActive = !contextFilterActive;
+            
+            // Update filter button state
+            const filterBtns = document.querySelectorAll('.context-filter-btn');
+            filterBtns.forEach(btn => {
+                if (contextFilterActive) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Re-render comments with filter
+            loadComments();
         }
         
         // Setup text mode switch (Translation/Original toggle)

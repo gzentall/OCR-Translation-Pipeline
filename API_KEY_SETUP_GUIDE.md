@@ -129,3 +129,4 @@ Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-...
 
 This confirms that project keys are not working for your use case. You need a standard API key that starts with `sk-` but not `sk-proj-`.
 
+
