@@ -320,16 +320,27 @@ def index():
     # Get full user info from database including avatar_url
     user_id = session.get('user_id')
     user = None
-    with DatabaseSession() as db:
-        db_user = db.query(User).filter_by(id=user_id).first()
-        if db_user:
-            user = db_user.to_dict()
-        else:
-            user = {
-                'id': user_id,
-                'username': session.get('username'),
-                'role': session.get('role')
-            }
+    try:
+        with DatabaseSession() as db:
+            db_user = db.query(User).filter_by(id=user_id).first()
+            if db_user:
+                user = db_user.to_dict()
+            else:
+                user = {
+                    'id': user_id,
+                    'username': session.get('username'),
+                    'role': session.get('role')
+                }
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch user from database: {e}")
+        # Fall back to session data
+        user = {
+            'id': user_id,
+            'username': session.get('username'),
+            'role': session.get('role'),
+            'first_name': session.get('user_first_name', ''),
+            'last_name': session.get('user_last_name', '')
+        }
     print(f"DEBUG: User authenticated - {user}")  # Debug log
     
     return render_template('browse.html', user=user)
@@ -347,16 +358,24 @@ def browse():
     user = None
     if session.get('authenticated'):
         user_id = session.get('user_id')
-        with DatabaseSession() as db:
-            db_user = db.query(User).filter_by(id=user_id).first()
-            if db_user:
-                user = db_user.to_dict()
-            else:
-                user = {
-                    'id': user_id,
-                    'username': session.get('username'),
-                    'role': session.get('role')
-                }
+        try:
+            with DatabaseSession() as db:
+                db_user = db.query(User).filter_by(id=user_id).first()
+                if db_user:
+                    user = db_user.to_dict()
+                else:
+                    user = {
+                        'id': user_id,
+                        'username': session.get('username'),
+                        'role': session.get('role')
+                    }
+        except Exception as e:
+            print(f"[ERROR] Failed to fetch user from database: {e}")
+            user = {
+                'id': user_id,
+                'username': session.get('username'),
+                'role': session.get('role')
+            }
     return render_template('browse.html', user=user)
 
 
