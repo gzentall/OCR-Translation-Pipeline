@@ -1245,9 +1245,6 @@ class LocalOCRStorage:
                 
                 # Set explicit display_name to the new canonical name
                 person_data["display_name"] = new_name
-            else:
-                # Name didn't change structurally, but update display_name if provided
-                person_data["display_name"] = new_name
                 
                 # Update all documents that reference this person
                 for doc_id in person_data.get("documents", []):
@@ -1280,6 +1277,9 @@ class LocalOCRStorage:
                                 json.dump(doc_data, f, indent=2)
             else:
                 # Name normalized to same key, but display name might have changed
+                # Set explicit display_name
+                person_data["display_name"] = new_name
+                
                 # Update the primary display name in aliases
                 if new_name != old_name:
                     current_aliases = person_data.get("aliases", [])
