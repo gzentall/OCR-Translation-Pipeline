@@ -7482,6 +7482,15 @@
                    });
                }
 
+        // Suppress MDC focus errors that occur when menus close
+        window.addEventListener('error', function(event) {
+            if (event.message && event.message.includes("Cannot read properties of null (reading 'focus')")) {
+                // Suppress this MDC internal error
+                event.preventDefault();
+                return true;
+            }
+        });
+        
         // Initialize snackbar
         document.addEventListener('DOMContentLoaded', function() {
             snackbar = new mdc.snackbar.MDCSnackbar(document.getElementById('snackbar'));
@@ -12921,33 +12930,32 @@
             // Update badge
             await updateNotificationBadge();
             
-            // Close menu safely (avoid MDC focus errors)
+            // Close menu safely and delay next action to avoid MDC focus errors
             if (notificationsMenuComponent) {
-                try {
-                    notificationsMenuComponent.open = false;
-                } catch (e) {
-                    // MDC menu may throw focus errors, ignore them
-                    console.log('Menu close handled');
-                }
+                notificationsMenuComponent.open = false;
             }
             
-            // Open document with comment highlighted
-            if (documentId) {
-                // First verify the document exists in our loaded documents list
-                const docExists = allDocuments.some(d => d.id === documentId);
-                
-                if (!docExists) {
-                    // Document not in our local list - show helpful error
-                    // This happens when notifications are from a different environment (e.g., PROD vs local)
-                    showError(`Document not found locally. This notification may be from a different environment.`);
-                    return;
+            // Use setTimeout to let MDC menu complete its internal focus handling
+            // before we navigate or show errors
+            setTimeout(() => {
+                // Open document with comment highlighted
+                if (documentId) {
+                    // First verify the document exists in our loaded documents list
+                    const docExists = allDocuments.some(d => d.id === documentId);
+                    
+                    if (!docExists) {
+                        // Document not in our local list - show helpful error
+                        // This happens when notifications are from a different environment (e.g., PROD vs local)
+                        showError(`Document not found locally. This notification may be from a different environment.`);
+                        return;
+                    }
+                    
+                    // Document exists, open it
+                    showDocument(documentId, 'comments', commentId);
+                } else {
+                    showError('Invalid notification: missing document ID');
                 }
-                
-                // Document exists, open it
-                showDocument(documentId, 'comments', commentId);
-            } else {
-                showError('Invalid notification: missing document ID');
-            }
+            }, 50);
         }
 
         // Toggle notifications menu
