@@ -5826,6 +5826,253 @@
             cursor: not-allowed;
         }
 
+        /* Profile Editor Dialog */
+        .profile-editor-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+
+        .profile-editor-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .profile-editor-dialog {
+            background: var(--md-sys-color-surface);
+            border-radius: var(--md-sys-shape-radius-xl);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 480px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .profile-editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .profile-editor-header h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .profile-editor-close {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--md-sys-color-on-surface-variant);
+            transition: background 0.2s;
+        }
+
+        .profile-editor-close:hover {
+            background: var(--md-sys-color-surface-variant);
+        }
+
+        .profile-editor-body {
+            padding: 24px;
+        }
+
+        .profile-avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .profile-avatar-preview {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background: var(--md-sys-color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-avatar-initials {
+            font-size: 36px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-primary);
+        }
+
+        .profile-avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-avatar-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .profile-avatar-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid var(--md-sys-color-outline);
+            background: none;
+            border-radius: var(--md-sys-shape-radius-full);
+            font-size: 14px;
+            color: var(--md-sys-color-primary);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .profile-avatar-btn:hover {
+            background: var(--md-sys-color-primary-container);
+        }
+
+        .profile-avatar-btn .material-icons {
+            font-size: 18px;
+        }
+
+        .profile-avatar-btn-remove {
+            color: var(--md-sys-color-error);
+            border-color: var(--md-sys-color-error);
+        }
+
+        .profile-avatar-btn-remove:hover {
+            background: var(--md-sys-color-error-container);
+        }
+
+        .profile-form-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .profile-form-row .profile-form-field {
+            flex: 1;
+        }
+
+        .profile-form-field {
+            margin-bottom: 16px;
+        }
+
+        .profile-form-field label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .profile-form-field input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--md-sys-shape-radius-md);
+            font-size: 14px;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .profile-form-field input:focus {
+            outline: none;
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 2px var(--md-sys-color-primary-container);
+        }
+
+        .profile-field-hint {
+            display: block;
+            margin-top: 4px;
+            font-size: 12px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .profile-form-divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0 16px;
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .profile-form-divider::before,
+        .profile-form-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--md-sys-color-outline-variant);
+        }
+
+        .profile-form-divider span {
+            padding: 0 12px;
+        }
+
+        .profile-editor-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .profile-btn-cancel,
+        .profile-btn-save {
+            padding: 10px 24px;
+            border-radius: var(--md-sys-shape-radius-full);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .profile-btn-cancel {
+            background: none;
+            border: 1px solid var(--md-sys-color-outline);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .profile-btn-cancel:hover {
+            background: var(--md-sys-color-surface-variant);
+        }
+
+        .profile-btn-save {
+            background: var(--md-sys-color-primary);
+            border: none;
+            color: var(--md-sys-color-on-primary);
+        }
+
+        .profile-btn-save:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-btn-save:disabled {
+            background: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: not-allowed;
+        }
+
         /* Document Processing Status Badge */
         .document-processing-badge {
             display: inline-flex;
@@ -6683,6 +6930,12 @@
                         </div>
                     </div>
                     <ul class="mdc-list" role="menu" aria-hidden="true">
+                        <li class="mdc-list-item profile-action-item" role="menuitem" onclick="showProfileEditor()">
+                            <span class="mdc-list-item__ripple"></span>
+                            <span class="mdc-list-item__graphic material-icons">edit</span>
+                            <span class="mdc-list-item__text">Edit Profile</span>
+                        </li>
+                        <li class="mdc-list-divider" role="separator"></li>
                         <li class="mdc-list-item profile-action-item" role="menuitem" onclick="logout()">
                             <span class="mdc-list-item__ripple"></span>
                             <span class="mdc-list-item__graphic material-icons">logout</span>
@@ -7447,6 +7700,86 @@
             <div class="reprocess-dialog-footer">
                 <button class="reprocess-btn-skip" onclick="closeReprocessDialog()">Skip</button>
                 <button class="reprocess-btn-submit" id="reprocessSubmitBtn" onclick="submitReprocess()">Reprocess</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Editor Dialog -->
+    <div class="profile-editor-overlay" id="profileEditorOverlay">
+        <div class="profile-editor-dialog">
+            <div class="profile-editor-header">
+                <h3>Edit Profile</h3>
+                <button class="profile-editor-close" onclick="closeProfileEditor()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="profile-editor-body">
+                <div class="profile-avatar-section">
+                    <div class="profile-avatar-preview" id="profileAvatarPreview">
+                        <span class="profile-avatar-initials" id="profileAvatarInitials">U</span>
+                        <img class="profile-avatar-image" id="profileAvatarImage" src="" alt="Avatar" style="display: none;">
+                    </div>
+                    <div class="profile-avatar-actions">
+                        <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" onchange="handleAvatarSelect(event)">
+                        <button class="profile-avatar-btn" onclick="document.getElementById('avatarFileInput').click()">
+                            <span class="material-icons">photo_camera</span>
+                            Change Photo
+                        </button>
+                        <button class="profile-avatar-btn profile-avatar-btn-remove" id="removeAvatarBtn" onclick="removeAvatar()" style="display: none;">
+                            <span class="material-icons">delete</span>
+                            Remove
+                        </button>
+                    </div>
+                </div>
+                
+                <form id="profileForm" onsubmit="saveProfile(event)">
+                    <div class="profile-form-row">
+                        <div class="profile-form-field">
+                            <label for="profileFirstName">First Name</label>
+                            <input type="text" id="profileFirstName" required>
+                        </div>
+                        <div class="profile-form-field">
+                            <label for="profileLastName">Last Name</label>
+                            <input type="text" id="profileLastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-form-field">
+                        <label for="profileUsername">Username (optional)</label>
+                        <input type="text" id="profileUsername" placeholder="Display name">
+                        <span class="profile-field-hint">If set, this will be shown instead of your full name</span>
+                    </div>
+                    
+                    <div class="profile-form-field">
+                        <label for="profileEmail">Email</label>
+                        <input type="email" id="profileEmail" required>
+                    </div>
+                    
+                    <div class="profile-form-divider">
+                        <span>Change Password</span>
+                    </div>
+                    
+                    <div class="profile-form-field">
+                        <label for="profileCurrentPassword">Current Password</label>
+                        <input type="password" id="profileCurrentPassword" placeholder="Enter current password">
+                    </div>
+                    
+                    <div class="profile-form-field">
+                        <label for="profileNewPassword">New Password</label>
+                        <input type="password" id="profileNewPassword" placeholder="Enter new password">
+                        <span class="profile-field-hint">Leave blank to keep current password</span>
+                    </div>
+                    
+                    <div class="profile-form-field">
+                        <label for="profileConfirmPassword">Confirm New Password</label>
+                        <input type="password" id="profileConfirmPassword" placeholder="Confirm new password">
+                    </div>
+                    
+                    <div class="profile-editor-actions">
+                        <button type="button" class="profile-btn-cancel" onclick="closeProfileEditor()">Cancel</button>
+                        <button type="submit" class="profile-btn-save" id="profileSaveBtn">Save Changes</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -14851,8 +15184,268 @@
             window.location.reload();
         }
 
+        // ===== Profile Editor Functions =====
         
+        let currentProfileData = null;
         
+        async function showProfileEditor() {
+            // Close the profile menu
+            if (profileMenuComponent) {
+                profileMenuComponent.open = false;
+            }
+            
+            try {
+                // Fetch current profile data
+                const res = await fetch('/api/profile', {
+                    credentials: 'same-origin'
+                });
+                
+                const data = await res.json();
+                
+                if (!data.success) {
+                    showSnackbar(data.error || 'Failed to load profile', 'error');
+                    return;
+                }
+                
+                currentProfileData = data.profile;
+                
+                // Populate form fields
+                document.getElementById('profileFirstName').value = currentProfileData.first_name || '';
+                document.getElementById('profileLastName').value = currentProfileData.last_name || '';
+                document.getElementById('profileUsername').value = currentProfileData.username || '';
+                document.getElementById('profileEmail').value = currentProfileData.email || '';
+                document.getElementById('profileCurrentPassword').value = '';
+                document.getElementById('profileNewPassword').value = '';
+                document.getElementById('profileConfirmPassword').value = '';
+                
+                // Update avatar preview
+                updateAvatarPreview(currentProfileData);
+                
+                // Show dialog
+                document.getElementById('profileEditorOverlay').classList.add('visible');
+                
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showSnackbar('Error loading profile', 'error');
+            }
+        }
+        
+        function closeProfileEditor() {
+            document.getElementById('profileEditorOverlay').classList.remove('visible');
+            currentProfileData = null;
+        }
+        
+        function updateAvatarPreview(profile) {
+            const initials = profile.initials || 'U';
+            const avatarUrl = profile.avatar_url;
+            
+            document.getElementById('profileAvatarInitials').textContent = initials;
+            
+            const avatarImg = document.getElementById('profileAvatarImage');
+            const removeBtn = document.getElementById('removeAvatarBtn');
+            
+            if (avatarUrl) {
+                avatarImg.src = avatarUrl;
+                avatarImg.style.display = 'block';
+                document.getElementById('profileAvatarInitials').style.display = 'none';
+                removeBtn.style.display = 'flex';
+            } else {
+                avatarImg.style.display = 'none';
+                document.getElementById('profileAvatarInitials').style.display = 'block';
+                removeBtn.style.display = 'none';
+            }
+        }
+        
+        async function handleAvatarSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showSnackbar('Image too large. Max size is 5MB.', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('avatar', file);
+            
+            try {
+                const res = await fetch('/api/profile/avatar', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    body: formData
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    currentProfileData = data.profile;
+                    updateAvatarPreview(currentProfileData);
+                    updateUIWithProfile(currentProfileData);
+                    showSnackbar('Avatar updated', 'success');
+                } else {
+                    showSnackbar(data.error || 'Failed to upload avatar', 'error');
+                }
+            } catch (error) {
+                console.error('Error uploading avatar:', error);
+                showSnackbar('Error uploading avatar', 'error');
+            }
+            
+            // Clear file input
+            event.target.value = '';
+        }
+        
+        async function removeAvatar() {
+            if (!confirm('Remove your profile photo?')) return;
+            
+            try {
+                const res = await fetch('/api/profile/avatar', {
+                    method: 'DELETE',
+                    credentials: 'same-origin'
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    currentProfileData = data.profile;
+                    updateAvatarPreview(currentProfileData);
+                    updateUIWithProfile(currentProfileData);
+                    showSnackbar('Avatar removed', 'success');
+                } else {
+                    showSnackbar(data.error || 'Failed to remove avatar', 'error');
+                }
+            } catch (error) {
+                console.error('Error removing avatar:', error);
+                showSnackbar('Error removing avatar', 'error');
+            }
+        }
+        
+        async function saveProfile(event) {
+            event.preventDefault();
+            
+            const firstName = document.getElementById('profileFirstName').value.trim();
+            const lastName = document.getElementById('profileLastName').value.trim();
+            const username = document.getElementById('profileUsername').value.trim();
+            const email = document.getElementById('profileEmail').value.trim();
+            const currentPassword = document.getElementById('profileCurrentPassword').value;
+            const newPassword = document.getElementById('profileNewPassword').value;
+            const confirmPassword = document.getElementById('profileConfirmPassword').value;
+            
+            // Validate
+            if (!firstName || !lastName) {
+                showSnackbar('First and last name are required', 'error');
+                return;
+            }
+            
+            if (!email) {
+                showSnackbar('Email is required', 'error');
+                return;
+            }
+            
+            // Password validation
+            if (newPassword) {
+                if (newPassword.length < 6) {
+                    showSnackbar('Password must be at least 6 characters', 'error');
+                    return;
+                }
+                if (newPassword !== confirmPassword) {
+                    showSnackbar('Passwords do not match', 'error');
+                    return;
+                }
+            }
+            
+            const saveBtn = document.getElementById('profileSaveBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            
+            try {
+                const updateData = {
+                    first_name: firstName,
+                    last_name: lastName,
+                    username: username || null,
+                    email: email
+                };
+                
+                if (newPassword) {
+                    updateData.current_password = currentPassword;
+                    updateData.new_password = newPassword;
+                }
+                
+                const res = await fetch('/api/profile', {
+                    method: 'PUT',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    currentProfileData = data.profile;
+                    
+                    // Update UI immediately
+                    updateUIWithProfile(currentProfileData);
+                    
+                    showSnackbar('Profile updated successfully', 'success');
+                    closeProfileEditor();
+                } else {
+                    showSnackbar(data.error || 'Failed to update profile', 'error');
+                }
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showSnackbar('Error saving profile', 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Changes';
+            }
+        }
+        
+        function updateUIWithProfile(profile) {
+            // Update avatar in header
+            const userAvatar = document.getElementById('userAvatar');
+            const profileAvatar = document.getElementById('profileAvatar');
+            
+            if (profile.avatar_url) {
+                // Use avatar image
+                userAvatar.innerHTML = `<img src="${profile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                profileAvatar.innerHTML = `<img src="${profile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+            } else {
+                // Use initials
+                userAvatar.textContent = profile.initials || 'U';
+                profileAvatar.textContent = profile.initials || 'U';
+            }
+            
+            // Update profile name in dropdown
+            const profileName = document.getElementById('profileName');
+            if (profileName) {
+                profileName.textContent = profile.display_name || `${profile.first_name} ${profile.last_name}`;
+            }
+            
+            // Update window.userInfo for consistency
+            if (window.userInfo) {
+                window.userInfo.first_name = profile.first_name;
+                window.userInfo.last_name = profile.last_name;
+                window.userInfo.email = profile.email;
+                window.userInfo.username = profile.username;
+                window.userInfo.avatar_url = profile.avatar_url;
+            }
+        }
+        
+        // Close profile editor on overlay click
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'profileEditorOverlay') {
+                closeProfileEditor();
+            }
+        });
+        
+        // Close profile editor on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('profileEditorOverlay').classList.contains('visible')) {
+                closeProfileEditor();
+            }
+        });
         
         // Auto-logout function for unauthenticated users
         function checkAuthentication() {

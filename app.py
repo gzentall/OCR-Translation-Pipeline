@@ -384,6 +384,207 @@ def logout():
     session.clear()
     return redirect('/login')
 
+
+# ===== Profile API =====
+
+@app.route('/api/profile', methods=['GET'])
+@require_auth
+def get_profile():
+    """Get current user's profile."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'success': False, 'error': 'Not authenticated'}), 401
+        
+        with DatabaseSession() as db:
+            user = db.query(User).filter_by(id=user_id).first()
+            if not user:
+                return jsonify({'success': False, 'error': 'User not found'}), 404
+            
+            return jsonify({
+                'success': True,
+                'profile': user.to_dict()
+            })
+    except Exception as e:
+        print(f"[ERROR] Failed to get profile: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/profile', methods=['PUT'])
+@require_auth
+def update_profile():
+    """Update current user's profile."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'success': False, 'error': 'Not authenticated'}), 401
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+        
+        with DatabaseSession() as db:
+            user = db.query(User).filter_by(id=user_id).first()
+            if not user:
+                return jsonify({'success': False, 'error': 'User not found'}), 404
+            
+            # Update allowed fields
+            if 'first_name' in data and data['first_name']:
+                user.first_name = data['first_name'].strip()
+            
+            if 'last_name' in data and data['last_name']:
+                user.last_name = data['last_name'].strip()
+            
+            if 'username' in data:
+                new_username = data['username'].strip() if data['username'] else None
+                if new_username:
+                    # Check if username is already taken
+                    existing = db.query(User).filter(User.username == new_username, User.id != user_id).first()
+                    if existing:
+                        return jsonify({'success': False, 'error': 'Username already taken'}), 400
+                user.username = new_username
+            
+            if 'email' in data and data['email']:
+                new_email = data['email'].strip().lower()
+                # Check if email is already taken
+                existing = db.query(User).filter(User.email == new_email, User.id != user_id).first()
+                if existing:
+                    return jsonify({'success': False, 'error': 'Email already in use'}), 400
+                user.email = new_email
+            
+            # Handle password change
+            if 'new_password' in data and data['new_password']:
+                current_password = data.get('current_password', '')
+                
+                # Verify current password if user has one
+                if user.password_hash:
+                    if not current_password:
+                        return jsonify({'success': False, 'error': 'Current password required'}), 400
+                    if not bcrypt.checkpw(current_password.encode('utf-8'), user.password_hash.encode('utf-8')):
+                        return jsonify({'success': False, 'error': 'Current password is incorrect'}), 400
+                
+                # Set new password
+                new_hash = bcrypt.hashpw(data['new_password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                user.password_hash = new_hash
+            
+            db.commit()
+            
+            # Update session with new user info
+            session['user_first_name'] = user.first_name
+            session['user_last_name'] = user.last_name
+            session['user_email'] = user.email
+            
+            return jsonify({
+                'success': True,
+                'profile': user.to_dict(),
+                'message': 'Profile updated successfully'
+            })
+            
+    except Exception as e:
+        print(f"[ERROR] Failed to update profile: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/profile/avatar', methods=['POST'])
+@require_auth
+def upload_avatar():
+    """Upload a new avatar image."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'success': False, 'error': 'Not authenticated'}), 401
+        
+        if 'avatar' not in request.files:
+            return jsonify({'success': False, 'error': 'No avatar file provided'}), 400
+        
+        file = request.files['avatar']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'No file selected'}), 400
+        
+        # Validate file type
+        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+        ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+        if ext not in allowed_extensions:
+            return jsonify({'success': False, 'error': 'Invalid file type. Allowed: png, jpg, jpeg, gif, webp'}), 400
+        
+        # Generate unique filename
+        import uuid
+        filename = f"avatar_{user_id}_{uuid.uuid4().hex[:8]}.{ext}"
+        
+        # Save to avatars directory
+        avatars_dir = Path('static/avatars')
+        avatars_dir.mkdir(parents=True, exist_ok=True)
+        
+        filepath = avatars_dir / filename
+        file.save(str(filepath))
+        
+        # Update user's avatar_url
+        avatar_url = f"/static/avatars/{filename}"
+        
+        with DatabaseSession() as db:
+            user = db.query(User).filter_by(id=user_id).first()
+            if user:
+                # Delete old avatar if it exists and is a local file
+                if user.avatar_url and user.avatar_url.startswith('/static/avatars/'):
+                    old_path = Path(user.avatar_url.lstrip('/'))
+                    if old_path.exists():
+                        old_path.unlink()
+                
+                user.avatar_url = avatar_url
+                db.commit()
+                
+                return jsonify({
+                    'success': True,
+                    'avatar_url': avatar_url,
+                    'profile': user.to_dict(),
+                    'message': 'Avatar uploaded successfully'
+                })
+        
+        return jsonify({'success': False, 'error': 'User not found'}), 404
+        
+    except Exception as e:
+        print(f"[ERROR] Failed to upload avatar: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/profile/avatar', methods=['DELETE'])
+@require_auth
+def delete_avatar():
+    """Delete user's avatar image."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'success': False, 'error': 'Not authenticated'}), 401
+        
+        with DatabaseSession() as db:
+            user = db.query(User).filter_by(id=user_id).first()
+            if not user:
+                return jsonify({'success': False, 'error': 'User not found'}), 404
+            
+            # Delete avatar file if it exists
+            if user.avatar_url and user.avatar_url.startswith('/static/avatars/'):
+                filepath = Path(user.avatar_url.lstrip('/'))
+                if filepath.exists():
+                    filepath.unlink()
+            
+            user.avatar_url = None
+            db.commit()
+            
+            return jsonify({
+                'success': True,
+                'profile': user.to_dict(),
+                'message': 'Avatar removed successfully'
+            })
+            
+    except Exception as e:
+        print(f"[ERROR] Failed to delete avatar: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Serve the login page or handle login attempts."""

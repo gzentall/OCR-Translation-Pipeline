@@ -87,3 +87,4 @@ letters/out/pdf/.gitkeep
 letters/out/qa/.gitkeep
 # Exclude PNG images (served from R2 in production)
 letters/work/*.png
+local_dev.db

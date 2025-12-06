@@ -100,6 +100,8 @@ class User(Base):
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
     email = Column(String(255), unique=True, nullable=False, index=True)
+    username = Column(String(100), unique=True, nullable=True, index=True)  # Optional display username
+    avatar_url = Column(String(500), nullable=True)  # URL to avatar image
     password_hash = Column(String(255), nullable=True)  # Nullable for invited users without password yet
     role = Column(SQLEnum(UserRole), nullable=False, default=UserRole.VIEWER)
     is_active = Column(Boolean, default=True, nullable=False)
@@ -111,6 +113,23 @@ class User(Base):
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}', role='{self.role.value}')>"
     
+    def get_display_name(self):
+        """Get the best display name for this user"""
+        if self.username:
+            return self.username
+        full_name = f"{self.first_name or ''} {self.last_name or ''}".strip()
+        return full_name or self.email.split('@')[0]
+    
+    def get_initials(self):
+        """Get initials for avatar display"""
+        if self.first_name and self.last_name:
+            return f"{self.first_name[0]}{self.last_name[0]}".upper()
+        elif self.first_name:
+            return self.first_name[:2].upper()
+        elif self.username:
+            return self.username[:2].upper()
+        return self.email[:2].upper()
+    
     def to_dict(self):
         """Convert user to dictionary for API responses"""
         return {
@@ -118,6 +137,10 @@ class User(Base):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'email': self.email,
+            'username': self.username,
+            'avatar_url': self.avatar_url,
+            'display_name': self.get_display_name(),
+            'initials': self.get_initials(),
             'role': self.role.value,
             'is_active': self.is_active,
             'last_sign_in': self.last_sign_in.isoformat() if self.last_sign_in else None,
