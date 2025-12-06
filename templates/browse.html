@@ -12928,33 +12928,46 @@
             
             // Open document with comment highlighted
             if (documentId) {
-                // First verify the document exists before trying to open it
-                try {
-                    const checkResponse = await fetch(`/documents/${documentId}`, {
-                        credentials: 'same-origin',
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
+                // First verify the document exists in our loaded documents list
+                const docExists = allDocuments.some(d => d.id === documentId);
+                
+                if (!docExists) {
+                    // Document not in our local list - try fetching to see if it exists on server
+                    try {
+                        const checkResponse = await fetch(`/documents/${documentId}`, {
+                            credentials: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        
+                        // Check content type first
+                        const contentType = checkResponse.headers.get('content-type');
+                        if (!contentType || !contentType.includes('application/json')) {
+                            showError(`Document not found. It may have been deleted or is not available locally.`);
+                            return;
                         }
-                    });
-                    
-                    if (checkResponse.status === 404) {
-                        showError(`Document not found. It may have been deleted.`);
+                        
+                        if (checkResponse.status === 404) {
+                            showError(`Document not found. It may have been deleted.`);
+                            return;
+                        }
+                        
+                        if (!checkResponse.ok) {
+                            const errorData = await checkResponse.json().catch(() => ({ error: 'Unknown error' }));
+                            showError(`Failed to load document: ${errorData.error || 'Unknown error'}`);
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Error checking document existence:', error);
+                        showError(`Document not available. It may be from a different environment.`);
                         return;
                     }
-                    
-                    if (!checkResponse.ok) {
-                        const errorData = await checkResponse.json().catch(() => ({ error: 'Unknown error' }));
-                        showError(`Failed to load document: ${errorData.error || 'Unknown error'}`);
-                        return;
-                    }
-                    
-                    // Document exists, open it
-                    showDocument(documentId, 'comments', commentId);
-                } catch (error) {
-                    console.error('Error checking document existence:', error);
-                    showError(`Error loading document: ${error.message}`);
                 }
+                
+                // Document exists, open it
+                showDocument(documentId, 'comments', commentId);
             } else {
                 showError('Invalid notification: missing document ID');
             }
