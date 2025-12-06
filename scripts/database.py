@@ -24,12 +24,19 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL environment variable not set")
 
-# Create engine with connection pooling for PostgreSQL
-engine = create_engine(
-    DATABASE_URL,
-    poolclass=NullPool,  # Disable pooling for serverless databases like Neon
-    echo=False  # Set to True for SQL debugging
-)
+# Create engine - handle SQLite vs PostgreSQL differences
+engine_kwargs = {
+    'echo': False  # Set to True for SQL debugging
+}
+
+# SQLite needs check_same_thread=False for Flask's multi-threaded environment
+if DATABASE_URL.startswith('sqlite'):
+    engine_kwargs['connect_args'] = {'check_same_thread': False}
+else:
+    # PostgreSQL/Neon: disable pooling for serverless
+    engine_kwargs['poolclass'] = NullPool
+
+engine = create_engine(DATABASE_URL, **engine_kwargs)
 
 # Create session factory
 SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
