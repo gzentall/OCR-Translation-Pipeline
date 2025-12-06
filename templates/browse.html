@@ -656,6 +656,23 @@
             background-color: var(--md-sys-color-surface-container-high);
         }
 
+        .notification-item-document {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--md-sys-color-primary);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .notification-item-document .material-icons {
+            font-size: 16px;
+        }
+
+        .notification-item:hover .notification-item-document {
+            text-decoration: underline;
+        }
+
         .notification-item.unread {
             background-color: var(--md-sys-color-primary-container);
         }
@@ -12862,7 +12879,10 @@
                             </div>
                         </div>
                         <div class="notification-item-preview">${escapeHtml(previewText)}</div>
-                        <div class="notification-item-document">${escapeHtml(notification.document_title)}</div>
+                        <div class="notification-item-document">
+                            <span class="material-icons">description</span>
+                            ${escapeHtml(notification.document_title)}
+                        </div>
                     </div>
                 `;
             }).join('');
