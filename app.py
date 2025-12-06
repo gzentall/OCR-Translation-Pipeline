@@ -2856,11 +2856,35 @@ def get_document_comments(doc_id):
     """Get all comments for a document."""
     try:
         comments = local_storage.list_context_notes(doc_id)
+        
+        # Enrich comments with current user avatars
+        # Build a cache of user avatars by username
+        usernames = set(c.get('username') for c in comments if c.get('username'))
+        avatar_cache = {}
+        
+        if usernames:
+            with DatabaseSession() as db:
+                # Look up users by their display name (first_name + last_name)
+                for username in usernames:
+                    # Username in comments is typically "First Last"
+                    parts = username.split(' ', 1)
+                    if len(parts) == 2:
+                        user = db.query(User).filter_by(first_name=parts[0], last_name=parts[1]).first()
+                        if user and user.avatar_url:
+                            avatar_cache[username] = user.avatar_url
+        
+        # Add current avatar_url to each comment
+        for comment in comments:
+            username = comment.get('username')
+            if username in avatar_cache:
+                comment['avatar_url'] = avatar_cache[username]
+        
         return jsonify({
             'success': True,
             'comments': comments
         })
     except Exception as e:
+        print(f"[ERROR] Failed to get comments: {e}")
         return jsonify({
             'success': False,
             'error': str(e)

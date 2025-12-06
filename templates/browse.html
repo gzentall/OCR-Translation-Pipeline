@@ -14569,9 +14569,17 @@
                     ? `${user.first_name} ${user.last_name}`.trim()
                     : user.username || 'Unknown User';
                 
+                // Build avatar HTML - use image if available
+                let avatarHtml;
+                if (user.avatar_url) {
+                    avatarHtml = `<div class="user-avatar"><img src="${user.avatar_url}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>`;
+                } else {
+                    avatarHtml = `<div class="user-avatar">${initials}</div>`;
+                }
+                
                 listItem.innerHTML = `
                     <div class="mdc-list-item__graphic">
-                        <div class="user-avatar">${initials}</div>
+                        ${avatarHtml}
                     </div>
                     <div class="mdc-list-item__text">
                         <div class="mdc-list-item__primary-text">${displayName}</div>
