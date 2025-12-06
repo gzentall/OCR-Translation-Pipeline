@@ -809,20 +809,23 @@ class LocalOCRStorage:
                         "source_language": doc_metadata.get("source_language", "unknown")
                     })
             
-            # Get the properly-cased display name from aliases (first one that's not just lowercase)
-            # or fall back to capitalizing the normalized name
+            # Get the display name - prioritize explicit display_name field,
+            # then first alias with proper capitalization, then title-cased normalized name
             aliases = person_data.get("aliases", [])
-            display_name = person_name  # Fallback to normalized name
+            display_name = person_data.get("display_name")  # Check for explicit display name first
             
-            # Look for an alias with proper capitalization
-            for alias in aliases:
-                if alias != person_name and alias != alias.lower():
-                    display_name = alias
-                    break
-            
-            # If no properly-cased alias found, try title-casing the normalized name
-            if display_name == person_name:
-                display_name = person_name.title()
+            if not display_name:
+                display_name = person_name  # Fallback to normalized name
+                
+                # Look for an alias with proper capitalization
+                for alias in aliases:
+                    if alias != person_name and alias != alias.lower():
+                        display_name = alias
+                        break
+                
+                # If no properly-cased alias found, try title-casing the normalized name
+                if display_name == person_name:
+                    display_name = person_name.title()
             
             people_list.append({
                 "name": display_name,  # Use display name instead of normalized name
@@ -943,8 +946,9 @@ class LocalOCRStorage:
             if name not in aliases:
                 aliases.insert(0, name)
             
-            # Create person data
+            # Create person data with explicit display_name
             person_data = {
+                "display_name": name,  # Canonical display name
                 "aliases": aliases,
                 "first_mentioned": datetime.now().isoformat(),
                 "documents": [],
@@ -963,7 +967,10 @@ class LocalOCRStorage:
             return False
     
     def merge_person(self, source_name: str, target_name: str) -> bool:
-        """Merge a source person into a target person."""
+        """Merge a source person into a target person.
+        
+        The target_name becomes the canonical/display name after merge.
+        """
         try:
             source_normalized = self.normalize_name(source_name)
             target_normalized = self.normalize_name(target_name)
@@ -978,13 +985,44 @@ class LocalOCRStorage:
             source_data = self.metadata["people"][source_normalized]
             target_data = self.metadata["people"][target_normalized]
             
-            # Merge aliases
+            # Get the display name for the target (this is the survivor/canonical name)
+            target_display_name = target_data.get("display_name") or target_name
+            
+            # Merge aliases - target aliases first, then source aliases
             source_aliases = source_data.get("aliases", [])
             target_aliases = target_data.get("aliases", [])
             
-            # Combine aliases and remove duplicates
-            combined_aliases = list(set(target_aliases + source_aliases))
+            # Combine aliases: target first (preserving order), then source
+            # Also add source_name as an alias if not already present
+            combined_aliases = []
+            seen = set()
+            
+            # Add target display name first
+            if target_display_name and target_display_name.lower() not in seen:
+                combined_aliases.append(target_display_name)
+                seen.add(target_display_name.lower())
+            
+            # Then target aliases
+            for alias in target_aliases:
+                if alias.lower() not in seen:
+                    combined_aliases.append(alias)
+                    seen.add(alias.lower())
+            
+            # Then source name as alias
+            if source_name.lower() not in seen:
+                combined_aliases.append(source_name)
+                seen.add(source_name.lower())
+            
+            # Then source aliases
+            for alias in source_aliases:
+                if alias.lower() not in seen:
+                    combined_aliases.append(alias)
+                    seen.add(alias.lower())
+            
             target_data["aliases"] = combined_aliases
+            
+            # Explicitly set the display name to the target name (the survivor)
+            target_data["display_name"] = target_display_name
             
             # Merge documents
             source_docs = source_data.get("documents", [])
@@ -1188,22 +1226,28 @@ class LocalOCRStorage:
                 
                 # KEEP all existing aliases (for backward compatibility with old document references)
                 # But ensure new name is FIRST (primary display name)
-                new_aliases = []
+                updated_aliases = []
                 
                 # Add new canonical name as FIRST alias (primary)
                 if new_name not in current_aliases:
-                    new_aliases.append(new_name)
+                    updated_aliases.append(new_name)
                 
                 # Keep all existing aliases that aren't the new name
                 for alias in current_aliases:
                     if alias != new_name:
-                        new_aliases.append(alias)
+                        updated_aliases.append(alias)
                 
                 # Also add normalized version if not already present
-                if new_normalized not in new_aliases and new_normalized != new_name:
-                    new_aliases.append(new_normalized)
+                if new_normalized not in updated_aliases and new_normalized != new_name:
+                    updated_aliases.append(new_normalized)
                 
-                person_data["aliases"] = new_aliases
+                person_data["aliases"] = updated_aliases
+                
+                # Set explicit display_name to the new canonical name
+                person_data["display_name"] = new_name
+            else:
+                # Name didn't change structurally, but update display_name if provided
+                person_data["display_name"] = new_name
                 
                 # Update all documents that reference this person
                 for doc_id in person_data.get("documents", []):
