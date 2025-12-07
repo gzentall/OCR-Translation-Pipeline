@@ -12805,40 +12805,46 @@
                 histogramSlider.destroy();
             }
             
-            const { minDate, maxDate } = histogramData;
+            // Total number of positions: buckets + 1 for "no date" bucket
+            const totalBuckets = histogramData.buckets.length + (histogramData.noDateCount > 0 ? 1 : 0);
             
-            if (!minDate || !maxDate) {
-                console.log('📊 No valid date range for slider');
+            if (totalBuckets < 1) {
+                console.log('📊 No buckets for slider');
                 return;
             }
             
             // Track if this is initial setup (don't apply filter on init)
             let isInitializing = true;
             
-            // Create the slider
+            // Create the slider using INDEX positions (0 to totalBuckets-1)
+            // This ensures slider handles align with bar positions
             histogramSlider = noUiSlider.create(sliderElement, {
-                start: [minDate, maxDate],
+                start: [0, totalBuckets - 1],
                 connect: true,
                 range: {
-                    'min': minDate,
-                    'max': maxDate
+                    'min': 0,
+                    'max': totalBuckets - 1
                 },
+                step: 1, // Snap to integer positions (bar indices)
                 behaviour: 'drag',
                 tooltips: false
             });
             
+            // Store the selected bar indices
+            histogramData.selectedIndices = { start: 0, end: totalBuckets - 1 };
+            
             // Handle slider changes
             histogramSlider.on('update', function(values, handle) {
-                const startTimestamp = parseInt(values[0]);
-                const endTimestamp = parseInt(values[1]);
+                const startIndex = Math.round(parseFloat(values[0]));
+                const endIndex = Math.round(parseFloat(values[1]));
                 
-                histogramData.selectedRange = {
-                    start: startTimestamp,
-                    end: endTimestamp
+                histogramData.selectedIndices = {
+                    start: startIndex,
+                    end: endIndex
                 };
                 
-                // Update bar highlighting
-                updateHistogramHighlighting(startTimestamp, endTimestamp);
+                // Update bar highlighting based on indices
+                updateHistogramHighlightingByIndex(startIndex, endIndex);
             });
             
             histogramSlider.on('change', function(values, handle) {
@@ -12846,7 +12852,7 @@
                 if (isInitializing) return;
                 
                 // Apply filter when user finishes dragging
-                applyHistogramFilter();
+                applyHistogramFilterByIndex();
             });
             
             // After a short delay, allow filter application
@@ -12855,18 +12861,29 @@
             }, 100);
         }
         
-        function updateHistogramHighlighting(startTimestamp, endTimestamp) {
-            const bars = document.querySelectorAll('.histogram-bar:not(.no-date-bar)');
-            const noDateBar = document.querySelector('.histogram-bar.no-date-bar');
-            const { maxDate } = histogramData;
+        function updateHistogramHighlightingByIndex(startIndex, endIndex) {
+            const bars = document.querySelectorAll('.histogram-bar');
+            const totalBuckets = histogramData.buckets.length + (histogramData.noDateCount > 0 ? 1 : 0);
             
-            bars.forEach(bar => {
+            bars.forEach((bar, index) => {
+                const isInRange = index >= startIndex && index <= endIndex;
+                
+                if (isInRange) {
+                    bar.classList.remove('dimmed');
+                } else {
+                    bar.classList.add('dimmed');
+                }
+            });
+        }
+        
+        // Legacy function for backwards compatibility
+        function updateHistogramHighlighting(startTimestamp, endTimestamp) {
+            // Convert timestamps to indices and use index-based highlighting
+            const bars = document.querySelectorAll('.histogram-bar:not(.no-date-bar)');
+            bars.forEach((bar, index) => {
                 const barTimestamp = parseInt(bar.dataset.timestamp);
-                // Get end of month for this bucket
                 const bucketDate = new Date(barTimestamp);
                 const endOfMonth = new Date(bucketDate.getFullYear(), bucketDate.getMonth() + 1, 0).getTime();
-                
-                // Bar is within range if any part of the month overlaps with selection
                 const isInRange = barTimestamp <= endTimestamp && endOfMonth >= startTimestamp;
                 
                 if (isInRange) {
@@ -12875,26 +12892,17 @@
                     bar.classList.add('dimmed');
                 }
             });
-            
-            // "No date" bar is included when right handle is at max
-            if (noDateBar) {
-                const includeNoDate = endTimestamp >= maxDate - 1000;
-                if (includeNoDate) {
-                    noDateBar.classList.remove('dimmed');
-                } else {
-                    noDateBar.classList.add('dimmed');
-                }
-            }
         }
         
-        function applyHistogramFilter() {
-            if (!histogramData.selectedRange) return;
+        function applyHistogramFilterByIndex() {
+            if (!histogramData.selectedIndices) return;
             
-            const { start, end } = histogramData.selectedRange;
-            const { minDate, maxDate } = histogramData;
+            const { start: startIndex, end: endIndex } = histogramData.selectedIndices;
+            const { buckets, noDateCount } = histogramData;
+            const totalBuckets = buckets.length + (noDateCount > 0 ? 1 : 0);
             
             // Check if slider is at full extent (no filter applied)
-            const isFullRange = start <= minDate + 1000 && end >= maxDate - 1000;
+            const isFullRange = startIndex === 0 && endIndex === totalBuckets - 1;
             
             if (isFullRange) {
                 // Clear the filter
@@ -12914,25 +12922,38 @@
                 return;
             }
             
-            // Convert timestamps to date strings for the filter
-            const startDate = new Date(start);
-            const endDate = new Date(end);
+            // Get the date range from bucket indices
+            const startBucket = buckets[startIndex];
+            const endBucketIndex = Math.min(endIndex, buckets.length - 1);
+            const endBucket = buckets[endBucketIndex];
             
-            // Format as YYYY-MM-DD for consistency with existing filter
-            const formatDate = (d) => {
-                const year = d.getFullYear();
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const day = String(d.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
+            if (startBucket && endBucket) {
+                // Get start of first selected month
+                const startDate = new Date(startBucket.timestamp);
+                // Get end of last selected month
+                const endDate = new Date(endBucket.timestamp);
+                endDate.setMonth(endDate.getMonth() + 1);
+                endDate.setDate(0); // Last day of month
+                
+                const formatDate = (d) => {
+                    const year = d.getFullYear();
+                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                    const day = String(d.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                };
+                
+                activeFilters.dateRange = {
+                    start: formatDate(startDate),
+                    end: formatDate(endDate)
+                };
+            } else {
+                activeFilters.dateRange = { start: null, end: null };
+            }
             
-            activeFilters.dateRange = {
-                start: formatDate(startDate),
-                end: formatDate(endDate)
-            };
-            
-            // Include undated documents only if right handle is at max position
-            activeFilters.includeNoDate = end >= maxDate - 1000;
+            // Include undated documents only if "no date" bucket is selected
+            // The "no date" bucket is the last one (index = buckets.length)
+            const noDateIndex = buckets.length;
+            activeFilters.includeNoDate = noDateCount > 0 && endIndex >= noDateIndex;
             
             // Update the date chip to show it's filtered
             const dateChip = document.getElementById('dateFilter');
@@ -12947,16 +12968,26 @@
             applyFilters();
         }
         
+        // Legacy function kept for reference
+        function applyHistogramFilter() {
+            // Redirect to index-based filter if we have indices
+            if (histogramData.selectedIndices) {
+                applyHistogramFilterByIndex();
+                return;
+            }
+        }
+        
         function resetHistogramFilter() {
-            // Reset slider to full range
-            if (histogramSlider && histogramData.minDate && histogramData.maxDate) {
-                histogramSlider.set([histogramData.minDate, histogramData.maxDate]);
+            // Reset slider to full range using indices
+            const totalBuckets = histogramData.buckets.length + (histogramData.noDateCount > 0 ? 1 : 0);
+            if (histogramSlider && totalBuckets > 0) {
+                histogramSlider.set([0, totalBuckets - 1]);
             }
             
             // Clear histogram-related filters
             activeFilters.dateRange = { start: null, end: null };
             activeFilters.includeNoDate = true;
-            histogramData.selectedRange = null;
+            histogramData.selectedIndices = { start: 0, end: totalBuckets - 1 };
             
             // Reset date chip
             const dateChip = document.getElementById('dateFilter');
