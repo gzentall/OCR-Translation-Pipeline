@@ -2602,8 +2602,8 @@
 
         /* Date Histogram Filter */
         .date-histogram-container {
-            margin-bottom: 20px;
-            padding: 16px;
+            margin-bottom: 16px;
+            padding: 12px 16px;
             background: var(--md-sys-color-surface-container-low);
             border-radius: var(--md-sys-shape-radius-lg);
             border: 1px solid var(--md-sys-color-outline-variant);
@@ -2611,16 +2611,15 @@
 
         /* Histogram Skeleton */
         .date-histogram-skeleton {
-            height: 100px;
+            height: 80px;
         }
 
         .histogram-skeleton-bars {
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            height: 80px;
-            gap: 4px;
-            padding: 0 8px;
+            height: 60px;
+            gap: 3px;
         }
 
         .skeleton-bar {
@@ -2632,11 +2631,11 @@
             background-size: 200% 100%;
             animation: skeleton-shimmer 1.5s infinite;
             border-radius: 2px 2px 0 0;
-            min-width: 8px;
+            min-width: 6px;
         }
 
         .no-date-skeleton {
-            margin-left: 12px;
+            margin-left: 8px;
             background: linear-gradient(90deg, 
                 var(--md-sys-color-tertiary-container) 25%, 
                 var(--md-sys-color-surface-container-high) 50%, 
@@ -2654,52 +2653,48 @@
             position: relative;
         }
 
-        .histogram-chart {
+        /* Wrapper for bars and slider - ensures alignment */
+        .histogram-wrapper {
             position: relative;
-            height: 80px;
-            padding: 0 16px;
+            height: 68px;
+            padding-bottom: 8px;
         }
 
         .histogram-bars {
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            height: 70px;
-            gap: 3px;
-            padding-bottom: 10px;
+            height: 55px;
+            gap: 2px;
+            position: relative;
+            z-index: 1;
         }
 
         .histogram-bar {
             flex: 1;
             background: var(--md-sys-color-primary);
-            border-radius: 3px 3px 0 0;
-            min-width: 6px;
-            max-width: 16px;
-            transition: opacity 0.2s, background 0.2s, transform 0.15s;
+            border-radius: 2px 2px 0 0;
+            min-width: 3px;
+            max-width: 14px;
+            transition: opacity 0.2s, background 0.2s;
             position: relative;
-            min-height: 4px;
+            min-height: 3px;
             cursor: pointer;
         }
         
         .histogram-bar:hover {
-            transform: scaleY(1.05);
             opacity: 1 !important;
+            background: var(--md-sys-color-primary) !important;
         }
 
         .histogram-bar.dimmed {
-            opacity: 0.25;
+            opacity: 0.2;
             background: var(--md-sys-color-outline);
         }
 
         .histogram-bar.no-date-bar {
             background: var(--md-sys-color-tertiary);
-            margin-left: 12px;
-            border-left: 2px dashed var(--md-sys-color-outline);
-            padding-left: 10px;
-        }
-
-        .histogram-bar:hover {
-            opacity: 1 !important;
+            margin-left: 6px;
         }
 
         .histogram-bar-tooltip {
@@ -2717,60 +2712,59 @@
             pointer-events: none;
             transition: opacity 0.2s;
             z-index: 10;
+            margin-bottom: 4px;
         }
 
         .histogram-bar:hover .histogram-bar-tooltip {
             opacity: 1;
         }
 
-        /* Slider Container */
-        .histogram-slider-container {
-            padding: 0 16px;
-            margin-top: -10px;
-        }
-
-        /* Slider Styling */
+        /* Slider - positioned below the bars */
         .histogram-slider {
-            height: 20px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            z-index: 2;
         }
 
         .histogram-slider .noUi-target {
-            background: var(--md-sys-color-surface-variant);
-            border: none;
-            border-radius: 10px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-            height: 8px;
+            background: var(--md-sys-color-surface-variant) !important;
+            border: none !important;
+            box-shadow: none !important;
+            height: 8px !important;
+            border-radius: 4px;
         }
 
         .histogram-slider .noUi-base {
-            height: 8px;
+            height: 8px !important;
         }
 
         .histogram-slider .noUi-connects {
-            border-radius: 10px;
-            height: 8px;
+            height: 8px !important;
+            border-radius: 4px;
         }
 
         .histogram-slider .noUi-connect {
-            background: var(--md-sys-color-primary);
-            border-radius: 10px;
+            background: var(--md-sys-color-primary) !important;
         }
 
         .histogram-slider .noUi-handle {
-            width: 20px;
-            height: 20px;
-            background: var(--md-sys-color-primary);
-            border: 2px solid white;
-            border-radius: 50%;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-            cursor: ew-resize;
-            top: -6px;
-            right: -10px;
+            width: 16px !important;
+            height: 16px !important;
+            background: var(--md-sys-color-primary) !important;
+            border: 2px solid white !important;
+            border-radius: 50% !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+            cursor: ew-resize !important;
+            top: -4px !important;
+            right: -8px !important;
         }
 
         .histogram-slider .noUi-handle::before,
         .histogram-slider .noUi-handle::after {
-            display: none;
+            display: none !important;
         }
 
         .histogram-slider .noUi-handle:hover {
@@ -2785,8 +2779,8 @@
         .histogram-labels {
             display: flex;
             justify-content: space-between;
-            padding: 8px 8px 0;
-            font-size: 11px;
+            padding-top: 4px;
+            font-size: 10px;
             color: var(--md-sys-color-on-surface-variant);
         }
 
@@ -2801,80 +2795,31 @@
             font-style: italic;
         }
 
-        /* Controls */
-        .histogram-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--md-sys-color-outline-variant);
-        }
-
-        .histogram-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            color: var(--md-sys-color-on-surface-variant);
-        }
-
-        .histogram-checkbox input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--md-sys-color-primary);
-        }
-
-        .histogram-reset-btn {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 6px 12px;
-            background: none;
-            border: 1px solid var(--md-sys-color-outline);
-            border-radius: var(--md-sys-shape-radius-full);
-            color: var(--md-sys-color-on-surface-variant);
-            font-size: 13px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .histogram-reset-btn:hover {
-            background: var(--md-sys-color-surface-variant);
-        }
-
-        .histogram-reset-btn .material-icons {
-            font-size: 16px;
-        }
-
         /* Responsive adjustments */
         @media (max-width: 599px) {
             .date-histogram-container {
-                padding: 12px;
-                margin-bottom: 16px;
+                padding: 8px 12px;
+                margin-bottom: 12px;
             }
 
-            .histogram-chart {
-                height: 60px;
+            .histogram-wrapper {
+                height: 50px;
             }
 
-            .histogram-skeleton-bars {
-                height: 60px;
+            .histogram-bars {
+                height: 40px;
+            }
+
+            .histogram-slider,
+            .histogram-slider .noUi-target,
+            .histogram-slider .noUi-base,
+            .histogram-slider .noUi-connects,
+            .histogram-slider .noUi-handle {
+                height: 40px;
             }
 
             .histogram-labels {
-                font-size: 10px;
-            }
-
-            .histogram-controls {
-                flex-direction: column;
-                gap: 8px;
-                align-items: stretch;
-            }
-
-            .histogram-reset-btn {
-                justify-content: center;
+                font-size: 9px;
             }
         }
 
@@ -7435,6 +7380,40 @@
             
             <div class="search-results-info" id="searchResultsInfo" style="display: none;"></div>
 
+            <!-- Date Histogram Filter -->
+            <div class="date-histogram-container" id="dateHistogramContainer">
+                <!-- Skeleton loader for histogram -->
+                <div class="date-histogram-skeleton" id="dateHistogramSkeleton">
+                    <div class="histogram-skeleton-bars">
+                        <div class="skeleton-bar" style="height: 30%"></div>
+                        <div class="skeleton-bar" style="height: 45%"></div>
+                        <div class="skeleton-bar" style="height: 60%"></div>
+                        <div class="skeleton-bar" style="height: 40%"></div>
+                        <div class="skeleton-bar" style="height: 75%"></div>
+                        <div class="skeleton-bar" style="height: 50%"></div>
+                        <div class="skeleton-bar" style="height: 35%"></div>
+                        <div class="skeleton-bar" style="height: 55%"></div>
+                        <div class="skeleton-bar" style="height: 80%"></div>
+                        <div class="skeleton-bar" style="height: 45%"></div>
+                        <div class="skeleton-bar" style="height: 30%"></div>
+                        <div class="skeleton-bar" style="height: 65%"></div>
+                        <div class="skeleton-bar" style="height: 40%"></div>
+                        <div class="skeleton-bar" style="height: 50%"></div>
+                        <div class="skeleton-bar" style="height: 35%"></div>
+                        <div class="skeleton-bar" style="height: 25%"></div>
+                        <div class="skeleton-bar no-date-skeleton" style="height: 20%"></div>
+                    </div>
+                </div>
+                <!-- Actual histogram (hidden until loaded) -->
+                <div class="date-histogram" id="dateHistogram" style="display: none;">
+                    <div class="histogram-wrapper">
+                        <div class="histogram-bars" id="histogramBars"></div>
+                        <div class="histogram-slider" id="histogramSlider"></div>
+                    </div>
+                    <div class="histogram-labels" id="histogramLabels"></div>
+                </div>
+            </div>
+
             <!-- Documents Section -->
             <div class="documents-section">
                 <div class="documents-header">
@@ -7485,53 +7464,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Date Histogram Filter -->
-                <div class="date-histogram-container" id="dateHistogramContainer">
-                    <!-- Skeleton loader for histogram -->
-                    <div class="date-histogram-skeleton" id="dateHistogramSkeleton">
-                        <div class="histogram-skeleton-bars">
-                            <div class="skeleton-bar" style="height: 30%"></div>
-                            <div class="skeleton-bar" style="height: 45%"></div>
-                            <div class="skeleton-bar" style="height: 60%"></div>
-                            <div class="skeleton-bar" style="height: 40%"></div>
-                            <div class="skeleton-bar" style="height: 75%"></div>
-                            <div class="skeleton-bar" style="height: 50%"></div>
-                            <div class="skeleton-bar" style="height: 35%"></div>
-                            <div class="skeleton-bar" style="height: 55%"></div>
-                            <div class="skeleton-bar" style="height: 80%"></div>
-                            <div class="skeleton-bar" style="height: 45%"></div>
-                            <div class="skeleton-bar" style="height: 30%"></div>
-                            <div class="skeleton-bar" style="height: 65%"></div>
-                            <div class="skeleton-bar" style="height: 40%"></div>
-                            <div class="skeleton-bar" style="height: 50%"></div>
-                            <div class="skeleton-bar" style="height: 35%"></div>
-                            <div class="skeleton-bar" style="height: 25%"></div>
-                            <div class="skeleton-bar no-date-skeleton" style="height: 20%"></div>
-                        </div>
-                    </div>
-                    <!-- Actual histogram (hidden until loaded) -->
-                    <div class="date-histogram" id="dateHistogram" style="display: none;">
-                        <div class="histogram-chart">
-                            <div class="histogram-bars" id="histogramBars"></div>
-                        </div>
-                        <div class="histogram-slider-container">
-                            <div class="histogram-slider" id="histogramSlider"></div>
-                        </div>
-                        <div class="histogram-labels" id="histogramLabels"></div>
-                        <div class="histogram-controls">
-                            <label class="histogram-checkbox">
-                                <input type="checkbox" id="includeNoDate" checked>
-                                <span>Include undated</span>
-                            </label>
-                            <button class="histogram-reset-btn" id="histogramResetBtn" onclick="resetHistogramFilter()">
-                                <span class="material-icons">restart_alt</span>
-                                Reset
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
                 <div id="documentsContainer">
                     <!-- Initial skeleton loaders -->
                     <div class="documents-grid" id="initialSkeletons">
@@ -12826,15 +12758,18 @@
                                    buckets.length > 12 ? 3 : 
                                    buckets.length > 6 ? 2 : 1;
             
+            // Use pixel heights (max height is 55px to leave room for tooltip)
+            const maxBarHeight = 55;
+            
             buckets.forEach((bucket, index) => {
-                const heightPercent = (bucket.count / maxCount) * 100;
+                const heightPx = Math.max(3, (bucket.count / maxCount) * maxBarHeight);
                 const showLabel = index % labelFrequency === 0 || index === buckets.length - 1;
                 
                 barsHtml += `
                     <div class="histogram-bar" 
                          data-bucket="${bucket.key}" 
                          data-timestamp="${bucket.timestamp}"
-                         style="height: ${heightPercent}%">
+                         style="height: ${heightPx}px">
                         <div class="histogram-bar-tooltip">${bucket.label}: ${bucket.count} doc${bucket.count !== 1 ? 's' : ''}</div>
                     </div>
                 `;
@@ -12846,11 +12781,11 @@
             
             // Add "No date" bar
             if (noDateCount > 0) {
-                const heightPercent = (noDateCount / maxCount) * 100;
+                const heightPx = Math.max(3, (noDateCount / maxCount) * maxBarHeight);
                 barsHtml += `
                     <div class="histogram-bar no-date-bar" 
                          data-bucket="no-date"
-                         style="height: ${heightPercent}%">
+                         style="height: ${heightPx}px">
                         <div class="histogram-bar-tooltip">No date: ${noDateCount} doc${noDateCount !== 1 ? 's' : ''}</div>
                     </div>
                 `;
@@ -12922,6 +12857,8 @@
         
         function updateHistogramHighlighting(startTimestamp, endTimestamp) {
             const bars = document.querySelectorAll('.histogram-bar:not(.no-date-bar)');
+            const noDateBar = document.querySelector('.histogram-bar.no-date-bar');
+            const { maxDate } = histogramData;
             
             bars.forEach(bar => {
                 const barTimestamp = parseInt(bar.dataset.timestamp);
@@ -12938,13 +12875,44 @@
                     bar.classList.add('dimmed');
                 }
             });
+            
+            // "No date" bar is included when right handle is at max
+            if (noDateBar) {
+                const includeNoDate = endTimestamp >= maxDate - 1000;
+                if (includeNoDate) {
+                    noDateBar.classList.remove('dimmed');
+                } else {
+                    noDateBar.classList.add('dimmed');
+                }
+            }
         }
         
         function applyHistogramFilter() {
             if (!histogramData.selectedRange) return;
             
             const { start, end } = histogramData.selectedRange;
-            const includeNoDate = document.getElementById('includeNoDate')?.checked ?? true;
+            const { minDate, maxDate } = histogramData;
+            
+            // Check if slider is at full extent (no filter applied)
+            const isFullRange = start <= minDate + 1000 && end >= maxDate - 1000;
+            
+            if (isFullRange) {
+                // Clear the filter
+                activeFilters.dateRange = { start: null, end: null };
+                activeFilters.includeNoDate = true;
+                
+                const dateChip = document.getElementById('dateFilter');
+                if (dateChip) {
+                    dateChip.classList.remove('active');
+                    const textEl = dateChip.querySelector('.filter-chip-text');
+                    if (textEl) {
+                        textEl.textContent = 'Date';
+                    }
+                }
+                
+                applyFilters();
+                return;
+            }
             
             // Convert timestamps to date strings for the filter
             const startDate = new Date(start);
@@ -12962,7 +12930,9 @@
                 start: formatDate(startDate),
                 end: formatDate(endDate)
             };
-            activeFilters.includeNoDate = includeNoDate;
+            
+            // Include undated documents only if right handle is at max position
+            activeFilters.includeNoDate = end >= maxDate - 1000;
             
             // Update the date chip to show it's filtered
             const dateChip = document.getElementById('dateFilter');
@@ -12988,9 +12958,6 @@
             activeFilters.includeNoDate = true;
             histogramData.selectedRange = null;
             
-            // Reset UI
-            document.getElementById('includeNoDate').checked = true;
-            
             // Reset date chip
             const dateChip = document.getElementById('dateFilter');
             if (dateChip) {
@@ -13010,17 +12977,7 @@
         }
         
         function setupHistogramEvents() {
-            // Handle "Include undated" checkbox
-            const includeNoDateCheckbox = document.getElementById('includeNoDate');
-            if (includeNoDateCheckbox) {
-                includeNoDateCheckbox.addEventListener('change', function() {
-                    const noDateBar = document.querySelector('.no-date-bar');
-                    if (noDateBar) {
-                        noDateBar.classList.toggle('dimmed', !this.checked);
-                    }
-                    applyHistogramFilter();
-                });
-            }
+            // No additional event handlers needed - slider handles all interaction
         }
         
         // ===== End Date Histogram Functions =====
