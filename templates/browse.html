@@ -2640,20 +2640,27 @@
             border-radius: 2px 2px 0 0;
             min-width: 3px;
             max-width: 14px;
-            transition: opacity 0.2s, background 0.2s;
+            transition: opacity 0.2s, background 0.2s, transform 0.15s, box-shadow 0.15s;
             position: relative;
             min-height: 3px;
             cursor: pointer;
+            transform-origin: bottom;
         }
         
         .histogram-bar:hover {
             opacity: 1 !important;
             background: var(--md-sys-color-primary) !important;
+            transform: scaleY(1.08);
         }
 
         .histogram-bar.dimmed {
             opacity: 0.2;
             background: var(--md-sys-color-outline);
+        }
+        
+        .histogram-bar.selected {
+            background: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 2px var(--md-sys-color-primary-container);
         }
 
         .histogram-bar.no-date-bar {
@@ -12657,6 +12664,55 @@
             
             barsContainer.innerHTML = barsHtml;
             labelsContainer.innerHTML = labelsHtml;
+            
+            // Add click handlers to bars
+            setupBarClickHandlers();
+        }
+        
+        // Track single-bar selection state
+        let selectedBarIndex = null;
+        
+        function setupBarClickHandlers() {
+            const bars = document.querySelectorAll('.histogram-bar');
+            bars.forEach(bar => {
+                bar.style.cursor = 'pointer';
+                bar.addEventListener('click', handleBarClick);
+            });
+        }
+        
+        function handleBarClick(event) {
+            const bar = event.currentTarget;
+            const clickedIndex = parseInt(bar.dataset.index, 10);
+            
+            if (selectedBarIndex === clickedIndex) {
+                // Clicking the same bar again - reset filter
+                selectedBarIndex = null;
+                resetHistogramFilter();
+            } else {
+                // Select this bar
+                selectedBarIndex = clickedIndex;
+                filterToSingleBar(clickedIndex);
+            }
+        }
+        
+        function filterToSingleBar(index) {
+            const totalBuckets = histogramData.buckets.length + (histogramData.noDateCount > 0 ? 1 : 0);
+            
+            // Update slider to this single position
+            if (histogramSlider) {
+                histogramSlider.set([index, index]);
+            }
+            
+            // Update highlighting - only this bar is active
+            updateHistogramHighlighting(index, index);
+            
+            // Mark this bar as selected
+            document.querySelectorAll('.histogram-bar').forEach((bar, i) => {
+                bar.classList.toggle('selected', i === index);
+            });
+            
+            // Apply the filter
+            applyHistogramFilterByIndex(index, index);
         }
         
         function initHistogramSlider() {
@@ -12708,6 +12764,16 @@
                 
                 // Update bar highlighting based on indices
                 updateHistogramHighlightingByIndex(startIndex, endIndex);
+                
+                // Clear single-bar selection visual if range changed
+                if (startIndex !== endIndex || selectedBarIndex !== startIndex) {
+                    document.querySelectorAll('.histogram-bar.selected').forEach(bar => {
+                        bar.classList.remove('selected');
+                    });
+                    if (startIndex !== endIndex) {
+                        selectedBarIndex = null;
+                    }
+                }
             });
             
             histogramSlider.on('change', function(values, handle) {
@@ -12847,9 +12913,13 @@
             activeFilters.onlyNoDate = false;
             histogramData.selectedIndices = { start: 0, end: totalBuckets - 1 };
             
-            // Remove dimming from all bars
+            // Clear single-bar selection
+            selectedBarIndex = null;
+            
+            // Remove dimming and selection from all bars
             document.querySelectorAll('.histogram-bar').forEach(bar => {
                 bar.classList.remove('dimmed');
+                bar.classList.remove('selected');
             });
             
             applyFilters();
