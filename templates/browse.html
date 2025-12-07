@@ -2687,7 +2687,8 @@
         }
 
         .histogram-bar.dimmed {
-            opacity: 0.3;
+            opacity: 0.25;
+            background: var(--md-sys-color-outline);
         }
 
         .histogram-bar.no-date-bar {
@@ -12876,6 +12877,9 @@
                 return;
             }
             
+            // Track if this is initial setup (don't apply filter on init)
+            let isInitializing = true;
+            
             // Create the slider
             histogramSlider = noUiSlider.create(sliderElement, {
                 start: [minDate, maxDate],
@@ -12903,9 +12907,17 @@
             });
             
             histogramSlider.on('change', function(values, handle) {
+                // Don't apply filter on initial setup
+                if (isInitializing) return;
+                
                 // Apply filter when user finishes dragging
                 applyHistogramFilter();
             });
+            
+            // After a short delay, allow filter application
+            setTimeout(() => {
+                isInitializing = false;
+            }, 100);
         }
         
         function updateHistogramHighlighting(startTimestamp, endTimestamp) {
@@ -13124,7 +13136,18 @@
                 const includeNoDate = activeFilters.includeNoDate !== false; // default to true
                 
                 filtered = filtered.filter(doc => {
-                    const dateStr = doc.document_date || doc.date;
+                    // Try to get date from document_date, date field, or extract from title
+                    let dateStr = doc.document_date || doc.date;
+                    
+                    // If no date field, try to extract from the document title
+                    // Format: [number]-[YYYY]-[MM]-[DD]-[language] like 179-1942-08-15-fre
+                    if (!dateStr) {
+                        const titleToCheck = doc.title || doc.filename || '';
+                        const nameMatch = titleToCheck.match(/\d+-(\d{4})-(\d{2})-(\d{2})/);
+                        if (nameMatch) {
+                            dateStr = `${nameMatch[1]}-${nameMatch[2]}-${nameMatch[3]}`;
+                        }
+                    }
                     
                     // Handle documents without dates
                     if (!dateStr) {
