@@ -12917,6 +12917,7 @@
             const { start: startIndex, end: endIndex } = histogramData.selectedIndices;
             const { buckets, noDateCount } = histogramData;
             const totalBuckets = buckets.length + (noDateCount > 0 ? 1 : 0);
+            const noDateIndex = buckets.length; // "No date" bucket is at this index
             
             // Check if slider is at full extent (no filter applied)
             const isFullRange = startIndex === 0 && endIndex === totalBuckets - 1;
@@ -12925,6 +12926,7 @@
                 // Clear the filter
                 activeFilters.dateRange = { start: null, end: null };
                 activeFilters.includeNoDate = true;
+                activeFilters.onlyNoDate = false;
                 
                 const dateChip = document.getElementById('dateFilter');
                 if (dateChip) {
@@ -12939,38 +12941,49 @@
                 return;
             }
             
-            // Get the date range from bucket indices
-            const startBucket = buckets[startIndex];
-            const endBucketIndex = Math.min(endIndex, buckets.length - 1);
-            const endBucket = buckets[endBucketIndex];
+            // Check if ONLY the "No date" bucket is selected
+            const onlyNoDateSelected = startIndex >= noDateIndex && endIndex >= noDateIndex;
             
-            if (startBucket && endBucket) {
-                // Get start of first selected month
-                const startDate = new Date(startBucket.timestamp);
-                // Get end of last selected month
-                const endDate = new Date(endBucket.timestamp);
-                endDate.setMonth(endDate.getMonth() + 1);
-                endDate.setDate(0); // Last day of month
-                
-                const formatDate = (d) => {
-                    const year = d.getFullYear();
-                    const month = String(d.getMonth() + 1).padStart(2, '0');
-                    const day = String(d.getDate()).padStart(2, '0');
-                    return `${year}-${month}-${day}`;
-                };
-                
-                activeFilters.dateRange = {
-                    start: formatDate(startDate),
-                    end: formatDate(endDate)
-                };
-            } else {
+            if (onlyNoDateSelected) {
+                // Show only undated documents
                 activeFilters.dateRange = { start: null, end: null };
+                activeFilters.includeNoDate = true;
+                activeFilters.onlyNoDate = true; // Special flag: ONLY show undated
+            } else {
+                // Normal date range selection
+                activeFilters.onlyNoDate = false;
+                
+                // Get the date range from bucket indices
+                const startBucket = buckets[startIndex];
+                const endBucketIndex = Math.min(endIndex, buckets.length - 1);
+                const endBucket = buckets[endBucketIndex];
+                
+                if (startBucket && endBucket) {
+                    // Get start of first selected month
+                    const startDate = new Date(startBucket.timestamp);
+                    // Get end of last selected month
+                    const endDate = new Date(endBucket.timestamp);
+                    endDate.setMonth(endDate.getMonth() + 1);
+                    endDate.setDate(0); // Last day of month
+                    
+                    const formatDate = (d) => {
+                        const year = d.getFullYear();
+                        const month = String(d.getMonth() + 1).padStart(2, '0');
+                        const day = String(d.getDate()).padStart(2, '0');
+                        return `${year}-${month}-${day}`;
+                    };
+                    
+                    activeFilters.dateRange = {
+                        start: formatDate(startDate),
+                        end: formatDate(endDate)
+                    };
+                } else {
+                    activeFilters.dateRange = { start: null, end: null };
+                }
+                
+                // Include undated documents only if "no date" bucket is selected
+                activeFilters.includeNoDate = noDateCount > 0 && endIndex >= noDateIndex;
             }
-            
-            // Include undated documents only if "no date" bucket is selected
-            // The "no date" bucket is the last one (index = buckets.length)
-            const noDateIndex = buckets.length;
-            activeFilters.includeNoDate = noDateCount > 0 && endIndex >= noDateIndex;
             
             // Update the date chip to show it's filtered
             const dateChip = document.getElementById('dateFilter');
@@ -13004,6 +13017,7 @@
             // Clear histogram-related filters
             activeFilters.dateRange = { start: null, end: null };
             activeFilters.includeNoDate = true;
+            activeFilters.onlyNoDate = false;
             histogramData.selectedIndices = { start: 0, end: totalBuckets - 1 };
             
             // Reset date chip
@@ -13047,6 +13061,7 @@
         function clearDateFilter() {
             activeFilters.dateRange = { start: null, end: null };
             activeFilters.includeNoDate = true;
+            activeFilters.onlyNoDate = false;
             document.getElementById('dateFilter').classList.remove('active');
             document.getElementById('dateFilter').querySelector('.filter-chip-text').textContent = 'Date';
             document.getElementById('startDate').value = '';
@@ -13073,7 +13088,8 @@
                 recipient: null,
                 dateRange: { start: null, end: null },
                 status: null,
-                includeNoDate: true
+                includeNoDate: true,
+                onlyNoDate: false
             };
             
             // Reset all filter chips
@@ -13136,8 +13152,33 @@
                 );
             }
             
+            // Apply "only no date" filter (when only the No Date bucket is selected)
+            if (activeFilters.onlyNoDate) {
+                filtered = filtered.filter(doc => {
+                    // Try to get date from document_date, date field, or extract from title
+                    let dateStr = doc.document_date || doc.date;
+                    
+                    // If no date field, try to extract from the document title
+                    if (!dateStr) {
+                        const titleToCheck = doc.title || doc.filename || '';
+                        const nameMatch = titleToCheck.match(/\d+-(\d{4})-(\d{2})-(\d{2})/);
+                        if (nameMatch) {
+                            dateStr = `${nameMatch[1]}-${nameMatch[2]}-${nameMatch[3]}`;
+                        }
+                    }
+                    
+                    // Only include documents WITHOUT dates
+                    if (!dateStr) {
+                        return true;
+                    }
+                    
+                    const docDate = parseDocumentDate ? parseDocumentDate(dateStr) : new Date(dateStr);
+                    // Include if date is invalid (no date)
+                    return !docDate || isNaN(docDate.getTime());
+                });
+            }
             // Apply date range filter
-            if (activeFilters.dateRange.start || activeFilters.dateRange.end) {
+            else if (activeFilters.dateRange.start || activeFilters.dateRange.end) {
                 const includeNoDate = activeFilters.includeNoDate !== false; // default to true
                 
                 filtered = filtered.filter(doc => {
