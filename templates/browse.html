@@ -2775,24 +2775,33 @@
             transform: scale(0.95);
         }
 
-        /* Labels */
+        /* Labels - must match bars flex distribution exactly */
         .histogram-labels {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Match bars distribution */
+            gap: 2px; /* Same gap as bars */
             padding-top: 4px;
-            font-size: 10px;
+            font-size: 9px;
             color: var(--md-sys-color-on-surface-variant);
         }
 
         .histogram-label {
-            text-align: center;
             flex: 1;
-            max-width: 50px;
+            min-width: 3px;
+            max-width: 14px; /* Match bar max-width */
+            text-align: center;
+            white-space: nowrap;
+            overflow: visible;
+        }
+
+        .histogram-label.empty {
+            /* Empty placeholder to maintain alignment */
         }
 
         .histogram-label.no-date-label {
             color: var(--md-sys-color-tertiary);
             font-style: italic;
+            margin-left: 6px; /* Match no-date-bar margin */
         }
 
         /* Responsive adjustments */
@@ -12754,42 +12763,50 @@
             let labelsHtml = '';
             
             // Determine label frequency (show every nth label to avoid crowding)
-            const labelFrequency = buckets.length > 24 ? 6 : 
-                                   buckets.length > 12 ? 3 : 
-                                   buckets.length > 6 ? 2 : 1;
+            const totalBars = buckets.length + (noDateCount > 0 ? 1 : 0);
+            const labelFrequency = totalBars > 40 ? 8 : 
+                                   totalBars > 24 ? 6 : 
+                                   totalBars > 12 ? 4 : 
+                                   totalBars > 6 ? 2 : 1;
             
             // Use pixel heights (max height is 55px to leave room for tooltip)
             const maxBarHeight = 55;
             
             buckets.forEach((bucket, index) => {
                 const heightPx = Math.max(3, (bucket.count / maxCount) * maxBarHeight);
-                const showLabel = index % labelFrequency === 0 || index === buckets.length - 1;
+                const showLabel = index % labelFrequency === 0;
                 
                 barsHtml += `
                     <div class="histogram-bar" 
                          data-bucket="${bucket.key}" 
                          data-timestamp="${bucket.timestamp}"
+                         data-index="${index}"
                          style="height: ${heightPx}px">
                         <div class="histogram-bar-tooltip">${bucket.label}: ${bucket.count} doc${bucket.count !== 1 ? 's' : ''}</div>
                     </div>
                 `;
                 
+                // Add label for every bar position, but only show text for selected ones
                 if (showLabel) {
-                    labelsHtml += `<span class="histogram-label">${bucket.label}</span>`;
+                    labelsHtml += `<span class="histogram-label" data-index="${index}">${bucket.label}</span>`;
+                } else {
+                    labelsHtml += `<span class="histogram-label empty" data-index="${index}"></span>`;
                 }
             });
             
             // Add "No date" bar
             if (noDateCount > 0) {
                 const heightPx = Math.max(3, (noDateCount / maxCount) * maxBarHeight);
+                const noDateIndex = buckets.length;
                 barsHtml += `
                     <div class="histogram-bar no-date-bar" 
                          data-bucket="no-date"
+                         data-index="${noDateIndex}"
                          style="height: ${heightPx}px">
                         <div class="histogram-bar-tooltip">No date: ${noDateCount} doc${noDateCount !== 1 ? 's' : ''}</div>
                     </div>
                 `;
-                labelsHtml += `<span class="histogram-label no-date-label">No date</span>`;
+                labelsHtml += `<span class="histogram-label no-date-label" data-index="${noDateIndex}">No date</span>`;
             }
             
             barsContainer.innerHTML = barsHtml;
