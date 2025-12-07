@@ -1733,42 +1733,6 @@
             color: var(--md-sys-color-on-secondary-container);
         }
 
-        /* Date Range Picker - M3 Pattern */
-        .date-range-picker {
-            display: flex;
-            flex-direction: column;
-            gap: var(--md-sys-spacing-4);
-            padding: var(--md-sys-spacing-2) 0;
-        }
-
-        .date-range-field-group {
-            display: flex;
-            align-items: center;
-            gap: var(--md-sys-spacing-3);
-            flex-wrap: wrap;
-        }
-
-        .date-range-field-group .mdc-text-field {
-            flex: 1;
-            min-width: 140px;
-        }
-
-        .date-range-separator {
-            font-family: var(--md-sys-typescale-body-medium-font);
-            font-size: var(--md-sys-typescale-body-medium-size);
-            color: var(--md-sys-color-on-surface-variant);
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .date-range-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: var(--md-sys-spacing-2);
-            padding-top: var(--md-sys-spacing-2);
-            border-top: 1px solid var(--md-sys-color-outline-variant);
-        }
-
         /* M3 Date Input Styling */
         .mdc-text-field--with-leading-icon .mdc-text-field__icon--leading {
             color: var(--md-sys-color-on-surface-variant);
@@ -7265,61 +7229,6 @@
                     </div>
                     
                     <div class="filter-chip-wrapper">
-                        <div class="filter-chip" id="dateFilter" data-filter="date">
-                            <span class="filter-chip-text">Date</span>
-                            <i class="material-icons filter-chip-arrow">keyboard_arrow_down</i>
-                        </div>
-                        <!-- Date Filter Dropdown -->
-                        <div class="filter-dropdown" id="dateDropdown" style="display: none;">
-                            <div class="filter-dropdown-header">
-                                <span class="filter-dropdown-title">Filter by Date Range</span>
-                                <button class="filter-clear-btn" onclick="clearDateFilter()">
-                                    <i class="material-icons">clear</i>
-                                </button>
-                            </div>
-                            <div class="filter-dropdown-content">
-                                <div class="date-range-picker">
-                                    <div class="date-range-field-group">
-                                        <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-leading-icon" data-mdc-auto-init="MDCTextField">
-                                            <i class="material-icons mdc-text-field__icon mdc-text-field__icon--leading">event</i>
-                                            <input type="date" id="startDate" class="mdc-text-field__input" placeholder=" ">
-                                            <div class="mdc-notched-outline">
-                                                <div class="mdc-notched-outline__leading"></div>
-                                                <div class="mdc-notched-outline__notch">
-                                                    <label class="mdc-floating-label">Start date</label>
-                                                </div>
-                                                <div class="mdc-notched-outline__trailing"></div>
-                                            </div>
-                                        </div>
-                                        <span class="date-range-separator">to</span>
-                                        <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-leading-icon" data-mdc-auto-init="MDCTextField">
-                                            <i class="material-icons mdc-text-field__icon mdc-text-field__icon--leading">event</i>
-                                            <input type="date" id="endDate" class="mdc-text-field__input" placeholder=" ">
-                                            <div class="mdc-notched-outline">
-                                                <div class="mdc-notched-outline__leading"></div>
-                                                <div class="mdc-notched-outline__notch">
-                                                    <label class="mdc-floating-label">End date</label>
-                                                </div>
-                                                <div class="mdc-notched-outline__trailing"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="date-range-actions">
-                                        <button type="button" class="mdc-button mdc-button--text" onclick="clearDateFilter()">
-                                            <span class="mdc-button__ripple"></span>
-                                            <span class="mdc-button__label">Clear</span>
-                                        </button>
-                                        <button type="button" class="mdc-button mdc-button--raised" onclick="applyDateFilter()">
-                                            <span class="mdc-button__ripple"></span>
-                                            <span class="mdc-button__label">Apply</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="filter-chip-wrapper">
                         <div class="filter-chip" id="statusFilter" data-filter="status">
                             <span class="filter-chip-text">Status</span>
                             <i class="material-icons filter-chip-arrow">keyboard_arrow_down</i>
@@ -12409,8 +12318,6 @@
                 // Initialize dropdown content
                 if (filterType === 'sender' || filterType === 'recipient') {
                     initializePersonFilter(filterType);
-                } else if (filterType === 'date') {
-                    initializeDateFilter();
                 } else if (filterType === 'status') {
                     initializeStatusFilter();
                 }
@@ -12441,30 +12348,6 @@
             }
         }
 
-        function initializeDateFilter() {
-            const dateDropdown = document.getElementById('dateDropdown');
-            const startDateInput = document.getElementById('startDate');
-            const endDateInput = document.getElementById('endDate');
-            
-            if (dateDropdown) {
-                // Initialize MDC text fields for date inputs
-                setTimeout(() => {
-                    mdc.autoInit(dateDropdown);
-                    
-                    // Update floating labels if values exist
-                    if (startDateInput && startDateInput.value) {
-                        const startField = startDateInput.closest('.mdc-text-field');
-                        const startLabel = startField?.querySelector('.mdc-floating-label');
-                        if (startLabel) startLabel.classList.add('mdc-floating-label--float-above');
-                    }
-                    if (endDateInput && endDateInput.value) {
-                        const endField = endDateInput.closest('.mdc-text-field');
-                        const endLabel = endField?.querySelector('.mdc-floating-label');
-                        if (endLabel) endLabel.classList.add('mdc-floating-label--float-above');
-                    }
-                }, 10);
-            }
-        }
 
         async function loadPeopleForFilter(filterType, container) {
             try {
@@ -12513,43 +12396,6 @@
                     textElement.textContent = value.length > 15 ? value.substring(0, 15) + '...' : value;
                 }
             }
-        }
-
-        function applyDateFilter() {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            
-            activeFilters.dateRange = { start: startDate, end: endDate };
-            
-            if (startDate || endDate) {
-                // Format dates for display (e.g., "Jan 1 - Jan 31" or "Jan 1, 2024 - Jan 31, 2024")
-                let displayText = '';
-                if (startDate && endDate) {
-                    const start = formatDateForChip(startDate);
-                    const end = formatDateForChip(endDate);
-                    displayText = `${start} - ${end}`;
-                } else if (startDate) {
-                    displayText = `From ${formatDateForChip(startDate)}`;
-                } else if (endDate) {
-                    displayText = `Until ${formatDateForChip(endDate)}`;
-                }
-                updateFilterChip('date', displayText);
-            }
-            
-            hideAllFilterDropdowns();
-            applyFilters();
-        }
-        
-        function formatDateForChip(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString + 'T00:00:00'); // Add time to avoid timezone issues
-            const options = { month: 'short', day: 'numeric' };
-            // Include year if not current year
-            const currentYear = new Date().getFullYear();
-            if (date.getFullYear() !== currentYear) {
-                options.year = 'numeric';
-            }
-            return date.toLocaleDateString('en-US', options);
         }
 
         function initializeStatusFilter() {
@@ -12928,15 +12774,6 @@
                 activeFilters.includeNoDate = true;
                 activeFilters.onlyNoDate = false;
                 
-                const dateChip = document.getElementById('dateFilter');
-                if (dateChip) {
-                    dateChip.classList.remove('active');
-                    const textEl = dateChip.querySelector('.filter-chip-text');
-                    if (textEl) {
-                        textEl.textContent = 'Date';
-                    }
-                }
-                
                 applyFilters();
                 return;
             }
@@ -12985,16 +12822,6 @@
                 activeFilters.includeNoDate = noDateCount > 0 && endIndex >= noDateIndex;
             }
             
-            // Update the date chip to show it's filtered
-            const dateChip = document.getElementById('dateFilter');
-            if (dateChip) {
-                dateChip.classList.add('active');
-                const textEl = dateChip.querySelector('.filter-chip-text');
-                if (textEl) {
-                    textEl.textContent = 'Filtered';
-                }
-            }
-            
             applyFilters();
         }
         
@@ -13019,16 +12846,6 @@
             activeFilters.includeNoDate = true;
             activeFilters.onlyNoDate = false;
             histogramData.selectedIndices = { start: 0, end: totalBuckets - 1 };
-            
-            // Reset date chip
-            const dateChip = document.getElementById('dateFilter');
-            if (dateChip) {
-                dateChip.classList.remove('active');
-                const textEl = dateChip.querySelector('.filter-chip-text');
-                if (textEl) {
-                    textEl.textContent = 'Date';
-                }
-            }
             
             // Remove dimming from all bars
             document.querySelectorAll('.histogram-bar').forEach(bar => {
@@ -13062,14 +12879,9 @@
             activeFilters.dateRange = { start: null, end: null };
             activeFilters.includeNoDate = true;
             activeFilters.onlyNoDate = false;
-            document.getElementById('dateFilter').classList.remove('active');
-            document.getElementById('dateFilter').querySelector('.filter-chip-text').textContent = 'Date';
-            document.getElementById('startDate').value = '';
-            document.getElementById('endDate').value = '';
             
-            // Reset histogram if available
+            // Reset histogram filter (which handles applyFilters)
             if (typeof resetHistogramFilter === 'function') {
-                // Don't call applyFilters twice - resetHistogramFilter does it
                 resetHistogramFilter();
                 return;
             }
@@ -13101,10 +12913,6 @@
                     textElement.textContent = filterType.charAt(0).toUpperCase() + filterType.slice(1);
                 }
             });
-            
-            // Clear date inputs
-            document.getElementById('startDate').value = '';
-            document.getElementById('endDate').value = '';
             
             // Reset histogram filter
             if (typeof resetHistogramFilter === 'function') {
