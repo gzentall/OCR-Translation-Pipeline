@@ -24,6 +24,9 @@
     <!-- Design Tokens -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}?v={{ range(1000, 9999) | random }}">
     
+    <!-- noUiSlider for date histogram -->
+    <link href="https://cdn.jsdelivr.net/npm/nouislider@15/dist/nouislider.min.css" rel="stylesheet">
+    
     <style>
         :root {
             /* Material Design 3 Color System */
@@ -2595,6 +2598,283 @@
             font-weight: 500;
             margin: 0 0 16px 0;
             color: var(--mdc-theme-on-surface);
+        }
+
+        /* Date Histogram Filter */
+        .date-histogram-container {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--md-sys-color-surface-container-low);
+            border-radius: var(--md-sys-shape-radius-lg);
+            border: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        /* Histogram Skeleton */
+        .date-histogram-skeleton {
+            height: 100px;
+        }
+
+        .histogram-skeleton-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 80px;
+            gap: 4px;
+            padding: 0 8px;
+        }
+
+        .skeleton-bar {
+            flex: 1;
+            background: linear-gradient(90deg, 
+                var(--md-sys-color-surface-variant) 25%, 
+                var(--md-sys-color-surface-container-high) 50%, 
+                var(--md-sys-color-surface-variant) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-shimmer 1.5s infinite;
+            border-radius: 2px 2px 0 0;
+            min-width: 8px;
+        }
+
+        .no-date-skeleton {
+            margin-left: 12px;
+            background: linear-gradient(90deg, 
+                var(--md-sys-color-tertiary-container) 25%, 
+                var(--md-sys-color-surface-container-high) 50%, 
+                var(--md-sys-color-tertiary-container) 75%);
+            background-size: 200% 100%;
+        }
+
+        @keyframes skeleton-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Actual Histogram */
+        .date-histogram {
+            position: relative;
+        }
+
+        .histogram-chart {
+            position: relative;
+            height: 80px;
+            padding: 0 16px;
+        }
+
+        .histogram-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 70px;
+            gap: 3px;
+            padding-bottom: 10px;
+        }
+
+        .histogram-bar {
+            flex: 1;
+            background: var(--md-sys-color-primary);
+            border-radius: 3px 3px 0 0;
+            min-width: 6px;
+            max-width: 16px;
+            transition: opacity 0.2s, background 0.2s, transform 0.15s;
+            position: relative;
+            min-height: 4px;
+            cursor: pointer;
+        }
+        
+        .histogram-bar:hover {
+            transform: scaleY(1.05);
+            opacity: 1 !important;
+        }
+
+        .histogram-bar.dimmed {
+            opacity: 0.3;
+        }
+
+        .histogram-bar.no-date-bar {
+            background: var(--md-sys-color-tertiary);
+            margin-left: 12px;
+            border-left: 2px dashed var(--md-sys-color-outline);
+            padding-left: 10px;
+        }
+
+        .histogram-bar:hover {
+            opacity: 1 !important;
+        }
+
+        .histogram-bar-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--md-sys-color-inverse-surface);
+            color: var(--md-sys-color-inverse-on-surface);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+
+        .histogram-bar:hover .histogram-bar-tooltip {
+            opacity: 1;
+        }
+
+        /* Slider Container */
+        .histogram-slider-container {
+            padding: 0 16px;
+            margin-top: -10px;
+        }
+
+        /* Slider Styling */
+        .histogram-slider {
+            height: 20px;
+        }
+
+        .histogram-slider .noUi-target {
+            background: var(--md-sys-color-surface-variant);
+            border: none;
+            border-radius: 10px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            height: 8px;
+        }
+
+        .histogram-slider .noUi-base {
+            height: 8px;
+        }
+
+        .histogram-slider .noUi-connects {
+            border-radius: 10px;
+            height: 8px;
+        }
+
+        .histogram-slider .noUi-connect {
+            background: var(--md-sys-color-primary);
+            border-radius: 10px;
+        }
+
+        .histogram-slider .noUi-handle {
+            width: 20px;
+            height: 20px;
+            background: var(--md-sys-color-primary);
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            cursor: ew-resize;
+            top: -6px;
+            right: -10px;
+        }
+
+        .histogram-slider .noUi-handle::before,
+        .histogram-slider .noUi-handle::after {
+            display: none;
+        }
+
+        .histogram-slider .noUi-handle:hover {
+            transform: scale(1.1);
+        }
+
+        .histogram-slider .noUi-handle:active {
+            transform: scale(0.95);
+        }
+
+        /* Labels */
+        .histogram-labels {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 8px 0;
+            font-size: 11px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .histogram-label {
+            text-align: center;
+            flex: 1;
+            max-width: 50px;
+        }
+
+        .histogram-label.no-date-label {
+            color: var(--md-sys-color-tertiary);
+            font-style: italic;
+        }
+
+        /* Controls */
+        .histogram-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .histogram-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .histogram-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--md-sys-color-primary);
+        }
+
+        .histogram-reset-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 12px;
+            background: none;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: var(--md-sys-shape-radius-full);
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .histogram-reset-btn:hover {
+            background: var(--md-sys-color-surface-variant);
+        }
+
+        .histogram-reset-btn .material-icons {
+            font-size: 16px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 599px) {
+            .date-histogram-container {
+                padding: 12px;
+                margin-bottom: 16px;
+            }
+
+            .histogram-chart {
+                height: 60px;
+            }
+
+            .histogram-skeleton-bars {
+                height: 60px;
+            }
+
+            .histogram-labels {
+                font-size: 10px;
+            }
+
+            .histogram-controls {
+                flex-direction: column;
+                gap: 8px;
+                align-items: stretch;
+            }
+
+            .histogram-reset-btn {
+                justify-content: center;
+            }
         }
 
         /* Documents Header Layout */
@@ -7204,6 +7484,53 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Date Histogram Filter -->
+                <div class="date-histogram-container" id="dateHistogramContainer">
+                    <!-- Skeleton loader for histogram -->
+                    <div class="date-histogram-skeleton" id="dateHistogramSkeleton">
+                        <div class="histogram-skeleton-bars">
+                            <div class="skeleton-bar" style="height: 30%"></div>
+                            <div class="skeleton-bar" style="height: 45%"></div>
+                            <div class="skeleton-bar" style="height: 60%"></div>
+                            <div class="skeleton-bar" style="height: 40%"></div>
+                            <div class="skeleton-bar" style="height: 75%"></div>
+                            <div class="skeleton-bar" style="height: 50%"></div>
+                            <div class="skeleton-bar" style="height: 35%"></div>
+                            <div class="skeleton-bar" style="height: 55%"></div>
+                            <div class="skeleton-bar" style="height: 80%"></div>
+                            <div class="skeleton-bar" style="height: 45%"></div>
+                            <div class="skeleton-bar" style="height: 30%"></div>
+                            <div class="skeleton-bar" style="height: 65%"></div>
+                            <div class="skeleton-bar" style="height: 40%"></div>
+                            <div class="skeleton-bar" style="height: 50%"></div>
+                            <div class="skeleton-bar" style="height: 35%"></div>
+                            <div class="skeleton-bar" style="height: 25%"></div>
+                            <div class="skeleton-bar no-date-skeleton" style="height: 20%"></div>
+                        </div>
+                    </div>
+                    <!-- Actual histogram (hidden until loaded) -->
+                    <div class="date-histogram" id="dateHistogram" style="display: none;">
+                        <div class="histogram-chart">
+                            <div class="histogram-bars" id="histogramBars"></div>
+                        </div>
+                        <div class="histogram-slider-container">
+                            <div class="histogram-slider" id="histogramSlider"></div>
+                        </div>
+                        <div class="histogram-labels" id="histogramLabels"></div>
+                        <div class="histogram-controls">
+                            <label class="histogram-checkbox">
+                                <input type="checkbox" id="includeNoDate" checked>
+                                <span>Include undated</span>
+                            </label>
+                            <button class="histogram-reset-btn" id="histogramResetBtn" onclick="resetHistogramFilter()">
+                                <span class="material-icons">restart_alt</span>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <div id="documentsContainer">
                     <!-- Initial skeleton loaders -->
                     <div class="documents-grid" id="initialSkeletons">
@@ -7816,6 +8143,9 @@
     <!-- Marked.js for Markdown support -->
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.0/marked.min.js"></script>
     
+    <!-- noUiSlider for date histogram -->
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15/dist/nouislider.min.js"></script>
+    
     <script>
         // Pass user data from Flask to JavaScript
         window.userInfo = {{ user | tojson if user else 'null' }};
@@ -7948,6 +8278,14 @@
                     
                     // Apply initial sorting
                     applySorting();
+                    
+                    // Initialize the date histogram after documents are loaded
+                    // Use requestAnimationFrame to ensure DOM is ready and list renders first
+                    requestAnimationFrame(() => {
+                        setTimeout(() => {
+                            initDateHistogram(allDocuments);
+                        }, 100);
+                    });
                 } else {
                     console.error('Failed to load documents:', data.error);
                     showError('Failed to load documents: ' + data.error);
@@ -12334,6 +12672,347 @@
             applyFilters();
         }
 
+        // ===== Date Histogram Functions =====
+        
+        let histogramSlider = null;
+        let histogramData = {
+            buckets: [],        // Array of { key: 'YYYY-MM', count: number, label: string }
+            noDateCount: 0,     // Count of documents without dates
+            minDate: null,      // Earliest date timestamp
+            maxDate: null,      // Latest date timestamp
+            selectedRange: null // { start: timestamp, end: timestamp }
+        };
+        
+        function initDateHistogram(documents) {
+            console.log('📊 Initializing date histogram with', documents.length, 'documents');
+            
+            // Process documents into buckets
+            processDocumentDates(documents);
+            
+            // Render the histogram
+            renderHistogramBars();
+            
+            // Initialize the slider
+            initHistogramSlider();
+            
+            // Setup event listeners
+            setupHistogramEvents();
+            
+            // Hide skeleton, show histogram
+            document.getElementById('dateHistogramSkeleton').style.display = 'none';
+            document.getElementById('dateHistogram').style.display = 'block';
+            
+            console.log('📊 Histogram initialized:', histogramData);
+        }
+        
+        function processDocumentDates(documents) {
+            const bucketMap = new Map();
+            let noDateCount = 0;
+            let minDate = null;
+            let maxDate = null;
+            
+            documents.forEach(doc => {
+                // Try to get date from document_date, date field, or extract from title
+                let dateStr = doc.document_date || doc.date;
+                
+                // If no date field, try to extract from the document title or filename
+                // Format: [number]-[YYYY]-[MM]-[DD]-[language] like 179-1942-08-15-fre
+                const titleToCheck = doc.title || doc.filename || '';
+                if (!dateStr && titleToCheck) {
+                    const nameMatch = titleToCheck.match(/\d+-(\d{4})-(\d{2})-(\d{2})/);
+                    if (nameMatch) {
+                        dateStr = `${nameMatch[1]}-${nameMatch[2]}-${nameMatch[3]}`;
+                    }
+                }
+                
+                if (!dateStr) {
+                    noDateCount++;
+                    return;
+                }
+                
+                // Parse the date - handle various formats
+                let date = parseDocumentDate(dateStr);
+                
+                if (!date || isNaN(date.getTime())) {
+                    noDateCount++;
+                    return;
+                }
+                
+                // Track min/max dates
+                if (!minDate || date < minDate) minDate = date;
+                if (!maxDate || date > maxDate) maxDate = date;
+                
+                // Create bucket key (YYYY-MM)
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const bucketKey = `${year}-${month}`;
+                
+                if (bucketMap.has(bucketKey)) {
+                    bucketMap.set(bucketKey, bucketMap.get(bucketKey) + 1);
+                } else {
+                    bucketMap.set(bucketKey, 1);
+                }
+            });
+            
+            // Convert map to sorted array
+            const buckets = Array.from(bucketMap.entries())
+                .map(([key, count]) => {
+                    const [year, month] = key.split('-');
+                    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    const shortYear = year.slice(-2);
+                    return {
+                        key,
+                        count,
+                        label: `${monthNames[parseInt(month) - 1]} '${shortYear}`,
+                        timestamp: new Date(parseInt(year), parseInt(month) - 1, 1).getTime()
+                    };
+                })
+                .sort((a, b) => a.timestamp - b.timestamp);
+            
+            histogramData = {
+                buckets,
+                noDateCount,
+                minDate: minDate ? minDate.getTime() : null,
+                maxDate: maxDate ? maxDate.getTime() : null,
+                selectedRange: null
+            };
+        }
+        
+        function parseDocumentDate(dateStr) {
+            if (!dateStr) return null;
+            
+            // Try different date formats
+            // MM/DD/YYYY
+            let match = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (match) {
+                return new Date(parseInt(match[3]), parseInt(match[1]) - 1, parseInt(match[2]));
+            }
+            
+            // YYYY-MM-DD
+            match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (match) {
+                return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
+            }
+            
+            // Try native Date parsing as fallback
+            const date = new Date(dateStr);
+            if (!isNaN(date.getTime())) {
+                return date;
+            }
+            
+            return null;
+        }
+        
+        function renderHistogramBars() {
+            const barsContainer = document.getElementById('histogramBars');
+            const labelsContainer = document.getElementById('histogramLabels');
+            
+            if (!barsContainer) return;
+            
+            const { buckets, noDateCount } = histogramData;
+            
+            // Calculate max count for scaling
+            const allCounts = [...buckets.map(b => b.count), noDateCount];
+            const maxCount = Math.max(...allCounts, 1);
+            
+            // Generate bars HTML
+            let barsHtml = '';
+            let labelsHtml = '';
+            
+            // Determine label frequency (show every nth label to avoid crowding)
+            const labelFrequency = buckets.length > 24 ? 6 : 
+                                   buckets.length > 12 ? 3 : 
+                                   buckets.length > 6 ? 2 : 1;
+            
+            buckets.forEach((bucket, index) => {
+                const heightPercent = (bucket.count / maxCount) * 100;
+                const showLabel = index % labelFrequency === 0 || index === buckets.length - 1;
+                
+                barsHtml += `
+                    <div class="histogram-bar" 
+                         data-bucket="${bucket.key}" 
+                         data-timestamp="${bucket.timestamp}"
+                         style="height: ${heightPercent}%">
+                        <div class="histogram-bar-tooltip">${bucket.label}: ${bucket.count} doc${bucket.count !== 1 ? 's' : ''}</div>
+                    </div>
+                `;
+                
+                if (showLabel) {
+                    labelsHtml += `<span class="histogram-label">${bucket.label}</span>`;
+                }
+            });
+            
+            // Add "No date" bar
+            if (noDateCount > 0) {
+                const heightPercent = (noDateCount / maxCount) * 100;
+                barsHtml += `
+                    <div class="histogram-bar no-date-bar" 
+                         data-bucket="no-date"
+                         style="height: ${heightPercent}%">
+                        <div class="histogram-bar-tooltip">No date: ${noDateCount} doc${noDateCount !== 1 ? 's' : ''}</div>
+                    </div>
+                `;
+                labelsHtml += `<span class="histogram-label no-date-label">No date</span>`;
+            }
+            
+            barsContainer.innerHTML = barsHtml;
+            labelsContainer.innerHTML = labelsHtml;
+        }
+        
+        function initHistogramSlider() {
+            const sliderElement = document.getElementById('histogramSlider');
+            if (!sliderElement || histogramData.buckets.length === 0) return;
+            
+            // Destroy existing slider if any
+            if (histogramSlider) {
+                histogramSlider.destroy();
+            }
+            
+            const { minDate, maxDate } = histogramData;
+            
+            if (!minDate || !maxDate) {
+                console.log('📊 No valid date range for slider');
+                return;
+            }
+            
+            // Create the slider
+            histogramSlider = noUiSlider.create(sliderElement, {
+                start: [minDate, maxDate],
+                connect: true,
+                range: {
+                    'min': minDate,
+                    'max': maxDate
+                },
+                behaviour: 'drag',
+                tooltips: false
+            });
+            
+            // Handle slider changes
+            histogramSlider.on('update', function(values, handle) {
+                const startTimestamp = parseInt(values[0]);
+                const endTimestamp = parseInt(values[1]);
+                
+                histogramData.selectedRange = {
+                    start: startTimestamp,
+                    end: endTimestamp
+                };
+                
+                // Update bar highlighting
+                updateHistogramHighlighting(startTimestamp, endTimestamp);
+            });
+            
+            histogramSlider.on('change', function(values, handle) {
+                // Apply filter when user finishes dragging
+                applyHistogramFilter();
+            });
+        }
+        
+        function updateHistogramHighlighting(startTimestamp, endTimestamp) {
+            const bars = document.querySelectorAll('.histogram-bar:not(.no-date-bar)');
+            
+            bars.forEach(bar => {
+                const barTimestamp = parseInt(bar.dataset.timestamp);
+                // Get end of month for this bucket
+                const bucketDate = new Date(barTimestamp);
+                const endOfMonth = new Date(bucketDate.getFullYear(), bucketDate.getMonth() + 1, 0).getTime();
+                
+                // Bar is within range if any part of the month overlaps with selection
+                const isInRange = barTimestamp <= endTimestamp && endOfMonth >= startTimestamp;
+                
+                if (isInRange) {
+                    bar.classList.remove('dimmed');
+                } else {
+                    bar.classList.add('dimmed');
+                }
+            });
+        }
+        
+        function applyHistogramFilter() {
+            if (!histogramData.selectedRange) return;
+            
+            const { start, end } = histogramData.selectedRange;
+            const includeNoDate = document.getElementById('includeNoDate')?.checked ?? true;
+            
+            // Convert timestamps to date strings for the filter
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            
+            // Format as YYYY-MM-DD for consistency with existing filter
+            const formatDate = (d) => {
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            
+            activeFilters.dateRange = {
+                start: formatDate(startDate),
+                end: formatDate(endDate)
+            };
+            activeFilters.includeNoDate = includeNoDate;
+            
+            // Update the date chip to show it's filtered
+            const dateChip = document.getElementById('dateFilter');
+            if (dateChip) {
+                dateChip.classList.add('active');
+                const textEl = dateChip.querySelector('.filter-chip-text');
+                if (textEl) {
+                    textEl.textContent = 'Filtered';
+                }
+            }
+            
+            applyFilters();
+        }
+        
+        function resetHistogramFilter() {
+            // Reset slider to full range
+            if (histogramSlider && histogramData.minDate && histogramData.maxDate) {
+                histogramSlider.set([histogramData.minDate, histogramData.maxDate]);
+            }
+            
+            // Clear histogram-related filters
+            activeFilters.dateRange = { start: null, end: null };
+            activeFilters.includeNoDate = true;
+            histogramData.selectedRange = null;
+            
+            // Reset UI
+            document.getElementById('includeNoDate').checked = true;
+            
+            // Reset date chip
+            const dateChip = document.getElementById('dateFilter');
+            if (dateChip) {
+                dateChip.classList.remove('active');
+                const textEl = dateChip.querySelector('.filter-chip-text');
+                if (textEl) {
+                    textEl.textContent = 'Date';
+                }
+            }
+            
+            // Remove dimming from all bars
+            document.querySelectorAll('.histogram-bar').forEach(bar => {
+                bar.classList.remove('dimmed');
+            });
+            
+            applyFilters();
+        }
+        
+        function setupHistogramEvents() {
+            // Handle "Include undated" checkbox
+            const includeNoDateCheckbox = document.getElementById('includeNoDate');
+            if (includeNoDateCheckbox) {
+                includeNoDateCheckbox.addEventListener('change', function() {
+                    const noDateBar = document.querySelector('.no-date-bar');
+                    if (noDateBar) {
+                        noDateBar.classList.toggle('dimmed', !this.checked);
+                    }
+                    applyHistogramFilter();
+                });
+            }
+        }
+        
+        // ===== End Date Histogram Functions =====
+        
         function clearSenderFilter() {
             activeFilters.sender = null;
             document.getElementById('senderFilter').classList.remove('active');
@@ -12350,10 +13029,19 @@
 
         function clearDateFilter() {
             activeFilters.dateRange = { start: null, end: null };
+            activeFilters.includeNoDate = true;
             document.getElementById('dateFilter').classList.remove('active');
             document.getElementById('dateFilter').querySelector('.filter-chip-text').textContent = 'Date';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
+            
+            // Reset histogram if available
+            if (typeof resetHistogramFilter === 'function') {
+                // Don't call applyFilters twice - resetHistogramFilter does it
+                resetHistogramFilter();
+                return;
+            }
+            
             applyFilters();
         }
 
@@ -12367,7 +13055,8 @@
                 sender: null,
                 recipient: null,
                 dateRange: { start: null, end: null },
-                status: null
+                status: null,
+                includeNoDate: true
             };
             
             // Reset all filter chips
@@ -12383,6 +13072,11 @@
             // Clear date inputs
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
+            
+            // Reset histogram filter
+            if (typeof resetHistogramFilter === 'function') {
+                resetHistogramFilter();
+            }
             
             // Hide all dropdowns
             hideAllFilterDropdowns();
@@ -12427,15 +13121,31 @@
             
             // Apply date range filter
             if (activeFilters.dateRange.start || activeFilters.dateRange.end) {
+                const includeNoDate = activeFilters.includeNoDate !== false; // default to true
+                
                 filtered = filtered.filter(doc => {
-                    if (!doc.date) return false;
+                    const dateStr = doc.document_date || doc.date;
                     
-                    const docDate = new Date(doc.date);
+                    // Handle documents without dates
+                    if (!dateStr) {
+                        return includeNoDate;
+                    }
+                    
+                    const docDate = parseDocumentDate ? parseDocumentDate(dateStr) : new Date(dateStr);
+                    if (!docDate || isNaN(docDate.getTime())) {
+                        return includeNoDate;
+                    }
+                    
                     const startDate = activeFilters.dateRange.start ? new Date(activeFilters.dateRange.start) : null;
                     const endDate = activeFilters.dateRange.end ? new Date(activeFilters.dateRange.end) : null;
                     
                     if (startDate && docDate < startDate) return false;
-                    if (endDate && docDate > endDate) return false;
+                    if (endDate) {
+                        // Set end date to end of day for inclusive comparison
+                        const endOfDay = new Date(endDate);
+                        endOfDay.setHours(23, 59, 59, 999);
+                        if (docDate > endOfDay) return false;
+                    }
                     
                     return true;
                 });

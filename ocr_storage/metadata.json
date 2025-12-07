@@ -2184,7 +2184,8 @@
       "page_count": 3,
       "summary": "WHO: The sender of the letter is writing to their family members, addressing them as \"Mes tr\u00e8s tr\u00e8s ...",
       "sender": "Betty Zentall",
-      "recipient": "Etienne Aigner"
+      "recipient": "Etienne Aigner",
+      "status": "editing"
     },
     "doc_20251201_134055": {
       "title": "179-1942-08-15-fre",
@@ -2195,7 +2196,9 @@
       "people_count": 1,
       "summary": "WHO: The text is a letter from an individual named Lucien to an unknown recipient, discussing variou...",
       "page_count": 0,
-      "status": "new"
+      "status": "editing",
+      "sender": "Robert Zentall",
+      "recipient": "Betty Zentall"
     }
   },
   "people": {
@@ -4145,7 +4148,7 @@
       ]
     }
   },
-  "last_updated": "2025-12-06T10:35:01.568097",
+  "last_updated": "2025-12-06T15:26:55.120664",
   "context_notes": {
     "ctx_20251130_070722913378": {
       "letterId": "doc_20251129_135820",
@@ -4174,6 +4177,26 @@
     "ctx_20251206_103501566922": {
       "letterId": "doc_20251126_152745",
       "createdAt": "2025-12-06T10:35:01.566957"
+    },
+    "ctx_20251206_131335600417": {
+      "letterId": "doc_20251201_134055",
+      "createdAt": "2025-12-06T13:13:35.600465"
+    },
+    "ctx_20251206_141227944133": {
+      "letterId": "doc_20251201_134055",
+      "createdAt": "2025-12-06T14:12:27.944208"
+    },
+    "ctx_20251206_141251935547": {
+      "letterId": "doc_20251127_110849",
+      "createdAt": "2025-12-06T14:12:51.935561"
+    },
+    "ctx_20251206_150043275787": {
+      "letterId": "doc_20251126_164027",
+      "createdAt": "2025-12-06T15:00:43.275816"
+    },
+    "ctx_20251206_152655118943": {
+      "letterId": "doc_20251127_110849",
+      "createdAt": "2025-12-06T15:26:55.119007"
     }
   },
   "references": {
