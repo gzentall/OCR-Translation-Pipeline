@@ -6489,6 +6489,27 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
         
+        /* Text page separator styling (for document text editor) */
+        .text-page-divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: var(--md-sys-color-outline);
+            font-size: 12px;
+            user-select: none;
+        }
+        .text-page-divider::before,
+        .text-page-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px dashed var(--md-sys-color-outline-variant);
+        }
+        .text-page-divider span {
+            padding: 0 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
         /* Make text tab fill available space in dialog */
         .mdc-dialog #text-tab.tab-panel.active {
             display: flex !important;
@@ -14666,12 +14687,22 @@
         }
         
         /**
+         * Convert [PAGE_BREAK_N] markers to visual dividers.
+         */
+        function renderPageBreaks(html) {
+            return html.replace(/\[PAGE_BREAK_(\d+)\]/g, (match, pageNum) => {
+                return `<div class="text-page-divider"><span>Page ${pageNum}</span></div>`;
+            });
+        }
+        
+        /**
          * Render text with markers by escaping first, then adding highlights.
          */
         function renderHighlightedText(text, markers) {
             if (!text) return '';
             if (!markers || markers.length === 0) {
-                return escapeHtml(text);
+                // Still need to handle page breaks even without untranslated markers
+                return renderPageBreaks(escapeHtml(text));
             }
             
             // Build result character by character, marking highlighted regions
@@ -14701,15 +14732,25 @@
                 result += escapeHtml(text.substring(lastEnd));
             }
             
-            return result;
+            // Apply page break rendering after highlights
+            return renderPageBreaks(result);
         }
         
         /**
          * Extract plain text from contenteditable div.
+         * Converts page divider HTML back to markers for storage.
          */
         function getPlainTextFromContentEditable(element) {
-            // Get text content, which strips HTML tags
-            return element.innerText || element.textContent || '';
+            // Get HTML first to process page dividers
+            let html = element.innerHTML || '';
+            
+            // Convert page divider HTML back to markers
+            html = html.replace(/<div class="text-page-divider">.*?Page (\d+).*?<\/div>/gi, '[PAGE_BREAK_$1]');
+            
+            // Create a temp element to extract plain text
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            return temp.innerText || temp.textContent || '';
         }
         
         /**

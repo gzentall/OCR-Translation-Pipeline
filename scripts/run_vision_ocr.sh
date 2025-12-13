@@ -105,8 +105,13 @@ fi
 
 echo "[run_vision_ocr] Performing OCR via Google Vision API…"
 
+# Track page number for page break markers
+ocr_page_num=0
+
 # Loop over the generated PNG files in numerical order.
 for page_img in "$TMP_DIR"/*.png; do
+    ((ocr_page_num++))
+    
     # Use Python to handle the entire OCR process in one go to avoid shell variable issues
     page_text=$(python3 - <<PY
 import base64
@@ -148,9 +153,13 @@ except Exception as e:
     print(f"Error during OCR: {e}")
 PY
 )
-    # Append the extracted text to the output file, followed by a blank line between pages.
-    printf "%s\n\n" "$page_text" >> "$TEXT_OUT"
-    echo "[run_vision_ocr] Processed $(basename "$page_img")"
+    # Insert page break marker before pages 2, 3, etc.
+    if [ $ocr_page_num -gt 1 ]; then
+        printf "\n[PAGE_BREAK_%d]\n\n" "$ocr_page_num" >> "$TEXT_OUT"
+    fi
+    # Append the extracted text to the output file
+    printf "%s" "$page_text" >> "$TEXT_OUT"
+    echo "[run_vision_ocr] Processed $(basename "$page_img") (page $ocr_page_num)"
 done
 
 # Cleanup temporary images.

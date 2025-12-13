@@ -1884,7 +1884,7 @@
       "target_language": "en",
       "file_size": 0,
       "people_count": 19,
-      "summary": "WHO: The sender of the letter is identified as \"Körne,\" writing to someone named \"As\" on November 2n...",
+      "summary": "WHO: The sender of the letter is identified as \"K\u00f6rne,\" writing to someone named \"As\" on November 2n...",
       "page_count": 0,
       "status": "new",
       "sender": null,
@@ -1949,7 +1949,7 @@
       "target_language": "en",
       "file_size": 0,
       "people_count": 17,
-      "summary": "WHO: The sender of the letter is František K. Strakaty, writing to Jabis. The recipient is addressed...",
+      "summary": "WHO: The sender of the letter is Franti\u0161ek K. Strakaty, writing to Jabis. The recipient is addressed...",
       "page_count": 0,
       "status": "editing",
       "sender": "Robert Zentall",
@@ -1962,7 +1962,7 @@
       "target_language": "en",
       "file_size": 0,
       "people_count": 23,
-      "summary": "WHO: The sender of the letter is identified as \"Bob,\" writing to someone named \"Zabūs.\" The relation...",
+      "summary": "WHO: The sender of the letter is identified as \"Bob,\" writing to someone named \"Zab\u016bs.\" The relation...",
       "page_count": 0,
       "status": "new",
       "sender": "Robert Zentall",
@@ -2027,7 +2027,7 @@
       "target_language": "en",
       "file_size": 0,
       "people_count": 17,
-      "summary": "WHO: The sender of the letter is Betty Näher, writing to an unnamed recipient. The recipient is like...",
+      "summary": "WHO: The sender of the letter is Betty N\u00e4her, writing to an unnamed recipient. The recipient is like...",
       "page_count": 0,
       "status": "new",
       "sender": "Robert Zentall",
@@ -2040,7 +2040,7 @@
       "target_language": "en",
       "file_size": 0,
       "people_count": 17,
-      "summary": "WHO: The sender of the letter is identified as Bob Zweigenthal, writing to someone named Zabüs. The ...",
+      "summary": "WHO: The sender of the letter is identified as Bob Zweigenthal, writing to someone named Zab\u00fcs. The ...",
       "page_count": 0,
       "status": "new",
       "sender": "Robert Zentall",
@@ -2173,8 +2173,8 @@
       "summary": "WHO: The text is written by an unidentified sender in Hannover on October 16, 3, to the recipient in...",
       "page_count": 0,
       "status": "editing",
-      "sender": "Robert Zentall",
-      "recipient": "Betty Zentall"
+      "sender": "Robert Zweigenthal",
+      "recipient": "Elizabeth Aigner"
     },
     "doc_20251127_110849": {
       "filename": "178-1942-11-06-fre.pdf",
@@ -2182,7 +2182,7 @@
       "source_language": null,
       "uploaded_at": "2025-11-27T11:08:49.352869",
       "page_count": 3,
-      "summary": "WHO: The sender of the letter is writing to their family members, addressing them as \"Mes très très ...",
+      "summary": "WHO: The sender of the letter is writing to their family members, addressing them as \"Mes tr\u00e8s tr\u00e8s ...",
       "sender": "Betty Zentall",
       "recipient": "Etienne Aigner",
       "status": "editing"
@@ -2279,9 +2279,9 @@
       ],
       "first_mentioned": "2025-11-22T16:38:53.764383"
     },
-    "varadé": {
+    "varad\u00e9": {
       "aliases": [
-        "Dr. Varadé"
+        "Dr. Varad\u00e9"
       ],
       "context": "doctor who issued the medical certificate",
       "type": "person",
@@ -2302,9 +2302,9 @@
       ],
       "first_mentioned": "2025-11-22T16:38:53.767538"
     },
-    "nom du père": {
+    "nom du p\u00e8re": {
       "aliases": [
-        "Nom du père"
+        "Nom du p\u00e8re"
       ],
       "context": "father's name mentioned in the document",
       "type": "person",
@@ -2313,9 +2313,9 @@
       ],
       "first_mentioned": "2025-11-22T16:38:53.769482"
     },
-    "nom de la mère": {
+    "nom de la m\u00e8re": {
       "aliases": [
-        "Nom de la mère"
+        "Nom de la m\u00e8re"
       ],
       "context": "mother's name mentioned in the document",
       "type": "person",
@@ -2324,9 +2324,9 @@
       ],
       "first_mentioned": "2025-11-22T16:38:53.769631"
     },
-    "nom de lépouse": {
+    "nom de l\u00e9pouse": {
       "aliases": [
-        "Nom de l'épouse"
+        "Nom de l'\u00e9pouse"
       ],
       "context": "wife's name mentioned in the document",
       "type": "person",
@@ -2335,9 +2335,9 @@
       ],
       "first_mentioned": "2025-11-22T16:38:53.769759"
     },
-    "prénom": {
+    "pr\u00e9nom": {
       "aliases": [
-        "Prénom"
+        "Pr\u00e9nom"
       ],
       "context": "first name of the individual being documented",
       "type": "person",
@@ -2517,16 +2517,16 @@
       "aliases": [
         "H. Jeangeorges"
       ],
-      "context": "Proprietor of Le Grand Hotel et Restaurant Molière",
+      "context": "Proprietor of Le Grand Hotel et Restaurant Moli\u00e8re",
       "type": "person",
       "documents": [
         "doc_20251116_190947"
       ],
       "first_mentioned": "2025-11-22T16:38:53.775847"
     },
-    "dubosanté": {
+    "dubosant\u00e9": {
       "aliases": [
-        "DuBosanté"
+        "DuBosant\u00e9"
       ],
       "context": "Mentioned as a place where Betty is staying",
       "type": "person",
@@ -2746,7 +2746,7 @@
       "aliases": [
         "L. Bousquet"
       ],
-      "context": "mentioned in the address of the café",
+      "context": "mentioned in the address of the caf\u00e9",
       "type": "person",
       "documents": [
         "doc_20251116_190959"
@@ -2775,9 +2775,9 @@
       ],
       "first_mentioned": "2025-11-22T16:38:53.784011"
     },
-    "masauté": {
+    "masaut\u00e9": {
       "aliases": [
-        "Masauté"
+        "Masaut\u00e9"
       ],
       "context": "Mentioned as someone doing well",
       "type": "person",
@@ -2808,9 +2808,9 @@
       ],
       "first_mentioned": "2025-11-22T16:38:53.784325"
     },
-    "élisée": {
+    "\u00e9lis\u00e9e": {
       "aliases": [
-        "Élisée"
+        "\u00c9lis\u00e9e"
       ],
       "context": "Mentioned as part of the family",
       "type": "person",
@@ -3260,7 +3260,7 @@
       "aliases": [
         "Egge"
       ],
-      "context": "mentioned as having arrived at Hôtel Savoy",
+      "context": "mentioned as having arrived at H\u00f4tel Savoy",
       "type": "person",
       "documents": [
         "doc_20251116_191027",
@@ -3824,15 +3824,15 @@
       ],
       "first_mentioned": "2025-11-22T16:38:53.777609"
     },
-    "étienne aigner": {
+    "\u00e9tienne aigner": {
       "aliases": [
-        "étienne aigner",
+        "\u00e9tienne aigner",
         "Etienne Aigner",
         "Pista",
         "Etienne",
-        "Étienne",
+        "\u00c9tienne",
         "etienne aigner",
-        "Étienne Aigner"
+        "\u00c9tienne Aigner"
       ],
       "context": "Test person",
       "type": "person",
@@ -4140,7 +4140,7 @@
       "secondary_references": []
     }
   },
-  "last_updated": "2025-12-13T11:30:30.589257",
+  "last_updated": "2025-12-13T14:19:50.548619",
   "context_notes": {
     "ctx_20251130_070722913378": {
       "letterId": "doc_20251129_135820",
@@ -4391,9 +4391,9 @@
     "4edcd93d-9b72-4122-a643-940192d79764": {
       "id": "4edcd93d-9b72-4122-a643-940192d79764",
       "type": "event",
-      "name": "Erkältung",
+      "name": "Erk\u00e4ltung",
       "aliases": [
-        "Erkältung"
+        "Erk\u00e4ltung"
       ],
       "notes": "Mitter is suffering from a cold",
       "mergedIntoId": null,
@@ -5039,9 +5039,9 @@
     "655373e8-7f65-45db-a177-8961f928abcb": {
       "id": "655373e8-7f65-45db-a177-8961f928abcb",
       "type": "event",
-      "name": "Einreichung für die Einreisebewilligung",
+      "name": "Einreichung f\u00fcr die Einreisebewilligung",
       "aliases": [
-        "Einreichung für die Einreisebewilligung"
+        "Einreichung f\u00fcr die Einreisebewilligung"
       ],
       "notes": "submission for travel permission",
       "mergedIntoId": null,
@@ -5411,9 +5411,9 @@
     "cc8cecfd-1a0d-4deb-98a5-1b346a29f7a2": {
       "id": "cc8cecfd-1a0d-4deb-98a5-1b346a29f7a2",
       "type": "place",
-      "name": "Hotel des Pyrénées",
+      "name": "Hotel des Pyr\u00e9n\u00e9es",
       "aliases": [
-        "Hotel des Pyrénées"
+        "Hotel des Pyr\u00e9n\u00e9es"
       ],
       "notes": "a specific hotel mentioned in the correspondence",
       "mergedIntoId": null,
@@ -5831,9 +5831,9 @@
     "207bd57d-c7bf-4583-83a5-f669429b64fb": {
       "id": "207bd57d-c7bf-4583-83a5-f669429b64fb",
       "type": "event",
-      "name": "Erkältung",
+      "name": "Erk\u00e4ltung",
       "aliases": [
-        "Erkältung"
+        "Erk\u00e4ltung"
       ],
       "notes": "Mitter is mentioned to be sick with a cold",
       "mergedIntoId": null,
@@ -5951,9 +5951,9 @@
     "429d872e-eb02-4d63-951d-da41b2320f4d": {
       "id": "429d872e-eb02-4d63-951d-da41b2320f4d",
       "type": "place",
-      "name": "Československo",
+      "name": "\u010ceskoslovensko",
       "aliases": [
-        "Československo"
+        "\u010ceskoslovensko"
       ],
       "notes": "the country being referenced",
       "mergedIntoId": null,
@@ -6203,9 +6203,9 @@
     "73aa04af-f247-4e7a-83cc-0ea370c292a0": {
       "id": "73aa04af-f247-4e7a-83cc-0ea370c292a0",
       "type": "event",
-      "name": "Erkältung",
+      "name": "Erk\u00e4ltung",
       "aliases": [
-        "Erkältung"
+        "Erk\u00e4ltung"
       ],
       "notes": "Mitter is mentioned to be sick, indicating a personal health issue",
       "mergedIntoId": null,
@@ -6311,9 +6311,9 @@
     "62060495-89a3-4c95-9bdf-37a122f138bc": {
       "id": "62060495-89a3-4c95-9bdf-37a122f138bc",
       "type": "event",
-      "name": "Römischer Kaiser",
+      "name": "R\u00f6mischer Kaiser",
       "aliases": [
-        "Römischer Kaiser"
+        "R\u00f6mischer Kaiser"
       ],
       "notes": "Possible reference to a historical or cultural event or figure",
       "mergedIntoId": null,
@@ -6923,9 +6923,9 @@
     "538501da-0f97-4e8c-8dc3-8aefa0541327": {
       "id": "538501da-0f97-4e8c-8dc3-8aefa0541327",
       "type": "event",
-      "name": "Einreichung für die Einreisebewilligung",
+      "name": "Einreichung f\u00fcr die Einreisebewilligung",
       "aliases": [
-        "Einreichung für die Einreisebewilligung"
+        "Einreichung f\u00fcr die Einreisebewilligung"
       ],
       "notes": "Submission for entry permit mentioned",
       "mergedIntoId": null,
@@ -7283,9 +7283,9 @@
     "7521e976-d59b-474c-969d-a0dee90cc888": {
       "id": "7521e976-d59b-474c-969d-a0dee90cc888",
       "type": "place",
-      "name": "Hotel des Pyrénées",
+      "name": "Hotel des Pyr\u00e9n\u00e9es",
       "aliases": [
-        "Hotel des Pyrénées"
+        "Hotel des Pyr\u00e9n\u00e9es"
       ],
       "notes": "specific hotel mentioned in Paris",
       "mergedIntoId": null,
@@ -8795,9 +8795,9 @@
     "e31d477d-0d2c-4817-9de9-53f151b9dc06": {
       "id": "e31d477d-0d2c-4817-9de9-53f151b9dc06",
       "type": "place",
-      "name": "Ruská 48, Praha",
+      "name": "Rusk\u00e1 48, Praha",
       "aliases": [
-        "Ruská 48, Praha"
+        "Rusk\u00e1 48, Praha"
       ],
       "notes": "specific address related to the business mentioned",
       "mergedIntoId": null,
@@ -9179,9 +9179,9 @@
     "28efbf81-74fd-41a2-995d-b9c6d7e6bbd5": {
       "id": "28efbf81-74fd-41a2-995d-b9c6d7e6bbd5",
       "type": "place",
-      "name": "Světozor",
+      "name": "Sv\u011btozor",
       "aliases": [
-        "Světozor"
+        "Sv\u011btozor"
       ],
       "notes": "Publication mentioned regarding a potential payment",
       "mergedIntoId": null,
@@ -9431,9 +9431,9 @@
     "dce509e3-dfb7-47a9-9f53-73b7db1b5acd": {
       "id": "dce509e3-dfb7-47a9-9f53-73b7db1b5acd",
       "type": "people",
-      "name": "Zabūs",
+      "name": "Zab\u016bs",
       "aliases": [
-        "Zabūs"
+        "Zab\u016bs"
       ],
       "notes": "mentioned as a person of strong emotional significance",
       "mergedIntoId": null,
@@ -9503,9 +9503,9 @@
     "afc1fa3a-7bf1-408d-8b58-6b7c12fd9404": {
       "id": "afc1fa3a-7bf1-408d-8b58-6b7c12fd9404",
       "type": "place",
-      "name": "Löwenhotel",
+      "name": "L\u00f6wenhotel",
       "aliases": [
-        "Löwenhotel"
+        "L\u00f6wenhotel"
       ],
       "notes": "another name for the Grandhotel in Reichenberg",
       "mergedIntoId": null,
@@ -10463,9 +10463,9 @@
     "b73d1182-a556-48b4-b2b8-6ac8adc3e4e6": {
       "id": "b73d1182-a556-48b4-b2b8-6ac8adc3e4e6",
       "type": "place",
-      "name": "Straßburg",
+      "name": "Stra\u00dfburg",
       "aliases": [
-        "Straßburg"
+        "Stra\u00dfburg"
       ],
       "notes": "location where the writer will work briefly",
       "mergedIntoId": null,
@@ -10691,9 +10691,9 @@
     "087d3a1d-4c69-4044-bb96-87fcd5c6898f": {
       "id": "087d3a1d-4c69-4044-bb96-87fcd5c6898f",
       "type": "place",
-      "name": "Durlacherstraße 43",
+      "name": "Durlacherstra\u00dfe 43",
       "aliases": [
-        "Durlacherstraße 43"
+        "Durlacherstra\u00dfe 43"
       ],
       "notes": "specific address in Pforzheim",
       "mergedIntoId": null,
@@ -11087,9 +11087,9 @@
     "ec405466-990b-4e95-a344-bc79036fedf2": {
       "id": "ec405466-990b-4e95-a344-bc79036fedf2",
       "type": "place",
-      "name": "Zürich",
+      "name": "Z\u00fcrich",
       "aliases": [
-        "Zürich"
+        "Z\u00fcrich"
       ],
       "notes": "Location where work was attempted but not successful",
       "mergedIntoId": null,
@@ -11375,9 +11375,9 @@
     "2f53f13a-2a11-4b35-8579-a05202f86dcc": {
       "id": "2f53f13a-2a11-4b35-8579-a05202f86dcc",
       "type": "place",
-      "name": "MAGYARORSZÁG",
+      "name": "MAGYARORSZ\u00c1G",
       "aliases": [
-        "MAGYARORSZÁG"
+        "MAGYARORSZ\u00c1G"
       ],
       "notes": "country mentioned in the address section",
       "mergedIntoId": null,
@@ -11495,9 +11495,9 @@
     "daf7cecb-09fc-4bb3-ac20-5ed6bdb47197": {
       "id": "daf7cecb-09fc-4bb3-ac20-5ed6bdb47197",
       "type": "people",
-      "name": "György Tory",
+      "name": "Gy\u00f6rgy Tory",
       "aliases": [
-        "György Tory"
+        "Gy\u00f6rgy Tory"
       ],
       "notes": "Recipient mentioned in the letter",
       "mergedIntoId": null,
@@ -11999,9 +11999,9 @@
     "3cee6890-8e7e-45ee-86ac-03473b367939": {
       "id": "3cee6890-8e7e-45ee-86ac-03473b367939",
       "type": "place",
-      "name": "Durlacherstraße 43",
+      "name": "Durlacherstra\u00dfe 43",
       "aliases": [
-        "Durlacherstraße 43"
+        "Durlacherstra\u00dfe 43"
       ],
       "notes": "specific address of the sender",
       "mergedIntoId": null,
@@ -12203,9 +12203,9 @@
     "d7f07a6b-e2d5-4327-b689-613eae03fbec": {
       "id": "d7f07a6b-e2d5-4327-b689-613eae03fbec",
       "type": "place",
-      "name": "Köln",
+      "name": "K\u00f6ln",
       "aliases": [
-        "Köln"
+        "K\u00f6ln"
       ],
       "notes": "destination of the journey mentioned",
       "mergedIntoId": null,
@@ -12215,9 +12215,9 @@
     "80c6b5c6-0d1a-4adf-af02-819147293488": {
       "id": "80c6b5c6-0d1a-4adf-af02-819147293488",
       "type": "place",
-      "name": "Düsseldorf",
+      "name": "D\u00fcsseldorf",
       "aliases": [
-        "Düsseldorf"
+        "D\u00fcsseldorf"
       ],
       "notes": "another destination for post",
       "mergedIntoId": null,
@@ -12275,11 +12275,11 @@
     "258c811c-4d0c-4762-b7d8-6a68b78391dd": {
       "id": "258c811c-4d0c-4762-b7d8-6a68b78391dd",
       "type": "event",
-      "name": "Journey to Köln",
+      "name": "Journey to K\u00f6ln",
       "aliases": [
-        "Journey to Köln"
+        "Journey to K\u00f6ln"
       ],
-      "notes": "the author is traveling to Köln",
+      "notes": "the author is traveling to K\u00f6ln",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T15:34:20.620464",
       "updatedAt": "2025-11-26T15:34:20.620464"
@@ -12599,9 +12599,9 @@
     "73735217-4103-4361-9e89-3f8dc12ecfea": {
       "id": "73735217-4103-4361-9e89-3f8dc12ecfea",
       "type": "people",
-      "name": "Halière",
+      "name": "Hali\u00e8re",
       "aliases": [
-        "Halière"
+        "Hali\u00e8re"
       ],
       "notes": "a person who writes kindly to the author",
       "mergedIntoId": null,
@@ -13043,9 +13043,9 @@
     "2a006273-7f86-44d6-8ec1-2ba600f18c93": {
       "id": "2a006273-7f86-44d6-8ec1-2ba600f18c93",
       "type": "place",
-      "name": "Königsberg",
+      "name": "K\u00f6nigsberg",
       "aliases": [
-        "Königsberg"
+        "K\u00f6nigsberg"
       ],
       "notes": "a location mentioned as a destination",
       "mergedIntoId": null,
@@ -13095,7 +13095,7 @@
       "aliases": [
         "Lettland"
       ],
-      "notes": "mentioned in relation to Königsberg's location",
+      "notes": "mentioned in relation to K\u00f6nigsberg's location",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T15:43:57.076316",
       "updatedAt": "2025-11-26T15:43:57.076316"
@@ -13811,9 +13811,9 @@
     "b5e97a98-f4a3-4d04-8b20-a6cf5c2f1be8": {
       "id": "b5e97a98-f4a3-4d04-8b20-a6cf5c2f1be8",
       "type": "place",
-      "name": "Durlacherstraße",
+      "name": "Durlacherstra\u00dfe",
       "aliases": [
-        "Durlacherstraße"
+        "Durlacherstra\u00dfe"
       ],
       "notes": "Street address associated with Armin Zweigenthal",
       "mergedIntoId": null,
@@ -14255,9 +14255,9 @@
     "2fcf2a73-0763-4b24-aad5-01fcf5e2d840": {
       "id": "2fcf2a73-0763-4b24-aad5-01fcf5e2d840",
       "type": "place",
-      "name": "Köln",
+      "name": "K\u00f6ln",
       "aliases": [
-        "Köln"
+        "K\u00f6ln"
       ],
       "notes": "the city where the writer arrived for business",
       "mergedIntoId": null,
@@ -14291,11 +14291,11 @@
     "1cbd4cfd-3496-4369-a587-f94fa7930bdb": {
       "id": "1cbd4cfd-3496-4369-a587-f94fa7930bdb",
       "type": "event",
-      "name": "Arrival in Köln",
+      "name": "Arrival in K\u00f6ln",
       "aliases": [
-        "Arrival in Köln"
+        "Arrival in K\u00f6ln"
       ],
-      "notes": "the writer arrived in Köln for business",
+      "notes": "the writer arrived in K\u00f6ln for business",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T15:54:32.671571",
       "updatedAt": "2025-11-26T15:54:32.671571"
@@ -14579,9 +14579,9 @@
     "c6093328-b5f9-4d29-a272-003176abacd1": {
       "id": "c6093328-b5f9-4d29-a272-003176abacd1",
       "type": "people",
-      "name": "Mädel",
+      "name": "M\u00e4del",
       "aliases": [
-        "Mädel"
+        "M\u00e4del"
       ],
       "notes": "referring to another girl with whom there are feelings",
       "mergedIntoId": null,
@@ -14639,9 +14639,9 @@
     "9274e594-0d29-4695-b393-c4bfe4063ce4": {
       "id": "9274e594-0d29-4695-b393-c4bfe4063ce4",
       "type": "place",
-      "name": "Österreich",
+      "name": "\u00d6sterreich",
       "aliases": [
-        "Österreich"
+        "\u00d6sterreich"
       ],
       "notes": "country mentioned for skiing preference",
       "mergedIntoId": null,
@@ -14751,7 +14751,7 @@
       "aliases": [
         "Concern"
       ],
-      "notes": "worry about the feelings of the 'Mädel'",
+      "notes": "worry about the feelings of the 'M\u00e4del'",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T15:58:03.061579",
       "updatedAt": "2025-11-26T15:58:03.061579"
@@ -14843,9 +14843,9 @@
     "e5a94b2a-1517-4f7c-ba81-aee07d5325ae": {
       "id": "e5a94b2a-1517-4f7c-ba81-aee07d5325ae",
       "type": "place",
-      "name": "Lübeck",
+      "name": "L\u00fcbeck",
       "aliases": [
-        "Lübeck"
+        "L\u00fcbeck"
       ],
       "notes": "mentioned as a place where the writer is staying",
       "mergedIntoId": null,
@@ -15803,9 +15803,9 @@
     "d0d338c8-c718-4bda-8990-c68e511122dd": {
       "id": "d0d338c8-c718-4bda-8990-c68e511122dd",
       "type": "people",
-      "name": "František K. Strakaty",
+      "name": "Franti\u0161ek K. Strakaty",
       "aliases": [
-        "František K. Strakaty"
+        "Franti\u0161ek K. Strakaty"
       ],
       "notes": "mentioned in connection with the sender's location",
       "mergedIntoId": null,
@@ -15887,9 +15887,9 @@
     "ecdc0e4e-cc10-4597-846c-ba74d7262d3c": {
       "id": "ecdc0e4e-cc10-4597-846c-ba74d7262d3c",
       "type": "place",
-      "name": "Československo",
+      "name": "\u010ceskoslovensko",
       "aliases": [
-        "Československo"
+        "\u010ceskoslovensko"
       ],
       "notes": "the country mentioned in the document",
       "mergedIntoId": null,
@@ -15927,7 +15927,7 @@
       "aliases": [
         "Family health"
       ],
-      "notes": "concern for the sender's mother’s recovery",
+      "notes": "concern for the sender's mother\u2019s recovery",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T16:07:29.621872",
       "updatedAt": "2025-11-26T16:07:29.621872"
@@ -16019,9 +16019,9 @@
     "d252f8d5-8c0a-45f7-a57f-fee7c1dc72da": {
       "id": "d252f8d5-8c0a-45f7-a57f-fee7c1dc72da",
       "type": "people",
-      "name": "Zabūs",
+      "name": "Zab\u016bs",
       "aliases": [
-        "Zabūs"
+        "Zab\u016bs"
       ],
       "notes": "addressed in the letter, likely a close relation",
       "mergedIntoId": null,
@@ -16091,9 +16091,9 @@
     "528eaf9e-b505-48ea-b9ed-f3cbe1ba71aa": {
       "id": "528eaf9e-b505-48ea-b9ed-f3cbe1ba71aa",
       "type": "place",
-      "name": "Außenministerium",
+      "name": "Au\u00dfenministerium",
       "aliases": [
-        "Außenministerium"
+        "Au\u00dfenministerium"
       ],
       "notes": "government ministry involved in visa processing",
       "mergedIntoId": null,
@@ -16115,9 +16115,9 @@
     "a1899931-ab0b-4830-a317-8145f5f8f2e7": {
       "id": "a1899931-ab0b-4830-a317-8145f5f8f2e7",
       "type": "event",
-      "name": "Visit to Außenministerium",
+      "name": "Visit to Au\u00dfenministerium",
       "aliases": [
-        "Visit to Außenministerium"
+        "Visit to Au\u00dfenministerium"
       ],
       "notes": "the sender visited the foreign ministry to expedite the visa process",
       "mergedIntoId": null,
@@ -16155,7 +16155,7 @@
       "aliases": [
         "Longing for reunion"
       ],
-      "notes": "the sender expresses a desire to be with Zabūs",
+      "notes": "the sender expresses a desire to be with Zab\u016bs",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T16:08:57.888959",
       "updatedAt": "2025-11-26T16:08:57.888959"
@@ -17003,9 +17003,9 @@
     "6c7a611f-1105-44e1-80c6-d3a6a8578e2c": {
       "id": "6c7a611f-1105-44e1-80c6-d3a6a8578e2c",
       "type": "place",
-      "name": "Brünn",
+      "name": "Br\u00fcnn",
       "aliases": [
-        "Brünn"
+        "Br\u00fcnn"
       ],
       "notes": "a city the sender plans to travel to",
       "mergedIntoId": null,
@@ -17207,9 +17207,9 @@
     "3056e377-68cf-489c-be23-76fa12a92901": {
       "id": "3056e377-68cf-489c-be23-76fa12a92901",
       "type": "place",
-      "name": "Zabüs",
+      "name": "Zab\u00fcs",
       "aliases": [
-        "Zabüs"
+        "Zab\u00fcs"
       ],
       "notes": "addressed location in the letter",
       "mergedIntoId": null,
@@ -17843,9 +17843,9 @@
     "4dbbfea4-61b5-4f04-9686-fa5b45128fe0": {
       "id": "4dbbfea4-61b5-4f04-9686-fa5b45128fe0",
       "type": "place",
-      "name": "Palästina",
+      "name": "Pal\u00e4stina",
       "aliases": [
-        "Palästina"
+        "Pal\u00e4stina"
       ],
       "notes": "destination mentioned for Ellen's travel",
       "mergedIntoId": null,
@@ -18035,9 +18035,9 @@
     "e58736bc-72f5-4639-9254-e8ef83130320": {
       "id": "e58736bc-72f5-4639-9254-e8ef83130320",
       "type": "place",
-      "name": "Nürnberg",
+      "name": "N\u00fcrnberg",
       "aliases": [
-        "Nürnberg"
+        "N\u00fcrnberg"
       ],
       "notes": "the location where the letter was written",
       "mergedIntoId": null,
@@ -18047,9 +18047,9 @@
     "ff1b2c8e-aa49-4b77-8c20-a07e4ce01d95": {
       "id": "ff1b2c8e-aa49-4b77-8c20-a07e4ce01d95",
       "type": "place",
-      "name": "München",
+      "name": "M\u00fcnchen",
       "aliases": [
-        "München"
+        "M\u00fcnchen"
       ],
       "notes": "a city where the sender has many friends",
       "mergedIntoId": null,
@@ -18107,9 +18107,9 @@
     "57443314-88f9-48a5-8419-08e21c188fc7": {
       "id": "57443314-88f9-48a5-8419-08e21c188fc7",
       "type": "place",
-      "name": "Mecklenburgische Straße",
+      "name": "Mecklenburgische Stra\u00dfe",
       "aliases": [
-        "Mecklenburgische Straße"
+        "Mecklenburgische Stra\u00dfe"
       ],
       "notes": "the street address in Wilmersdorf, Berlin",
       "mergedIntoId": null,
@@ -18311,9 +18311,9 @@
     "be5690c4-0405-4de2-814d-a758458be91a": {
       "id": "be5690c4-0405-4de2-814d-a758458be91a",
       "type": "place",
-      "name": "Pension Häfner",
+      "name": "Pension H\u00e4fner",
       "aliases": [
-        "Pension Häfner"
+        "Pension H\u00e4fner"
       ],
       "notes": "the accommodation in Prague",
       "mergedIntoId": null,
@@ -18575,9 +18575,9 @@
     "0ddcee16-909f-4fc1-962d-a0e663e83422": {
       "id": "0ddcee16-909f-4fc1-962d-a0e663e83422",
       "type": "place",
-      "name": "Karpfen Rückert str",
+      "name": "Karpfen R\u00fcckert str",
       "aliases": [
-        "Karpfen Rückert str"
+        "Karpfen R\u00fcckert str"
       ],
       "notes": "the street where the sender's aunt lives",
       "mergedIntoId": null,
@@ -18755,9 +18755,9 @@
     "e361ad8c-1077-4fda-a047-8833d6a22fc7": {
       "id": "e361ad8c-1077-4fda-a047-8833d6a22fc7",
       "type": "people",
-      "name": "Mädel",
+      "name": "M\u00e4del",
       "aliases": [
-        "Mädel"
+        "M\u00e4del"
       ],
       "notes": "refers to a young woman who is getting married soon",
       "mergedIntoId": null,
@@ -18771,7 +18771,7 @@
       "aliases": [
         "Schweizer Generaldirektor"
       ],
-      "notes": "the wealthy young man Mädel is going to marry",
+      "notes": "the wealthy young man M\u00e4del is going to marry",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T16:34:31.371696",
       "updatedAt": "2025-11-26T16:34:31.371696"
@@ -18819,7 +18819,7 @@
       "aliases": [
         "Marriage"
       ],
-      "notes": "Mädel is planning to marry soon",
+      "notes": "M\u00e4del is planning to marry soon",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T16:34:31.406984",
       "updatedAt": "2025-11-26T16:34:31.406984"
@@ -18867,7 +18867,7 @@
       "aliases": [
         "Friendship"
       ],
-      "notes": "the bond with Zabalein and the camaraderie with Mädel",
+      "notes": "the bond with Zabalein and the camaraderie with M\u00e4del",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T16:34:31.439165",
       "updatedAt": "2025-11-26T16:34:31.439165"
@@ -19535,9 +19535,9 @@
     "384a765e-56ce-437f-b33f-5bc951eaf7d5": {
       "id": "384a765e-56ce-437f-b33f-5bc951eaf7d5",
       "type": "places",
-      "name": "Československo",
+      "name": "\u010ceskoslovensko",
       "aliases": [
-        "Československo"
+        "\u010ceskoslovensko"
       ],
       "notes": "country mentioned in the document",
       "mergedIntoId": null,
@@ -20555,9 +20555,9 @@
     "2465a36e-8d0c-43b2-9aaa-bf59302d284b": {
       "id": "2465a36e-8d0c-43b2-9aaa-bf59302d284b",
       "type": "places",
-      "name": "Československo",
+      "name": "\u010ceskoslovensko",
       "aliases": [
-        "Československo"
+        "\u010ceskoslovensko"
       ],
       "notes": "the country being referenced",
       "mergedIntoId": null,
@@ -20867,9 +20867,9 @@
     "42482634-2984-4864-a987-7496408029d3": {
       "id": "42482634-2984-4864-a987-7496408029d3",
       "type": "places",
-      "name": "Československo",
+      "name": "\u010ceskoslovensko",
       "aliases": [
-        "Československo"
+        "\u010ceskoslovensko"
       ],
       "notes": "the country mentioned in the document",
       "mergedIntoId": null,
@@ -20999,9 +20999,9 @@
     "dff566b4-35dd-4499-a572-baf3b3418448": {
       "id": "dff566b4-35dd-4499-a572-baf3b3418448",
       "type": "places",
-      "name": "Československo",
+      "name": "\u010ceskoslovensko",
       "aliases": [
-        "Československo"
+        "\u010ceskoslovensko"
       ],
       "notes": "country mentioned in the document",
       "mergedIntoId": null,
@@ -21299,9 +21299,9 @@
     "30134ea3-fb31-41f8-ac71-100be17954a6": {
       "id": "30134ea3-fb31-41f8-ac71-100be17954a6",
       "type": "places",
-      "name": "Československo",
+      "name": "\u010ceskoslovensko",
       "aliases": [
-        "Československo"
+        "\u010ceskoslovensko"
       ],
       "notes": "country mentioned in the document",
       "mergedIntoId": null,
@@ -21623,9 +21623,9 @@
     "6c62409e-5881-4e3e-a52f-2d2e3829f5e0": {
       "id": "6c62409e-5881-4e3e-a52f-2d2e3829f5e0",
       "type": "places",
-      "name": "Československo",
+      "name": "\u010ceskoslovensko",
       "aliases": [
-        "Československo"
+        "\u010ceskoslovensko"
       ],
       "notes": "the country referenced in the document",
       "mergedIntoId": null,
@@ -22967,9 +22967,9 @@
     "8c627e77-c2d2-453a-af9b-d631c2273ac8": {
       "id": "8c627e77-c2d2-453a-af9b-d631c2273ac8",
       "type": "places",
-      "name": "Hotel des Pyrénées",
+      "name": "Hotel des Pyr\u00e9n\u00e9es",
       "aliases": [
-        "Hotel des Pyrénées"
+        "Hotel des Pyr\u00e9n\u00e9es"
       ],
       "notes": "address mentioned, possibly a significant location in Paris",
       "mergedIntoId": null,
@@ -22983,7 +22983,7 @@
       "aliases": [
         "Paris"
       ],
-      "notes": "city where the Hotel des Pyrénées is located",
+      "notes": "city where the Hotel des Pyr\u00e9n\u00e9es is located",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T17:46:56.236922",
       "updatedAt": "2025-11-26T17:46:56.236922"
@@ -23147,9 +23147,9 @@
     "2a478bbf-25c3-4d77-a203-cb06de36af56": {
       "id": "2a478bbf-25c3-4d77-a203-cb06de36af56",
       "type": "places",
-      "name": "Quesort Синон Dist",
+      "name": "Quesort \u0421\u0438\u043d\u043e\u043d Dist",
       "aliases": [
-        "Quesort Синон Dist"
+        "Quesort \u0421\u0438\u043d\u043e\u043d Dist"
       ],
       "notes": "Location referenced in the document",
       "mergedIntoId": null,
@@ -23315,9 +23315,9 @@
     "fb87f050-68fe-4eae-904b-8bd5a335eabf": {
       "id": "fb87f050-68fe-4eae-904b-8bd5a335eabf",
       "type": "people",
-      "name": "Sefüll Gabers",
+      "name": "Sef\u00fcll Gabers",
       "aliases": [
-        "Sefüll Gabers"
+        "Sef\u00fcll Gabers"
       ],
       "notes": "mentioned in a context of expectation",
       "mergedIntoId": null,
@@ -23555,9 +23555,9 @@
     "57cc1414-ba37-4d5f-ac51-029a29c55ac8": {
       "id": "57cc1414-ba37-4d5f-ac51-029a29c55ac8",
       "type": "people",
-      "name": "Regé",
+      "name": "Reg\u00e9",
       "aliases": [
-        "Regé"
+        "Reg\u00e9"
       ],
       "notes": "mentioned as someone learning Czech",
       "mergedIntoId": null,
@@ -23667,7 +23667,7 @@
       "aliases": [
         "Learning Czech"
       ],
-      "notes": "the author and Regé are starting to learn the language",
+      "notes": "the author and Reg\u00e9 are starting to learn the language",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T17:47:40.910805",
       "updatedAt": "2025-11-26T17:47:40.910805"
@@ -24659,9 +24659,9 @@
     "542cb538-2e3c-4a75-a23a-f18b35183674": {
       "id": "542cb538-2e3c-4a75-a23a-f18b35183674",
       "type": "places",
-      "name": "Ruská 48",
+      "name": "Rusk\u00e1 48",
       "aliases": [
-        "Ruská 48"
+        "Rusk\u00e1 48"
       ],
       "notes": "Specific address in Prague mentioned",
       "mergedIntoId": null,
@@ -25127,9 +25127,9 @@
     "0f74625d-b986-4c25-b2a7-beda5c19b067": {
       "id": "0f74625d-b986-4c25-b2a7-beda5c19b067",
       "type": "places",
-      "name": "Světozor",
+      "name": "Sv\u011btozor",
       "aliases": [
-        "Světozor"
+        "Sv\u011btozor"
       ],
       "notes": "publication that has not yet appeared",
       "mergedIntoId": null,
@@ -27263,9 +27263,9 @@
     "143d4b11-9025-4a9f-813b-b006ee728f82": {
       "id": "143d4b11-9025-4a9f-813b-b006ee728f82",
       "type": "people",
-      "name": "Tory György",
+      "name": "Tory Gy\u00f6rgy",
       "aliases": [
-        "Tory György"
+        "Tory Gy\u00f6rgy"
       ],
       "notes": "the recipient mentioned in the address",
       "mergedIntoId": null,
@@ -27311,9 +27311,9 @@
     "6600460c-4c8c-4a8c-83a4-e53d22d27185": {
       "id": "6600460c-4c8c-4a8c-83a4-e53d22d27185",
       "type": "places",
-      "name": "Lónyay utca",
+      "name": "L\u00f3nyay utca",
       "aliases": [
-        "Lónyay utca"
+        "L\u00f3nyay utca"
       ],
       "notes": "specific street in Budapest mentioned in the address",
       "mergedIntoId": null,
@@ -27495,7 +27495,7 @@
       "aliases": [
         "Marienbad"
       ],
-      "notes": "location where the author is sitting in a café",
+      "notes": "location where the author is sitting in a caf\u00e9",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:35:34.828762",
       "updatedAt": "2025-11-26T18:35:34.828762"
@@ -27767,9 +27767,9 @@
     "45d44aac-3991-4868-8ce8-4eb7d1c9391e": {
       "id": "45d44aac-3991-4868-8ce8-4eb7d1c9391e",
       "type": "places",
-      "name": "Durlacherstraße 43",
+      "name": "Durlacherstra\u00dfe 43",
       "aliases": [
-        "Durlacherstraße 43"
+        "Durlacherstra\u00dfe 43"
       ],
       "notes": "specific address in Pforzheim",
       "mergedIntoId": null,
@@ -27791,9 +27791,9 @@
     "371affba-c320-493c-9c4b-322aa25e96da": {
       "id": "371affba-c320-493c-9c4b-322aa25e96da",
       "type": "events",
-      "name": "Visit to café and cinema",
+      "name": "Visit to caf\u00e9 and cinema",
       "aliases": [
-        "Visit to café and cinema"
+        "Visit to caf\u00e9 and cinema"
       ],
       "notes": "the writer saw Walter at these locations",
       "mergedIntoId": null,
@@ -27959,9 +27959,9 @@
     "d3e6def7-8c4b-46ee-ae26-7b67fa827c3f": {
       "id": "d3e6def7-8c4b-46ee-ae26-7b67fa827c3f",
       "type": "places",
-      "name": "Düsseldorf",
+      "name": "D\u00fcsseldorf",
       "aliases": [
-        "Düsseldorf"
+        "D\u00fcsseldorf"
       ],
       "notes": "another stop on the travel route",
       "mergedIntoId": null,
@@ -28023,7 +28023,7 @@
       "aliases": [
         "Travel"
       ],
-      "notes": "the writer is leaving for Cologne and Düsseldorf",
+      "notes": "the writer is leaving for Cologne and D\u00fcsseldorf",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:36:08.334565",
       "updatedAt": "2025-11-26T18:36:08.334565"
@@ -28343,9 +28343,9 @@
     "4520b056-63e1-40fe-adec-6b87c22bd866": {
       "id": "4520b056-63e1-40fe-adec-6b87c22bd866",
       "type": "people",
-      "name": "Halière",
+      "name": "Hali\u00e8re",
       "aliases": [
-        "Halière"
+        "Hali\u00e8re"
       ],
       "notes": "mentioned as someone the writer writes to",
       "mergedIntoId": null,
@@ -28883,9 +28883,9 @@
     "10d51aa4-369a-46bc-9d04-7f1fb1903edb": {
       "id": "10d51aa4-369a-46bc-9d04-7f1fb1903edb",
       "type": "places",
-      "name": "Königsberg",
+      "name": "K\u00f6nigsberg",
       "aliases": [
-        "Königsberg"
+        "K\u00f6nigsberg"
       ],
       "notes": "destination mentioned for a visit",
       "mergedIntoId": null,
@@ -28899,7 +28899,7 @@
       "aliases": [
         "Latvia"
       ],
-      "notes": "geographic reference related to Königsberg",
+      "notes": "geographic reference related to K\u00f6nigsberg",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:37:09.136402",
       "updatedAt": "2025-11-26T18:37:09.136402"
@@ -28955,11 +28955,11 @@
     "efc66af7-c331-446e-a393-930937375ed0": {
       "id": "efc66af7-c331-446e-a393-930937375ed0",
       "type": "events",
-      "name": "Travel to Königsberg",
+      "name": "Travel to K\u00f6nigsberg",
       "aliases": [
-        "Travel to Königsberg"
+        "Travel to K\u00f6nigsberg"
       ],
-      "notes": "the sender mentions traveling to Königsberg soon",
+      "notes": "the sender mentions traveling to K\u00f6nigsberg soon",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:37:09.195685",
       "updatedAt": "2025-11-26T18:37:09.195685"
@@ -29327,9 +29327,9 @@
     "c78b9f7d-8e7a-4863-8e37-c7ee848d33a6": {
       "id": "c78b9f7d-8e7a-4863-8e37-c7ee848d33a6",
       "type": "places",
-      "name": "Gartenstraße",
+      "name": "Gartenstra\u00dfe",
       "aliases": [
-        "Gartenstraße"
+        "Gartenstra\u00dfe"
       ],
       "notes": "specific street mentioned in Breslau",
       "mergedIntoId": null,
@@ -29783,9 +29783,9 @@
     "4f8764c5-777c-4a98-85d4-907d7c761ad2": {
       "id": "4f8764c5-777c-4a98-85d4-907d7c761ad2",
       "type": "people",
-      "name": "Mr. Jū",
+      "name": "Mr. J\u016b",
       "aliases": [
-        "Mr. Jū"
+        "Mr. J\u016b"
       ],
       "notes": "unknown individual who offered a job",
       "mergedIntoId": null,
@@ -29991,7 +29991,7 @@
       "aliases": [
         "Job offer"
       ],
-      "notes": "Mr. Jū offered a job at the new factory",
+      "notes": "Mr. J\u016b offered a job at the new factory",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:38:19.554177",
       "updatedAt": "2025-11-26T18:38:19.554177"
@@ -30491,9 +30491,9 @@
     "40463d3f-bfa1-4ed9-ad0a-417aeafaf943": {
       "id": "40463d3f-bfa1-4ed9-ad0a-417aeafaf943",
       "type": "people",
-      "name": "Körne",
+      "name": "K\u00f6rne",
       "aliases": [
-        "Körne"
+        "K\u00f6rne"
       ],
       "notes": "the sender of the letter",
       "mergedIntoId": null,
@@ -30743,9 +30743,9 @@
     "6089fa23-8e81-499a-8a3a-09150e049992": {
       "id": "6089fa23-8e81-499a-8a3a-09150e049992",
       "type": "places",
-      "name": "Lübeck",
+      "name": "L\u00fcbeck",
       "aliases": [
-        "Lübeck"
+        "L\u00fcbeck"
       ],
       "notes": "the location where the writer is staying until Tuesday",
       "mergedIntoId": null,
@@ -30819,7 +30819,7 @@
       "aliases": [
         "Travel"
       ],
-      "notes": "the writer's journey to various locations including Lübeck and Berlin",
+      "notes": "the writer's journey to various locations including L\u00fcbeck and Berlin",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:39:14.787785",
       "updatedAt": "2025-11-26T18:39:14.787785"
@@ -31679,9 +31679,9 @@
     "e7de41f1-0999-461a-bd4b-7e481f23ff34": {
       "id": "e7de41f1-0999-461a-bd4b-7e481f23ff34",
       "type": "people",
-      "name": "František K. Strakaty Roup",
+      "name": "Franti\u0161ek K. Strakaty Roup",
       "aliases": [
-        "František K. Strakaty Roup"
+        "Franti\u0161ek K. Strakaty Roup"
       ],
       "notes": "mentioned in the address",
       "mergedIntoId": null,
@@ -31859,9 +31859,9 @@
     "051db73b-a64d-4c0a-b378-1d4d2fafbf7f": {
       "id": "051db73b-a64d-4c0a-b378-1d4d2fafbf7f",
       "type": "people",
-      "name": "Zabūs",
+      "name": "Zab\u016bs",
       "aliases": [
-        "Zabūs"
+        "Zab\u016bs"
       ],
       "notes": "recipient of the letter",
       "mergedIntoId": null,
@@ -32019,7 +32019,7 @@
       "aliases": [
         "Letter Arrival"
       ],
-      "notes": "Zabūs' letter arrived after a delay",
+      "notes": "Zab\u016bs' letter arrived after a delay",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:40:20.960878",
       "updatedAt": "2025-11-26T18:40:20.960878"
@@ -32043,7 +32043,7 @@
       "aliases": [
         "Longing"
       ],
-      "notes": "the desire to reunite with Zabūs",
+      "notes": "the desire to reunite with Zab\u016bs",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:40:20.987500",
       "updatedAt": "2025-11-26T18:40:20.987500"
@@ -32091,7 +32091,7 @@
       "aliases": [
         "Hope"
       ],
-      "notes": "the author's optimism about eventually resolving travel issues and seeing Zabūs",
+      "notes": "the author's optimism about eventually resolving travel issues and seeing Zab\u016bs",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:40:21.039918",
       "updatedAt": "2025-11-26T18:40:21.039918"
@@ -32807,9 +32807,9 @@
     "f2b512e1-e566-49bd-87b4-5e364e449502": {
       "id": "f2b512e1-e566-49bd-87b4-5e364e449502",
       "type": "people",
-      "name": "Betty Näher",
+      "name": "Betty N\u00e4her",
       "aliases": [
-        "Betty Näher"
+        "Betty N\u00e4her"
       ],
       "notes": "the sender of the letter",
       "mergedIntoId": null,
@@ -32891,9 +32891,9 @@
     "8b9910df-4c98-420f-9a44-f759cd07b93f": {
       "id": "8b9910df-4c98-420f-9a44-f759cd07b93f",
       "type": "places",
-      "name": "Schönberg",
+      "name": "Sch\u00f6nberg",
       "aliases": [
-        "Schönberg"
+        "Sch\u00f6nberg"
       ],
       "notes": "the location of the sender's home",
       "mergedIntoId": null,
@@ -33047,9 +33047,9 @@
     "d7933703-5195-4a4e-98ca-b3e3a3f0cfe0": {
       "id": "d7933703-5195-4a4e-98ca-b3e3a3f0cfe0",
       "type": "people",
-      "name": "Zabüs",
+      "name": "Zab\u00fcs",
       "aliases": [
-        "Zabüs"
+        "Zab\u00fcs"
       ],
       "notes": "dear nickname or term of endearment for Bob",
       "mergedIntoId": null,
@@ -33083,9 +33083,9 @@
     "3bcc75e5-5fd5-47bf-a3e0-4826673bdeb0": {
       "id": "3bcc75e5-5fd5-47bf-a3e0-4826673bdeb0",
       "type": "places",
-      "name": "Zölum",
+      "name": "Z\u00f6lum",
       "aliases": [
-        "Zölum"
+        "Z\u00f6lum"
       ],
       "notes": "location of the sender",
       "mergedIntoId": null,
@@ -34031,9 +34031,9 @@
     "c4c3bd0f-0b8d-460b-a9cc-b1e388657061": {
       "id": "c4c3bd0f-0b8d-460b-a9cc-b1e388657061",
       "type": "places",
-      "name": "Mecklenburgische Straße",
+      "name": "Mecklenburgische Stra\u00dfe",
       "aliases": [
-        "Mecklenburgische Straße"
+        "Mecklenburgische Stra\u00dfe"
       ],
       "notes": "the street address for the sender's location in Berlin",
       "mergedIntoId": null,
@@ -34283,9 +34283,9 @@
     "0434753f-83ef-4b7e-b69b-ec9cc9c7eece": {
       "id": "0434753f-83ef-4b7e-b69b-ec9cc9c7eece",
       "type": "places",
-      "name": "Pension Häfner",
+      "name": "Pension H\u00e4fner",
       "aliases": [
-        "Pension Häfner"
+        "Pension H\u00e4fner"
       ],
       "notes": "the accommodation in Prague where Zabalin will be staying",
       "mergedIntoId": null,
@@ -34547,9 +34547,9 @@
     "b84a42a9-a173-4f62-898f-91a3a3a1aa29": {
       "id": "b84a42a9-a173-4f62-898f-91a3a3a1aa29",
       "type": "places",
-      "name": "Karpfen Rückert Street",
+      "name": "Karpfen R\u00fcckert Street",
       "aliases": [
-        "Karpfen Rückert Street"
+        "Karpfen R\u00fcckert Street"
       ],
       "notes": "the specific street where the aunt lives",
       "mergedIntoId": null,
@@ -34755,7 +34755,7 @@
       "aliases": [
         "Swiss CEO"
       ],
-      "notes": "the girl’s future fiancé",
+      "notes": "the girl\u2019s future fianc\u00e9",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:43:19.321611",
       "updatedAt": "2025-11-26T18:43:19.321611"
@@ -34875,7 +34875,7 @@
       "aliases": [
         "Sadness"
       ],
-      "notes": "the narrator feels sadness about the girl’s upcoming marriage",
+      "notes": "the narrator feels sadness about the girl\u2019s upcoming marriage",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T18:43:19.468941",
       "updatedAt": "2025-11-26T18:43:19.468941"
@@ -35723,9 +35723,9 @@
     "816fe484-58f0-4783-9aaa-2f92f39044a8": {
       "id": "816fe484-58f0-4783-9aaa-2f92f39044a8",
       "type": "places",
-      "name": "Ruská 48",
+      "name": "Rusk\u00e1 48",
       "aliases": [
-        "Ruská 48"
+        "Rusk\u00e1 48"
       ],
       "notes": "Specific address mentioned in the document",
       "mergedIntoId": null,
@@ -36035,9 +36035,9 @@
     "d658a3f4-6c63-4598-90c4-60edc7611f22": {
       "id": "d658a3f4-6c63-4598-90c4-60edc7611f22",
       "type": "places",
-      "name": "Ruská 48",
+      "name": "Rusk\u00e1 48",
       "aliases": [
-        "Ruská 48"
+        "Rusk\u00e1 48"
       ],
       "notes": "Specific address related to the press service",
       "mergedIntoId": null,
@@ -36311,9 +36311,9 @@
     "e78d4d37-4e60-40ce-8e21-f060c1cc4428": {
       "id": "e78d4d37-4e60-40ce-8e21-f060c1cc4428",
       "type": "people",
-      "name": "Kästner",
+      "name": "K\u00e4stner",
       "aliases": [
-        "Kästner"
+        "K\u00e4stner"
       ],
       "notes": "Author of a book mentioned",
       "mergedIntoId": null,
@@ -36395,9 +36395,9 @@
     "7356e7e4-53e4-47ce-921e-9d252342e400": {
       "id": "7356e7e4-53e4-47ce-921e-9d252342e400",
       "type": "places",
-      "name": "Ruská 48",
+      "name": "Rusk\u00e1 48",
       "aliases": [
-        "Ruská 48"
+        "Rusk\u00e1 48"
       ],
       "notes": "Specific address mentioned in the document",
       "mergedIntoId": null,
@@ -36671,9 +36671,9 @@
     "b6fb3de0-36ec-45de-a722-6cb1d1e4b028": {
       "id": "b6fb3de0-36ec-45de-a722-6cb1d1e4b028",
       "type": "people",
-      "name": "Kästner",
+      "name": "K\u00e4stner",
       "aliases": [
-        "Kästner"
+        "K\u00e4stner"
       ],
       "notes": "Referenced author of 'Three Hens in the Snow'",
       "mergedIntoId": null,
@@ -36755,9 +36755,9 @@
     "54c1231f-1a14-4343-9e77-e16536b9923b": {
       "id": "54c1231f-1a14-4343-9e77-e16536b9923b",
       "type": "places",
-      "name": "Ruská 48",
+      "name": "Rusk\u00e1 48",
       "aliases": [
-        "Ruská 48"
+        "Rusk\u00e1 48"
       ],
       "notes": "Specific address mentioned in the document",
       "mergedIntoId": null,
@@ -36959,9 +36959,9 @@
     "5491222c-09ac-4381-897b-8ae9ad42865f": {
       "id": "5491222c-09ac-4381-897b-8ae9ad42865f",
       "type": "places",
-      "name": "Československo",
+      "name": "\u010ceskoslovensko",
       "aliases": [
-        "Československo"
+        "\u010ceskoslovensko"
       ],
       "notes": "the country mentioned multiple times",
       "mergedIntoId": null,
@@ -38351,9 +38351,9 @@
     "39b5223c-7626-49cf-b1ec-22477b829289": {
       "id": "39b5223c-7626-49cf-b1ec-22477b829289",
       "type": "places",
-      "name": "Hotel des Pyrénées",
+      "name": "Hotel des Pyr\u00e9n\u00e9es",
       "aliases": [
-        "Hotel des Pyrénées"
+        "Hotel des Pyr\u00e9n\u00e9es"
       ],
       "notes": "specific hotel mentioned in the address",
       "mergedIntoId": null,
@@ -38579,9 +38579,9 @@
     "87d39f9b-5970-4ee2-adc8-7bf908719c0f": {
       "id": "87d39f9b-5970-4ee2-adc8-7bf908719c0f",
       "type": "places",
-      "name": "Quesort Синон Dist",
+      "name": "Quesort \u0421\u0438\u043d\u043e\u043d Dist",
       "aliases": [
-        "Quesort Синон Dist"
+        "Quesort \u0421\u0438\u043d\u043e\u043d Dist"
       ],
       "notes": "location referenced in the opening",
       "mergedIntoId": null,
@@ -38735,9 +38735,9 @@
     "fa4788ed-2d46-4ab7-a251-410881abb24a": {
       "id": "fa4788ed-2d46-4ab7-a251-410881abb24a",
       "type": "people",
-      "name": "Sefüll Gabers",
+      "name": "Sef\u00fcll Gabers",
       "aliases": [
-        "Sefüll Gabers"
+        "Sef\u00fcll Gabers"
       ],
       "notes": "mentioned in a personal context",
       "mergedIntoId": null,
@@ -38975,9 +38975,9 @@
     "63926933-3d82-4e6e-99ef-37f489b2a095": {
       "id": "63926933-3d82-4e6e-99ef-37f489b2a095",
       "type": "people",
-      "name": "Regé",
+      "name": "Reg\u00e9",
       "aliases": [
-        "Regé"
+        "Reg\u00e9"
       ],
       "notes": "learning Czech and mentioned in relation to adapting to the new situation",
       "mergedIntoId": null,
@@ -39087,7 +39087,7 @@
       "aliases": [
         "Learning Czech"
       ],
-      "notes": "the writer and Regé are starting to learn the language",
+      "notes": "the writer and Reg\u00e9 are starting to learn the language",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:16:26.450779",
       "updatedAt": "2025-11-26T19:16:26.450779"
@@ -40055,9 +40055,9 @@
     "8db9f09b-1338-4e82-85cc-ba97bfb1d604": {
       "id": "8db9f09b-1338-4e82-85cc-ba97bfb1d604",
       "type": "places",
-      "name": "Ruská 48",
+      "name": "Rusk\u00e1 48",
       "aliases": [
-        "Ruská 48"
+        "Rusk\u00e1 48"
       ],
       "notes": "Specific address mentioned in the document",
       "mergedIntoId": null,
@@ -40155,7 +40155,7 @@
       "aliases": [
         "Cultural references"
       ],
-      "notes": "Mention of books and authors like Werfel and Kästner",
+      "notes": "Mention of books and authors like Werfel and K\u00e4stner",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:17:56.946639",
       "updatedAt": "2025-11-26T19:17:56.946639"
@@ -40523,9 +40523,9 @@
     "cb57f32b-d52e-482a-bd53-4a12fbc072b6": {
       "id": "cb57f32b-d52e-482a-bd53-4a12fbc072b6",
       "type": "places",
-      "name": "Světozor",
+      "name": "Sv\u011btozor",
       "aliases": [
-        "Světozor"
+        "Sv\u011btozor"
       ],
       "notes": "publication mentioned regarding the acceptance of a novel",
       "mergedIntoId": null,
@@ -42587,9 +42587,9 @@
     "2f495801-a37d-4963-99ad-70c60b8ebaee": {
       "id": "2f495801-a37d-4963-99ad-70c60b8ebaee",
       "type": "people",
-      "name": "György Tory",
+      "name": "Gy\u00f6rgy Tory",
       "aliases": [
-        "György Tory"
+        "Gy\u00f6rgy Tory"
       ],
       "notes": "recipient mentioned in the address",
       "mergedIntoId": null,
@@ -42771,7 +42771,7 @@
       "aliases": [
         "Marienbad"
       ],
-      "notes": "location where the author is sitting in a café",
+      "notes": "location where the author is sitting in a caf\u00e9",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:22:03.172440",
       "updatedAt": "2025-11-26T19:22:03.172440"
@@ -42951,7 +42951,7 @@
       "aliases": [
         "Walter"
       ],
-      "notes": "mentioned as someone seen at the café and cinema",
+      "notes": "mentioned as someone seen at the caf\u00e9 and cinema",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:22:23.006935",
       "updatedAt": "2025-11-26T19:22:23.006935"
@@ -43043,9 +43043,9 @@
     "e1a49780-89b4-42bb-b8d0-c6d1b9578f3c": {
       "id": "e1a49780-89b4-42bb-b8d0-c6d1b9578f3c",
       "type": "places",
-      "name": "Durlacherstraße 43",
+      "name": "Durlacherstra\u00dfe 43",
       "aliases": [
-        "Durlacherstraße 43"
+        "Durlacherstra\u00dfe 43"
       ],
       "notes": "specific address in Pforzheim",
       "mergedIntoId": null,
@@ -43067,9 +43067,9 @@
     "1972f75e-fb91-4eed-862b-b8f5d56167ab": {
       "id": "1972f75e-fb91-4eed-862b-b8f5d56167ab",
       "type": "events",
-      "name": "Visit to café and cinema",
+      "name": "Visit to caf\u00e9 and cinema",
       "aliases": [
-        "Visit to café and cinema"
+        "Visit to caf\u00e9 and cinema"
       ],
       "notes": "the writer saw Walter for the first time",
       "mergedIntoId": null,
@@ -43223,9 +43223,9 @@
     "aece8fb6-6f17-401d-9e1d-d9c654d9c39f": {
       "id": "aece8fb6-6f17-401d-9e1d-d9c654d9c39f",
       "type": "places",
-      "name": "Düsseldorf",
+      "name": "D\u00fcsseldorf",
       "aliases": [
-        "Düsseldorf"
+        "D\u00fcsseldorf"
       ],
       "notes": "next stop after Cologne",
       "mergedIntoId": null,
@@ -43571,9 +43571,9 @@
     "a9649c25-d313-4ccb-9622-831f17d54965": {
       "id": "a9649c25-d313-4ccb-9622-831f17d54965",
       "type": "people",
-      "name": "Halière",
+      "name": "Hali\u00e8re",
       "aliases": [
-        "Halière"
+        "Hali\u00e8re"
       ],
       "notes": "another individual mentioned in the correspondence",
       "mergedIntoId": null,
@@ -44111,9 +44111,9 @@
     "1a7f04f1-5abb-47a9-8fa7-fe8008d3b129": {
       "id": "1a7f04f1-5abb-47a9-8fa7-fe8008d3b129",
       "type": "places",
-      "name": "Königsberg",
+      "name": "K\u00f6nigsberg",
       "aliases": [
-        "Königsberg"
+        "K\u00f6nigsberg"
       ],
       "notes": "a city the sender plans to visit",
       "mergedIntoId": null,
@@ -44127,7 +44127,7 @@
       "aliases": [
         "Latvia"
       ],
-      "notes": "mentioned as a nearby country to Königsberg",
+      "notes": "mentioned as a nearby country to K\u00f6nigsberg",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:23:48.359543",
       "updatedAt": "2025-11-26T19:23:48.359543"
@@ -44183,11 +44183,11 @@
     "f0bd6d73-5a55-4f34-a311-d607eed5b632": {
       "id": "f0bd6d73-5a55-4f34-a311-d607eed5b632",
       "type": "events",
-      "name": "Visit to Königsberg",
+      "name": "Visit to K\u00f6nigsberg",
       "aliases": [
-        "Visit to Königsberg"
+        "Visit to K\u00f6nigsberg"
       ],
-      "notes": "the sender plans to be in Königsberg by October 20th",
+      "notes": "the sender plans to be in K\u00f6nigsberg by October 20th",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:23:48.452089",
       "updatedAt": "2025-11-26T19:23:48.452089"
@@ -44519,9 +44519,9 @@
     "df2dd873-cbd6-4618-afe0-b5ec4af42c57": {
       "id": "df2dd873-cbd6-4618-afe0-b5ec4af42c57",
       "type": "places",
-      "name": "Gartenstraße",
+      "name": "Gartenstra\u00dfe",
       "aliases": [
-        "Gartenstraße"
+        "Gartenstra\u00dfe"
       ],
       "notes": "street mentioned for hotel directions",
       "mergedIntoId": null,
@@ -45011,9 +45011,9 @@
     "79bf8c59-6b32-41e8-aa91-3768fd77720c": {
       "id": "79bf8c59-6b32-41e8-aa91-3768fd77720c",
       "type": "people",
-      "name": "Mr. Jū",
+      "name": "Mr. J\u016b",
       "aliases": [
-        "Mr. Jū"
+        "Mr. J\u016b"
       ],
       "notes": "unknown individual who offered a job",
       "mergedIntoId": null,
@@ -45207,7 +45207,7 @@
       "aliases": [
         "Job Offer"
       ],
-      "notes": "Mr. Jū offered a job at a factory",
+      "notes": "Mr. J\u016b offered a job at a factory",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:25:07.195301",
       "updatedAt": "2025-11-26T19:25:07.195301"
@@ -45719,9 +45719,9 @@
     "0220640e-5be1-4ad1-b6aa-fffc0b5563d3": {
       "id": "0220640e-5be1-4ad1-b6aa-fffc0b5563d3",
       "type": "people",
-      "name": "Körne",
+      "name": "K\u00f6rne",
       "aliases": [
-        "Körne"
+        "K\u00f6rne"
       ],
       "notes": "the sender of the letter",
       "mergedIntoId": null,
@@ -46007,9 +46007,9 @@
     "bc49b01d-87a6-4e92-b24c-b14c48859fe2": {
       "id": "bc49b01d-87a6-4e92-b24c-b14c48859fe2",
       "type": "places",
-      "name": "Lübeck",
+      "name": "L\u00fcbeck",
       "aliases": [
-        "Lübeck"
+        "L\u00fcbeck"
       ],
       "notes": "the place where the writer is staying until Tuesday",
       "mergedIntoId": null,
@@ -46955,9 +46955,9 @@
     "402de9aa-7ac5-407f-a66b-aad57707858a": {
       "id": "402de9aa-7ac5-407f-a66b-aad57707858a",
       "type": "people",
-      "name": "František K. Strakaty Roup",
+      "name": "Franti\u0161ek K. Strakaty Roup",
       "aliases": [
-        "František K. Strakaty Roup"
+        "Franti\u0161ek K. Strakaty Roup"
       ],
       "notes": "mentioned in the address",
       "mergedIntoId": null,
@@ -47135,9 +47135,9 @@
     "0c675dd8-1a19-4018-a0a9-0d2cca0e5423": {
       "id": "0c675dd8-1a19-4018-a0a9-0d2cca0e5423",
       "type": "people",
-      "name": "Zabūs",
+      "name": "Zab\u016bs",
       "aliases": [
-        "Zabūs"
+        "Zab\u016bs"
       ],
       "notes": "recipient of the letter",
       "mergedIntoId": null,
@@ -47295,7 +47295,7 @@
       "aliases": [
         "Letter arrival"
       ],
-      "notes": "arrival of a letter from Zabūs after a delay",
+      "notes": "arrival of a letter from Zab\u016bs after a delay",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:27:40.507807",
       "updatedAt": "2025-11-26T19:27:40.507807"
@@ -47343,7 +47343,7 @@
       "aliases": [
         "Longing for reunion"
       ],
-      "notes": "desire to see Zabūs and the emotional toll of separation",
+      "notes": "desire to see Zab\u016bs and the emotional toll of separation",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:27:40.586960",
       "updatedAt": "2025-11-26T19:27:40.586960"
@@ -47355,7 +47355,7 @@
       "aliases": [
         "Efforts for assistance"
       ],
-      "notes": "sender's commitment to help Zabūs despite challenges",
+      "notes": "sender's commitment to help Zab\u016bs despite challenges",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:27:40.606788",
       "updatedAt": "2025-11-26T19:27:40.606788"
@@ -47391,7 +47391,7 @@
       "aliases": [
         "Hope"
       ],
-      "notes": "hope for successful travel and reunion with Zabūs",
+      "notes": "hope for successful travel and reunion with Zab\u016bs",
       "mergedIntoId": null,
       "createdAt": "2025-11-26T19:27:40.666656",
       "updatedAt": "2025-11-26T19:27:40.666656"
@@ -48155,9 +48155,9 @@
     "0248f6e0-cf63-4a15-b0ab-4e125d8187cd": {
       "id": "0248f6e0-cf63-4a15-b0ab-4e125d8187cd",
       "type": "people",
-      "name": "Betty Näher",
+      "name": "Betty N\u00e4her",
       "aliases": [
-        "Betty Näher"
+        "Betty N\u00e4her"
       ],
       "notes": "the sender of the letter",
       "mergedIntoId": null,
@@ -48239,9 +48239,9 @@
     "c3d0be43-8be1-487a-b856-7109a8f99d3a": {
       "id": "c3d0be43-8be1-487a-b856-7109a8f99d3a",
       "type": "places",
-      "name": "Schönberg",
+      "name": "Sch\u00f6nberg",
       "aliases": [
-        "Schönberg"
+        "Sch\u00f6nberg"
       ],
       "notes": "location of the sender's home",
       "mergedIntoId": null,
@@ -48431,9 +48431,9 @@
     "ace4b354-fe49-45f4-a2a9-50ef18b96f42": {
       "id": "ace4b354-fe49-45f4-a2a9-50ef18b96f42",
       "type": "places",
-      "name": "Zabüs",
+      "name": "Zab\u00fcs",
       "aliases": [
-        "Zabüs"
+        "Zab\u00fcs"
       ],
       "notes": "location referenced in the letter",
       "mergedIntoId": null,
@@ -49271,9 +49271,9 @@
     "2fb35b21-6a6e-4291-ab86-05faa05b463a": {
       "id": "2fb35b21-6a6e-4291-ab86-05faa05b463a",
       "type": "places",
-      "name": "Mecklenburgische Straße",
+      "name": "Mecklenburgische Stra\u00dfe",
       "aliases": [
-        "Mecklenburgische Straße"
+        "Mecklenburgische Stra\u00dfe"
       ],
       "notes": "the specific street address in Berlin mentioned for correspondence",
       "mergedIntoId": null,
@@ -49703,9 +49703,9 @@
     "32c54f8d-9139-4655-9a47-48a35431cbce": {
       "id": "32c54f8d-9139-4655-9a47-48a35431cbce",
       "type": "places",
-      "name": "Karpfen Rückert Street",
+      "name": "Karpfen R\u00fcckert Street",
       "aliases": [
-        "Karpfen Rückert Street"
+        "Karpfen R\u00fcckert Street"
       ],
       "notes": "specific location where the author will stay in Hanover",
       "mergedIntoId": null,
@@ -51755,9 +51755,9 @@
     "4b77ddaa-d79e-46af-a92d-466e05705a56": {
       "id": "4b77ddaa-d79e-46af-a92d-466e05705a56",
       "type": "place",
-      "name": "Budapest IX. Lónyai U.17, Hungary",
+      "name": "Budapest IX. L\u00f3nyai U.17, Hungary",
       "aliases": [
-        "Budapest IX. Lónyai U.17, Hungary"
+        "Budapest IX. L\u00f3nyai U.17, Hungary"
       ],
       "notes": "recipient address, home",
       "mergedIntoId": null,
@@ -51875,9 +51875,9 @@
     "33f50059-ae8a-461a-a11a-ad9dc402c986": {
       "id": "33f50059-ae8a-461a-a11a-ad9dc402c986",
       "type": "place",
-      "name": "Budapest IX. Lónyai U.17, Hungary",
+      "name": "Budapest IX. L\u00f3nyai U.17, Hungary",
       "aliases": [
-        "Budapest IX. Lónyai U.17, Hungary"
+        "Budapest IX. L\u00f3nyai U.17, Hungary"
       ],
       "notes": "recipient location, home address",
       "mergedIntoId": null,
