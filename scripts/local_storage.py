@@ -882,7 +882,7 @@ class LocalOCRStorage:
         """
         Resolve a person name (which might be old/outdated) to its current canonical name.
         Searches metadata['people'] to find the person by normalized name or alias,
-        and returns the primary display name (first alias with proper casing).
+        and returns the display_name or first alias.
         
         Args:
             name: The person name to resolve (could be old/outdated)
@@ -898,11 +898,13 @@ class LocalOCRStorage:
         # First, check if it's a direct key
         if normalized in self.metadata["people"]:
             person_data = self.metadata["people"][normalized]
+            # Prefer display_name if set
+            if person_data.get("display_name"):
+                return person_data["display_name"]
+            # Otherwise return first alias
             aliases = person_data.get("aliases", [])
-            # Return the first alias with proper casing (primary canonical name)
-            for alias in aliases:
-                if alias != normalized and alias != alias.lower():
-                    return alias
+            if aliases:
+                return aliases[0]
             # Fallback to title case
             return name.title()
         
@@ -911,10 +913,12 @@ class LocalOCRStorage:
             aliases = person_data.get("aliases", [])
             # Check if the name matches any alias (case-insensitive)
             if any(self.normalize_name(alias) == normalized for alias in aliases):
-                # Found it! Return the primary canonical name (first properly-cased alias)
-                for alias in aliases:
-                    if alias != key and alias != alias.lower():
-                        return alias
+                # Found it! Prefer display_name if set
+                if person_data.get("display_name"):
+                    return person_data["display_name"]
+                # Otherwise return first alias
+                if aliases:
+                    return aliases[0]
                 # Fallback to title case of the key
                 return key.title()
         
