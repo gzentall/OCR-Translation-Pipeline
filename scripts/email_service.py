@@ -474,3 +474,170 @@ if __name__ == '__main__':
     else:
         print("\n⚠ RESEND_API_KEY not configured. Set it in .env file to enable email sending.")
 
+
+def send_rejection_notification(
+    admin_emails: list, 
+    document_title: str, 
+    document_id: str,
+    rejected_by: str = None
+) -> int:
+    """
+    Send rejection notification email to admin users.
+    
+    Args:
+        admin_emails: List of admin email addresses
+        document_title: Title of the rejected document
+        document_id: ID of the rejected document
+        rejected_by: Name of the user who rejected the document
+    
+    Returns:
+        Number of emails sent successfully
+    """
+    
+    if not RESEND_API_KEY:
+        print("Warning: RESEND_API_KEY not configured. Rejection emails not sent.")
+        return 0
+    
+    if not admin_emails:
+        print("No admin emails to notify")
+        return 0
+    
+    document_link = f"{APP_URL}/?doc={document_id}"
+    rejected_by_text = f" by {rejected_by}" if rejected_by else ""
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {{
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                margin: 0;
+                padding: 0;
+                background-color: #f5f5f5;
+            }}
+            .container {{
+                max-width: 600px;
+                margin: 40px auto;
+                background-color: #ffffff;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }}
+            .header {{
+                background-color: #dc3545;
+                color: #ffffff;
+                padding: 30px;
+                text-align: center;
+            }}
+            .header h1 {{
+                margin: 0;
+                font-size: 24px;
+                font-weight: 500;
+            }}
+            .content {{
+                padding: 40px 30px;
+            }}
+            .content h2 {{
+                color: #1c1b1f;
+                font-size: 20px;
+                font-weight: 500;
+                margin-top: 0;
+            }}
+            .content p {{
+                color: #49454f;
+                margin: 16px 0;
+            }}
+            .button {{
+                display: inline-block;
+                background-color: #6750a4;
+                color: #ffffff;
+                text-decoration: none;
+                padding: 12px 32px;
+                border-radius: 20px;
+                font-weight: 500;
+                margin: 24px 0;
+            }}
+            .document-info {{
+                background-color: #fff3f4;
+                border-left: 4px solid #dc3545;
+                padding: 16px;
+                margin: 20px 0;
+                border-radius: 4px;
+            }}
+            .document-info p {{
+                margin: 4px 0;
+                color: #333;
+            }}
+            .footer {{
+                background-color: #f3edf7;
+                padding: 20px 30px;
+                text-align: center;
+                color: #79747e;
+                font-size: 14px;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>⚠️ Document Rejected</h1>
+            </div>
+            <div class="content">
+                <h2>A document has been rejected</h2>
+                <p>A document in Postmark has been marked as rejected{rejected_by_text} and requires your attention.</p>
+                <div class="document-info">
+                    <p><strong>Document:</strong> {document_title}</p>
+                    <p><strong>Document ID:</strong> {document_id}</p>
+                </div>
+                <p>Please review the document and take appropriate action.</p>
+                <center>
+                    <a href="{document_link}" class="button">View Document</a>
+                </center>
+            </div>
+            <div class="footer">
+                <p>&copy; 2024 Postmark. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    
+    text_content = f"""
+    Document Rejected
+    
+    A document in Postmark has been marked as rejected{rejected_by_text}.
+    
+    Document: {document_title}
+    Document ID: {document_id}
+    
+    Please review the document and take appropriate action:
+    {document_link}
+    
+    © 2024 Postmark. All rights reserved.
+    """
+    
+    sent_count = 0
+    for email in admin_emails:
+        try:
+            params = {
+                "from": "Postmark <gabe@zentall.com>",
+                "to": [email],
+                "subject": f"⚠️ Document Rejected: {document_title}",
+                "html": html_content,
+                "text": text_content
+            }
+            
+            response = resend.Emails.send(params)
+            print(f"✓ Rejection notification sent to {email}")
+            sent_count += 1
+            
+        except Exception as e:
+            print(f"✗ Error sending rejection notification to {email}: {e}")
+    
+    return sent_count
+

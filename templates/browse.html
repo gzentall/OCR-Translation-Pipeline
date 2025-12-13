@@ -1244,6 +1244,12 @@
             background: var(--md-sys-roles-primary);
             color: var(--md-sys-roles-on-primary);
         }
+        
+        /* Reject button special styling */
+        .button-group #statusRejectBtn[aria-pressed="true"] {
+            background: #d32f2f;
+            color: #ffffff;
+        }
 
         /* Material Design Switch - Use MDC library styles */
         .mdc-switch {
@@ -2246,6 +2252,11 @@
         .document-status-badge.status-final {
             background-color: rgba(76, 175, 80, 0.12);
             color: rgb(56, 142, 60);
+        }
+
+        .document-status-badge.status-reject {
+            background-color: rgba(244, 67, 54, 0.12);
+            color: rgb(211, 47, 47);
         }
 
         /* Status badge in card view */
@@ -7833,6 +7844,7 @@
                         </div>
                         <div class="button-group" role="group" aria-label="Document status">
                             <button type="button" class="group-btn" id="statusNewBtn" aria-pressed="false" onclick="setDocumentStatus('new')">New</button>
+                            <button type="button" class="group-btn" id="statusRejectBtn" aria-pressed="false" onclick="setDocumentStatus('reject')">Reject</button>
                             <button type="button" class="group-btn" id="statusEditingBtn" aria-pressed="false" onclick="setDocumentStatus('editing')">Editing</button>
                             <button type="button" class="group-btn" id="statusFinalBtn" aria-pressed="false" onclick="setDocumentStatus('final')">Final</button>
                         </div>
@@ -9163,6 +9175,7 @@
             const normalized = status.toLowerCase();
             const statusMap = {
                 'new': { display: 'New', class: 'status-new' },
+                'reject': { display: 'Reject', class: 'status-reject' },
                 'editing': { display: 'Editing', class: 'status-editing' },
                 'final': { display: 'Final', class: 'status-final' }
             };
@@ -12459,6 +12472,7 @@
             const statuses = [
                 { value: 'All', label: 'All' },
                 { value: 'new', label: 'New' },
+                { value: 'reject', label: 'Reject' },
                 { value: 'editing', label: 'Editing' },
                 { value: 'final', label: 'Final' },
                 { value: 'reviewed_by_me', label: 'Reviewed by me' },
@@ -13353,6 +13367,7 @@
         function updateStatusButtons(status) {
             const map = {
                 'new': document.getElementById('statusNewBtn'),
+                'reject': document.getElementById('statusRejectBtn'),
                 'editing': document.getElementById('statusEditingBtn'),
                 'final': document.getElementById('statusFinalBtn')
             };
@@ -13362,7 +13377,7 @@
             // Show/hide review checkbox based on status
             const reviewContainer = document.getElementById('reviewStatusContainer');
             if (reviewContainer) {
-                if (status === 'final') {
+                if (status === 'final' || status === 'reject') {
                     reviewContainer.style.display = 'none';
                 } else {
                     reviewContainer.style.display = 'flex';

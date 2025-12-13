@@ -36,7 +36,7 @@ from scripts.geoapify_client import GeoapifyClient
 from scripts.envelope_extractor import EnvelopeExtractor
 from scripts.database import DatabaseSession, User, Document, Reference, ReferenceType, UserRole, Notification
 from sqlalchemy import text
-from scripts.email_service import send_user_invite, send_mention_notification
+from scripts.email_service import send_user_invite, send_mention_notification, send_rejection_notification
 from botocore.exceptions import ClientError
 # Import enhanced processing components
 from scripts.batch_processor import BatchOCRProcessor
@@ -2597,6 +2597,34 @@ def update_document_status(doc_id):
                 'status_change', 
                 f'changed status to {status}'
             )
+            
+            # If status is 'reject', send email notifications to admins
+            if status.lower() == 'reject':
+                try:
+                    # Get all admin users
+                    with DatabaseSession() as db:
+                        admin_users = db.query(User).filter(
+                            User.role == UserRole.ADMIN,
+                            User.is_active == True
+                        ).all()
+                        admin_emails = [user.email for user in admin_users if user.email]
+                    
+                    if admin_emails:
+                        # Get document title
+                        doc = local_storage.get_document(doc_id)
+                        doc_title = doc.get('title', doc_id) if doc else doc_id
+                        
+                        # Send rejection notifications
+                        sent_count = send_rejection_notification(
+                            admin_emails=admin_emails,
+                            document_title=doc_title,
+                            document_id=doc_id,
+                            rejected_by=username
+                        )
+                        print(f"Sent {sent_count} rejection notification(s) for document {doc_id}")
+                except Exception as e:
+                    print(f"Error sending rejection notifications: {e}")
+                    # Don't fail the status update if email fails
             
             return jsonify({
                 'success': True,

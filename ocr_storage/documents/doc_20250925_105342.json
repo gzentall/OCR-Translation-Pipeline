@@ -7,5 +7,7 @@
   "original_text": "Test original text",
   "translated_text": "Test translated text",
   "status": "new",
-  "page_count": 0
+  "page_count": 0,
+  "sender": "Robert Zweigenthal",
+  "recipient": "Elizabeth Aigner"
 }
