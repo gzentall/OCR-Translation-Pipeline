@@ -14747,9 +14747,15 @@
                         let originalText = doc.original_text || '';
                         const rawText = doc.raw_text || '';
                         
-                        // Check if original_text was incorrectly set to the same as translated_text
-                        if (originalText === textModeTranslatedText && rawText && rawText !== textModeTranslatedText) {
-                            console.log('⚠️ original_text same as translated_text, using raw_text instead');
+                        // Check if original_text was incorrectly set to the same (or nearly same) as translated_text
+                        // Use similarity check: if first 100 chars match, they're probably the same
+                        const origPreview = originalText.trim().substring(0, 100);
+                        const transPreview = textModeTranslatedText.trim().substring(0, 100);
+                        const isSameAsTranslation = origPreview === transPreview || 
+                            Math.abs(originalText.length - textModeTranslatedText.length) < 10;
+                        
+                        if (isSameAsTranslation && rawText && rawText.trim().substring(0, 100) !== transPreview) {
+                            console.log('⚠️ original_text appears same as translated_text, using raw_text instead');
                             originalText = rawText;
                         }
                         
