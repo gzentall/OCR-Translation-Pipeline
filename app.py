@@ -3265,6 +3265,7 @@ def reprocess_document_async(doc_id: str, fields: list, use_raw_ocr: bool, usern
     # #region agent log
     import json as _json
     def _debug_log(hyp, msg, data=None):
+        print(f"[DEBUG][{hyp}] {msg}: {_json.dumps(data) if data else '{}'}")
         try:
             with open('/Users/gzentall/OCR-Translation-Pipeline/.cursor/debug.log', 'a') as _f:
                 _f.write(_json.dumps({'hypothesisId': hyp, 'location': 'app.py:reprocess_document_async', 'message': msg, 'data': data or {}, 'timestamp': __import__('time').time(), 'sessionId': 'debug-session'}) + '\n')

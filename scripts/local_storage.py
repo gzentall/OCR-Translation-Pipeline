@@ -299,6 +299,7 @@ class LocalOCRStorage:
         """
         # #region agent log
         def _debug_log_storage(hyp, msg, data=None):
+            print(f"[DEBUG][{hyp}] {msg}: {json.dumps(data) if data else '{}'}")
             try:
                 with open('/Users/gzentall/OCR-Translation-Pipeline/.cursor/debug.log', 'a') as _f:
                     _f.write(json.dumps({'hypothesisId': hyp, 'location': 'local_storage.py:save_document', 'message': msg, 'data': data or {}, 'timestamp': __import__('time').time(), 'sessionId': 'debug-session'}) + '\n')
