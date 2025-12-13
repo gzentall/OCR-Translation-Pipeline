@@ -251,6 +251,8 @@ class LocalOCRStorage:
                 document["recipient_location"] = None
             if "status" not in document:
                 document["status"] = "new"
+            if "untranslated_markers" not in document:
+                document["untranslated_markers"] = []
             
             # Resolve all people names to their CURRENT canonical names
             # This ensures renamed references always display with updated names

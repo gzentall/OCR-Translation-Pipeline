@@ -6436,6 +6436,48 @@
             overflow-y: auto; /* Only the textarea scrolls */
         }
         
+        /* Contenteditable specific styles */
+        .text-tab-textarea[contenteditable="true"] {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .text-tab-textarea[contenteditable="true"]:empty:before {
+            content: attr(data-placeholder);
+            color: var(--md-sys-color-on-surface-variant);
+            pointer-events: none;
+        }
+        
+        /* Untranslated text highlighting */
+        .untranslated-text {
+            color: #dc3545;
+            text-decoration: underline;
+            text-decoration-color: #dc3545;
+            text-decoration-style: wavy;
+            cursor: help;
+            position: relative;
+        }
+        
+        .untranslated-text:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+        
+        /* Tooltip for untranslated text */
+        .untranslated-text[data-suggestion]:hover::after {
+            content: "Suggestion: " attr(data-suggestion);
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: var(--md-sys-color-inverse-surface);
+            color: var(--md-sys-color-inverse-on-surface);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
         /* Make text tab fill available space in dialog */
         .mdc-dialog #text-tab.tab-panel.active {
             display: flex !important;
@@ -10046,7 +10088,7 @@
                                         </button>
                                     </label>
                                 </div>
-                                <textarea id="editText" class="full-textarea text-tab-textarea" placeholder="Translated text">${escapeHtml(doc.translated_text || '')}</textarea>
+                                <div id="editText" class="full-textarea text-tab-textarea" contenteditable="true" data-placeholder="Translated text">${escapeHtml(doc.translated_text || '')}</div>
                             </div>
                             
                             <!-- Image Tab -->
@@ -12101,10 +12143,16 @@
             // Get text from the unified text area (save current state first)
             const textArea = document.getElementById('editText');
             if (textArea) {
+                // Check if contenteditable or textarea
+                const isContentEditable = textArea.contentEditable === 'true';
+                const currentText = isContentEditable 
+                    ? getPlainTextFromContentEditable(textArea) 
+                    : textArea.value;
+                
                 if (textModeShowingTranslation) {
-                    textModeTranslatedText = textArea.value;
+                    textModeTranslatedText = currentText;
                 } else {
-                    textModeOriginalText = textArea.value;
+                    textModeOriginalText = currentText;
                 }
             }
             const originalText = textModeOriginalText.trim();
@@ -14562,6 +14610,99 @@
         let textModeOriginalText = '';
         let textModeTranslatedText = '';
         let textModeShowingTranslation = true;
+        let textModeUntranslatedMarkers = [];
+        
+        /**
+         * Render text with untranslated markers highlighted.
+         * @param {string} text - Plain text content
+         * @param {Array} markers - Array of {text, start, end, suggestion} objects
+         * @returns {string} HTML with highlighted spans
+         */
+        function renderTextWithHighlights(text, markers) {
+            if (!markers || markers.length === 0) {
+                // No markers, just escape and preserve whitespace
+                return escapeHtml(text);
+            }
+            
+            // Sort markers by start position (descending) to replace from end to start
+            const sortedMarkers = [...markers].sort((a, b) => b.start - a.start);
+            
+            let result = text;
+            
+            // Replace each marker with highlighted span (from end to start to preserve positions)
+            for (const marker of sortedMarkers) {
+                const before = result.substring(0, marker.start);
+                const markedText = result.substring(marker.start, marker.end);
+                const after = result.substring(marker.end);
+                
+                // Build the span with optional tooltip
+                const suggestion = marker.suggestion ? ` data-suggestion="${escapeHtml(marker.suggestion)}"` : '';
+                const title = marker.suggestion ? ` title="Suggestion: ${escapeHtml(marker.suggestion)}"` : '';
+                
+                result = before + 
+                    `<span class="untranslated-text"${suggestion}${title}>${escapeHtml(markedText)}</span>` + 
+                    after;
+            }
+            
+            // Escape remaining text parts and preserve newlines
+            // Since we already inserted HTML spans, we need to be careful
+            // Actually, let's take a different approach - escape first, then mark
+            return result;
+        }
+        
+        /**
+         * Render text with markers by escaping first, then adding highlights.
+         */
+        function renderHighlightedText(text, markers) {
+            if (!text) return '';
+            if (!markers || markers.length === 0) {
+                return escapeHtml(text);
+            }
+            
+            // Build result character by character, marking highlighted regions
+            let result = '';
+            let lastEnd = 0;
+            
+            // Sort markers by start position
+            const sortedMarkers = [...markers].sort((a, b) => a.start - b.start);
+            
+            for (const marker of sortedMarkers) {
+                // Add text before this marker (escaped)
+                if (marker.start > lastEnd) {
+                    result += escapeHtml(text.substring(lastEnd, marker.start));
+                }
+                
+                // Add the highlighted marker
+                const markedText = text.substring(marker.start, marker.end);
+                const suggestion = marker.suggestion ? ` data-suggestion="${escapeHtml(marker.suggestion)}"` : '';
+                const title = marker.suggestion ? ` title="Suggestion: ${escapeHtml(marker.suggestion)}"` : '';
+                result += `<span class="untranslated-text"${suggestion}${title}>${escapeHtml(markedText)}</span>`;
+                
+                lastEnd = marker.end;
+            }
+            
+            // Add remaining text after last marker
+            if (lastEnd < text.length) {
+                result += escapeHtml(text.substring(lastEnd));
+            }
+            
+            return result;
+        }
+        
+        /**
+         * Extract plain text from contenteditable div.
+         */
+        function getPlainTextFromContentEditable(element) {
+            // Get text content, which strips HTML tags
+            return element.innerText || element.textContent || '';
+        }
+        
+        /**
+         * Set content in contenteditable div (can be HTML or plain text).
+         */
+        function setContentEditableContent(element, html) {
+            element.innerHTML = html;
+        }
         
         function setupTextModeSwitch() {
             const switchElement = document.getElementById('textModeSwitch');
@@ -14572,13 +14713,19 @@
                 return;
             }
             
+            // Check if we're using contenteditable or textarea
+            const isContentEditable = textArea.contentEditable === 'true';
+            
             console.log('🔍 Looking for document with ID:', window.currentDocumentId);
             console.log('📚 Available documents:', allDocuments.length);
+            console.log('📝 Using contenteditable:', isContentEditable);
             
             // Try to get full document data via API FIRST (synchronously wait for it)
             const loadTextData = async () => {
                 try {
-                    const response = await fetch(`/documents/${window.currentDocumentId}`);
+                    const response = await fetch(`/documents/${window.currentDocumentId}`, {
+                        headers: { 'Accept': 'application/json' }
+                    });
                     const data = await response.json();
                     
                     console.log('📦 API Response:', data);
@@ -14588,6 +14735,10 @@
                         
                         // Get translated text
                         textModeTranslatedText = doc.translated_text || '';
+                        
+                        // Get untranslated markers
+                        textModeUntranslatedMarkers = doc.untranslated_markers || [];
+                        console.log('🔍 Untranslated markers:', textModeUntranslatedMarkers.length);
                         
                         // Get original text - with fallback logic:
                         // 1. Use original_text if it exists AND is different from translated_text
@@ -14607,29 +14758,42 @@
                         console.log('✅ Loaded text from API:');
                         console.log('  - Original length:', textModeOriginalText.length);
                         console.log('  - Translated length:', textModeTranslatedText.length);
-                        console.log('  - Raw text available:', !!rawText);
-                        console.log('  - Using raw_text fallback:', originalText === rawText && rawText !== doc.original_text);
+                        console.log('  - Untranslated markers:', textModeUntranslatedMarkers.length);
                         console.log('  - Original preview:', textModeOriginalText.substring(0, 100));
                         console.log('  - Translated preview:', textModeTranslatedText.substring(0, 100));
                         
-                        // Update textarea with correct initial content (translation)
-                        textArea.value = textModeTranslatedText;
-                        textArea.placeholder = 'Translated text';
+                        // Update content with highlighting
+                        if (isContentEditable) {
+                            const highlightedHtml = renderHighlightedText(textModeTranslatedText, textModeUntranslatedMarkers);
+                            setContentEditableContent(textArea, highlightedHtml);
+                            textArea.dataset.placeholder = 'Translated text';
+                        } else {
+                            textArea.value = textModeTranslatedText;
+                            textArea.placeholder = 'Translated text';
+                        }
                     } else {
                         console.warn('⚠️ Could not load document via API');
                         console.warn('  - data.success:', data.success);
                         console.warn('  - data.document:', !!data.document);
                         
-                        // Fallback to textarea value (which should have translated text)
-                        textModeTranslatedText = textArea.value || '';
-                        textModeOriginalText = textArea.value || '';
+                        // Fallback to current content
+                        if (isContentEditable) {
+                            textModeTranslatedText = getPlainTextFromContentEditable(textArea);
+                        } else {
+                            textModeTranslatedText = textArea.value || '';
+                        }
+                        textModeOriginalText = textModeTranslatedText;
                     }
                 } catch (err) {
                     console.error('❌ Error loading document:', err);
                     
-                    // Fallback to textarea value
-                    textModeTranslatedText = textArea.value || '';
-                    textModeOriginalText = textArea.value || '';
+                    // Fallback to current content
+                    if (isContentEditable) {
+                        textModeTranslatedText = getPlainTextFromContentEditable(textArea);
+                    } else {
+                        textModeTranslatedText = textArea.value || '';
+                    }
+                    textModeOriginalText = textModeTranslatedText;
                 }
             };
             
@@ -14645,10 +14809,19 @@
             // Handle switch toggle
             switchElement.addEventListener('click', () => {
                 // Save current content before switching
-                if (textModeShowingTranslation) {
-                    textModeTranslatedText = textArea.value;
+                if (isContentEditable) {
+                    const currentText = getPlainTextFromContentEditable(textArea);
+                    if (textModeShowingTranslation) {
+                        textModeTranslatedText = currentText;
+                    } else {
+                        textModeOriginalText = currentText;
+                    }
                 } else {
-                    textModeOriginalText = textArea.value;
+                    if (textModeShowingTranslation) {
+                        textModeTranslatedText = textArea.value;
+                    } else {
+                        textModeOriginalText = textArea.value;
+                    }
                 }
                 
                 // Toggle state
@@ -14656,23 +14829,45 @@
                 
                 // Load the other content
                 if (textModeShowingTranslation) {
-                    textArea.value = textModeTranslatedText;
-                    textArea.placeholder = 'Translated text';
+                    if (isContentEditable) {
+                        // Show translated with highlighting
+                        const highlightedHtml = renderHighlightedText(textModeTranslatedText, textModeUntranslatedMarkers);
+                        setContentEditableContent(textArea, highlightedHtml);
+                        textArea.dataset.placeholder = 'Translated text';
+                    } else {
+                        textArea.value = textModeTranslatedText;
+                        textArea.placeholder = 'Translated text';
+                    }
                 } else {
-                    textArea.value = textModeOriginalText;
-                    textArea.placeholder = 'Original text';
+                    if (isContentEditable) {
+                        // Original text - no highlighting
+                        setContentEditableContent(textArea, escapeHtml(textModeOriginalText));
+                        textArea.dataset.placeholder = 'Original text';
+                    } else {
+                        textArea.value = textModeOriginalText;
+                        textArea.placeholder = 'Original text';
+                    }
                 }
                 
                 console.log('🔄 Text mode switched to:', textModeShowingTranslation ? 'Translation' : 'Original');
-                console.log('📝 Content length:', textArea.value.length);
+                console.log('📝 Content length:', isContentEditable ? getPlainTextFromContentEditable(textArea).length : textArea.value.length);
             });
             
-            // Save content when textarea changes
+            // Save content when content changes
             textArea.addEventListener('input', () => {
-                if (textModeShowingTranslation) {
-                    textModeTranslatedText = textArea.value;
+                if (isContentEditable) {
+                    const currentText = getPlainTextFromContentEditable(textArea);
+                    if (textModeShowingTranslation) {
+                        textModeTranslatedText = currentText;
+                    } else {
+                        textModeOriginalText = currentText;
+                    }
                 } else {
-                    textModeOriginalText = textArea.value;
+                    if (textModeShowingTranslation) {
+                        textModeTranslatedText = textArea.value;
+                    } else {
+                        textModeOriginalText = textArea.value;
+                    }
                 }
             });
             
