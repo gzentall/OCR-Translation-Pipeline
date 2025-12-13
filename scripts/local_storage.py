@@ -297,12 +297,29 @@ class LocalOCRStorage:
         Returns:
             True if successful, False otherwise
         """
+        # #region agent log
+        def _debug_log_storage(hyp, msg, data=None):
+            try:
+                with open('/Users/gzentall/OCR-Translation-Pipeline/.cursor/debug.log', 'a') as _f:
+                    _f.write(json.dumps({'hypothesisId': hyp, 'location': 'local_storage.py:save_document', 'message': msg, 'data': data or {}, 'timestamp': __import__('time').time(), 'sessionId': 'debug-session'}) + '\n')
+            except: pass
+        _debug_log_storage('A', 'SAVE_DOC_ENTRY', {'doc_id': doc_id, 'use_r2': self.use_r2, 'has_r2': self.r2 is not None})
+        # #endregion
         try:
             # Save to R2 if enabled
             if self.use_r2 and self.r2:
                 try:
-                    self.r2.save_document(doc_id, document)
+                    # #region agent log
+                    _debug_log_storage('A', 'SAVING_TO_R2', {'doc_id': doc_id})
+                    # #endregion
+                    r2_result = self.r2.save_document(doc_id, document)
+                    # #region agent log
+                    _debug_log_storage('A', 'R2_SAVE_RESULT', {'doc_id': doc_id, 'r2_result': r2_result})
+                    # #endregion
                 except Exception as e:
+                    # #region agent log
+                    _debug_log_storage('A', 'R2_SAVE_ERROR', {'doc_id': doc_id, 'error': str(e), 'error_type': type(e).__name__})
+                    # #endregion
                     print(f"⚠️  Error saving document {doc_id} to R2: {e}")
             
             # Always save locally as well (backup in R2 mode, primary in local mode)
@@ -310,8 +327,14 @@ class LocalOCRStorage:
             with open(doc_file, 'w') as f:
                 json.dump(document, f, indent=2)
             
+            # #region agent log
+            _debug_log_storage('A', 'SAVE_DOC_SUCCESS', {'doc_id': doc_id})
+            # #endregion
             return True
         except Exception as e:
+            # #region agent log
+            _debug_log_storage('A', 'SAVE_DOC_ERROR', {'doc_id': doc_id, 'error': str(e), 'error_type': type(e).__name__})
+            # #endregion
             print(f"Error saving document {doc_id}: {e}")
             return False
     

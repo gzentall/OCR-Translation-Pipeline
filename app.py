@@ -3262,19 +3262,42 @@ def reprocess_document_async(doc_id: str, fields: list, use_raw_ocr: bool, usern
         use_raw_ocr: If True, re-run from raw OCR text
         username: Username for history logging
     """
+    # #region agent log
+    import json as _json
+    def _debug_log(hyp, msg, data=None):
+        try:
+            with open('/Users/gzentall/OCR-Translation-Pipeline/.cursor/debug.log', 'a') as _f:
+                _f.write(_json.dumps({'hypothesisId': hyp, 'location': 'app.py:reprocess_document_async', 'message': msg, 'data': data or {}, 'timestamp': __import__('time').time(), 'sessionId': 'debug-session'}) + '\n')
+        except: pass
+    # #endregion
     try:
+        # #region agent log
+        _debug_log('A', 'REPROCESS_START', {'doc_id': doc_id, 'fields': fields, 'use_raw_ocr': use_raw_ocr, 'username': username})
+        # #endregion
         print(f"[REPROCESS] Starting reprocessing for document {doc_id}")
         print(f"[REPROCESS] Fields: {fields}, use_raw_ocr: {use_raw_ocr}")
         
         # Get the document
         doc = local_storage.get_document(doc_id)
+        # #region agent log
+        _debug_log('C', 'GET_DOCUMENT_RESULT', {'doc_id': doc_id, 'doc_found': doc is not None, 'doc_keys': list(doc.keys()) if doc else None})
+        # #endregion
         if not doc:
             print(f"[REPROCESS] Document {doc_id} not found")
+            # #region agent log
+            _debug_log('C', 'DOCUMENT_NOT_FOUND', {'doc_id': doc_id})
+            # #endregion
             local_storage.set_processing_status(doc_id, 'error', 'Document not found')
             return
         
         # Collect document context (all is_context=True comments)
+        # #region agent log
+        _debug_log('D', 'BEFORE_GET_CONTEXT_COMMENTS', {'doc_id': doc_id})
+        # #endregion
         doc_context_comments = local_storage.get_document_context_comments(doc_id)
+        # #region agent log
+        _debug_log('D', 'CONTEXT_COMMENTS_RESULT', {'doc_id': doc_id, 'count': len(doc_context_comments) if doc_context_comments else 0, 'comments': doc_context_comments[:3] if doc_context_comments else []})
+        # #endregion
         document_context = "\n".join([
             f"- {c.get('username', 'Editor')}: {c.get('note', '')}" 
             for c in doc_context_comments
@@ -3400,7 +3423,13 @@ def reprocess_document_async(doc_id: str, fields: list, use_raw_ocr: bool, usern
         doc['last_reprocessed_by'] = username
         
         # Save the updated document
-        local_storage.save_document(doc_id, doc)
+        # #region agent log
+        _debug_log('A', 'BEFORE_SAVE_DOCUMENT', {'doc_id': doc_id, 'doc_keys': list(doc.keys()), 'results': results})
+        # #endregion
+        save_result = local_storage.save_document(doc_id, doc)
+        # #region agent log
+        _debug_log('A', 'AFTER_SAVE_DOCUMENT', {'doc_id': doc_id, 'save_result': save_result})
+        # #endregion
         print(f"[REPROCESS] Document saved")
         
         # Log to history
@@ -3415,9 +3444,15 @@ def reprocess_document_async(doc_id: str, fields: list, use_raw_ocr: bool, usern
         else:
             local_storage.set_processing_status(doc_id, 'ready')
         
+        # #region agent log
+        _debug_log('E', 'REPROCESS_COMPLETED', {'doc_id': doc_id, 'success': results['success'], 'failed': results['failed']})
+        # #endregion
         print(f"[REPROCESS] Completed. Success: {results['success']}, Failed: {results['failed']}")
         
     except Exception as e:
+        # #region agent log
+        _debug_log('B', 'REPROCESS_FATAL_ERROR', {'doc_id': doc_id, 'error': str(e), 'error_type': type(e).__name__})
+        # #endregion
         print(f"[REPROCESS] Fatal error: {e}")
         traceback.print_exc()
         local_storage.set_processing_status(doc_id, 'error', str(e))
