@@ -1066,9 +1066,24 @@ class LocalOCRStorage:
                         
                         doc_data["people"] = updated_people
                         
+                        # Also update sender/recipient if they match source
+                        if doc_data.get("sender"):
+                            if self.normalize_name(doc_data["sender"]) == source_normalized:
+                                doc_data["sender"] = target_display_name
+                        if doc_data.get("recipient"):
+                            if self.normalize_name(doc_data["recipient"]) == source_normalized:
+                                doc_data["recipient"] = target_display_name
+                        
                         # Save updated document
                         with open(doc_file, 'w') as f:
                             json.dump(doc_data, f, indent=2)
+                        
+                        # Also update in R2 if enabled
+                        if self.use_r2 and self.r2:
+                            try:
+                                self.r2.save_document(doc_id, doc_data)
+                            except Exception as e:
+                                print(f"Warning: Failed to update {doc_id} in R2: {e}")
             
             # Remove the source person
             del self.metadata["people"][source_normalized]
@@ -1277,9 +1292,24 @@ class LocalOCRStorage:
                             
                             doc_data["people"] = updated_people
                             
+                            # Also update sender/recipient if they match old name
+                            if doc_data.get("sender"):
+                                if self.normalize_name(doc_data["sender"]) == old_normalized:
+                                    doc_data["sender"] = new_name
+                            if doc_data.get("recipient"):
+                                if self.normalize_name(doc_data["recipient"]) == old_normalized:
+                                    doc_data["recipient"] = new_name
+                            
                             # Save updated document
                             with open(doc_file, 'w') as f:
                                 json.dump(doc_data, f, indent=2)
+                            
+                            # Also update in R2 if enabled
+                            if self.use_r2 and self.r2:
+                                try:
+                                    self.r2.save_document(doc_id, doc_data)
+                                except Exception as e:
+                                    print(f"Warning: Failed to update {doc_id} in R2: {e}")
             else:
                 # Name normalized to same key, but display name might have changed
                 # Set explicit display_name
@@ -1320,8 +1350,23 @@ class LocalOCRStorage:
                                 
                                 doc_data["people"] = updated_people
                                 
+                                # Also update sender/recipient if they match old name
+                                if doc_data.get("sender"):
+                                    if doc_data["sender"] == old_name or self.normalize_name(doc_data["sender"]) == old_normalized:
+                                        doc_data["sender"] = new_name
+                                if doc_data.get("recipient"):
+                                    if doc_data["recipient"] == old_name or self.normalize_name(doc_data["recipient"]) == old_normalized:
+                                        doc_data["recipient"] = new_name
+                                
                                 with open(doc_file, 'w') as f:
                                     json.dump(doc_data, f, indent=2)
+                                
+                                # Also update in R2 if enabled
+                                if self.use_r2 and self.r2:
+                                    try:
+                                        self.r2.save_document(doc_id, doc_data)
+                                    except Exception as e:
+                                        print(f"Warning: Failed to update {doc_id} in R2: {e}")
             
             # Update context if provided
             if new_context is not None:
