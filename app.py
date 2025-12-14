@@ -3394,6 +3394,9 @@ def reprocess_document_async(doc_id: str, fields: list, use_raw_ocr: bool, usern
         if 'references' in fields:
             try:
                 print(f"[REPROCESS] Regenerating references...")
+                # #region agent log
+                _debug_log('H', 'BEFORE_REFS_EXTRACTION', {'doc_type': type(doc).__name__, 'doc_id': doc_id})
+                # #endregion
                 text_for_refs = doc.get('translated_text') or source_text
                 
                 references = extract_references_with_context(
@@ -3406,15 +3409,29 @@ def reprocess_document_async(doc_id: str, fields: list, use_raw_ocr: bool, usern
                     recipient_location=doc.get('recipient_location')
                 )
                 
+                # #region agent log
+                _debug_log('H', 'REFS_EXTRACTION_RESULT', {'references_type': type(references).__name__ if references else 'None', 'doc_type': type(doc).__name__})
+                # #endregion
+                
                 if references:
-                    simple_refs = references.get('simple', references)
-                    doc['references'] = simple_refs
-                    doc['people'] = simple_refs.get('people', [])
-                    results['success'].append('references')
-                    print(f"[REPROCESS] References extracted: {len(doc.get('people', []))} people")
+                    # #region agent log - Check references type before using .get()
+                    if not isinstance(references, dict):
+                        _debug_log('H', 'REFS_NOT_DICT', {'references_type': type(references).__name__, 'preview': str(references)[:200]})
+                        print(f"[REPROCESS] WARNING: references is {type(references).__name__}, not dict!")
+                        results['failed'].append('references')
+                    else:
+                        simple_refs = references.get('simple', references)
+                        doc['references'] = simple_refs
+                        doc['people'] = simple_refs.get('people', []) if isinstance(simple_refs, dict) else []
+                        results['success'].append('references')
+                        print(f"[REPROCESS] References extracted: {len(doc.get('people', []))} people")
+                    # #endregion
                 else:
                     results['failed'].append('references')
             except Exception as e:
+                # #region agent log
+                _debug_log('H', 'REFS_EXCEPTION', {'error': str(e), 'error_type': type(e).__name__})
+                # #endregion
                 print(f"[REPROCESS] Reference extraction failed: {e}")
                 results['failed'].append('references')
         

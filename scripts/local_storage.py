@@ -213,6 +213,12 @@ class LocalOCRStorage:
         if self.use_r2 and self.r2:
             try:
                 document = self.r2.get_document(doc_id)
+                # #region agent log
+                if document is not None:
+                    print(f"[DEBUG][G] R2_GET_DOCUMENT doc_id={doc_id} type={type(document).__name__}")
+                    if not isinstance(document, dict):
+                        print(f"[DEBUG][G] CRITICAL: R2 returned {type(document).__name__}, not dict! Preview: {str(document)[:200]}")
+                # #endregion
             except Exception as e:
                 print(f"⚠️  Error loading document {doc_id} from R2: {e}")
         
@@ -222,6 +228,11 @@ class LocalOCRStorage:
             if doc_file.exists():
                 with open(doc_file, 'r') as f:
                     document = json.load(f)
+                # #region agent log
+                print(f"[DEBUG][G] LOCAL_GET_DOCUMENT doc_id={doc_id} type={type(document).__name__}")
+                if not isinstance(document, dict):
+                    print(f"[DEBUG][G] CRITICAL: Local file returned {type(document).__name__}, not dict!")
+                # #endregion
         
         if document:
             # Add the document ID to the document object
@@ -307,6 +318,14 @@ class LocalOCRStorage:
         _debug_log_storage('A', 'SAVE_DOC_ENTRY', {'doc_id': doc_id, 'use_r2': self.use_r2, 'has_r2': self.r2 is not None})
         # #endregion
         try:
+            # #region agent log - Validate document is a dict before saving
+            if not isinstance(document, dict):
+                print(f"[DEBUG][I] CRITICAL: Attempting to save non-dict document! doc_id={doc_id} type={type(document).__name__}")
+                _debug_log_storage('I', 'SAVE_NON_DICT', {'doc_id': doc_id, 'doc_type': type(document).__name__, 'preview': str(document)[:200]})
+                return False
+            print(f"[DEBUG][I] SAVE_DOCUMENT_TYPE_OK doc_id={doc_id} keys={list(document.keys())[:5]}")
+            # #endregion
+            
             # Save to R2 if enabled
             if self.use_r2 and self.r2:
                 try:
@@ -790,6 +809,13 @@ class LocalOCRStorage:
             doc = self.get_document(doc_id)
             if doc is None:
                 return {"status": "unknown", "error": "Document not found"}
+            
+            # #region agent log - Check document type
+            print(f"[DEBUG][F] GET_PROCESSING_STATUS doc_id={doc_id} doc_type={type(doc).__name__}")
+            if not isinstance(doc, dict):
+                print(f"[DEBUG][F] CRITICAL: doc is {type(doc).__name__}, not dict! Value preview: {str(doc)[:200]}")
+                return {"status": "error", "error": f"Document corrupted: expected dict, got {type(doc).__name__}"}
+            # #endregion
             
             return {
                 "status": doc.get("processing_status", "ready"),
