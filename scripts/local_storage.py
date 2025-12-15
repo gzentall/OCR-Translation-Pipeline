@@ -254,11 +254,18 @@ class LocalOCRStorage:
             # Add metadata fields if available (but don't override document values)
             if doc_id in self.metadata["documents"]:
                 metadata = self.metadata["documents"][doc_id]
-                # Only use metadata values if document doesn't have them
-                if 'page_count' not in document or document['page_count'] is None:
-                    document['page_count'] = metadata.get('page_count', 0)
-                if 'people_count' not in document or document['people_count'] is None:
-                    document['people_count'] = metadata.get('people_count', 0)
+                # #region agent log - Check metadata type
+                if not isinstance(metadata, dict):
+                    print(f"[DEBUG][O] CRITICAL: Metadata entry is {type(metadata).__name__}, not dict! doc_id={doc_id}")
+                    print(f"[DEBUG][O] Metadata value: {str(metadata)[:200]}")
+                    # Skip metadata merge if corrupted
+                else:
+                    # Only use metadata values if document doesn't have them
+                    if 'page_count' not in document or document['page_count'] is None:
+                        document['page_count'] = metadata.get('page_count', 0)
+                    if 'people_count' not in document or document['people_count'] is None:
+                        document['people_count'] = metadata.get('people_count', 0)
+                # #endregion
             
             # Ensure new fields exist for backwards compatibility
             if "reviews" not in document:
@@ -300,6 +307,14 @@ class LocalOCRStorage:
                 if canonical_recipient:
                     document["recipient"] = canonical_recipient
             
+            # #region agent log - Final validation before return
+            if not isinstance(document, dict):
+                print(f"[DEBUG][P] CRITICAL: get_document returning {type(document).__name__}, not dict! doc_id={doc_id}")
+                print(f"[DEBUG][P] Value preview: {str(document)[:500]}")
+                import traceback
+                print(f"[DEBUG][P] Call stack:\n{traceback.format_stack()[-5:]}")
+                return None  # Return None instead of corrupted data
+            # #endregion
             return document
         
         # Document not found in R2 or local storage
@@ -583,6 +598,12 @@ class LocalOCRStorage:
             timestamp_display = now.strftime("%b %d, %Y")
             
             # Get document title for display
+            # #region agent log - Validate doc is still a dict before using .get()
+            if not isinstance(doc, dict):
+                print(f"[DEBUG][M] CRITICAL: doc became {type(doc).__name__} before doc.get()! doc_id={doc_id}")
+                print(f"[DEBUG][M] Value: {str(doc)[:200]}")
+                return False
+            # #endregion
             doc_title = doc.get("title", "").split(" - ")[0] if doc.get("title") else doc_id
             
             # Create formatted history entry
