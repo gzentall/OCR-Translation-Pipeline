@@ -220,17 +220,26 @@ class LocalOCRStorage:
     
     def get_document(self, doc_id: str) -> Optional[Dict]:
         """Get a document by ID from R2 or local storage."""
+        # #region agent log - Entry point
+        import traceback
+        caller = ''.join(traceback.format_stack()[-3:-2]) if len(traceback.format_stack()) > 2 else 'unknown'
+        print(f"[DEBUG][Q] GET_DOCUMENT_ENTRY doc_id={doc_id} caller={caller.strip()}")
+        # #endregion
         document = None
         
         # Try R2 first if enabled
         if self.use_r2 and self.r2:
             try:
+                # #region agent log
+                print(f"[DEBUG][Q] CALLING_R2_GET_DOCUMENT doc_id={doc_id}")
+                # #endregion
                 document = self.r2.get_document(doc_id)
                 # #region agent log
+                print(f"[DEBUG][Q] R2_RETURNED doc_id={doc_id} type={type(document).__name__ if document else 'None'} is_dict={isinstance(document, dict) if document else False}")
                 if document is not None:
                     print(f"[DEBUG][G] R2_GET_DOCUMENT doc_id={doc_id} type={type(document).__name__}")
                     if not isinstance(document, dict):
-                        print(f"[DEBUG][G] CRITICAL: R2 returned {type(document).__name__}, not dict! Preview: {str(document)[:200]}")
+                        print(f"[DEBUG][G] CRITICAL: R2 returned {type(document).__name__}, not dict! Preview: {str(document)[:500]}")
                 # #endregion
             except Exception as e:
                 print(f"⚠️  Error loading document {doc_id} from R2: {e}")
@@ -239,15 +248,22 @@ class LocalOCRStorage:
         if not document:
             doc_file = self.documents_dir / f"{doc_id}.json"
             if doc_file.exists():
+                # #region agent log
+                print(f"[DEBUG][Q] READING_LOCAL_FILE doc_id={doc_id}")
+                # #endregion
                 with open(doc_file, 'r') as f:
                     document = json.load(f)
                 # #region agent log
+                print(f"[DEBUG][Q] LOCAL_FILE_LOADED doc_id={doc_id} type={type(document).__name__} is_dict={isinstance(document, dict)}")
                 print(f"[DEBUG][G] LOCAL_GET_DOCUMENT doc_id={doc_id} type={type(document).__name__}")
                 if not isinstance(document, dict):
                     print(f"[DEBUG][G] CRITICAL: Local file returned {type(document).__name__}, not dict!")
                 # #endregion
         
         if document:
+            # #region agent log - Before metadata access
+            print(f"[DEBUG][Q] BEFORE_METADATA_ACCESS doc_id={doc_id} doc_type={type(document).__name__} is_dict={isinstance(document, dict)}")
+            # #endregion
             # Add the document ID to the document object
             document['id'] = doc_id
             
@@ -297,6 +313,9 @@ class LocalOCRStorage:
                 document["people"] = resolved_people
             
             # Resolve sender and recipient to canonical names
+            # #region agent log - Before canonical name resolution
+            print(f"[DEBUG][Q] BEFORE_CANONICAL_RESOLUTION doc_id={doc_id} doc_type={type(document).__name__} is_dict={isinstance(document, dict)}")
+            # #endregion
             if document.get("sender"):
                 canonical_sender = self._resolve_to_canonical_name(document["sender"])
                 if canonical_sender:
@@ -307,7 +326,8 @@ class LocalOCRStorage:
                 if canonical_recipient:
                     document["recipient"] = canonical_recipient
             
-            # #region agent log - Final validation before return
+            # #region agent log - After all processing, before return
+            print(f"[DEBUG][Q] BEFORE_RETURN doc_id={doc_id} doc_type={type(document).__name__} is_dict={isinstance(document, dict)}")
             if not isinstance(document, dict):
                 print(f"[DEBUG][P] CRITICAL: get_document returning {type(document).__name__}, not dict! doc_id={doc_id}")
                 print(f"[DEBUG][P] Value preview: {str(document)[:500]}")
@@ -582,15 +602,24 @@ class LocalOCRStorage:
     
     def log_history(self, doc_id: str, username: str, action: str, details: str) -> bool:
         """Add a history entry to a document."""
+        # #region agent log - Entry point
+        print(f"[DEBUG][M] LOG_HISTORY_ENTRY doc_id={doc_id} doc_id_type={type(doc_id).__name__} username={username}")
+        # #endregion
         try:
+            # #region agent log - Before get_document call
+            print(f"[DEBUG][M] BEFORE_GET_DOCUMENT doc_id={doc_id}")
+            # #endregion
             doc = self.get_document(doc_id)
-            # #region agent log
-            print(f"[DEBUG][M] LOG_HISTORY_GET_DOC doc_id={doc_id} doc_type={type(doc).__name__ if doc else 'None'}")
+            # #region agent log - After get_document call
+            print(f"[DEBUG][M] AFTER_GET_DOCUMENT doc_id={doc_id} doc_type={type(doc).__name__ if doc else 'None'} doc_is_dict={isinstance(doc, dict) if doc else False}")
             if doc is not None and not isinstance(doc, dict):
-                print(f"[DEBUG][M] CRITICAL: log_history got {type(doc).__name__}, not dict! Preview: {str(doc)[:200]}")
+                print(f"[DEBUG][M] CRITICAL: log_history got {type(doc).__name__}, not dict! Preview: {str(doc)[:500]}")
+                import traceback
+                print(f"[DEBUG][M] CALL_STACK:\n{''.join(traceback.format_stack()[-8:])}")
                 return False
             # #endregion
             if doc is None:
+                print(f"[DEBUG][M] DOC_IS_NONE doc_id={doc_id}")
                 return False
             
             # Format timestamp for display
