@@ -798,6 +798,12 @@ class LocalOCRStorage:
             if doc is None:
                 return False
             
+            # #region agent log
+            if not isinstance(doc, dict):
+                print(f"[DEBUG][L] SET_STATUS_DOC_NOT_DICT doc_id={doc_id} doc_type={type(doc).__name__}")
+                return False
+            # #endregion
+            
             doc["processing_status"] = status
             doc["processing_error"] = error if status == "error" else None
             if status == "processing":
@@ -809,6 +815,9 @@ class LocalOCRStorage:
             self.save_document(doc_id, doc)
             return True
         except Exception as e:
+            # #region agent log
+            print(f"[DEBUG][L] SET_STATUS_ERROR doc_id={doc_id} error={str(e)} error_type={type(e).__name__}")
+            # #endregion
             print(f"Error setting processing status for {doc_id}: {e}")
             return False
     
@@ -824,11 +833,20 @@ class LocalOCRStorage:
                 return {"status": "unknown", "error": "Document not found"}
             
             # #region agent log - Check document type
-            print(f"[DEBUG][F] GET_PROCESSING_STATUS doc_id={doc_id} doc_type={type(doc).__name__}")
-            if not isinstance(doc, dict):
-                print(f"[DEBUG][F] CRITICAL: doc is {type(doc).__name__}, not dict! Value preview: {str(doc)[:200]}")
-                return {"status": "error", "error": f"Document corrupted: expected dict, got {type(doc).__name__}"}
+            try:
+                doc_type = type(doc).__name__
+                print(f"[DEBUG][F] GET_PROCESSING_STATUS doc_id={doc_id} doc_type={doc_type}")
+                if not isinstance(doc, dict):
+                    print(f"[DEBUG][F] CRITICAL: doc is {doc_type}, not dict! Value preview: {str(doc)[:200]}")
+                    return {"status": "error", "error": f"Document corrupted: expected dict, got {doc_type}"}
+            except Exception as type_check_error:
+                print(f"[DEBUG][F] ERROR_CHECKING_TYPE doc_id={doc_id} error={str(type_check_error)}")
+                return {"status": "error", "error": f"Document type check failed: {str(type_check_error)}"}
             # #endregion
+            
+            # Safe access with explicit type check
+            if not isinstance(doc, dict):
+                return {"status": "error", "error": f"Document corrupted: expected dict, got {type(doc).__name__}"}
             
             return {
                 "status": doc.get("processing_status", "ready"),
@@ -836,7 +854,16 @@ class LocalOCRStorage:
                 "last_processed": doc.get("last_processed"),
                 "processing_started": doc.get("processing_started")
             }
+        except AttributeError as e:
+            # #region agent log
+            print(f"[DEBUG][F] ATTRIBUTE_ERROR doc_id={doc_id} error={str(e)}")
+            # #endregion
+            print(f"Error getting processing status for {doc_id}: {e}")
+            return {"status": "error", "error": str(e)}
         except Exception as e:
+            # #region agent log
+            print(f"[DEBUG][F] GENERAL_ERROR doc_id={doc_id} error={str(e)} error_type={type(e).__name__}")
+            # #endregion
             print(f"Error getting processing status for {doc_id}: {e}")
             return {"status": "error", "error": str(e)}
     

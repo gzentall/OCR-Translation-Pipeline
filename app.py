@@ -3170,13 +3170,24 @@ def delete_document_comment(doc_id, comment_id):
 @app.route('/documents/<doc_id>/status', methods=['GET'])
 def get_document_status(doc_id):
     """Get the processing status of a document."""
+    # #region agent log
+    print(f"[DEBUG][K] STATUS_ENDPOINT_CALLED doc_id={doc_id}")
+    # #endregion
     try:
         status = local_storage.get_processing_status(doc_id)
+        # #region agent log
+        print(f"[DEBUG][K] STATUS_RESULT doc_id={doc_id} status={status.get('status') if isinstance(status, dict) else 'NOT_DICT'}")
+        # #endregion
         return jsonify({
             'success': True,
             **status
         })
     except Exception as e:
+        # #region agent log
+        print(f"[DEBUG][K] STATUS_ERROR doc_id={doc_id} error={str(e)} error_type={type(e).__name__}")
+        import traceback
+        print(f"[DEBUG][K] STATUS_TRACEBACK:\n{traceback.format_exc()}")
+        # #endregion
         return jsonify({
             'success': False,
             'error': str(e)
