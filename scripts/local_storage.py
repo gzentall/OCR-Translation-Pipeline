@@ -310,7 +310,15 @@ class LocalOCRStorage:
                 if not isinstance(metadata, dict):
                     print(f"[DEBUG][O] CRITICAL: Metadata entry is {type(metadata).__name__}, not dict! doc_id={doc_id}")
                     print(f"[DEBUG][O] Metadata value: {str(metadata)[:200]}")
-                    # Skip metadata merge if corrupted
+                    # Remove corrupted entry immediately to prevent further errors
+                    print(f"[DEBUG][O] Removing corrupted metadata entry...")
+                    del self.metadata["documents"][doc_id]
+                    # Save cleaned metadata (async, don't block)
+                    try:
+                        self._save_metadata()
+                    except Exception as save_err:
+                        print(f"[DEBUG][O] Error saving cleaned metadata: {save_err}")
+                    # Skip metadata merge - document will work without metadata fields
                 else:
                     # Only use metadata values if document doesn't have them
                     if 'page_count' not in document or document['page_count'] is None:
