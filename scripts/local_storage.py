@@ -82,6 +82,19 @@ class LocalOCRStorage:
         """Save metadata to R2 or local file."""
         self.metadata["last_updated"] = datetime.now().isoformat()
         
+        # #region agent log - Validate metadata before saving
+        corrupted_ids = []
+        for doc_id, doc_meta in self.metadata.get("documents", {}).items():
+            if not isinstance(doc_meta, dict):
+                print(f"[DEBUG][J] CRITICAL: Metadata corruption detected! doc_id={doc_id} type={type(doc_meta).__name__}")
+                print(f"[DEBUG][J] Value: {str(doc_meta)[:200]}")
+                corrupted_ids.append(doc_id)
+        
+        for doc_id in corrupted_ids:
+            print(f"[DEBUG][J] Removing corrupted metadata entry for {doc_id}")
+            del self.metadata["documents"][doc_id]
+        # #endregion
+        
         if self.use_r2 and self.r2:
             # Save to R2
             try:

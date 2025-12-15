@@ -2197,7 +2197,7 @@
       "summary": "WHO: The text is a letter from an individual named Lucien to an unknown recipient, discussing variou...",
       "page_count": 0,
       "status": "editing",
-      "sender": "Lucien",
+      "sender": "Lucien Aigner",
       "recipient": "Elizabeth Aigner"
     }
   },
@@ -4140,7 +4140,7 @@
       "secondary_references": []
     }
   },
-  "last_updated": "2025-12-13T14:19:50.548619",
+  "last_updated": "2025-12-13T16:35:09.154933",
   "context_notes": {
     "ctx_20251130_070722913378": {
       "letterId": "doc_20251129_135820",
@@ -4169,14 +4169,6 @@
     "ctx_20251206_103501566922": {
       "letterId": "doc_20251126_152745",
       "createdAt": "2025-12-06T10:35:01.566957"
-    },
-    "ctx_20251206_131335600417": {
-      "letterId": "doc_20251201_134055",
-      "createdAt": "2025-12-06T13:13:35.600465"
-    },
-    "ctx_20251206_141227944133": {
-      "letterId": "doc_20251201_134055",
-      "createdAt": "2025-12-06T14:12:27.944208"
     },
     "ctx_20251206_141251935547": {
       "letterId": "doc_20251127_110849",
