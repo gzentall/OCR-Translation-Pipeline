@@ -2022,6 +2022,12 @@ def list_documents():
         
         for doc_id, metadata in documents:
             try:
+                # Validate metadata is a dict (defensive check for corruption)
+                if not isinstance(metadata, dict):
+                    print(f"[DEBUG][K] Skipping corrupted metadata for {doc_id}: type={type(metadata).__name__}")
+                    error_count += 1
+                    continue
+                
                 # Get full document to include reviews and status
                 full_doc = local_storage.get_document(doc_id)
                 doc_data = {

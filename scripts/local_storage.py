@@ -52,31 +52,67 @@ class LocalOCRStorage:
     
     def _load_metadata(self) -> Dict:
         """Load existing metadata from R2 or local file."""
+        metadata = None
+        
         if self.use_r2 and self.r2:
             # Load from R2
             try:
                 metadata = self.r2.get_metadata()
-                if metadata:
-                    return metadata
             except Exception as e:
                 print(f"⚠️  Error loading metadata from R2: {e}")
         
         # Load from local file (fallback or default)
-        if self.metadata_file.exists():
+        if metadata is None and self.metadata_file.exists():
             try:
                 with open(self.metadata_file, 'r') as f:
-                    return json.load(f)
+                    metadata = json.load(f)
             except:
                 pass
         
-        return {
-            "documents": {},
-            "people": {},
-            "context_notes": {},
-            "references": {},
-            "document_references": {},
-            "last_updated": datetime.now().isoformat()
-        }
+        # Default if nothing loaded
+        if metadata is None:
+            metadata = {
+                "documents": {},
+                "people": {},
+                "context_notes": {},
+                "references": {},
+                "document_references": {},
+                "last_updated": datetime.now().isoformat()
+            }
+        
+        # Validate and clean corrupted entries
+        corrupted_ids = []
+        documents = metadata.get("documents", {})
+        if not isinstance(documents, dict):
+            print(f"[DEBUG][J] CRITICAL: metadata['documents'] is {type(documents).__name__}, not dict! Reinitializing.")
+            metadata["documents"] = {}
+        else:
+            for doc_id, doc_meta in documents.items():
+                if not isinstance(doc_meta, dict):
+                    print(f"[DEBUG][J] CRITICAL: Metadata corruption detected on load! doc_id={doc_id} type={type(doc_meta).__name__}")
+                    print(f"[DEBUG][J] Value: {str(doc_meta)[:200]}")
+                    corrupted_ids.append(doc_id)
+        
+        # Remove corrupted entries
+        if corrupted_ids:
+            print(f"[DEBUG][J] Removing {len(corrupted_ids)} corrupted metadata entries on load")
+            for doc_id in corrupted_ids:
+                if doc_id in metadata.get("documents", {}):
+                    del metadata["documents"][doc_id]
+            # Save cleaned metadata back (set last_updated first)
+            metadata["last_updated"] = datetime.now().isoformat()
+            if self.use_r2 and self.r2:
+                try:
+                    self.r2.save_metadata(metadata)
+                except Exception as e:
+                    print(f"⚠️  Error saving cleaned metadata to R2: {e}")
+            try:
+                with open(self.metadata_file, 'w') as f:
+                    json.dump(metadata, f, indent=2)
+            except Exception as e:
+                print(f"⚠️  Error saving cleaned metadata locally: {e}")
+        
+        return metadata
     
     def _save_metadata(self):
         """Save metadata to R2 or local file."""
