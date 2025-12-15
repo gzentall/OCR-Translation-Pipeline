@@ -569,6 +569,12 @@ class LocalOCRStorage:
         """Add a history entry to a document."""
         try:
             doc = self.get_document(doc_id)
+            # #region agent log
+            print(f"[DEBUG][M] LOG_HISTORY_GET_DOC doc_id={doc_id} doc_type={type(doc).__name__ if doc else 'None'}")
+            if doc is not None and not isinstance(doc, dict):
+                print(f"[DEBUG][M] CRITICAL: log_history got {type(doc).__name__}, not dict! Preview: {str(doc)[:200]}")
+                return False
+            # #endregion
             if doc is None:
                 return False
             
@@ -593,13 +599,19 @@ class LocalOCRStorage:
             history.append(history_entry)
             doc["history"] = history
             
-            # Save document
-            doc_file = self.documents_dir / f"{doc_id}.json"
-            with open(doc_file, 'w') as f:
-                json.dump(doc, f, indent=2)
+            # Save document to both R2 and local
+            # #region agent log
+            print(f"[DEBUG][M] LOG_HISTORY_SAVING doc_id={doc_id} doc_type={type(doc).__name__}")
+            # #endregion
+            self.save_document(doc_id, doc)
             
             return True
         except Exception as e:
+            # #region agent log
+            print(f"[DEBUG][M] LOG_HISTORY_ERROR doc_id={doc_id} error={str(e)} error_type={type(e).__name__}")
+            import traceback
+            print(f"[DEBUG][M] LOG_HISTORY_TRACEBACK:\n{traceback.format_exc()}")
+            # #endregion
             print(f"Error logging history for {doc_id}: {e}")
             return False
     

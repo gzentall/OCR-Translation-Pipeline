@@ -80,7 +80,14 @@ class R2Storage:
         try:
             key = f'documents/{doc_id}.json'
             response = self.s3.get_object(Bucket=self.bucket_name, Key=key)
-            return json.loads(response['Body'].read().decode('utf-8'))
+            doc_data = json.loads(response['Body'].read().decode('utf-8'))
+            # #region agent log
+            doc_type = type(doc_data).__name__ if doc_data else 'None'
+            print(f"[DEBUG][N] R2_GET_DOCUMENT_RAW doc_id={doc_id} type={doc_type}")
+            if doc_data is not None and not isinstance(doc_data, dict):
+                print(f"[DEBUG][N] CRITICAL: R2 returned {doc_type}, not dict! Preview: {str(doc_data)[:200]}")
+            # #endregion
+            return doc_data
         except ClientError as e:
             if e.response['Error']['Code'] == 'NoSuchKey':
                 return None
