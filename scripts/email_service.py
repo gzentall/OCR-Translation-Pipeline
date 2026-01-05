@@ -462,48 +462,27 @@ def send_mention_notification(email: str, first_name: str, commenter_name: str, 
         return False
 
 
-if __name__ == '__main__':
-    # Test email service
-    print("Testing email service...")
-    print(f"API Key configured: {bool(RESEND_API_KEY)}")
-    print(f"App URL: {APP_URL}")
-    
-    if RESEND_API_KEY:
-        print("\nTo test sending an email, uncomment the following line:")
-        print('# send_user_invite("test@example.com", "Test", "test-token-123", "Admin")')
-    else:
-        print("\n⚠ RESEND_API_KEY not configured. Set it in .env file to enable email sending.")
-
-
-def send_rejection_notification(
-    admin_emails: list, 
-    document_title: str, 
-    document_id: str,
-    rejected_by: str = None
-) -> int:
+def send_rejection_notification(admin_email: str, admin_first_name: str, editor_name: str, document_title: str, doc_id: str) -> bool:
     """
-    Send rejection notification email to admin users.
+    Send email notification to admin when a document is rejected by an editor.
     
     Args:
-        admin_emails: List of admin email addresses
-        document_title: Title of the rejected document
-        document_id: ID of the rejected document
-        rejected_by: Name of the user who rejected the document
+        admin_email: Admin email address
+        admin_first_name: Admin's first name
+        editor_name: Name of the editor who rejected the document
+        document_title: Title of the document
+        doc_id: Document ID
     
     Returns:
-        Number of emails sent successfully
+        True if email sent successfully, False otherwise
     """
     
     if not RESEND_API_KEY:
-        print("Warning: RESEND_API_KEY not configured. Rejection emails not sent.")
-        return 0
+        print("Warning: RESEND_API_KEY not configured. Email not sent.")
+        print(f"Rejection notification for {admin_email}: {APP_URL}/documents/{doc_id}")
+        return False
     
-    if not admin_emails:
-        print("No admin emails to notify")
-        return 0
-    
-    document_link = f"{APP_URL}/?doc={document_id}"
-    rejected_by_text = f" by {rejected_by}" if rejected_by else ""
+    deep_link = f"{APP_URL}/documents/{doc_id}"
     
     html_content = f"""
     <!DOCTYPE html>
@@ -529,7 +508,7 @@ def send_rejection_notification(
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             }}
             .header {{
-                background-color: #dc3545;
+                background-color: #ba1a1a;
                 color: #ffffff;
                 padding: 30px;
                 text-align: center;
@@ -562,16 +541,8 @@ def send_rejection_notification(
                 font-weight: 500;
                 margin: 24px 0;
             }}
-            .document-info {{
-                background-color: #fff3f4;
-                border-left: 4px solid #dc3545;
-                padding: 16px;
-                margin: 20px 0;
-                border-radius: 4px;
-            }}
-            .document-info p {{
-                margin: 4px 0;
-                color: #333;
+            .button:hover {{
+                background-color: #5542a6;
             }}
             .footer {{
                 background-color: #f3edf7;
@@ -580,24 +551,53 @@ def send_rejection_notification(
                 color: #79747e;
                 font-size: 14px;
             }}
+            .document-info {{
+                background-color: #ffebee;
+                border-left: 4px solid #ba1a1a;
+                padding: 12px 16px;
+                margin: 20px 0;
+                border-radius: 4px;
+            }}
+            .document-info p {{
+                margin: 0;
+                color: #49454f;
+                font-size: 14px;
+            }}
+            .warning {{
+                background-color: #fff3e0;
+                border-left: 4px solid #ff9800;
+                padding: 12px 16px;
+                margin: 20px 0;
+                border-radius: 4px;
+            }}
+            .warning p {{
+                margin: 0;
+                color: #49454f;
+                font-size: 14px;
+            }}
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
-                <h1>⚠️ Document Rejected</h1>
+                <h1>Document Rejected</h1>
             </div>
             <div class="content">
-                <h2>A document has been rejected</h2>
-                <p>A document in Postmark has been marked as rejected{rejected_by_text} and requires your attention.</p>
+                <h2>Hi {admin_first_name},</h2>
+                <p>A document has been <strong>rejected</strong> by an editor and requires your attention.</p>
                 <div class="document-info">
                     <p><strong>Document:</strong> {document_title}</p>
-                    <p><strong>Document ID:</strong> {document_id}</p>
+                    <p><strong>Rejected by:</strong> {editor_name}</p>
                 </div>
-                <p>Please review the document and take appropriate action.</p>
+                <div class="warning">
+                    <p><strong>Action Required:</strong> Please review this document and take appropriate action.</p>
+                </div>
+                <p>Click the button below to view the document:</p>
                 <center>
-                    <a href="{document_link}" class="button">View Document</a>
+                    <a href="{deep_link}" class="button">View Document</a>
                 </center>
+                <p>If you're having trouble clicking the button, you can copy and paste this link into your browser:</p>
+                <p style="font-size: 12px; color: #79747e; word-break: break-all;">{deep_link}</p>
             </div>
             <div class="footer">
                 <p>&copy; 2024 Postmark. All rights reserved.</p>
@@ -607,37 +607,51 @@ def send_rejection_notification(
     </html>
     """
     
+    # Plain text version
     text_content = f"""
-    Document Rejected
+    Hi {admin_first_name},
     
-    A document in Postmark has been marked as rejected{rejected_by_text}.
+    A document has been REJECTED by an editor and requires your attention.
     
     Document: {document_title}
-    Document ID: {document_id}
+    Rejected by: {editor_name}
     
-    Please review the document and take appropriate action:
-    {document_link}
+    Action Required: Please review this document and take appropriate action.
+    
+    View the document here: {deep_link}
     
     © 2024 Postmark. All rights reserved.
     """
     
-    sent_count = 0
-    for email in admin_emails:
-        try:
-            params = {
-                "from": "Postmark <gabe@zentall.com>",
-                "to": [email],
-                "subject": f"⚠️ Document Rejected: {document_title}",
-                "html": html_content,
-                "text": text_content
-            }
-            
-            response = resend.Emails.send(params)
-            print(f"✓ Rejection notification sent to {email}")
-            sent_count += 1
-            
-        except Exception as e:
-            print(f"✗ Error sending rejection notification to {email}: {e}")
+    try:
+        params = {
+            "from": "Postmark <gabe@zentall.com>",
+            "to": [admin_email],
+            "subject": f"Document Rejected: {document_title}",
+            "html": html_content,
+            "text": text_content
+        }
+        
+        response = resend.Emails.send(params)
+        print(f"✓ Rejection notification email sent to {admin_email}")
+        print(f"  Message ID: {response.get('id', 'N/A')}")
+        return True
+        
+    except Exception as e:
+        print(f"✗ Error sending rejection notification email to {admin_email}: {e}")
+        print(f"  💡 DEEP LINK (copy this): {deep_link}")
+        return False
+
+
+if __name__ == '__main__':
+    # Test email service
+    print("Testing email service...")
+    print(f"API Key configured: {bool(RESEND_API_KEY)}")
+    print(f"App URL: {APP_URL}")
     
-    return sent_count
+    if RESEND_API_KEY:
+        print("\nTo test sending an email, uncomment the following line:")
+        print('# send_user_invite("test@example.com", "Test", "test-token-123", "Admin")')
+    else:
+        print("\n⚠ RESEND_API_KEY not configured. Set it in .env file to enable email sending.")
 

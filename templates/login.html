@@ -297,7 +297,7 @@
         }
         
         .error-message {
-            color: var(--md-sys-color-error);
+            color: var(--md-sys-color-on-error-container);
             font-family: var(--md-sys-typescale-body-medium-font);
             font-size: var(--md-sys-typescale-body-medium-size);
             margin-top: 16px;
@@ -305,10 +305,23 @@
             background: var(--md-sys-color-error-container);
             border-radius: 12px;
             display: none;
+            border: 1px solid var(--md-sys-color-error);
+            animation: fadeIn 0.3s ease-in;
         }
         
         .error-message.show {
             display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -349,11 +362,9 @@
                 </div>
             </div>
             
-            {% if error %}
-            <div class="error-message show">
-                {{ error }}
+            <div id="errorMessage" class="error-message" role="alert" aria-live="polite">
+                {% if error %}{{ error }}{% endif %}
             </div>
-            {% endif %}
             
             <div class="login-actions">
                 <button type="submit" class="mdc-button mdc-button--raised" data-mdc-auto-init="MDCRipple">
@@ -378,7 +389,7 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const submitButton = this.querySelector('button[type="submit"]');
-            const errorMessage = document.querySelector('.error-message');
+            const errorMessage = document.getElementById('errorMessage') || document.querySelector('.error-message');
             
             // Hide any previous error
             if (errorMessage) {
@@ -413,12 +424,21 @@
                             const doc = parser.parseFromString(html, 'text/html');
                             const errorElement = doc.querySelector('.error-message');
                             
-                            if (errorElement && errorMessage) {
-                                errorMessage.textContent = errorElement.textContent || 'Invalid username or password';
+                            // Extract error message
+                            let errorText = 'Invalid email or password';
+                            if (errorElement) {
+                                const text = errorElement.textContent || errorElement.innerText;
+                                if (text && text.trim()) {
+                                    errorText = text.trim();
+                                }
+                            }
+                            
+                            // Always show error message
+                            if (errorMessage) {
+                                errorMessage.textContent = errorText;
                                 errorMessage.classList.add('show');
-                            } else if (errorMessage) {
-                                errorMessage.textContent = 'Invalid username or password';
-                                errorMessage.classList.add('show');
+                                // Scroll error into view
+                                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                             }
                             
                             // Re-enable button
@@ -450,11 +470,17 @@
             }
         });
         
-        // Auto-focus username field
+        // Auto-focus username field and show error if present
         window.addEventListener('load', function() {
             const usernameField = document.getElementById('username');
             if (usernameField) {
                 usernameField.focus();
+            }
+            
+            // Show error message if it has content (from server-side error)
+            const errorMessage = document.getElementById('errorMessage');
+            if (errorMessage && errorMessage.textContent.trim()) {
+                errorMessage.classList.add('show');
             }
         });
     </script>

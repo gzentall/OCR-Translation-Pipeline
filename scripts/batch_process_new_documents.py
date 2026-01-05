@@ -30,7 +30,6 @@ from scripts.envelope_extractor import EnvelopeExtractor
 from scripts.translate_google import translate_text
 from scripts.extract_references import ReferenceExtractor
 from scripts.batch_processor import BatchOCRProcessor
-from scripts.detect_untranslated import detect_untranslated_text
 
 
 def extract_pdf_images(pdf_path: Path, output_dir: Path) -> list:
@@ -278,22 +277,6 @@ def process_single_document(pdf_path: Path, storage: LocalOCRStorage,
         raw_text = decode_html_entities(raw_text)
         print(f"    ✅ HTML entities decoded")
         
-        # Step 3c: Detect untranslated text
-        print(f"  🔍 Detecting untranslated text...")
-        try:
-            untranslated_markers = detect_untranslated_text(
-                translated_text=translated_text,
-                original_text=original_text,
-                source_language=source_lang
-            )
-            if untranslated_markers:
-                print(f"    ⚠️  Found {len(untranslated_markers)} untranslated word(s)")
-            else:
-                print(f"    ✅ No untranslated text detected")
-        except Exception as e:
-            print(f"    ⚠️  Detection error: {e}")
-            untranslated_markers = []
-        
         # Step 4: Extract metadata
         metadata = extract_document_metadata(original_text, envelope_extractor)
         
@@ -333,7 +316,6 @@ def process_single_document(pdf_path: Path, storage: LocalOCRStorage,
             'raw_text': raw_text,  # Original OCR output
             'original_text': original_text,  # Context-corrected text
             'translated_text': translated_text,
-            'untranslated_markers': untranslated_markers,  # Words/phrases that weren't translated
             'summary': summary,
             'language': source_lang,
             'date': file_metadata['date'],

@@ -64,8 +64,20 @@ def detect_language(text, api_key):
         return 'auto'
 
 
-def translate_text(text, target_language='en', source_language=None, api_key=None):
-    """Translate text to target language using Google Translate API."""
+def translate_text(text, target_language='en', source_language=None, api_key=None, preserve_page_breaks=True):
+    """
+    Translate text to target language using Google Translate API.
+    
+    Args:
+        text: Text to translate
+        target_language: Target language code (default: 'en')
+        source_language: Source language code (auto-detect if None)
+        api_key: API key (auto-loaded if None)
+        preserve_page_breaks: If True, split by double newlines and translate each page separately
+    
+    Returns:
+        Tuple of (translated_text, detected_language) or (None, None) on error
+    """
     if not api_key:
         api_key = get_api_key()
     
@@ -78,7 +90,44 @@ def translate_text(text, target_language='en', source_language=None, api_key=Non
         if source_language == target_language:
             return text, source_language
         
-        # Translate the text
+        # Preserve page breaks by translating each page separately
+        if preserve_page_breaks and '\n\n' in text:
+            # Split by double newlines (page breaks)
+            pages = text.split('\n\n')
+            
+            # Only split if we have multiple non-empty pages
+            if len([p for p in pages if p.strip()]) > 1:
+                translated_pages = []
+                detected_language = None
+                
+                for page_text in pages:
+                    if not page_text.strip():
+                        # Empty page - preserve as blank
+                        translated_pages.append('')
+                        continue
+                    
+                    # Translate this page
+                    page_translated, page_lang = translate_text(
+                        page_text.strip(),
+                        target_language=target_language,
+                        source_language=source_language,
+                        api_key=api_key,
+                        preserve_page_breaks=False  # Don't recurse
+                    )
+                    
+                    if page_translated is None:
+                        # Fallback to original if translation fails
+                        translated_pages.append(page_text.strip())
+                    else:
+                        translated_pages.append(page_translated)
+                        if detected_language is None:
+                            detected_language = page_lang
+                
+                # Recombine with page breaks preserved
+                translated_text = '\n\n'.join(translated_pages)
+                return translated_text, detected_language or source_language
+        
+        # Single page or preserve_page_breaks=False - translate normally
         url = f"https://translation.googleapis.com/language/translate/v2?key={api_key}"
         data = {
             'q': text,
@@ -142,17 +191,45 @@ def main():
     # Get API key
     api_key = get_api_key()
     
-    # Translate the text
-    translated_text, detected_language = translate_text(
-        text, 
-        target_language=args.target,
-        source_language=args.source,
-        api_key=api_key
-    )
+    # Split text by double newlines (page breaks) to preserve page boundaries
+    # This ensures Google Translate doesn't normalize whitespace and lose page breaks
+    pages = text.split('\n\n')
+    print(f"Detected {len(pages)} pages (based on double newlines)")
     
-    if translated_text is None:
-        print("Translation failed")
-        sys.exit(1)
+    # Translate each page separately to preserve page breaks
+    translated_pages = []
+    detected_language = None
+    
+    for i, page_text in enumerate(pages, 1):
+        if not page_text.strip():
+            # Empty page - preserve as blank line
+            translated_pages.append('')
+            continue
+        
+        print(f"Translating page {i}/{len(pages)}...")
+        translated_page, page_lang = translate_text(
+            page_text.strip(),
+            target_language=args.target,
+            source_language=args.source,
+            api_key=api_key
+        )
+        
+        if translated_page is None:
+            print(f"Warning: Translation failed for page {i}, using original text")
+            translated_page = page_text.strip()
+        else:
+            # Use detected language from first successful translation
+            if detected_language is None:
+                detected_language = page_lang
+        
+        translated_pages.append(translated_page)
+    
+    # Recombine pages with double newlines (page breaks) between them
+    translated_text = '\n\n'.join(translated_pages)
+    
+    if not detected_language:
+        # Fallback: try to detect language from full text
+        detected_language = detect_language(text[:1000], api_key)
     
     # Write translated text to output file
     try:

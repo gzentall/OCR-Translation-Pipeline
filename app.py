@@ -15,7 +15,6 @@ import sys
 import secrets
 import bcrypt
 import time
-import threading
 from pathlib import Path
 from datetime import datetime, timezone
 from functools import wraps
@@ -36,16 +35,8 @@ from scripts.geoapify_client import GeoapifyClient
 from scripts.envelope_extractor import EnvelopeExtractor
 from scripts.database import DatabaseSession, User, Document, Reference, ReferenceType, UserRole, Notification
 from sqlalchemy import text
-from scripts.email_service import send_user_invite, send_mention_notification, send_rejection_notification
+from scripts.email_service import send_user_invite, send_rejection_notification, send_mention_notification
 from botocore.exceptions import ClientError
-# Import enhanced processing components
-from scripts.batch_processor import BatchOCRProcessor
-from scripts.ai_processor import AIProcessor
-from scripts.translate_google import translate_text
-from scripts.extract_references import ReferenceExtractor
-from scripts.extract_references_enhanced import extract_references_with_context
-import json
-import openai
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 200MB max file size
@@ -87,42 +78,9 @@ for directory in [INBOX_DIR, WORK_DIR, OUT_DIR, EN_DIR]:
 
 # Initialize local storage, AI processor, Geoapify client, and envelope extractor
 local_storage = LocalOCRStorage()
-try:
-    ai_processor = AIProcessor()
-except Exception as e:
-    print(f"Warning: Could not initialize AIProcessor, using fallback: {e}")
-    ai_processor = FallbackAIProcessor()
+ai_processor = FallbackAIProcessor()
 geoapify_client = GeoapifyClient()
 envelope_extractor = EnvelopeExtractor()
-
-# Initialize enhanced processing components
-context_file = PROJECT_ROOT / "context" / "reference_data.json"
-context_data = {}
-if context_file.exists():
-    try:
-        with open(context_file, 'r') as f:
-            context_data = json.load(f)
-        print(f"✅ Loaded context file with {len(context_data)} entries")
-    except Exception as e:
-        print(f"⚠️  Could not load context file: {e}")
-
-# Initialize batch processor and reference extractor (lazy initialization)
-batch_processor = None
-ref_extractor = None
-
-def get_batch_processor():
-    """Get or create BatchOCRProcessor instance."""
-    global batch_processor
-    if batch_processor is None:
-        batch_processor = BatchOCRProcessor(provider='openai', context_file=str(context_file))
-    return batch_processor
-
-def get_ref_extractor():
-    """Get or create ReferenceExtractor instance."""
-    global ref_extractor
-    if ref_extractor is None:
-        ref_extractor = ReferenceExtractor()
-    return ref_extractor
 
 # R2 URL Cache - Cache presigned URLs for 50 minutes (they're valid for 1 hour)
 # Structure: {image_key: (url, expiry_timestamp)}
@@ -209,9 +167,13 @@ def require_auth(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('authenticated'):
-            # Check if this is an API endpoint (starts with /api)
-            if request.path.startswith('/api'):
-                return jsonify({'success': False, 'error': 'Authentication required'}), 401
+            # Check if this is an API request (expects JSON response)
+            if request.path.startswith('/api/') or request.is_json or 'application/json' in request.headers.get('Accept', ''):
+                return jsonify({
+                    'success': False,
+                    'error': 'Authentication required. Please log in to continue.'
+                }), 401
+            # For regular page requests, redirect to login
             return redirect('/login')
         return f(*args, **kwargs)
     return decorated_function
@@ -317,30 +279,12 @@ def format_relative_time(dt):
 @require_auth
 def index():
     """Serve the main application page (Documents tab)."""
-    # Get full user info from database including avatar_url
-    user_id = session.get('user_id')
-    user = None
-    try:
-        with DatabaseSession() as db:
-            db_user = db.query(User).filter_by(id=user_id).first()
-            if db_user:
-                user = db_user.to_dict()
-            else:
-                user = {
-                    'id': user_id,
-                    'username': session.get('username'),
-                    'role': session.get('role')
-                }
-    except Exception as e:
-        print(f"[ERROR] Failed to fetch user from database: {e}")
-        # Fall back to session data
-        user = {
-            'id': user_id,
-            'username': session.get('username'),
-            'role': session.get('role'),
-            'first_name': session.get('user_first_name', ''),
-            'last_name': session.get('user_last_name', '')
-        }
+    # Get user info from session (user is authenticated due to @require_auth decorator)
+    user = {
+        'id': session.get('user_id'),
+        'username': session.get('username'),
+        'role': session.get('role')
+    }
     print(f"DEBUG: User authenticated - {user}")  # Debug log
     
     return render_template('browse.html', user=user)
@@ -354,28 +298,14 @@ def upload_form():
 @app.route('/browse')
 def browse():
     """Serve the main application interface."""
-    # Get full user info from database including avatar_url
+    # Get user info from session
     user = None
     if session.get('authenticated'):
-        user_id = session.get('user_id')
-        try:
-            with DatabaseSession() as db:
-                db_user = db.query(User).filter_by(id=user_id).first()
-                if db_user:
-                    user = db_user.to_dict()
-                else:
-                    user = {
-                        'id': user_id,
-                        'username': session.get('username'),
-                        'role': session.get('role')
-                    }
-        except Exception as e:
-            print(f"[ERROR] Failed to fetch user from database: {e}")
-            user = {
-                'id': user_id,
-                'username': session.get('username'),
-                'role': session.get('role')
-            }
+        user = {
+            'id': session.get('user_id'),
+            'username': session.get('username'),
+            'role': session.get('role')
+        }
     return render_template('browse.html', user=user)
 
 
@@ -415,207 +345,6 @@ def logout():
     # Clear session data
     session.clear()
     return redirect('/login')
-
-
-# ===== Profile API =====
-
-@app.route('/api/profile', methods=['GET'])
-@require_auth
-def get_profile():
-    """Get current user's profile."""
-    try:
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({'success': False, 'error': 'Not authenticated'}), 401
-        
-        with DatabaseSession() as db:
-            user = db.query(User).filter_by(id=user_id).first()
-            if not user:
-                return jsonify({'success': False, 'error': 'User not found'}), 404
-            
-            return jsonify({
-                'success': True,
-                'profile': user.to_dict()
-            })
-    except Exception as e:
-        print(f"[ERROR] Failed to get profile: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/profile', methods=['PUT'])
-@require_auth
-def update_profile():
-    """Update current user's profile."""
-    try:
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({'success': False, 'error': 'Not authenticated'}), 401
-        
-        data = request.get_json()
-        if not data:
-            return jsonify({'success': False, 'error': 'No data provided'}), 400
-        
-        with DatabaseSession() as db:
-            user = db.query(User).filter_by(id=user_id).first()
-            if not user:
-                return jsonify({'success': False, 'error': 'User not found'}), 404
-            
-            # Update allowed fields
-            if 'first_name' in data and data['first_name']:
-                user.first_name = data['first_name'].strip()
-            
-            if 'last_name' in data and data['last_name']:
-                user.last_name = data['last_name'].strip()
-            
-            if 'username' in data:
-                new_username = data['username'].strip() if data['username'] else None
-                if new_username:
-                    # Check if username is already taken
-                    existing = db.query(User).filter(User.username == new_username, User.id != user_id).first()
-                    if existing:
-                        return jsonify({'success': False, 'error': 'Username already taken'}), 400
-                user.username = new_username
-            
-            if 'email' in data and data['email']:
-                new_email = data['email'].strip().lower()
-                # Check if email is already taken
-                existing = db.query(User).filter(User.email == new_email, User.id != user_id).first()
-                if existing:
-                    return jsonify({'success': False, 'error': 'Email already in use'}), 400
-                user.email = new_email
-            
-            # Handle password change
-            if 'new_password' in data and data['new_password']:
-                current_password = data.get('current_password', '')
-                
-                # Verify current password if user has one
-                if user.password_hash:
-                    if not current_password:
-                        return jsonify({'success': False, 'error': 'Current password required'}), 400
-                    if not bcrypt.checkpw(current_password.encode('utf-8'), user.password_hash.encode('utf-8')):
-                        return jsonify({'success': False, 'error': 'Current password is incorrect'}), 400
-                
-                # Set new password
-                new_hash = bcrypt.hashpw(data['new_password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-                user.password_hash = new_hash
-            
-            db.commit()
-            
-            # Update session with new user info
-            session['user_first_name'] = user.first_name
-            session['user_last_name'] = user.last_name
-            session['user_email'] = user.email
-            
-            return jsonify({
-                'success': True,
-                'profile': user.to_dict(),
-                'message': 'Profile updated successfully'
-            })
-            
-    except Exception as e:
-        print(f"[ERROR] Failed to update profile: {e}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/profile/avatar', methods=['POST'])
-@require_auth
-def upload_avatar():
-    """Upload a new avatar image."""
-    try:
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({'success': False, 'error': 'Not authenticated'}), 401
-        
-        if 'avatar' not in request.files:
-            return jsonify({'success': False, 'error': 'No avatar file provided'}), 400
-        
-        file = request.files['avatar']
-        if file.filename == '':
-            return jsonify({'success': False, 'error': 'No file selected'}), 400
-        
-        # Validate file type
-        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-        ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
-        if ext not in allowed_extensions:
-            return jsonify({'success': False, 'error': 'Invalid file type. Allowed: png, jpg, jpeg, gif, webp'}), 400
-        
-        # Generate unique filename
-        import uuid
-        filename = f"avatar_{user_id}_{uuid.uuid4().hex[:8]}.{ext}"
-        
-        # Save to avatars directory
-        avatars_dir = Path('static/avatars')
-        avatars_dir.mkdir(parents=True, exist_ok=True)
-        
-        filepath = avatars_dir / filename
-        file.save(str(filepath))
-        
-        # Update user's avatar_url
-        avatar_url = f"/static/avatars/{filename}"
-        
-        with DatabaseSession() as db:
-            user = db.query(User).filter_by(id=user_id).first()
-            if user:
-                # Delete old avatar if it exists and is a local file
-                if user.avatar_url and user.avatar_url.startswith('/static/avatars/'):
-                    old_path = Path(user.avatar_url.lstrip('/'))
-                    if old_path.exists():
-                        old_path.unlink()
-                
-                user.avatar_url = avatar_url
-                db.commit()
-                
-                return jsonify({
-                    'success': True,
-                    'avatar_url': avatar_url,
-                    'profile': user.to_dict(),
-                    'message': 'Avatar uploaded successfully'
-                })
-        
-        return jsonify({'success': False, 'error': 'User not found'}), 404
-        
-    except Exception as e:
-        print(f"[ERROR] Failed to upload avatar: {e}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/profile/avatar', methods=['DELETE'])
-@require_auth
-def delete_avatar():
-    """Delete user's avatar image."""
-    try:
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({'success': False, 'error': 'Not authenticated'}), 401
-        
-        with DatabaseSession() as db:
-            user = db.query(User).filter_by(id=user_id).first()
-            if not user:
-                return jsonify({'success': False, 'error': 'User not found'}), 404
-            
-            # Delete avatar file if it exists
-            if user.avatar_url and user.avatar_url.startswith('/static/avatars/'):
-                filepath = Path(user.avatar_url.lstrip('/'))
-                if filepath.exists():
-                    filepath.unlink()
-            
-            user.avatar_url = None
-            db.commit()
-            
-            return jsonify({
-                'success': True,
-                'profile': user.to_dict(),
-                'message': 'Avatar removed successfully'
-            })
-            
-    except Exception as e:
-        print(f"[ERROR] Failed to delete avatar: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -661,14 +390,6 @@ def login():
             
             print(f"DEBUG: Login successful for {user.email}")
             
-            # Check for redirect parameter
-            next_url = request.args.get('next') or request.form.get('next')
-            if next_url:
-                # Validate next URL (prevent open redirect attacks)
-                # Only allow relative URLs
-                if next_url.startswith('/') and not next_url.startswith('//'):
-                    return redirect(next_url)
-            
             # Redirect to main app
             return redirect('/')
     
@@ -679,22 +400,22 @@ def login():
 @app.route('/api/users/active', methods=['GET'])
 @require_auth
 def get_active_users():
-    """Get list of active users for @mention autocomplete (any authenticated user)."""
+    """Get list of active users for mention autocomplete."""
     try:
         with DatabaseSession() as db:
-            # Get only active users
-            users = db.query(User).filter_by(is_active=True).order_by(User.first_name, User.last_name).all()
+            users = db.query(User).filter(User.is_active == True).order_by(User.first_name, User.last_name).all()
             
             users_data = []
             for user in users:
                 users_data.append({
                     'id': user.id,
-                    'email': user.email,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
-                    'username': f"{user.first_name} {user.last_name}",  # Full name for display
+                    'email': user.email,
+                    'username': user.username,
                     'avatar_url': user.avatar_url,
-                    'initials': user.get_initials()
+                    'initials': user.get_initials(),
+                    'display_name': user.get_display_name()
                 })
             
             return jsonify({"users": users_data, "success": True})
@@ -997,6 +718,118 @@ def get_current_user_info():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
+@app.route('/api/profile', methods=['GET'])
+@require_auth
+def get_profile():
+    """Get current user's profile for editing."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"success": False, "error": "Not authenticated"}), 401
+        
+        with DatabaseSession() as db:
+            user = db.query(User).filter_by(id=user_id, is_active=True).first()
+            if not user:
+                return jsonify({"success": False, "error": "User not found"}), 404
+            
+            return jsonify({
+                "success": True,
+                "profile": user.to_dict()
+            })
+    except Exception as e:
+        print(f"Error getting profile: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route('/api/profile', methods=['PUT'])
+@require_auth
+def update_profile():
+    """Update current user's profile."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"success": False, "error": "Not authenticated"}), 401
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "No data provided"}), 400
+        
+        with DatabaseSession() as db:
+            user = db.query(User).filter_by(id=user_id, is_active=True).first()
+            if not user:
+                return jsonify({"success": False, "error": "User not found"}), 404
+            
+            # Update basic fields
+            if 'first_name' in data:
+                user.first_name = data['first_name'].strip()
+            if 'last_name' in data:
+                user.last_name = data['last_name'].strip()
+            if 'email' in data:
+                new_email = data['email'].strip().lower()
+                # Check if email is already taken by another user
+                existing_user = db.query(User).filter_by(email=new_email).first()
+                if existing_user and existing_user.id != user.id:
+                    return jsonify({"success": False, "error": "Email already in use"}), 400
+                user.email = new_email
+            if 'username' in data:
+                new_username = data['username'].strip() if data['username'] else None
+                # Check if username is already taken by another user
+                if new_username:
+                    existing_user = db.query(User).filter_by(username=new_username).first()
+                    if existing_user and existing_user.id != user.id:
+                        return jsonify({"success": False, "error": "Username already in use"}), 400
+                user.username = new_username
+            
+            # Handle password change if provided
+            if 'new_password' in data and data['new_password']:
+                new_password = data['new_password']
+                if len(new_password) < 6:
+                    return jsonify({"success": False, "error": "Password must be at least 6 characters"}), 400
+                
+                # Verify current password if provided
+                if 'current_password' in data and data['current_password']:
+                    if not user.password_hash:
+                        return jsonify({"success": False, "error": "Current password required"}), 400
+                    
+                    try:
+                        password_valid = bcrypt.checkpw(
+                            data['current_password'].encode('utf-8'),
+                            user.password_hash.encode('utf-8')
+                        )
+                        if not password_valid:
+                            return jsonify({"success": False, "error": "Current password is incorrect"}), 400
+                    except Exception as e:
+                        print(f"Password verification error: {e}")
+                        return jsonify({"success": False, "error": "Current password is incorrect"}), 400
+                
+                # Hash and set new password
+                password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                user.password_hash = password_hash
+            
+            # Update timestamp
+            user.updated_at = datetime.utcnow()
+            
+            db.commit()
+            
+            # Update session data
+            session['username'] = f"{user.first_name} {user.last_name}"
+            session['email'] = user.email
+            
+            return jsonify({
+                "success": True,
+                "profile": user.to_dict()
+            })
+    except Exception as e:
+        print(f"Error updating profile: {e}")
+        import traceback
+        print(traceback.format_exc())
+        try:
+            db.rollback()
+        except:
+            pass
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
 @app.route('/accept-invite', methods=['GET', 'POST'])
 def accept_invite():
     """Handle user invitation acceptance and password setup."""
@@ -1081,19 +914,16 @@ def get_document_image(doc_id, page_num):
             # Build list of possible image names
             possible_names = []
             
-            # 1. Doc ID subfolder pattern (used by promote_document.py)
-            possible_names.append(f"{doc_id}/page_{page_num}.png")
-            
-            # 2. From page_images (most reliable for older docs)
+            # 1. From page_images (most reliable)
             if page_images and len(page_images) >= page_num:
                 image_path = Path(page_images[page_num - 1])
                 possible_names.append(image_path.name)
             
-            # 3. Using title/filename base (common pattern)
+            # 2. Using title/filename base (common pattern)
             if title_base:
                 possible_names.append(f"{title_base}-{page_num}.png")
             
-            # 4. Using doc_id pattern (flat)
+            # 3. Using doc_id pattern
             possible_names.append(f"{doc_id}-{page_num}.png")
             
             # Log what we're trying
@@ -1292,657 +1122,162 @@ def debug_r2_images(doc_id):
         return jsonify({"error": str(e)}), 500
 
 
-# Helper functions for enhanced document processing
-
-def parse_filename(filename: str) -> dict:
-    """Parse document filename to extract metadata.
-    
-    Expected format: NNN-YYYY-MM-DD-lang.pdf or NNN-YYYY-MM-DD-lang_uniqueid.pdf
-    Example: 002-1938-01-05-ger.pdf or 179-1942-08-15-fre_32f4d356.pdf
-    """
-    stem = Path(filename).stem
-    
-    # Remove unique ID suffix if present (e.g., "fre_32f4d356" -> "fre")
-    # The unique ID is appended with underscore during upload
-    if '_' in stem:
-        stem = stem.rsplit('_', 1)[0]  # Remove last underscore and everything after
-    
-    parts = stem.split('-')
-    
-    # Extract language code (last part after removing unique ID)
-    lang_code = parts[-1] if len(parts) > 0 else 'unknown'
-    # Validate it's a known language code (3 letters)
-    if len(lang_code) != 3 or not lang_code.isalpha():
-        lang_code = 'unknown'
-    
-    metadata = {
-        'number': parts[0] if len(parts) > 0 else None,
-        'date': None,
-        'language': lang_code
-    }
-    
-    # Try to parse date from middle parts
-    if len(parts) >= 4:
-        try:
-            year = parts[1]
-            month = parts[2] if len(parts[2]) == 2 else '01'
-            day = parts[3] if len(parts[3]) == 2 else '01'
-            metadata['date'] = f"{year}-{month}-{day}"
-        except:
-            pass
-    
-    return metadata
-
-
-def decode_html_entities(text: str) -> str:
-    """Decode HTML entities in text (&#39; → ', &amp; → &, etc.)."""
-    if not text or not isinstance(text, str):
-        return text
-    return html.unescape(text)
-
-
-def extract_pdf_images(pdf_path: Path, output_dir: Path) -> list:
-    """Extract images from PDF using pdftoppm."""
-    # Create unique prefix for this PDF
-    pdf_id = pdf_path.stem
-    output_prefix = output_dir / pdf_id
-    
-    try:
-        # Run pdftoppm to extract pages as PNG images
-        subprocess.run([
-            'pdftoppm',
-            '-png',
-            '-r', '300',  # 300 DPI for good quality
-            str(pdf_path),
-            str(output_prefix)
-        ], check=True, capture_output=True)
-        
-        # Find generated images
-        images = sorted(output_dir.glob(f"{pdf_id}-*.png"))
-        return [str(img.relative_to(PROJECT_ROOT)) for img in images]
-        
-    except subprocess.CalledProcessError as e:
-        print(f"Error extracting images: {e}")
-        return []
-    except FileNotFoundError:
-        print("pdftoppm not found. Install poppler-utils to extract images.")
-        return []
-
-
-def translate_with_llm(original_text: str, source_lang: str, context: dict) -> str:
-    """Translate text directly using LLM when Google Translate fails.
-    
-    Args:
-        original_text: Original OCR text to translate
-        source_lang: Source language code (e.g., 'fre', 'ger')
-        context: Context document for reference
-        
-    Returns:
-        Translated English text, or original text if translation fails
-    """
-    try:
-        global ai_processor
-        if ai_processor is None or not hasattr(ai_processor, 'client') or ai_processor.client is None:
-            print("⚠️  AI processor not available for LLM translation")
-            return original_text
-        
-        client = ai_processor.client
-        
-        # Map language codes to full names
-        lang_names = {
-            'fre': 'French', 'fra': 'French',
-            'ger': 'German', 'deu': 'German',
-            'hun': 'Hungarian', 'pol': 'Polish',
-            'rus': 'Russian', 'yid': 'Yiddish'
-        }
-        source_lang_name = lang_names.get(source_lang, source_lang)
-        
-        # Build context string
-        context_str = ""
-        if context:
-            people_list = [k for k, v in context.items() if isinstance(v, dict) and (v.get('type') == 'person' or 'variations' in v)][:15]
-            places_list = [k for k, v in context.items() if isinstance(v, dict) and (v.get('type') == 'place' or 'location' in str(v).lower())][:15]
-            if people_list or places_list:
-                context_str = f"\nKnown people: {', '.join(people_list)}\nKnown places: {', '.join(places_list)}"
-        
-        prompt = f"""Translate this {source_lang_name} text to English. This is a historical document (WWII era correspondence).
-{context_str}
-
-IMPORTANT:
-- Translate accurately and completely
-- Preserve all formatting, line breaks, and structure
-- Keep proper names as they appear (don't translate names)
-- If text is unclear or illegible, indicate with [illegible] or [unclear]
-- Return ONLY the English translation, no explanations
-
-TEXT TO TRANSLATE:
-{original_text[:6000]}"""
-
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an expert translator specializing in historical documents and WWII-era correspondence."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.3,
-            max_tokens=4000
-        )
-        
-        translated = response.choices[0].message.content.strip()
-        
-        # Sanity check - translation should be reasonably similar in length
-        if len(translated) < len(original_text) * 0.3:
-            print(f"⚠️  LLM translation too short ({len(translated)} chars vs {len(original_text)} original)")
-            return original_text
-        
-        print(f"✅ LLM translation successful ({len(translated)} chars)")
-        return translated
-        
-    except Exception as e:
-        print(f"⚠️  LLM translation failed: {e}")
-        return original_text
-
-
-def review_and_refine_translation(translated_text: str, original_ocr_text: str, 
-                                  context: dict, source_lang: str) -> tuple:
-    """Review and refine Google Translate output using LLM with context.
-    
-    Args:
-        translated_text: Google Translate output (already HTML decoded)
-        original_ocr_text: Original OCR text (for reference)
-        context: Context document (reference_data.json)
-        source_lang: Source language code
-        
-    Returns:
-        Tuple of (refined_translation, metadata_hints)
-    """
-    try:
-        # Use the global ai_processor if available and valid, otherwise skip
-        global ai_processor
-        if ai_processor is None:
-            print("⚠️  AI processor is None, skipping translation refinement")
-            return translated_text, {}
-        
-        if not hasattr(ai_processor, 'client'):
-            print("⚠️  AI processor does not have client attribute (using fallback), skipping translation refinement")
-            return translated_text, {}
-        
-        if ai_processor.client is None:
-            print("⚠️  AI processor client is None, skipping translation refinement")
-            return translated_text, {}
-        
-        # Use the validated client from ai_processor
-        client = ai_processor.client
-        
-        # Build context string from reference_data.json
-        context_str = ""
-        if context:
-            people_list = []
-            places_list = []
-            if isinstance(context, dict):
-                for key, value in context.items():
-                    if isinstance(value, dict):
-                        if value.get('type') == 'person' or 'variations' in value:
-                            people_list.append(key)
-                        elif value.get('type') == 'place' or 'location' in str(value).lower():
-                            places_list.append(key)
-            
-            context_str = f"""
-Known People: {', '.join(people_list[:20]) if people_list else 'None specified'}
-Known Places: {', '.join(places_list[:20]) if places_list else 'None specified'}
-"""
-        
-        # Build prompt for translation refinement
-        prompt = f"""You are reviewing and refining a machine translation of a historical document from {source_lang} to English.
-
-CONTEXT ABOUT THE COLLECTION:
-{context_str}
-
-ORIGINAL OCR TEXT (for reference, may contain errors):
-{original_ocr_text[:1000]}
-
-GOOGLE TRANSLATE OUTPUT (to be refined):
-{translated_text[:4000]}
-
-Your task:
-1. Fix any mistranslations or awkward phrasings
-2. Use context about known people and places to correct names and locations
-3. Improve historical context and terminology accuracy
-4. Preserve formatting, line breaks, and structure EXACTLY
-5. Keep the same tone and style
-6. Do NOT translate the OCR text directly - refine the existing translation
-
-Return ONLY the refined translation text, no explanations or JSON formatting."""
-
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an expert translator specializing in historical documents. Your task is to refine machine translations while preserving accuracy and historical context."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.3,
-            max_tokens=4000
-        )
-        
-        refined_text = response.choices[0].message.content.strip()
-        
-        # Extract metadata hints from the refined text (basic extraction)
-        metadata_hints = {}
-        # This could be enhanced to extract sender/recipient hints, but for now return empty
-        
-        return refined_text, metadata_hints
-        
-    except openai.AuthenticationError as e:
-        print(f"⚠️  Translation refinement authentication error: {e}")
-        print("⚠️  Invalid API key - skipping translation refinement")
-        return translated_text, {}
-    except openai.APIError as e:
-        print(f"⚠️  Translation refinement API error: {e}")
-        return translated_text, {}
-    except Exception as e:
-        print(f"⚠️  Translation refinement error: {e}")
-        import traceback
-        traceback.print_exc()
-        return translated_text, {}
-
-
-def process_uploaded_document(pdf_path: Path, work_dir: Path) -> dict:
-    """Process a single uploaded PDF document through the complete enhanced pipeline.
-    
-    Args:
-        pdf_path: Path to the uploaded PDF file
-        work_dir: Working directory for temporary files
-        
-    Returns:
-        Document data dictionary or None on error
-    """
-    doc_id = None
-    try:
-        print(f"[DEBUG] Processing document: {pdf_path.name}")
-        
-        # Parse filename for metadata
-        file_metadata = parse_filename(pdf_path.name)
-        source_lang = file_metadata.get('language', 'unknown')
-        
-        # Get processors
-        batch_proc = get_batch_processor()
-        ref_ext = get_ref_extractor()
-        
-        # Step 1: Run Enhanced OCR with context-aware correction
-        print(f"[DEBUG] Running enhanced OCR...")
-        try:
-            metadata_for_ocr = {
-                'language': source_lang,
-                'context': context_data,
-                'filename': pdf_path.name
-            }
-            
-            ocr_result = batch_proc.run_ocr_on_pdf(pdf_path)
-            if not ocr_result:
-                print("[ERROR] OCR failed")
-                return None
-            
-            raw_text = ocr_result['text']
-            print(f"[DEBUG] OCR complete ({len(raw_text)} chars)")
-            
-            # Apply LLM correction with context
-            print(f"[DEBUG] Applying context-aware correction...")
-            enhanced = batch_proc.processor.correct_with_context(raw_text, metadata_for_ocr)
-            original_text = enhanced.get('corrected_text', raw_text)
-            print(f"[DEBUG] Text corrected ({len(original_text)} chars)")
-            
-            if not original_text or len(original_text) < 50:
-                # If corrected text is too short but raw OCR was OK, use raw OCR
-                if raw_text and len(raw_text) >= 50:
-                    print(f"[WARNING] Corrected text too short ({len(original_text) if original_text else 0} chars), using raw OCR ({len(raw_text)} chars)")
-                    original_text = raw_text
-                else:
-                    print(f"[ERROR] OCR produced insufficient text ({len(original_text) if original_text else 0} chars, raw: {len(raw_text) if raw_text else 0} chars)")
-                    return None
-        except Exception as e:
-            print(f"[ERROR] OCR processing failed: {e}")
-            import traceback
-            traceback.print_exc()
-            return None
-        
-        # Step 2: Extract images for display
-        print(f"[DEBUG] Extracting images...")
-        try:
-            image_paths = extract_pdf_images(pdf_path, work_dir)
-            if not image_paths:
-                image_paths = []
-            print(f"[DEBUG] Extracted {len(image_paths)} page(s)")
-        except Exception as e:
-            print(f"[WARNING] Image extraction failed: {e}")
-            image_paths = []
-        
-        # Step 3: Translate
-        print(f"[DEBUG] Translating...")
-        translation_succeeded = False
-        try:
-            translated_text = translate_document(original_text, source_lang)
-            
-            # Ensure translation is a string
-            if isinstance(translated_text, (list, tuple)):
-                translated_text = translated_text[0] if translated_text else ''
-            
-            if not translated_text:
-                print("[WARNING] Translation returned empty")
-                translated_text = original_text
-            else:
-                translation_succeeded = True
-        except Exception as e:
-            print(f"[WARNING] Translation failed: {e}")
-            translated_text = original_text
-        
-        # Step 4: Decode HTML entities
-        print(f"[DEBUG] Decoding HTML entities...")
-        try:
-            original_text = decode_html_entities(original_text)
-            translated_text = decode_html_entities(translated_text)
-            raw_text = decode_html_entities(raw_text)
-        except Exception as e:
-            print(f"[WARNING] HTML entity decoding failed: {e}")
-        
-        # Step 5: LLM Translation Review and Refinement
-        # Only refine if translation actually succeeded - otherwise we'd be feeding
-        # untranslated text to the refinement prompt, causing confused output
-        print(f"[DEBUG] Reviewing and refining translation...")
-        if translation_succeeded:
-            try:
-                refined_text, metadata_hints = review_and_refine_translation(
-                    translated_text, original_text, context_data, source_lang
-                )
-                refined_text = decode_html_entities(refined_text)
-            except Exception as e:
-                print(f"[WARNING] Translation refinement failed: {e}, using translated text")
-                refined_text = translated_text
-        else:
-            # Translation failed - try direct LLM translation instead
-            print(f"[DEBUG] Google Translate failed, attempting LLM translation...")
-            refined_text = translate_with_llm(original_text, source_lang, context_data)
-            if not refined_text or refined_text == original_text:
-                print(f"[WARNING] LLM translation also failed, using original text")
-                refined_text = original_text
-        
-        # Step 6: Extract metadata (sender, recipient, locations)
-        print(f"[DEBUG] Extracting metadata...")
-        try:
-            metadata = envelope_extractor.extract_metadata(original_text, pdf_path.name)
-            # Ensure 'recipient' field exists (envelope_extractor may return 'receiver')
-            if 'receiver' in metadata and 'recipient' not in metadata:
-                metadata['recipient'] = metadata['receiver']
-            if 'receiver_location' in metadata and 'recipient_location' not in metadata:
-                metadata['recipient_location'] = metadata['receiver_location']
-            print(f"[DEBUG] Metadata extracted: sender={metadata.get('sender', 'Unknown')}, recipient={metadata.get('recipient', metadata.get('receiver', 'Unknown'))}")
-        except Exception as e:
-            print(f"[WARNING] Metadata extraction failed: {e}")
-            import traceback
-            traceback.print_exc()
-            metadata = {}
-        
-        # Step 7: Extract references with context
-        print(f"[DEBUG] Extracting references...")
-        # Initialize defaults
-        simple_refs = {}
-        detailed_refs = {}
-        for ref_type in ['people', 'places', 'events', 'themes', 'emotions']:
-            simple_refs[ref_type] = []
-            detailed_refs[ref_type] = []
-        
-        try:
-            references = extract_references_with_context(
-                ai_processor,
-                refined_text,  # Use refined translation for reference extraction
-                document_date=file_metadata.get('date'),
-                sender=metadata.get('sender'),
-                recipient=metadata.get('recipient'),
-                sender_location=metadata.get('sender_location'),
-                recipient_location=metadata.get('recipient_location')
-            )
-            
-            # Convert tuple format (name, context) to simple and detailed formats
-            if references:
-                for ref_type in ['people', 'places', 'events', 'themes', 'emotions']:
-                    ref_list = references.get(ref_type, [])
-                    simple_refs[ref_type] = []
-                    detailed_refs[ref_type] = []
-                    for item in ref_list:
-                        if isinstance(item, tuple) and len(item) >= 2:
-                            name, context = item[0], item[1]
-                            simple_refs[ref_type].append(name)
-                            detailed_refs[ref_type].append({'name': name, 'context': context})
-                        elif isinstance(item, dict):
-                            name = item.get('name', str(item))
-                            context = item.get('context', '')
-                            simple_refs[ref_type].append(name)
-                            detailed_refs[ref_type].append({'name': name, 'context': context})
-                        else:
-                            name = str(item)
-                            simple_refs[ref_type].append(name)
-                            detailed_refs[ref_type].append({'name': name, 'context': ''})
-        except Exception as e:
-            print(f"[WARNING] Reference extraction error: {e}")
-            import traceback
-            traceback.print_exc()
-            # Keep initialized empty dicts
-        
-        # Step 8: Generate summary using refined translation
-        print(f"[DEBUG] Generating summary...")
-        try:
-            summary = ai_processor.generate_summary(refined_text, source_lang)
-            
-            # Check if summary generation failed (returns None or error message)
-            if summary is None or (isinstance(summary, str) and summary.startswith("Summary generation failed")):
-                print(f"[WARNING] Summary generation failed or returned None")
-                summary = "Summary unavailable - AI processing error"
-            else:
-                summary = decode_html_entities(summary)
-        except Exception as e:
-            print(f"[WARNING] Summary generation error: {e}")
-            summary = "Summary unavailable - AI processing error"
-        
-        # Generate document ID
-        doc_id = f"doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        
-        # Prepare document data with defaults for all fields
-        title = pdf_path.stem
-        title = decode_html_entities(title)
-        
-        # Ensure all text fields have defaults (empty string if None)
-        raw_text = raw_text or ''
-        original_text = original_text or ''
-        translated_text = translated_text or original_text or ''  # Fallback to original if translation failed
-        refined_text = refined_text or translated_text or original_text or ''  # Fallback chain
-        summary = summary or 'Summary unavailable - processing incomplete'
-        
-        # Ensure metadata has defaults
-        doc_data = {
-            'id': doc_id,
-            'filename': pdf_path.name,
-            'title': title or 'Untitled Document',
-            'raw_text': raw_text,
-            'original_text': original_text,
-            'translated_text': translated_text,
-            'refined_text': refined_text,
-            'summary': summary,
-            'language': source_lang or 'unknown',
-            'date': file_metadata.get('date') or '',
-            'sender': metadata.get('sender') or '',
-            'recipient': metadata.get('recipient') or '',
-            'sender_location': metadata.get('sender_location') or '',
-            'recipient_location': metadata.get('recipient_location') or '',
-            'references': simple_refs or {},
-            'people': simple_refs.get('people', []) if simple_refs else [],
-            'page_images': image_paths or [],
-            'page_count': len(image_paths) if image_paths else 0,
-            'source_file': str(pdf_path),
-            'status': 'new',
-            'reviews': [],
-            'created_at': datetime.now().isoformat(),
-            'updated_at': datetime.now().isoformat()
-        }
-        
-        # Save document
-        print(f"[DEBUG] Saving document with ID: {doc_id}...")
-        try:
-            saved_id = local_storage.add_document(doc_data, doc_id=doc_id)
-            print(f"[DEBUG] Document saved successfully with ID: {saved_id}")
-            
-            # Log the upload event in document history
-            local_storage.log_history(
-                saved_id,
-                'System',
-                'uploaded',
-                'document was uploaded and processed'
-            )
-            print(f"[DEBUG] Logged upload event in history")
-        except Exception as e:
-            print(f"[ERROR] Failed to save document: {e}")
-            import traceback
-            traceback.print_exc()
-            return None
-        
-        # Add references to global metadata
-        print(f"[DEBUG] Adding references to metadata...")
-        ref_count = 0
-        try:
-            for ref_type, ref_list in detailed_refs.items():
-                singular_type = ref_type.rstrip('s') if ref_type != 'themes' else 'theme'
-                for ref_data in ref_list:
-                    ref_name = ref_data.get('name', '')
-                    if ref_name:
-                        try:
-                            local_storage.add_reference(
-                                ref_type=singular_type,
-                                name=ref_name,
-                                aliases=[],
-                                notes=ref_data.get('context', '')
-                            )
-                            local_storage.add_reference_to_document(doc_id, ref_name)
-                            ref_count += 1
-                        except Exception as e:
-                            print(f"[WARNING] Could not add reference '{ref_name}': {e}")
-        except Exception as e:
-            print(f"[WARNING] Failed to add references to metadata: {e}")
-        
-        print(f"[DEBUG] Added {ref_count} references to metadata")
-        print(f"[DEBUG] Document {doc_id} saved successfully!")
-        print(f"[DEBUG] Returning doc_data with id: {doc_data.get('id')}")
-        
-        return doc_data
-        
-    except Exception as e:
-        print(f"[ERROR] Error processing document: {e}")
-        import traceback
-        error_traceback = traceback.format_exc()
-        print(f"[ERROR] Full traceback:\n{error_traceback}")
-        # Try to clean up if doc_id was created
-        if doc_id:
-            try:
-                print(f"[DEBUG] Attempting to clean up document {doc_id}")
-                local_storage.delete_document(doc_id)
-            except Exception as cleanup_error:
-                print(f"[WARNING] Failed to clean up document {doc_id}: {cleanup_error}")
-        return None
-
-
-def translate_document(text: str, source_lang: str) -> str:
-    """Translate document text to English."""
-    if source_lang == 'eng' or not text:
-        return text
-    
-    # Map ISO 639-2 (3-letter) to ISO 639-1 (2-letter) codes
-    lang_map = {
-        'ger': 'de',   # German
-        'fre': 'fr',   # French
-        'spa': 'es',   # Spanish
-        'ita': 'it',   # Italian
-        'pol': 'pl',   # Polish
-        'rus': 'ru',   # Russian
-        'eng': 'en'    # English
-    }
-    
-    google_lang = lang_map.get(source_lang, source_lang)
-    
-    try:
-        translated = translate_text(text, target_language='en', source_language=google_lang)
-        
-        # Google Translate returns tuple (text, detected_lang) - extract just text
-        if isinstance(translated, (list, tuple)):
-            translated = translated[0]
-        
-        return translated
-    except Exception as e:
-        print(f"Translation error: {e}")
-        return text
-
-
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    """Handle PDF file upload and processing with enhanced pipeline."""
-    print(f"[DEBUG] Upload endpoint called")
+    """Handle PDF file upload and processing."""
     try:
-        print(f"[DEBUG] Checking request.files...")
         if 'file' not in request.files:
-            print(f"[DEBUG] No 'file' in request.files")
             return jsonify({'error': 'No file provided'}), 400
         
         file = request.files['file']
-        print(f"[DEBUG] File received: {file.filename}")
         if file.filename == '':
-            print(f"[DEBUG] Empty filename")
             return jsonify({'error': 'No file selected'}), 400
         
         if not allowed_file(file.filename):
-            print(f"[DEBUG] File not allowed: {file.filename}")
             return jsonify({'error': 'Only PDF files are allowed'}), 400
     except Exception as e:
-        print(f"[ERROR] File validation exception: {e}")
-        import traceback
-        traceback.print_exc()
         return jsonify({'error': f'File validation failed: {str(e)}'}), 400
     
-    # Use original filename (file is deleted after processing, so conflicts are rare)
+    # Generate unique filename to avoid conflicts
+    unique_id = str(uuid.uuid4())[:8]
     filename = secure_filename(file.filename)
-    print(f"[DEBUG] Using filename: {filename}")
+    name, ext = os.path.splitext(filename)
+    unique_filename = f"{name}_{unique_id}{ext}"
     
     # Save uploaded file
-    pdf_path = INBOX_DIR / filename
-    print(f"[DEBUG] Saving file to: {pdf_path}")
-    try:
-        file.save(str(pdf_path))
-        print(f"[DEBUG] File saved successfully")
-    except Exception as e:
-        print(f"[ERROR] Failed to save file: {e}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({'error': f'Failed to save uploaded file: {str(e)}'}), 500
+    pdf_path = INBOX_DIR / unique_filename
+    file.save(str(pdf_path))
     
     try:
-        print(f"[DEBUG] Starting enhanced processing for: {pdf_path}")
+        print(f"[DEBUG] Starting OCR processing for: {pdf_path}")
         
-        # Process document through enhanced pipeline
-        doc_data = process_uploaded_document(pdf_path, WORK_DIR)
+        # Generate document ID for image naming
+        doc_id = f"doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         
-        if not doc_data:
+        # Run OCR - pass relative path to the script
+        relative_pdf_path = f"letters/inbox/{unique_filename}"
+        success, stdout, stderr = run_ocr_script(relative_pdf_path, doc_id)
+        print(f"[DEBUG] OCR result - success: {success}, stdout: {stdout[:200]}, stderr: {stderr[:200]}")
+        
+        if not success:
             return jsonify({
-                'error': 'Document processing failed',
-                'details': 'See server logs for details'
+                'error': 'OCR processing failed',
+                'details': stderr,
+                'stdout': stdout
             }), 500
         
-        # Get refined text for response (fallback to translated_text if refined_text not available)
-        display_text = doc_data.get('refined_text') or doc_data.get('translated_text', '')
+        # Find the generated text file
+        text_filename = f"{name}_{unique_id}.vision.txt"
+        text_path = WORK_DIR / text_filename
+        print(f"[DEBUG] Looking for OCR text file: {text_path}")
+        
+        if not text_path.exists():
+            # List files in work directory for debugging
+            work_files = list(WORK_DIR.glob("*.txt"))
+            return jsonify({
+                'error': 'OCR text file not found',
+                'details': f'Expected: {text_path}',
+                'available_files': [str(f) for f in work_files]
+            }), 500
+        
+        print(f"[DEBUG] Starting translation for: {text_path}")
+        
+        # Run translation
+        success, stdout, stderr = run_translation_script(text_path)
+        print(f"[DEBUG] Translation result - success: {success}, stdout: {stdout[:200]}, stderr: {stderr[:200]}")
+        
+        if not success:
+            return jsonify({
+                'error': 'Translation failed',
+                'details': stderr,
+                'stdout': stdout
+            }), 500
+        
+        # Find the translated file
+        translated_filename = f"{name}_{unique_id}.translated.txt"
+        translated_path = WORK_DIR / translated_filename
+        print(f"[DEBUG] Looking for translated file: {translated_path}")
+        
+        if not translated_path.exists():
+            # List files in work directory for debugging
+            work_files = list(WORK_DIR.glob("*.txt"))
+            return jsonify({
+                'error': 'Translated file not found',
+                'details': f'Expected: {translated_path}',
+                'available_files': [str(f) for f in work_files]
+            }), 500
+        
+        # Move translated file to output directory
+        final_translated_path = EN_DIR / translated_filename
+        print(f"[DEBUG] Moving translated file to: {final_translated_path}")
+        shutil.move(str(translated_path), str(final_translated_path))
+        
+        # Read the translated content
+        with open(final_translated_path, 'r', encoding='utf-8') as f:
+            translated_content = f.read()
+        
+        # Decode HTML entities (like &#39; for apostrophes)
+        translated_content = html.unescape(translated_content)
+        
+        # Read the original OCR text for storage
+        original_text = ""
+        if text_path.exists():
+            with open(text_path, 'r', encoding='utf-8') as f:
+                original_text = f.read()
+        
+        print(f"[DEBUG] Successfully processed file, content length: {len(translated_content)}")
+        
+        # Process with AI and store locally
+        try:
+            print("[DEBUG] Processing document with AI...")
+            ai_result = ai_processor.process_document(
+                translated_content, 
+                source_language="unknown",  # We could detect this from the translation script
+                document_date=datetime.now().isoformat()
+            )
+            
+            # Prepare document data for storage
+            document_data = {
+                "title": f"{name} - {datetime.now().strftime('%Y-%m-%d')}",
+                "date_processed": datetime.now().isoformat(),
+                "source_language": "unknown",  # Could be detected from translation script
+                "target_language": "en",
+                "original_text": original_text,
+                "translated_text": translated_content,
+                "file_size": pdf_path.stat().st_size if pdf_path.exists() else 0,
+                "summary": ai_result.get("summary", ""),
+                "people": ai_result.get("people", [])
+            }
+            
+            # Store in local database with the same doc_id used for images
+            doc_id = local_storage.add_document(document_data, doc_id)
+            print(f"[DEBUG] Document stored with ID: {doc_id}")
+            
+        except Exception as e:
+            print(f"[WARNING] AI processing failed: {e}")
+            # Still store the document without AI processing
+            document_data = {
+                "title": f"{name} - {datetime.now().strftime('%Y-%m-%d')}",
+                "date_processed": datetime.now().isoformat(),
+                "source_language": "unknown",
+                "target_language": "en",
+                "original_text": original_text,
+                "translated_text": translated_content,
+                "file_size": pdf_path.stat().st_size if pdf_path.exists() else 0,
+                "summary": "AI processing failed - manual review required",
+                "people": []
+            }
+            doc_id = local_storage.add_document(document_data, doc_id)
+            print(f"[DEBUG] Document stored without AI processing, ID: {doc_id}")
         
         return jsonify({
             'success': True,
             'message': 'File processed successfully',
             'original_filename': filename,
-            'translated_content': display_text,
-            'stored_document_id': doc_data.get('id'),
-            'ai_processed': True,
-            'summary': doc_data.get('summary', ''),
-            'people': doc_data.get('people', [])
+            'translated_content': translated_content,
+            'download_url': f'/download/{translated_filename}',
+            'stored_document_id': doc_id,
+            'ai_processed': 'summary' in locals() and ai_result.get("summary", "") != "AI processing failed - manual review required"
         })
     
     except Exception as e:
@@ -1957,12 +1292,8 @@ def upload_file():
     
     finally:
         # Clean up uploaded file
-        try:
-            if 'pdf_path' in locals() and pdf_path.exists():
-                pdf_path.unlink()
-                print(f"[DEBUG] Cleaned up uploaded file: {pdf_path}")
-        except Exception as cleanup_error:
-            print(f"[WARNING] Failed to clean up file: {cleanup_error}")
+        if pdf_path.exists():
+            pdf_path.unlink()
 
 
 @app.route('/download/<filename>')
@@ -2022,12 +1353,6 @@ def list_documents():
         
         for doc_id, metadata in documents:
             try:
-                # Validate metadata is a dict (defensive check for corruption)
-                if not isinstance(metadata, dict):
-                    print(f"[DEBUG][K] Skipping corrupted metadata for {doc_id}: type={type(metadata).__name__}")
-                    error_count += 1
-                    continue
-                
                 # Get full document to include reviews and status
                 full_doc = local_storage.get_document(doc_id)
                 doc_data = {
@@ -2093,32 +1418,6 @@ def list_documents():
 @app.route('/documents/<doc_id>')
 def get_document(doc_id):
     """Get a specific document by ID."""
-    # Check if this is a browser request with query parameters (deep link)
-    # If so, redirect to main page with query params
-    if request.args.get('tab') or request.args.get('comment'):
-        # This is a deep link from email - redirect to main page
-        tab = request.args.get('tab', '')
-        comment = request.args.get('comment', '')
-        redirect_url = f'/?doc={doc_id}'
-        if tab:
-            redirect_url += f'&tab={tab}'
-        if comment:
-            redirect_url += f'&comment={comment}'
-        return redirect(redirect_url)
-    
-    # Check if this is an API request (has Accept: application/json header)
-    # or if it's an AJAX request
-    is_api_request = (
-        request.headers.get('Accept', '').startswith('application/json') or
-        request.headers.get('X-Requested-With') == 'XMLHttpRequest' or
-        request.is_json
-    )
-    
-    # If not an API request, redirect to main page
-    if not is_api_request:
-        return redirect(f'/?doc={doc_id}')
-    
-    # API request - return JSON
     try:
         document = local_storage.get_document(doc_id)
         if document:
@@ -2132,14 +1431,9 @@ def get_document(doc_id):
                 'error': 'Document not found'
             }), 404
     except Exception as e:
-        import traceback
-        error_traceback = traceback.format_exc()
-        print(f"[ERROR] Error retrieving document {doc_id}: {e}")
-        print(f"[ERROR] Traceback: {error_traceback}")
         return jsonify({
             'success': False,
-            'error': str(e),
-            'traceback': error_traceback
+            'error': str(e)
         }), 500
 
 
@@ -2604,33 +1898,41 @@ def update_document_status(doc_id):
                 f'changed status to {status}'
             )
             
-            # If status is 'reject', send email notifications to admins
-            if status.lower() == 'reject':
+            # If document was rejected, send email notification to all admins
+            if status == 'rejected':
                 try:
+                    # Get document details for email
+                    doc = local_storage.get_document(doc_id)
+                    document_title = doc.get('title', doc_id) if doc else doc_id
+                    
+                    # Get editor name from session
+                    editor_name = session.get('username', 'System')
+                    user_id = session.get('user_id')
+                    if user_id:
+                        with DatabaseSession() as db:
+                            editor = db.query(User).filter(User.id == user_id).first()
+                            if editor:
+                                editor_name = editor.get_display_name()
+                    
                     # Get all admin users
                     with DatabaseSession() as db:
                         admin_users = db.query(User).filter(
                             User.role == UserRole.ADMIN,
                             User.is_active == True
                         ).all()
-                        admin_emails = [user.email for user in admin_users if user.email]
-                    
-                    if admin_emails:
-                        # Get document title
-                        doc = local_storage.get_document(doc_id)
-                        doc_title = doc.get('title', doc_id) if doc else doc_id
                         
-                        # Send rejection notifications
-                        sent_count = send_rejection_notification(
-                            admin_emails=admin_emails,
-                            document_title=doc_title,
-                            document_id=doc_id,
-                            rejected_by=username
-                        )
-                        print(f"Sent {sent_count} rejection notification(s) for document {doc_id}")
+                        # Send email to each admin
+                        for admin in admin_users:
+                            send_rejection_notification(
+                                admin_email=admin.email,
+                                admin_first_name=admin.first_name,
+                                editor_name=editor_name,
+                                document_title=document_title,
+                                doc_id=doc_id
+                            )
                 except Exception as e:
-                    print(f"Error sending rejection notifications: {e}")
                     # Don't fail the status update if email fails
+                    print(f"Warning: Failed to send rejection notification emails: {e}")
             
             return jsonify({
                 'success': True,
@@ -2647,6 +1949,201 @@ def update_document_status(doc_id):
         return jsonify({
             'success': False,
             'error': str(e)
+        }), 500
+
+
+@app.route('/documents/<doc_id>/reupload', methods=['POST'])
+def reupload_document_scan(doc_id):
+    """Re-upload and process a new scan for an existing document, preserving ID and history."""
+    try:
+        # Check if document exists and get it for preserving metadata
+        existing_doc = local_storage.get_document(doc_id)
+        if not existing_doc:
+            return jsonify({
+                'success': False,
+                'error': 'Document not found'
+            }), 404
+
+        # Validate file upload
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        if not allowed_file(file.filename):
+            return jsonify({'error': 'Only PDF files are allowed'}), 400
+
+        # Generate unique filename for temporary storage
+        unique_id = str(uuid.uuid4())[:8]
+        filename = secure_filename(file.filename)
+        name, ext = os.path.splitext(filename)
+        unique_filename = f"{name}_{unique_id}{ext}"
+        
+        # Save uploaded file temporarily
+        pdf_path = INBOX_DIR / unique_filename
+        file.save(str(pdf_path))
+        
+        try:
+            print(f"[DEBUG] Starting OCR processing for re-upload: {pdf_path}")
+            
+            # Use existing doc_id for image naming (preserves document ID)
+            success, stdout, stderr = run_ocr_script(f"letters/inbox/{unique_filename}", doc_id)
+            print(f"[DEBUG] OCR result - success: {success}, stdout: {stdout[:200]}, stderr: {stderr[:200]}")
+            
+            if not success:
+                return jsonify({
+                    'error': 'OCR processing failed',
+                    'details': stderr,
+                    'stdout': stdout
+                }), 500
+            
+            # Find the generated text file
+            text_filename = f"{name}_{unique_id}.vision.txt"
+            text_path = WORK_DIR / text_filename
+            
+            if not text_path.exists():
+                work_files = list(WORK_DIR.glob("*.txt"))
+                return jsonify({
+                    'error': 'OCR text file not found',
+                    'details': f'Expected: {text_path}',
+                    'available_files': [str(f) for f in work_files]
+                }), 500
+            
+            print(f"[DEBUG] Starting translation for: {text_path}")
+            
+            # Run translation
+            success, stdout, stderr = run_translation_script(text_path)
+            print(f"[DEBUG] Translation result - success: {success}, stdout: {stdout[:200]}, stderr: {stderr[:200]}")
+            
+            if not success:
+                return jsonify({
+                    'error': 'Translation failed',
+                    'details': stderr,
+                    'stdout': stdout
+                }), 500
+            
+            # Find the translated file
+            translated_filename = f"{name}_{unique_id}.translated.txt"
+            translated_path = WORK_DIR / translated_filename
+            
+            if not translated_path.exists():
+                work_files = list(WORK_DIR.glob("*.txt"))
+                return jsonify({
+                    'error': 'Translated file not found',
+                    'details': f'Expected: {translated_path}',
+                    'available_files': [str(f) for f in work_files]
+                }), 500
+            
+            # Move translated file to output directory
+            final_translated_path = EN_DIR / translated_filename
+            print(f"[DEBUG] Moving translated file to: {final_translated_path}")
+            shutil.move(str(translated_path), str(final_translated_path))
+            
+            # Read the translated content
+            with open(final_translated_path, 'r', encoding='utf-8') as f:
+                translated_content = f.read()
+            
+            # Decode HTML entities
+            translated_content = html.unescape(translated_content)
+            
+            # Read the original OCR text
+            original_text = ""
+            if text_path.exists():
+                with open(text_path, 'r', encoding='utf-8') as f:
+                    original_text = f.read()
+            
+            print(f"[DEBUG] Successfully processed re-upload, content length: {len(translated_content)}")
+            
+            # Process with AI
+            try:
+                print("[DEBUG] Processing document with AI...")
+                ai_result = ai_processor.process_document(
+                    translated_content, 
+                    source_language="unknown",
+                    document_date=datetime.now().isoformat()
+                )
+                
+                # Prepare update data - preserve ID, history, and title
+                update_data = {
+                    "date_processed": datetime.now().isoformat(),
+                    "source_language": "unknown",
+                    "target_language": "en",
+                    "original_text": original_text,
+                    "translated_text": translated_content,
+                    "file_size": pdf_path.stat().st_size if pdf_path.exists() else 0,
+                    "summary": ai_result.get("summary", ""),
+                    "people": ai_result.get("people", [])
+                }
+                
+            except Exception as e:
+                print(f"[WARNING] AI processing failed: {e}")
+                update_data = {
+                    "date_processed": datetime.now().isoformat(),
+                    "source_language": "unknown",
+                    "target_language": "en",
+                    "original_text": original_text,
+                    "translated_text": translated_content,
+                    "file_size": pdf_path.stat().st_size if pdf_path.exists() else 0,
+                    "summary": "AI processing failed - manual review required",
+                    "people": []
+                }
+            
+            # Preserve history, reviews, and metadata fields from existing document
+            preserved_fields = {
+                'history': existing_doc.get('history', []),
+                'reviews': existing_doc.get('reviews', []),
+                'sender': existing_doc.get('sender'),
+                'recipient': existing_doc.get('recipient'),
+                'sender_location': existing_doc.get('sender_location'),
+                'recipient_location': existing_doc.get('recipient_location'),
+                'status': existing_doc.get('status', 'new'),
+                'title': existing_doc.get('title')  # Preserve title
+            }
+            
+            # Merge preserved fields with update data
+            update_data.update(preserved_fields)
+            
+            # Update document (preserves ID, history, and other metadata)
+            success = local_storage.update_document(doc_id, update_data)
+            
+            if not success:
+                return jsonify({
+                    'success': False,
+                    'error': 'Failed to update document'
+                }), 500
+            
+            # Log re-upload in history
+            username = session.get('username', 'System')
+            local_storage.log_history(
+                doc_id,
+                username,
+                'reupload',
+                f're-uploaded scan: {filename}'
+            )
+            
+            print(f"[DEBUG] Document re-uploaded successfully, ID: {doc_id}")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Scan re-uploaded successfully',
+                'document_id': doc_id
+            })
+        
+        finally:
+            # Clean up uploaded file
+            if pdf_path.exists():
+                pdf_path.unlink()
+    
+    except Exception as e:
+        error_traceback = traceback.format_exc()
+        print(f"[ERROR] Re-upload processing failed: {str(e)}")
+        print(f"[ERROR] Traceback: {error_traceback}")
+        return jsonify({
+            'error': 'Processing failed',
+            'details': str(e),
+            'traceback': error_traceback
         }), 500
 
 
@@ -2803,39 +2300,46 @@ def add_document_review(doc_id):
 
 @app.route('/documents/<doc_id>/reviews', methods=['GET'])
 def get_document_reviews(doc_id):
-    """Get all reviews for a document with user info."""
+    """Get all reviews for a document."""
     try:
         reviews = local_storage.get_reviews(doc_id)
         
-        # Get user IDs from reviews
-        user_ids = [review.get('userId') for review in reviews if review.get('userId')]
-        
-        # Fetch user info for reviewers
-        reviewers_info = {}
-        if user_ids:
-            with DatabaseSession() as db:
-                users = db.query(User).filter(User.id.in_(user_ids)).all()
-                for user in users:
-                    reviewers_info[str(user.id)] = {
-                        'id': user.id,
-                        'first_name': user.first_name,
-                        'last_name': user.last_name,
-                        'email': user.email,
-                        'username': f"{user.first_name} {user.last_name}"
-                    }
-        
-        # Enhance reviews with user info
-        enhanced_reviews = []
-        for review in reviews:
-            enhanced_review = review.copy()
-            user_id_str = str(review.get('userId', ''))
-            if user_id_str in reviewers_info:
-                enhanced_review['user_info'] = reviewers_info[user_id_str]
-            enhanced_reviews.append(enhanced_review)
+        # Enrich reviews with user information from database
+        enriched_reviews = []
+        with DatabaseSession() as db:
+            for review in reviews:
+                user_id = review.get('userId')
+                if user_id:
+                    try:
+                        # Try to get user from database
+                        user = db.query(User).filter_by(id=int(user_id), is_active=True).first()
+                        if user:
+                            # Add user_info to review
+                            review_with_user = review.copy()
+                            review_with_user['user_info'] = {
+                                'id': user.id,
+                                'first_name': user.first_name,
+                                'last_name': user.last_name,
+                                'email': user.email,
+                                'username': user.username,
+                                'avatar_url': user.avatar_url,
+                                'display_name': user.get_display_name(),
+                                'initials': user.get_initials()
+                            }
+                            enriched_reviews.append(review_with_user)
+                        else:
+                            # User not found, include review without user_info
+                            enriched_reviews.append(review)
+                    except (ValueError, TypeError) as e:
+                        # Invalid user_id format, skip user_info
+                        enriched_reviews.append(review)
+                else:
+                    # No userId, include as-is
+                    enriched_reviews.append(review)
         
         return jsonify({
             'success': True,
-            'reviews': enhanced_reviews
+            'reviews': enriched_reviews
         })
     except Exception as e:
         return jsonify({
@@ -2853,6 +2357,137 @@ def get_document_history(doc_id):
             'success': True,
             'history': history
         })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+# ===== Notification API Endpoints =====
+
+@app.route('/api/notifications', methods=['GET'])
+@require_auth
+def get_user_notifications():
+    """Get notifications for the current user."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Not authenticated'
+            }), 401
+        
+        with DatabaseSession() as db:
+            notifications = db.query(Notification).filter(
+                Notification.user_id == user_id
+            ).order_by(Notification.created_at.desc()).limit(50).all()
+            
+            notifications_data = [n.to_dict() for n in notifications]
+            
+            return jsonify({
+                'success': True,
+                'notifications': notifications_data
+            })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/notifications/count', methods=['GET'])
+@require_auth
+def get_unread_notification_count():
+    """Get unread notification count for the current user."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Not authenticated'
+            }), 401
+        
+        with DatabaseSession() as db:
+            count = db.query(Notification).filter(
+                Notification.user_id == user_id,
+                Notification.read == False
+            ).count()
+            
+            return jsonify({
+                'success': True,
+                'count': count
+            })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/notifications/<int:notification_id>/read', methods=['POST'])
+@require_auth
+def mark_notification_read(notification_id):
+    """Mark a notification as read."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Not authenticated'
+            }), 401
+        
+        with DatabaseSession() as db:
+            notification = db.query(Notification).filter(
+                Notification.id == notification_id,
+                Notification.user_id == user_id
+            ).first()
+            
+            if not notification:
+                return jsonify({
+                    'success': False,
+                    'error': 'Notification not found'
+                }), 404
+            
+            notification.read = True
+            db.commit()
+            
+            return jsonify({
+                'success': True,
+                'message': 'Notification marked as read'
+            })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/notifications/read-all', methods=['POST'])
+@require_auth
+def mark_all_notifications_read():
+    """Mark all notifications as read for the current user."""
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({
+                'success': False,
+                'error': 'Not authenticated'
+            }), 401
+        
+        with DatabaseSession() as db:
+            count = db.query(Notification).filter(
+                Notification.user_id == user_id,
+                Notification.read == False
+            ).update({'read': True})
+            
+            db.commit()
+            
+            return jsonify({
+                'success': True,
+                'count': count,
+                'message': f'{count} notifications marked as read'
+            })
     except Exception as e:
         return jsonify({
             'success': False,
@@ -2909,35 +2544,11 @@ def get_document_comments(doc_id):
     """Get all comments for a document."""
     try:
         comments = local_storage.list_context_notes(doc_id)
-        
-        # Enrich comments with current user avatars
-        # Build a cache of user avatars by username
-        usernames = set(c.get('username') for c in comments if c.get('username'))
-        avatar_cache = {}
-        
-        if usernames:
-            with DatabaseSession() as db:
-                # Look up users by their display name (first_name + last_name)
-                for username in usernames:
-                    # Username in comments is typically "First Last"
-                    parts = username.split(' ', 1)
-                    if len(parts) == 2:
-                        user = db.query(User).filter_by(first_name=parts[0], last_name=parts[1]).first()
-                        if user and user.avatar_url:
-                            avatar_cache[username] = user.avatar_url
-        
-        # Add current avatar_url to each comment
-        for comment in comments:
-            username = comment.get('username')
-            if username in avatar_cache:
-                comment['avatar_url'] = avatar_cache[username]
-        
         return jsonify({
             'success': True,
             'comments': comments
         })
     except Exception as e:
-        print(f"[ERROR] Failed to get comments: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
@@ -2950,8 +2561,7 @@ def add_document_comment(doc_id):
     try:
         # Get user info from session
         username = session.get('username')
-        user_id = session.get('user_id')
-        if not username or not user_id:
+        if not username:
             return jsonify({
                 'success': False,
                 'error': 'Authentication required'
@@ -2971,80 +2581,67 @@ def add_document_comment(doc_id):
                 'error': 'Comment text is required'
             }), 400
         
-        # Get mentioned user IDs from request
         mentioned_user_ids = data.get('mentioned_user_ids', [])
-        if not isinstance(mentioned_user_ids, list):
-            mentioned_user_ids = []
-        
-        # Check if this is a context comment (for LLM reprocessing)
         is_context = data.get('is_context', False)
         
-        # Get user's avatar URL
-        avatar_url = None
-        with DatabaseSession() as db:
-            user = db.query(User).filter_by(id=user_id).first()
-            if user:
-                avatar_url = user.avatar_url
-        
-        # Add comment with mentions and context flag
-        comment = local_storage.add_context_note(doc_id, username, note, mentioned_user_ids, is_context, avatar_url)
+        comment = local_storage.add_context_note(doc_id, username, note, mentioned_user_ids=mentioned_user_ids, is_context=is_context)
         
         if comment:
-            # Get document info for notifications
-            doc = local_storage.get_document(doc_id)
-            document_title = doc.get('title', 'Untitled Document') if doc else 'Untitled Document'
-            comment_id = comment.get('id')
-            comment_preview = note[:200] + '...' if len(note) > 200 else note
-            
-            # Create notifications and send emails for mentioned users
+            # Send notifications to mentioned users
             if mentioned_user_ids:
-                with DatabaseSession() as db:
-                    # Get mentioned users
-                    mentioned_users = db.query(User).filter(
-                        User.id.in_(mentioned_user_ids),
-                        User.is_active == True
-                    ).all()
+                try:
+                    # Get document title for notifications
+                    doc = local_storage.get_document(doc_id)
+                    document_title = doc.get('title', doc_id) if doc else doc_id
                     
-                    for mentioned_user in mentioned_users:
-                        # Skip if user mentioned themselves
-                        if mentioned_user.id == user_id:
-                            continue
+                    # Get commenter name
+                    user_id = session.get('user_id')
+                    commenter_name = username
+                    if user_id:
+                        with DatabaseSession() as db:
+                            user = db.query(User).filter(User.id == user_id).first()
+                            if user:
+                                commenter_name = user.get_display_name()
+                    
+                    # Get mentioned users and send notifications
+                    with DatabaseSession() as db:
+                        mentioned_users = db.query(User).filter(User.id.in_(mentioned_user_ids), User.is_active == True).all()
                         
-                        # Create notification
-                        notification = Notification(
-                            user_id=mentioned_user.id,
-                            type='mention',
-                            comment_id=comment_id,
-                            document_id=doc_id,
-                            document_title=document_title,
-                            commenter_name=username,
-                            comment_preview=comment_preview,
-                            read=False
-                        )
-                        db.add(notification)
-                        
-                        # Send email notification
-                        try:
-                            send_mention_notification(
-                                email=mentioned_user.email,
-                                first_name=mentioned_user.first_name,
-                                commenter_name=username,
+                        for mentioned_user in mentioned_users:
+                            # Create notification in database
+                            notification = Notification(
+                                user_id=mentioned_user.id,
+                                type='mention',
+                                comment_id=comment['id'],
+                                document_id=doc_id,
                                 document_title=document_title,
-                                doc_id=doc_id,
-                                comment_id=comment_id
+                                commenter_name=commenter_name,
+                                comment_preview=note[:200] if len(note) > 200 else note,
+                                read=False
                             )
-                        except Exception as e:
-                            print(f"Error sending mention notification to {mentioned_user.email}: {e}")
-                            # Don't fail comment creation if email fails
-                    
-                    db.commit()
+                            db.add(notification)
+                            
+                            # Send email notification
+                            try:
+                                send_mention_notification(
+                                    email=mentioned_user.email,
+                                    first_name=mentioned_user.first_name,
+                                    commenter_name=commenter_name,
+                                    document_title=document_title,
+                                    doc_id=doc_id,
+                                    comment_id=comment['id']
+                                )
+                            except Exception as email_error:
+                                print(f"Warning: Failed to send mention email to {mentioned_user.email}: {email_error}")
+                        
+                        db.commit()
+                except Exception as notif_error:
+                    # Don't fail comment creation if notification fails
+                    print(f"Warning: Failed to create notifications: {notif_error}")
             
             return jsonify({
                 'success': True,
-                'comment': comment,
-                'mentioned_users': mentioned_user_ids,
-                'is_context': is_context,
-                'show_reprocess_dialog': is_context  # Frontend should show reprocess dialog if this is a context comment
+                'comment': comment
             })
         else:
             return jsonify({
@@ -3096,65 +2693,15 @@ def update_document_comment(doc_id, comment_id):
 
 
 @app.route('/documents/<doc_id>/comments/<comment_id>', methods=['DELETE'])
-@require_auth
 def delete_document_comment(doc_id, comment_id):
     """Delete a comment."""
     try:
-        print(f"[DEBUG] Attempting to delete comment {comment_id} from doc {doc_id}")
-        
-        # First check if the comment exists in the document directly
-        doc = local_storage.get_document(doc_id)
-        if not doc:
-            print(f"[DEBUG] Document {doc_id} not found")
-            return jsonify({
-                'success': False,
-                'error': f'Document {doc_id} not found'
-            }), 404
-        
-        # Check if comment exists in document's context_notes
-        context_notes = doc.get('context_notes', [])
-        deleted_comment = None
-        for note in context_notes:
-            if note.get('id') == comment_id:
-                deleted_comment = note
-                break
-        
-        if not deleted_comment:
-            print(f"[DEBUG] Comment {comment_id} not found in document's context_notes")
-            return jsonify({
-                'success': False,
-                'error': f'Comment {comment_id} not found in document'
-            }), 404
-        
-        # Check if this was a context comment (for reprocess dialog)
-        was_context_comment = deleted_comment.get('is_context', False)
-        
-        # Try the standard deletion method first
         success = local_storage.delete_context_note(comment_id)
-        
-        if not success:
-            # Fallback: directly remove from document if metadata index is out of sync
-            print(f"[DEBUG] Standard deletion failed, trying direct removal")
-            filtered_notes = [n for n in context_notes if n.get('id') != comment_id]
-            if len(filtered_notes) < len(context_notes):
-                doc['context_notes'] = filtered_notes
-                # Save the updated document
-                if local_storage.use_r2 and local_storage.r2:
-                    local_storage.r2.save_document(doc_id, doc)
-                # Also update local if exists
-                doc_file = local_storage.documents_dir / f"{doc_id}.json"
-                if doc_file.parent.exists():
-                    with open(doc_file, 'w') as f:
-                        json.dump(doc, f, indent=2)
-                success = True
-                print(f"[DEBUG] Direct removal successful")
         
         if success:
             return jsonify({
                 'success': True,
-                'message': 'Comment deleted successfully',
-                'was_context_comment': was_context_comment,
-                'show_reprocess_dialog': was_context_comment  # Show dialog if context was removed
+                'message': 'Comment deleted successfully'
             })
         else:
             return jsonify({
@@ -3162,469 +2709,6 @@ def delete_document_comment(doc_id, comment_id):
                 'error': 'Comment not found or deletion failed'
             }), 404
     except Exception as e:
-        print(f"[ERROR] Failed to delete comment: {e}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-
-# ===== Document Reprocessing API =====
-
-@app.route('/documents/<doc_id>/status', methods=['GET'])
-def get_document_status(doc_id):
-    """Get the processing status of a document."""
-    # #region agent log
-    print(f"[DEBUG][K] STATUS_ENDPOINT_CALLED doc_id={doc_id}")
-    # #endregion
-    try:
-        status = local_storage.get_processing_status(doc_id)
-        # #region agent log
-        print(f"[DEBUG][K] STATUS_RESULT doc_id={doc_id} status={status.get('status') if isinstance(status, dict) else 'NOT_DICT'}")
-        # #endregion
-        return jsonify({
-            'success': True,
-            **status
-        })
-    except Exception as e:
-        # #region agent log
-        print(f"[DEBUG][K] STATUS_ERROR doc_id={doc_id} error={str(e)} error_type={type(e).__name__}")
-        import traceback
-        print(f"[DEBUG][K] STATUS_TRACEBACK:\n{traceback.format_exc()}")
-        # #endregion
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-
-@app.route('/documents/<doc_id>/reprocess', methods=['POST'])
-@require_auth
-def reprocess_document(doc_id):
-    """Trigger reprocessing of a document with context.
-    
-    Request body:
-    {
-        "fields": ["translation", "summary", "sender", "recipient", "references"],
-        "use_raw_ocr": false  // If true, re-run from raw OCR text
-    }
-    """
-    try:
-        # Check document exists
-        doc = local_storage.get_document(doc_id)
-        if not doc:
-            return jsonify({
-                'success': False,
-                'error': 'Document not found'
-            }), 404
-        
-        # Check if already processing
-        current_status = local_storage.get_processing_status(doc_id)
-        if current_status.get('status') == 'processing':
-            return jsonify({
-                'success': False,
-                'error': 'Document is already being processed'
-            }), 409
-        
-        data = request.get_json() or {}
-        fields = data.get('fields', ['translation', 'summary', 'sender', 'recipient', 'references'])
-        use_raw_ocr = data.get('use_raw_ocr', False)
-        
-        # Validate fields
-        valid_fields = {'translation', 'summary', 'sender', 'recipient', 'references'}
-        invalid_fields = set(fields) - valid_fields
-        if invalid_fields:
-            return jsonify({
-                'success': False,
-                'error': f'Invalid fields: {invalid_fields}'
-            }), 400
-        
-        # Set status to processing
-        local_storage.set_processing_status(doc_id, 'processing')
-        
-        # Get user info for history logging
-        username = session.get('username', 'system')
-        
-        # Start background processing
-        thread = threading.Thread(
-            target=reprocess_document_async,
-            args=(doc_id, fields, use_raw_ocr, username)
-        )
-        thread.daemon = True
-        thread.start()
-        
-        return jsonify({
-            'success': True,
-            'message': 'Document reprocessing started',
-            'fields': fields,
-            'use_raw_ocr': use_raw_ocr
-        })
-    except Exception as e:
-        print(f"[ERROR] Failed to start reprocessing: {e}")
-        traceback.print_exc()
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-
-def reprocess_document_async(doc_id: str, fields: list, use_raw_ocr: bool, username: str):
-    """Background function to reprocess a document with context.
-    
-    Args:
-        doc_id: Document ID to reprocess
-        fields: List of fields to regenerate
-        use_raw_ocr: If True, re-run from raw OCR text
-        username: Username for history logging
-    """
-    # #region agent log
-    import json as _json
-    def _debug_log(hyp, msg, data=None):
-        print(f"[DEBUG][{hyp}] {msg}: {_json.dumps(data) if data else '{}'}")
-        try:
-            with open('/Users/gzentall/OCR-Translation-Pipeline/.cursor/debug.log', 'a') as _f:
-                _f.write(_json.dumps({'hypothesisId': hyp, 'location': 'app.py:reprocess_document_async', 'message': msg, 'data': data or {}, 'timestamp': __import__('time').time(), 'sessionId': 'debug-session'}) + '\n')
-        except: pass
-    # #endregion
-    try:
-        # #region agent log
-        _debug_log('A', 'REPROCESS_START', {'doc_id': doc_id, 'fields': fields, 'use_raw_ocr': use_raw_ocr, 'username': username})
-        # #endregion
-        print(f"[REPROCESS] Starting reprocessing for document {doc_id}")
-        print(f"[REPROCESS] Fields: {fields}, use_raw_ocr: {use_raw_ocr}")
-        
-        # Get the document
-        doc = local_storage.get_document(doc_id)
-        # #region agent log
-        _debug_log('C', 'GET_DOCUMENT_RESULT', {'doc_id': doc_id, 'doc_found': doc is not None, 'doc_keys': list(doc.keys()) if doc else None})
-        # #endregion
-        if not doc:
-            print(f"[REPROCESS] Document {doc_id} not found")
-            # #region agent log
-            _debug_log('C', 'DOCUMENT_NOT_FOUND', {'doc_id': doc_id})
-            # #endregion
-            local_storage.set_processing_status(doc_id, 'error', 'Document not found')
-            return
-        
-        # Collect document context (all is_context=True comments)
-        # #region agent log
-        _debug_log('D', 'BEFORE_GET_CONTEXT_COMMENTS', {'doc_id': doc_id})
-        # #endregion
-        doc_context_comments = local_storage.get_document_context_comments(doc_id)
-        # #region agent log
-        _debug_log('D', 'CONTEXT_COMMENTS_RESULT', {'doc_id': doc_id, 'count': len(doc_context_comments) if doc_context_comments else 0, 'comments': doc_context_comments[:3] if doc_context_comments else []})
-        # #endregion
-        document_context = "\n".join([
-            f"- {c.get('username', 'Editor')}: {c.get('note', '')}" 
-            for c in doc_context_comments
-        ])
-        print(f"[REPROCESS] Found {len(doc_context_comments)} context comments")
-        
-        # Merge with global context
-        merged_context = dict(context_data)  # Start with global context
-        if document_context:
-            merged_context['document_specific_context'] = document_context
-        
-        # Get source text
-        if use_raw_ocr and doc.get('raw_text'):
-            source_text = doc.get('raw_text')
-            print(f"[REPROCESS] Using raw OCR text ({len(source_text)} chars)")
-        else:
-            source_text = doc.get('original_text', '')
-            print(f"[REPROCESS] Using original text ({len(source_text)} chars)")
-        
-        source_lang = doc.get('language', 'unknown')
-        results = {'success': [], 'failed': []}
-        
-        # Reprocess each requested field
-        if 'translation' in fields:
-            try:
-                print(f"[REPROCESS] Regenerating translation...")
-                # Try LLM translation with context
-                translated = translate_with_llm(source_text, source_lang, merged_context)
-                if translated and translated != source_text:
-                    doc['translated_text'] = translated
-                    results['success'].append('translation')
-                    print(f"[REPROCESS] Translation successful ({len(translated)} chars)")
-                else:
-                    results['failed'].append('translation')
-                    print(f"[REPROCESS] Translation returned same text or failed")
-            except Exception as e:
-                print(f"[REPROCESS] Translation failed: {e}")
-                results['failed'].append('translation')
-        
-        if 'summary' in fields:
-            try:
-                print(f"[REPROCESS] Regenerating summary...")
-                text_for_summary = doc.get('translated_text') or source_text
-                
-                # Build context string for summary
-                context_str = ""
-                if document_context:
-                    context_str = f"\n\nEditor-provided context:\n{document_context}"
-                
-                summary = ai_processor.generate_summary(text_for_summary + context_str)
-                if summary and not summary.startswith("Summary generation failed"):
-                    doc['summary'] = summary
-                    results['success'].append('summary')
-                    print(f"[REPROCESS] Summary successful")
-                else:
-                    results['failed'].append('summary')
-                    print(f"[REPROCESS] Summary generation returned error")
-            except Exception as e:
-                print(f"[REPROCESS] Summary failed: {e}")
-                results['failed'].append('summary')
-        
-        if 'sender' in fields or 'recipient' in fields:
-            try:
-                print(f"[REPROCESS] Regenerating metadata (sender/recipient)...")
-                # Use envelope extractor with context
-                metadata = envelope_extractor.extract_metadata(
-                    source_text + (f"\n\nContext: {document_context}" if document_context else ""),
-                    doc.get('filename', '')
-                )
-                
-                if 'sender' in fields and metadata.get('sender'):
-                    doc['sender'] = metadata.get('sender')
-                    doc['sender_location'] = metadata.get('sender_location', '')
-                    results['success'].append('sender')
-                    print(f"[REPROCESS] Sender extracted: {doc['sender']}")
-                elif 'sender' in fields:
-                    results['failed'].append('sender')
-                
-                if 'recipient' in fields and metadata.get('recipient'):
-                    doc['recipient'] = metadata.get('recipient')
-                    doc['recipient_location'] = metadata.get('recipient_location', '')
-                    results['success'].append('recipient')
-                    print(f"[REPROCESS] Recipient extracted: {doc['recipient']}")
-                elif 'recipient' in fields:
-                    results['failed'].append('recipient')
-            except Exception as e:
-                print(f"[REPROCESS] Metadata extraction failed: {e}")
-                if 'sender' in fields:
-                    results['failed'].append('sender')
-                if 'recipient' in fields:
-                    results['failed'].append('recipient')
-        
-        if 'references' in fields:
-            try:
-                print(f"[REPROCESS] Regenerating references...")
-                # #region agent log
-                _debug_log('H', 'BEFORE_REFS_EXTRACTION', {'doc_type': type(doc).__name__, 'doc_id': doc_id})
-                # #endregion
-                text_for_refs = doc.get('translated_text') or source_text
-                
-                references = extract_references_with_context(
-                    ai_processor,
-                    text_for_refs + (f"\n\nContext: {document_context}" if document_context else ""),
-                    document_date=doc.get('date'),
-                    sender=doc.get('sender'),
-                    recipient=doc.get('recipient'),
-                    sender_location=doc.get('sender_location'),
-                    recipient_location=doc.get('recipient_location')
-                )
-                
-                # #region agent log
-                _debug_log('H', 'REFS_EXTRACTION_RESULT', {'references_type': type(references).__name__ if references else 'None', 'doc_type': type(doc).__name__})
-                # #endregion
-                
-                if references:
-                    # #region agent log - Check references type before using .get()
-                    if not isinstance(references, dict):
-                        _debug_log('H', 'REFS_NOT_DICT', {'references_type': type(references).__name__, 'preview': str(references)[:200]})
-                        print(f"[REPROCESS] WARNING: references is {type(references).__name__}, not dict!")
-                        results['failed'].append('references')
-                    else:
-                        simple_refs = references.get('simple', references)
-                        doc['references'] = simple_refs
-                        doc['people'] = simple_refs.get('people', []) if isinstance(simple_refs, dict) else []
-                        results['success'].append('references')
-                        print(f"[REPROCESS] References extracted: {len(doc.get('people', []))} people")
-                    # #endregion
-                else:
-                    results['failed'].append('references')
-            except Exception as e:
-                # #region agent log
-                _debug_log('H', 'REFS_EXCEPTION', {'error': str(e), 'error_type': type(e).__name__})
-                # #endregion
-                print(f"[REPROCESS] Reference extraction failed: {e}")
-                results['failed'].append('references')
-        
-        # Update document timestamp
-        doc['updated_at'] = datetime.now().isoformat()
-        doc['last_reprocessed'] = datetime.now().isoformat()
-        doc['last_reprocessed_by'] = username
-        
-        # Save the updated document
-        # #region agent log
-        _debug_log('A', 'BEFORE_SAVE_DOCUMENT', {'doc_id': doc_id, 'doc_keys': list(doc.keys()), 'results': results})
-        # #endregion
-        save_result = local_storage.save_document(doc_id, doc)
-        # #region agent log
-        _debug_log('A', 'AFTER_SAVE_DOCUMENT', {'doc_id': doc_id, 'save_result': save_result})
-        # #endregion
-        print(f"[REPROCESS] Document saved")
-        
-        # Log to history
-        history_message = f"Reprocessed: {', '.join(results['success'])}"
-        if results['failed']:
-            history_message += f" (failed: {', '.join(results['failed'])})"
-        local_storage.log_history(doc_id, 'reprocessed', username, history_message)
-        
-        # Set status to ready
-        if results['failed'] and not results['success']:
-            local_storage.set_processing_status(doc_id, 'error', f"All fields failed: {', '.join(results['failed'])}")
-        else:
-            local_storage.set_processing_status(doc_id, 'ready')
-        
-        # #region agent log
-        _debug_log('E', 'REPROCESS_COMPLETED', {'doc_id': doc_id, 'success': results['success'], 'failed': results['failed']})
-        # #endregion
-        print(f"[REPROCESS] Completed. Success: {results['success']}, Failed: {results['failed']}")
-        
-    except Exception as e:
-        # #region agent log
-        _debug_log('B', 'REPROCESS_FATAL_ERROR', {'doc_id': doc_id, 'error': str(e), 'error_type': type(e).__name__})
-        # #endregion
-        print(f"[REPROCESS] Fatal error: {e}")
-        traceback.print_exc()
-        local_storage.set_processing_status(doc_id, 'error', str(e))
-        local_storage.log_history(doc_id, 'reprocess_error', username, f"Reprocessing failed: {str(e)}")
-
-
-# ===== Notifications API =====
-
-@app.route('/api/notifications', methods=['GET'])
-@require_auth
-def get_notifications():
-    """Get user's notifications (most recent 20, unread first)."""
-    try:
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({
-                'success': False,
-                'error': 'Authentication required'
-            }), 401
-        
-        with DatabaseSession() as db:
-            # Get notifications: unread first, then by created_at desc, limit 20
-            notifications = db.query(Notification).filter_by(user_id=user_id).order_by(
-                Notification.read.asc(),  # Unread first (False < True)
-                Notification.created_at.desc()
-            ).limit(20).all()
-            
-            notifications_data = [n.to_dict() for n in notifications]
-            
-            return jsonify({
-                'success': True,
-                'notifications': notifications_data
-            })
-    except Exception as e:
-        print(f"Error getting notifications: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-
-@app.route('/api/notifications/count', methods=['GET'])
-@require_auth
-def get_notification_count():
-    """Get count of unread notifications for current user."""
-    try:
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({
-                'success': False,
-                'error': 'Authentication required'
-            }), 401
-        
-        with DatabaseSession() as db:
-            count = db.query(Notification).filter_by(
-                user_id=user_id,
-                read=False
-            ).count()
-            
-            return jsonify({
-                'success': True,
-                'count': count
-            })
-    except Exception as e:
-        print(f"Error getting notification count: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-
-@app.route('/api/notifications/<int:notification_id>/read', methods=['POST'])
-@require_auth
-def mark_notification_read(notification_id):
-    """Mark a notification as read."""
-    try:
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({
-                'success': False,
-                'error': 'Authentication required'
-            }), 401
-        
-        with DatabaseSession() as db:
-            notification = db.query(Notification).filter_by(
-                id=notification_id,
-                user_id=user_id  # Ensure user owns this notification
-            ).first()
-            
-            if not notification:
-                return jsonify({
-                    'success': False,
-                    'error': 'Notification not found'
-                }), 404
-            
-            notification.read = True
-            db.commit()
-            
-            return jsonify({
-                'success': True,
-                'message': 'Notification marked as read'
-            })
-    except Exception as e:
-        print(f"Error marking notification as read: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-
-@app.route('/api/notifications/read-all', methods=['POST'])
-@require_auth
-def mark_all_notifications_read():
-    """Mark all notifications as read for current user."""
-    try:
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({
-                'success': False,
-                'error': 'Authentication required'
-            }), 401
-        
-        with DatabaseSession() as db:
-            updated = db.query(Notification).filter_by(
-                user_id=user_id,
-                read=False
-            ).update({'read': True})
-            
-            db.commit()
-            
-            return jsonify({
-                'success': True,
-                'message': f'{updated} notifications marked as read',
-                'count': updated
-            })
-    except Exception as e:
-        print(f"Error marking all notifications as read: {e}")
         return jsonify({
             'success': False,
             'error': str(e)

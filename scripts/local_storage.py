@@ -52,84 +52,35 @@ class LocalOCRStorage:
     
     def _load_metadata(self) -> Dict:
         """Load existing metadata from R2 or local file."""
-        metadata = None
-        
         if self.use_r2 and self.r2:
             # Load from R2
             try:
                 metadata = self.r2.get_metadata()
+                if metadata:
+                    return metadata
             except Exception as e:
                 print(f"⚠️  Error loading metadata from R2: {e}")
         
         # Load from local file (fallback or default)
-        if metadata is None and self.metadata_file.exists():
+        if self.metadata_file.exists():
             try:
                 with open(self.metadata_file, 'r') as f:
-                    metadata = json.load(f)
+                    return json.load(f)
             except:
                 pass
         
-        # Default if nothing loaded
-        if metadata is None:
-            metadata = {
-                "documents": {},
-                "people": {},
-                "context_notes": {},
-                "references": {},
-                "document_references": {},
-                "last_updated": datetime.now().isoformat()
-            }
-        
-        # Validate and clean corrupted entries
-        corrupted_ids = []
-        documents = metadata.get("documents", {})
-        if not isinstance(documents, dict):
-            print(f"[DEBUG][J] CRITICAL: metadata['documents'] is {type(documents).__name__}, not dict! Reinitializing.")
-            metadata["documents"] = {}
-        else:
-            for doc_id, doc_meta in documents.items():
-                if not isinstance(doc_meta, dict):
-                    print(f"[DEBUG][J] CRITICAL: Metadata corruption detected on load! doc_id={doc_id} type={type(doc_meta).__name__}")
-                    print(f"[DEBUG][J] Value: {str(doc_meta)[:200]}")
-                    corrupted_ids.append(doc_id)
-        
-        # Remove corrupted entries
-        if corrupted_ids:
-            print(f"[DEBUG][J] Removing {len(corrupted_ids)} corrupted metadata entries on load")
-            for doc_id in corrupted_ids:
-                if doc_id in metadata.get("documents", {}):
-                    del metadata["documents"][doc_id]
-            # Save cleaned metadata back (set last_updated first)
-            metadata["last_updated"] = datetime.now().isoformat()
-            if self.use_r2 and self.r2:
-                try:
-                    self.r2.save_metadata(metadata)
-                except Exception as e:
-                    print(f"⚠️  Error saving cleaned metadata to R2: {e}")
-            try:
-                with open(self.metadata_file, 'w') as f:
-                    json.dump(metadata, f, indent=2)
-            except Exception as e:
-                print(f"⚠️  Error saving cleaned metadata locally: {e}")
-        
-        return metadata
+        return {
+            "documents": {},
+            "people": {},
+            "context_notes": {},
+            "references": {},
+            "document_references": {},
+            "last_updated": datetime.now().isoformat()
+        }
     
     def _save_metadata(self):
         """Save metadata to R2 or local file."""
         self.metadata["last_updated"] = datetime.now().isoformat()
-        
-        # #region agent log - Validate metadata before saving
-        corrupted_ids = []
-        for doc_id, doc_meta in self.metadata.get("documents", {}).items():
-            if not isinstance(doc_meta, dict):
-                print(f"[DEBUG][J] CRITICAL: Metadata corruption detected! doc_id={doc_id} type={type(doc_meta).__name__}")
-                print(f"[DEBUG][J] Value: {str(doc_meta)[:200]}")
-                corrupted_ids.append(doc_id)
-        
-        for doc_id in corrupted_ids:
-            print(f"[DEBUG][J] Removing corrupted metadata entry for {doc_id}")
-            del self.metadata["documents"][doc_id]
-        # #endregion
         
         if self.use_r2 and self.r2:
             # Save to R2
@@ -256,27 +207,12 @@ class LocalOCRStorage:
     
     def get_document(self, doc_id: str) -> Optional[Dict]:
         """Get a document by ID from R2 or local storage."""
-        # #region agent log - Entry point
-        import traceback
-        caller = ''.join(traceback.format_stack()[-3:-2]) if len(traceback.format_stack()) > 2 else 'unknown'
-        print(f"[DEBUG][Q] GET_DOCUMENT_ENTRY doc_id={doc_id} caller={caller.strip()}")
-        # #endregion
         document = None
         
         # Try R2 first if enabled
         if self.use_r2 and self.r2:
             try:
-                # #region agent log
-                print(f"[DEBUG][Q] CALLING_R2_GET_DOCUMENT doc_id={doc_id}")
-                # #endregion
                 document = self.r2.get_document(doc_id)
-                # #region agent log
-                print(f"[DEBUG][Q] R2_RETURNED doc_id={doc_id} type={type(document).__name__ if document else 'None'} is_dict={isinstance(document, dict) if document else False}")
-                if document is not None:
-                    print(f"[DEBUG][G] R2_GET_DOCUMENT doc_id={doc_id} type={type(document).__name__}")
-                    if not isinstance(document, dict):
-                        print(f"[DEBUG][G] CRITICAL: R2 returned {type(document).__name__}, not dict! Preview: {str(document)[:500]}")
-                # #endregion
             except Exception as e:
                 print(f"⚠️  Error loading document {doc_id} from R2: {e}")
         
@@ -284,48 +220,21 @@ class LocalOCRStorage:
         if not document:
             doc_file = self.documents_dir / f"{doc_id}.json"
             if doc_file.exists():
-                # #region agent log
-                print(f"[DEBUG][Q] READING_LOCAL_FILE doc_id={doc_id}")
-                # #endregion
                 with open(doc_file, 'r') as f:
                     document = json.load(f)
-                # #region agent log
-                print(f"[DEBUG][Q] LOCAL_FILE_LOADED doc_id={doc_id} type={type(document).__name__} is_dict={isinstance(document, dict)}")
-                print(f"[DEBUG][G] LOCAL_GET_DOCUMENT doc_id={doc_id} type={type(document).__name__}")
-                if not isinstance(document, dict):
-                    print(f"[DEBUG][G] CRITICAL: Local file returned {type(document).__name__}, not dict!")
-                # #endregion
         
         if document:
-            # #region agent log - Before metadata access
-            print(f"[DEBUG][Q] BEFORE_METADATA_ACCESS doc_id={doc_id} doc_type={type(document).__name__} is_dict={isinstance(document, dict)}")
-            # #endregion
             # Add the document ID to the document object
             document['id'] = doc_id
             
             # Add metadata fields if available (but don't override document values)
             if doc_id in self.metadata["documents"]:
                 metadata = self.metadata["documents"][doc_id]
-                # #region agent log - Check metadata type
-                if not isinstance(metadata, dict):
-                    print(f"[DEBUG][O] CRITICAL: Metadata entry is {type(metadata).__name__}, not dict! doc_id={doc_id}")
-                    print(f"[DEBUG][O] Metadata value: {str(metadata)[:200]}")
-                    # Remove corrupted entry immediately to prevent further errors
-                    print(f"[DEBUG][O] Removing corrupted metadata entry...")
-                    del self.metadata["documents"][doc_id]
-                    # Save cleaned metadata (async, don't block)
-                    try:
-                        self._save_metadata()
-                    except Exception as save_err:
-                        print(f"[DEBUG][O] Error saving cleaned metadata: {save_err}")
-                    # Skip metadata merge - document will work without metadata fields
-                else:
-                    # Only use metadata values if document doesn't have them
-                    if 'page_count' not in document or document['page_count'] is None:
-                        document['page_count'] = metadata.get('page_count', 0)
-                    if 'people_count' not in document or document['people_count'] is None:
-                        document['people_count'] = metadata.get('people_count', 0)
-                # #endregion
+                # Only use metadata values if document doesn't have them
+                if 'page_count' not in document or document['page_count'] is None:
+                    document['page_count'] = metadata.get('page_count', 0)
+                if 'people_count' not in document or document['people_count'] is None:
+                    document['people_count'] = metadata.get('people_count', 0)
             
             # Ensure new fields exist for backwards compatibility
             if "reviews" not in document:
@@ -342,8 +251,6 @@ class LocalOCRStorage:
                 document["recipient_location"] = None
             if "status" not in document:
                 document["status"] = "new"
-            if "untranslated_markers" not in document:
-                document["untranslated_markers"] = []
             
             # Resolve all people names to their CURRENT canonical names
             # This ensures renamed references always display with updated names
@@ -357,9 +264,6 @@ class LocalOCRStorage:
                 document["people"] = resolved_people
             
             # Resolve sender and recipient to canonical names
-            # #region agent log - Before canonical name resolution
-            print(f"[DEBUG][Q] BEFORE_CANONICAL_RESOLUTION doc_id={doc_id} doc_type={type(document).__name__} is_dict={isinstance(document, dict)}")
-            # #endregion
             if document.get("sender"):
                 canonical_sender = self._resolve_to_canonical_name(document["sender"])
                 if canonical_sender:
@@ -370,15 +274,6 @@ class LocalOCRStorage:
                 if canonical_recipient:
                     document["recipient"] = canonical_recipient
             
-            # #region agent log - After all processing, before return
-            print(f"[DEBUG][Q] BEFORE_RETURN doc_id={doc_id} doc_type={type(document).__name__} is_dict={isinstance(document, dict)}")
-            if not isinstance(document, dict):
-                print(f"[DEBUG][P] CRITICAL: get_document returning {type(document).__name__}, not dict! doc_id={doc_id}")
-                print(f"[DEBUG][P] Value preview: {str(document)[:500]}")
-                import traceback
-                print(f"[DEBUG][P] Call stack:\n{traceback.format_stack()[-5:]}")
-                return None  # Return None instead of corrupted data
-            # #endregion
             return document
         
         # Document not found in R2 or local storage
@@ -389,66 +284,6 @@ class LocalOCRStorage:
             self._save_metadata()
         
         return None
-    
-    def save_document(self, doc_id: str, document: Dict) -> bool:
-        """Save a complete document to R2 and/or local storage.
-        
-        Args:
-            doc_id: Document ID
-            document: Complete document data to save
-            
-        Returns:
-            True if successful, False otherwise
-        """
-        # #region agent log
-        def _debug_log_storage(hyp, msg, data=None):
-            print(f"[DEBUG][{hyp}] {msg}: {json.dumps(data) if data else '{}'}")
-            try:
-                with open('/Users/gzentall/OCR-Translation-Pipeline/.cursor/debug.log', 'a') as _f:
-                    _f.write(json.dumps({'hypothesisId': hyp, 'location': 'local_storage.py:save_document', 'message': msg, 'data': data or {}, 'timestamp': __import__('time').time(), 'sessionId': 'debug-session'}) + '\n')
-            except: pass
-        _debug_log_storage('A', 'SAVE_DOC_ENTRY', {'doc_id': doc_id, 'use_r2': self.use_r2, 'has_r2': self.r2 is not None})
-        # #endregion
-        try:
-            # #region agent log - Validate document is a dict before saving
-            if not isinstance(document, dict):
-                print(f"[DEBUG][I] CRITICAL: Attempting to save non-dict document! doc_id={doc_id} type={type(document).__name__}")
-                _debug_log_storage('I', 'SAVE_NON_DICT', {'doc_id': doc_id, 'doc_type': type(document).__name__, 'preview': str(document)[:200]})
-                return False
-            print(f"[DEBUG][I] SAVE_DOCUMENT_TYPE_OK doc_id={doc_id} keys={list(document.keys())[:5]}")
-            # #endregion
-            
-            # Save to R2 if enabled
-            if self.use_r2 and self.r2:
-                try:
-                    # #region agent log
-                    _debug_log_storage('A', 'SAVING_TO_R2', {'doc_id': doc_id})
-                    # #endregion
-                    r2_result = self.r2.save_document(doc_id, document)
-                    # #region agent log
-                    _debug_log_storage('A', 'R2_SAVE_RESULT', {'doc_id': doc_id, 'r2_result': r2_result})
-                    # #endregion
-                except Exception as e:
-                    # #region agent log
-                    _debug_log_storage('A', 'R2_SAVE_ERROR', {'doc_id': doc_id, 'error': str(e), 'error_type': type(e).__name__})
-                    # #endregion
-                    print(f"⚠️  Error saving document {doc_id} to R2: {e}")
-            
-            # Always save locally as well (backup in R2 mode, primary in local mode)
-            doc_file = self.documents_dir / f"{doc_id}.json"
-            with open(doc_file, 'w') as f:
-                json.dump(document, f, indent=2)
-            
-            # #region agent log
-            _debug_log_storage('A', 'SAVE_DOC_SUCCESS', {'doc_id': doc_id})
-            # #endregion
-            return True
-        except Exception as e:
-            # #region agent log
-            _debug_log_storage('A', 'SAVE_DOC_ERROR', {'doc_id': doc_id, 'error': str(e), 'error_type': type(e).__name__})
-            # #endregion
-            print(f"Error saving document {doc_id}: {e}")
-            return False
     
     def update_document(self, doc_id: str, updates: Dict, regenerate_summary: bool = False) -> bool:
         """Update a document with new data in R2 or local storage."""
@@ -646,24 +481,9 @@ class LocalOCRStorage:
     
     def log_history(self, doc_id: str, username: str, action: str, details: str) -> bool:
         """Add a history entry to a document."""
-        # #region agent log - Entry point
-        print(f"[DEBUG][M] LOG_HISTORY_ENTRY doc_id={doc_id} doc_id_type={type(doc_id).__name__} username={username}")
-        # #endregion
         try:
-            # #region agent log - Before get_document call
-            print(f"[DEBUG][M] BEFORE_GET_DOCUMENT doc_id={doc_id}")
-            # #endregion
             doc = self.get_document(doc_id)
-            # #region agent log - After get_document call
-            print(f"[DEBUG][M] AFTER_GET_DOCUMENT doc_id={doc_id} doc_type={type(doc).__name__ if doc else 'None'} doc_is_dict={isinstance(doc, dict) if doc else False}")
-            if doc is not None and not isinstance(doc, dict):
-                print(f"[DEBUG][M] CRITICAL: log_history got {type(doc).__name__}, not dict! Preview: {str(doc)[:500]}")
-                import traceback
-                print(f"[DEBUG][M] CALL_STACK:\n{''.join(traceback.format_stack()[-8:])}")
-                return False
-            # #endregion
             if doc is None:
-                print(f"[DEBUG][M] DOC_IS_NONE doc_id={doc_id}")
                 return False
             
             # Format timestamp for display
@@ -671,12 +491,6 @@ class LocalOCRStorage:
             timestamp_display = now.strftime("%b %d, %Y")
             
             # Get document title for display
-            # #region agent log - Validate doc is still a dict before using .get()
-            if not isinstance(doc, dict):
-                print(f"[DEBUG][M] CRITICAL: doc became {type(doc).__name__} before doc.get()! doc_id={doc_id}")
-                print(f"[DEBUG][M] Value: {str(doc)[:200]}")
-                return False
-            # #endregion
             doc_title = doc.get("title", "").split(" - ")[0] if doc.get("title") else doc_id
             
             # Create formatted history entry
@@ -693,19 +507,13 @@ class LocalOCRStorage:
             history.append(history_entry)
             doc["history"] = history
             
-            # Save document to both R2 and local
-            # #region agent log
-            print(f"[DEBUG][M] LOG_HISTORY_SAVING doc_id={doc_id} doc_type={type(doc).__name__}")
-            # #endregion
-            self.save_document(doc_id, doc)
+            # Save document
+            doc_file = self.documents_dir / f"{doc_id}.json"
+            with open(doc_file, 'w') as f:
+                json.dump(doc, f, indent=2)
             
             return True
         except Exception as e:
-            # #region agent log
-            print(f"[DEBUG][M] LOG_HISTORY_ERROR doc_id={doc_id} error={str(e)} error_type={type(e).__name__}")
-            import traceback
-            print(f"[DEBUG][M] LOG_HISTORY_TRACEBACK:\n{traceback.format_exc()}")
-            # #endregion
             print(f"Error logging history for {doc_id}: {e}")
             return False
     
@@ -725,20 +533,8 @@ class LocalOCRStorage:
     # -----------------------------
     # Context Notes (Per-letter)
     # -----------------------------
-    def add_context_note(self, letter_id: str, username: str, note: str, 
-                         mentioned_user_ids: Optional[List[int]] = None,
-                         is_context: bool = False,
-                         avatar_url: Optional[str] = None) -> Optional[Dict]:
-        """Add a context note to a letter and return created note.
-        
-        Args:
-            letter_id: Document ID
-            username: Username of commenter
-            note: Comment text
-            mentioned_user_ids: Optional list of user IDs mentioned in the comment
-            is_context: If True, this comment provides context for LLM reprocessing
-            avatar_url: Optional URL to commenter's avatar image
-        """
+    def add_context_note(self, letter_id: str, username: str, note: str, mentioned_user_ids: List[int] = None, is_context: bool = False) -> Optional[Dict]:
+        """Add a context note to a letter and return created note."""
         try:
             # Ensure document exists
             if letter_id not in self.metadata["documents"]:
@@ -760,22 +556,17 @@ class LocalOCRStorage:
                 "username": username,
                 "note": note,
                 "createdAt": created_at,
-                "mentioned_users": mentioned_user_ids or [],  # Array of user IDs
-                "is_context": is_context,  # True if this comment provides context for LLM
-                "avatar_url": avatar_url  # URL to commenter's avatar image
+                "is_context": is_context
             }
+            
+            # Add mentioned users if provided
+            if mentioned_user_ids:
+                note_obj["mentioned_users"] = mentioned_user_ids
 
             context_list.append(note_obj)
             doc["context_notes"] = context_list
 
-            # Save updated document to R2 and/or local
-            if self.use_r2 and self.r2:
-                try:
-                    self.r2.save_document(letter_id, doc)
-                except Exception as e:
-                    print(f"⚠️  Error saving document {letter_id} to R2: {e}")
-            
-            # Always save locally as well (backup in R2 mode, primary in local mode)
+            # Persist back to document file
             doc_file = self.documents_dir / f"{letter_id}.json"
             with open(doc_file, 'w') as f:
                 json.dump(doc, f, indent=2)
@@ -828,14 +619,7 @@ class LocalOCRStorage:
             if updated_note is None:
                 return None
 
-            # Save updated document to R2 and/or local
-            if self.use_r2 and self.r2:
-                try:
-                    self.r2.save_document(letter_id, doc)
-                except Exception as e:
-                    print(f"⚠️  Error saving document {letter_id} to R2: {e}")
-            
-            # Always save locally as well (backup in R2 mode, primary in local mode)
+            # Persist changes
             doc_file = self.documents_dir / f"{letter_id}.json"
             with open(doc_file, 'w') as f:
                 json.dump(doc, f, indent=2)
@@ -864,15 +648,7 @@ class LocalOCRStorage:
                 return False
 
             doc["context_notes"] = filtered
-            
-            # Save updated document to R2 and/or local
-            if self.use_r2 and self.r2:
-                try:
-                    self.r2.save_document(letter_id, doc)
-                except Exception as e:
-                    print(f"⚠️  Error saving document {letter_id} to R2: {e}")
-            
-            # Always save locally as well (backup in R2 mode, primary in local mode)
+            # Persist changes
             doc_file = self.documents_dir / f"{letter_id}.json"
             with open(doc_file, 'w') as f:
                 json.dump(doc, f, indent=2)
@@ -884,111 +660,6 @@ class LocalOCRStorage:
         except Exception as e:
             print(f"Error deleting context note {context_id}: {e}")
             return False
-
-    # -----------------------------
-    # Processing Status Management
-    # -----------------------------
-    def set_processing_status(self, doc_id: str, status: str, error: str = None) -> bool:
-        """Set the processing status of a document.
-        
-        Args:
-            doc_id: Document ID
-            status: One of 'ready', 'processing', 'error'
-            error: Error message if status is 'error'
-            
-        Returns:
-            True if successful, False otherwise
-        """
-        try:
-            doc = self.get_document(doc_id)
-            if doc is None:
-                return False
-            
-            # #region agent log
-            if not isinstance(doc, dict):
-                print(f"[DEBUG][L] SET_STATUS_DOC_NOT_DICT doc_id={doc_id} doc_type={type(doc).__name__}")
-                return False
-            # #endregion
-            
-            doc["processing_status"] = status
-            doc["processing_error"] = error if status == "error" else None
-            if status == "processing":
-                doc["processing_started"] = datetime.now().isoformat()
-            elif status in ("ready", "error"):
-                doc["last_processed"] = datetime.now().isoformat()
-            
-            # Save the document
-            self.save_document(doc_id, doc)
-            return True
-        except Exception as e:
-            # #region agent log
-            print(f"[DEBUG][L] SET_STATUS_ERROR doc_id={doc_id} error={str(e)} error_type={type(e).__name__}")
-            # #endregion
-            print(f"Error setting processing status for {doc_id}: {e}")
-            return False
-    
-    def get_processing_status(self, doc_id: str) -> Dict:
-        """Get the processing status of a document.
-        
-        Returns:
-            Dict with 'status', 'error', 'last_processed' fields
-        """
-        try:
-            doc = self.get_document(doc_id)
-            if doc is None:
-                return {"status": "unknown", "error": "Document not found"}
-            
-            # #region agent log - Check document type
-            try:
-                doc_type = type(doc).__name__
-                print(f"[DEBUG][F] GET_PROCESSING_STATUS doc_id={doc_id} doc_type={doc_type}")
-                if not isinstance(doc, dict):
-                    print(f"[DEBUG][F] CRITICAL: doc is {doc_type}, not dict! Value preview: {str(doc)[:200]}")
-                    return {"status": "error", "error": f"Document corrupted: expected dict, got {doc_type}"}
-            except Exception as type_check_error:
-                print(f"[DEBUG][F] ERROR_CHECKING_TYPE doc_id={doc_id} error={str(type_check_error)}")
-                return {"status": "error", "error": f"Document type check failed: {str(type_check_error)}"}
-            # #endregion
-            
-            # Safe access with explicit type check
-            if not isinstance(doc, dict):
-                return {"status": "error", "error": f"Document corrupted: expected dict, got {type(doc).__name__}"}
-            
-            return {
-                "status": doc.get("processing_status", "ready"),
-                "error": doc.get("processing_error"),
-                "last_processed": doc.get("last_processed"),
-                "processing_started": doc.get("processing_started")
-            }
-        except AttributeError as e:
-            # #region agent log
-            print(f"[DEBUG][F] ATTRIBUTE_ERROR doc_id={doc_id} error={str(e)}")
-            # #endregion
-            print(f"Error getting processing status for {doc_id}: {e}")
-            return {"status": "error", "error": str(e)}
-        except Exception as e:
-            # #region agent log
-            print(f"[DEBUG][F] GENERAL_ERROR doc_id={doc_id} error={str(e)} error_type={type(e).__name__}")
-            # #endregion
-            print(f"Error getting processing status for {doc_id}: {e}")
-            return {"status": "error", "error": str(e)}
-    
-    def get_document_context_comments(self, doc_id: str) -> List[Dict]:
-        """Get all context comments (is_context=True) for a document.
-        
-        Returns:
-            List of context comments that can be used for LLM processing
-        """
-        try:
-            doc = self.get_document(doc_id)
-            if doc is None:
-                return []
-            
-            all_notes = doc.get("context_notes", [])
-            return [note for note in all_notes if note.get("is_context", False)]
-        except Exception as e:
-            print(f"Error getting context comments for {doc_id}: {e}")
-            return []
     
     def get_people(self) -> Dict:
         """Get all people with their metadata."""
@@ -1010,23 +681,20 @@ class LocalOCRStorage:
                         "source_language": doc_metadata.get("source_language", "unknown")
                     })
             
-            # Get the display name - prioritize explicit display_name field,
-            # then first alias with proper capitalization, then title-cased normalized name
+            # Get the properly-cased display name from aliases (first one that's not just lowercase)
+            # or fall back to capitalizing the normalized name
             aliases = person_data.get("aliases", [])
-            display_name = person_data.get("display_name")  # Check for explicit display name first
+            display_name = person_name  # Fallback to normalized name
             
-            if not display_name:
-                display_name = person_name  # Fallback to normalized name
-                
-                # Look for an alias with proper capitalization
-                for alias in aliases:
-                    if alias != person_name and alias != alias.lower():
-                        display_name = alias
-                        break
-                
-                # If no properly-cased alias found, try title-casing the normalized name
-                if display_name == person_name:
-                    display_name = person_name.title()
+            # Look for an alias with proper capitalization
+            for alias in aliases:
+                if alias != person_name and alias != alias.lower():
+                    display_name = alias
+                    break
+            
+            # If no properly-cased alias found, try title-casing the normalized name
+            if display_name == person_name:
+                display_name = person_name.title()
             
             people_list.append({
                 "name": display_name,  # Use display name instead of normalized name
@@ -1078,7 +746,7 @@ class LocalOCRStorage:
         """
         Resolve a person name (which might be old/outdated) to its current canonical name.
         Searches metadata['people'] to find the person by normalized name or alias,
-        and returns the display_name or first alias.
+        and returns the primary display name (first alias with proper casing).
         
         Args:
             name: The person name to resolve (could be old/outdated)
@@ -1094,13 +762,11 @@ class LocalOCRStorage:
         # First, check if it's a direct key
         if normalized in self.metadata["people"]:
             person_data = self.metadata["people"][normalized]
-            # Prefer display_name if set
-            if person_data.get("display_name"):
-                return person_data["display_name"]
-            # Otherwise return first alias
             aliases = person_data.get("aliases", [])
-            if aliases:
-                return aliases[0]
+            # Return the first alias with proper casing (primary canonical name)
+            for alias in aliases:
+                if alias != normalized and alias != alias.lower():
+                    return alias
             # Fallback to title case
             return name.title()
         
@@ -1109,12 +775,10 @@ class LocalOCRStorage:
             aliases = person_data.get("aliases", [])
             # Check if the name matches any alias (case-insensitive)
             if any(self.normalize_name(alias) == normalized for alias in aliases):
-                # Found it! Prefer display_name if set
-                if person_data.get("display_name"):
-                    return person_data["display_name"]
-                # Otherwise return first alias
-                if aliases:
-                    return aliases[0]
+                # Found it! Return the primary canonical name (first properly-cased alias)
+                for alias in aliases:
+                    if alias != key and alias != alias.lower():
+                        return alias
                 # Fallback to title case of the key
                 return key.title()
         
@@ -1151,9 +815,8 @@ class LocalOCRStorage:
             if name not in aliases:
                 aliases.insert(0, name)
             
-            # Create person data with explicit display_name
+            # Create person data
             person_data = {
-                "display_name": name,  # Canonical display name
                 "aliases": aliases,
                 "first_mentioned": datetime.now().isoformat(),
                 "documents": [],
@@ -1172,10 +835,7 @@ class LocalOCRStorage:
             return False
     
     def merge_person(self, source_name: str, target_name: str) -> bool:
-        """Merge a source person into a target person.
-        
-        The target_name becomes the canonical/display name after merge.
-        """
+        """Merge a source person into a target person."""
         try:
             source_normalized = self.normalize_name(source_name)
             target_normalized = self.normalize_name(target_name)
@@ -1190,44 +850,13 @@ class LocalOCRStorage:
             source_data = self.metadata["people"][source_normalized]
             target_data = self.metadata["people"][target_normalized]
             
-            # Get the display name for the target (this is the survivor/canonical name)
-            target_display_name = target_data.get("display_name") or target_name
-            
-            # Merge aliases - target aliases first, then source aliases
+            # Merge aliases
             source_aliases = source_data.get("aliases", [])
             target_aliases = target_data.get("aliases", [])
             
-            # Combine aliases: target first (preserving order), then source
-            # Also add source_name as an alias if not already present
-            combined_aliases = []
-            seen = set()
-            
-            # Add target display name first
-            if target_display_name and target_display_name.lower() not in seen:
-                combined_aliases.append(target_display_name)
-                seen.add(target_display_name.lower())
-            
-            # Then target aliases
-            for alias in target_aliases:
-                if alias.lower() not in seen:
-                    combined_aliases.append(alias)
-                    seen.add(alias.lower())
-            
-            # Then source name as alias
-            if source_name.lower() not in seen:
-                combined_aliases.append(source_name)
-                seen.add(source_name.lower())
-            
-            # Then source aliases
-            for alias in source_aliases:
-                if alias.lower() not in seen:
-                    combined_aliases.append(alias)
-                    seen.add(alias.lower())
-            
+            # Combine aliases and remove duplicates
+            combined_aliases = list(set(target_aliases + source_aliases))
             target_data["aliases"] = combined_aliases
-            
-            # Explicitly set the display name to the target name (the survivor)
-            target_data["display_name"] = target_display_name
             
             # Merge documents
             source_docs = source_data.get("documents", [])
@@ -1266,24 +895,9 @@ class LocalOCRStorage:
                         
                         doc_data["people"] = updated_people
                         
-                        # Also update sender/recipient if they match source
-                        if doc_data.get("sender"):
-                            if self.normalize_name(doc_data["sender"]) == source_normalized:
-                                doc_data["sender"] = target_display_name
-                        if doc_data.get("recipient"):
-                            if self.normalize_name(doc_data["recipient"]) == source_normalized:
-                                doc_data["recipient"] = target_display_name
-                        
                         # Save updated document
                         with open(doc_file, 'w') as f:
                             json.dump(doc_data, f, indent=2)
-                        
-                        # Also update in R2 if enabled
-                        if self.use_r2 and self.r2:
-                            try:
-                                self.r2.save_document(doc_id, doc_data)
-                            except Exception as e:
-                                print(f"Warning: Failed to update {doc_id} in R2: {e}")
             
             # Remove the source person
             del self.metadata["people"][source_normalized]
@@ -1446,25 +1060,22 @@ class LocalOCRStorage:
                 
                 # KEEP all existing aliases (for backward compatibility with old document references)
                 # But ensure new name is FIRST (primary display name)
-                updated_aliases = []
+                new_aliases = []
                 
                 # Add new canonical name as FIRST alias (primary)
                 if new_name not in current_aliases:
-                    updated_aliases.append(new_name)
+                    new_aliases.append(new_name)
                 
                 # Keep all existing aliases that aren't the new name
                 for alias in current_aliases:
                     if alias != new_name:
-                        updated_aliases.append(alias)
+                        new_aliases.append(alias)
                 
                 # Also add normalized version if not already present
-                if new_normalized not in updated_aliases and new_normalized != new_name:
-                    updated_aliases.append(new_normalized)
+                if new_normalized not in new_aliases and new_normalized != new_name:
+                    new_aliases.append(new_normalized)
                 
-                person_data["aliases"] = updated_aliases
-                
-                # Set explicit display_name to the new canonical name
-                person_data["display_name"] = new_name
+                person_data["aliases"] = new_aliases
                 
                 # Update all documents that reference this person
                 for doc_id in person_data.get("documents", []):
@@ -1492,29 +1103,11 @@ class LocalOCRStorage:
                             
                             doc_data["people"] = updated_people
                             
-                            # Also update sender/recipient if they match old name
-                            if doc_data.get("sender"):
-                                if self.normalize_name(doc_data["sender"]) == old_normalized:
-                                    doc_data["sender"] = new_name
-                            if doc_data.get("recipient"):
-                                if self.normalize_name(doc_data["recipient"]) == old_normalized:
-                                    doc_data["recipient"] = new_name
-                            
                             # Save updated document
                             with open(doc_file, 'w') as f:
                                 json.dump(doc_data, f, indent=2)
-                            
-                            # Also update in R2 if enabled
-                            if self.use_r2 and self.r2:
-                                try:
-                                    self.r2.save_document(doc_id, doc_data)
-                                except Exception as e:
-                                    print(f"Warning: Failed to update {doc_id} in R2: {e}")
             else:
                 # Name normalized to same key, but display name might have changed
-                # Set explicit display_name
-                person_data["display_name"] = new_name
-                
                 # Update the primary display name in aliases
                 if new_name != old_name:
                     current_aliases = person_data.get("aliases", [])
@@ -1550,23 +1143,8 @@ class LocalOCRStorage:
                                 
                                 doc_data["people"] = updated_people
                                 
-                                # Also update sender/recipient if they match old name
-                                if doc_data.get("sender"):
-                                    if doc_data["sender"] == old_name or self.normalize_name(doc_data["sender"]) == old_normalized:
-                                        doc_data["sender"] = new_name
-                                if doc_data.get("recipient"):
-                                    if doc_data["recipient"] == old_name or self.normalize_name(doc_data["recipient"]) == old_normalized:
-                                        doc_data["recipient"] = new_name
-                                
                                 with open(doc_file, 'w') as f:
                                     json.dump(doc_data, f, indent=2)
-                                
-                                # Also update in R2 if enabled
-                                if self.use_r2 and self.r2:
-                                    try:
-                                        self.r2.save_document(doc_id, doc_data)
-                                    except Exception as e:
-                                        print(f"Warning: Failed to update {doc_id} in R2: {e}")
             
             # Update context if provided
             if new_context is not None:
