@@ -2696,7 +2696,8 @@ def update_document_comment(doc_id, comment_id):
 def delete_document_comment(doc_id, comment_id):
     """Delete a comment."""
     try:
-        success = local_storage.delete_context_note(comment_id)
+        # Pass doc_id to help with lookup if metadata index is missing
+        success = local_storage.delete_context_note(comment_id, doc_id=doc_id)
         
         if success:
             return jsonify({
@@ -2709,6 +2710,9 @@ def delete_document_comment(doc_id, comment_id):
                 'error': 'Comment not found or deletion failed'
             }), 404
     except Exception as e:
+        import traceback
+        print(f"Error deleting comment {comment_id} from document {doc_id}: {e}")
+        print(traceback.format_exc())
         return jsonify({
             'success': False,
             'error': str(e)

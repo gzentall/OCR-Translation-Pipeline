@@ -646,21 +646,61 @@ class LocalOCRStorage:
             print(f"Error updating context note {context_id}: {e}")
             return None
 
-    def delete_context_note(self, context_id: str) -> bool:
-        """Delete a context note by ID."""
+    def delete_context_note(self, context_id: str, doc_id: str = None) -> bool:
+        """
+        Delete a context note by ID.
+        
+        Args:
+            context_id: The comment/context note ID to delete
+            doc_id: Optional document ID to search in (if metadata lookup fails)
+        """
         try:
+            letter_id = None
+            
+            # Try to find letter_id from metadata index first
             ctx_meta = self.metadata.get("context_notes", {}).get(context_id)
-            if not ctx_meta:
+            if ctx_meta:
+                letter_id = ctx_meta["letterId"]
+            
+            # If not found in metadata and doc_id provided, use doc_id
+            if not letter_id and doc_id:
+                letter_id = doc_id
+            
+            # If still no letter_id, search all documents (fallback)
+            if not letter_id:
+                print(f"⚠️  Comment {context_id} not found in metadata index, searching all documents...")
+                # Search through all documents to find the comment
+                docs_dir = self.documents_dir
+                if docs_dir.exists():
+                    for doc_file in docs_dir.glob("*.json"):
+                        try:
+                            with open(doc_file, 'r') as f:
+                                doc = json.load(f)
+                            notes = doc.get("context_notes", [])
+                            for note in notes:
+                                if note.get("id") == context_id:
+                                    letter_id = doc_file.stem
+                                    print(f"✅ Found comment {context_id} in document {letter_id}")
+                                    break
+                            if letter_id:
+                                break
+                        except Exception as e:
+                            print(f"Error reading {doc_file}: {e}")
+                            continue
+            
+            if not letter_id:
+                print(f"❌ Comment {context_id} not found in any document")
                 return False
-            letter_id = ctx_meta["letterId"]
 
             doc = self.get_document(letter_id)
             if doc is None:
+                print(f"❌ Document {letter_id} not found")
                 return False
 
             notes = doc.get("context_notes", [])
             filtered = [n for n in notes if n.get("id") != context_id]
             if len(filtered) == len(notes):
+                print(f"❌ Comment {context_id} not found in document {letter_id}")
                 return False
 
             doc["context_notes"] = filtered
@@ -669,6 +709,7 @@ class LocalOCRStorage:
             if self.use_r2 and self.r2:
                 try:
                     self.r2.save_document(letter_id, doc)
+                    print(f"✅ Saved document {letter_id} to R2 after comment deletion")
                 except Exception as e:
                     print(f"⚠️  Error saving document {letter_id} to R2 after comment deletion: {e}")
                     # Continue with local save as fallback
@@ -678,12 +719,17 @@ class LocalOCRStorage:
             with open(doc_file, 'w') as f:
                 json.dump(doc, f, indent=2)
 
-            # Remove from global index
-            del self.metadata["context_notes"][context_id]
-            self._save_metadata()
+            # Remove from global index if it exists
+            if context_id in self.metadata.get("context_notes", {}):
+                del self.metadata["context_notes"][context_id]
+                self._save_metadata()
+            
+            print(f"✅ Successfully deleted comment {context_id} from document {letter_id}")
             return True
         except Exception as e:
-            print(f"Error deleting context note {context_id}: {e}")
+            print(f"❌ Error deleting context note {context_id}: {e}")
+            import traceback
+            print(traceback.format_exc())
             return False
     
     def get_people(self) -> Dict:

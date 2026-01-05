@@ -15029,15 +15029,48 @@
         async function deleteComment(commentId) {
             if (!confirm('Are you sure you want to delete this comment?')) return;
             
+            console.log('🗑️ Deleting comment:', commentId, 'from document:', window.currentDocumentId);
+            
             try {
-                const res = await fetch(`/documents/${window.currentDocumentId}/comments/${commentId}`, {
+                // URL encode the comment ID to handle special characters
+                const encodedCommentId = encodeURIComponent(commentId);
+                const url = `/documents/${window.currentDocumentId}/comments/${encodedCommentId}`;
+                console.log('DELETE request URL:', url);
+                
+                const res = await fetch(url, {
                     method: 'DELETE',
                     credentials: 'same-origin'
                 });
                 
+                console.log('Delete response status:', res.status);
+                
+                // Check for 404 or other errors before parsing JSON
+                if (res.status === 404) {
+                    const errorText = await res.text();
+                    console.error('404 Error response:', errorText);
+                    showError('Comment not found. It may have already been deleted.');
+                    // Still reload comments to refresh the UI
+                    await loadComments();
+                    return;
+                }
+                
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    console.error('Error response:', errorText);
+                    try {
+                        const errorData = JSON.parse(errorText);
+                        showError(errorData.error || `Failed to delete comment (${res.status})`);
+                    } catch {
+                        showError(`Failed to delete comment (${res.status}): ${errorText}`);
+                    }
+                    return;
+                }
+                
                 const data = await res.json();
+                console.log('Delete response data:', data);
                 
                 if (data.success) {
+                    console.log('✅ Comment deleted successfully, reloading comments...');
                     await loadComments(); // Reload comments
                     
                     // Show reprocess dialog if a context comment was deleted
@@ -15049,7 +15082,7 @@
                 }
                 
             } catch (error) {
-                console.error('Error deleting comment:', error);
+                console.error('❌ Error deleting comment:', error);
                 showError('Error deleting comment: ' + error.message);
             }
         }
