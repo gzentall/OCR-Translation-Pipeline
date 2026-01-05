@@ -566,7 +566,15 @@ class LocalOCRStorage:
             context_list.append(note_obj)
             doc["context_notes"] = context_list
 
-            # Persist back to document file
+            # Save to R2 if enabled
+            if self.use_r2 and self.r2:
+                try:
+                    self.r2.save_document(letter_id, doc)
+                except Exception as e:
+                    print(f"⚠️  Error saving document {letter_id} to R2 after comment addition: {e}")
+                    # Continue with local save as fallback
+            
+            # Always save locally as well (backup in R2 mode, primary in local mode)
             doc_file = self.documents_dir / f"{letter_id}.json"
             with open(doc_file, 'w') as f:
                 json.dump(doc, f, indent=2)
@@ -619,7 +627,15 @@ class LocalOCRStorage:
             if updated_note is None:
                 return None
 
-            # Persist changes
+            # Save to R2 if enabled
+            if self.use_r2 and self.r2:
+                try:
+                    self.r2.save_document(letter_id, doc)
+                except Exception as e:
+                    print(f"⚠️  Error saving document {letter_id} to R2 after comment update: {e}")
+                    # Continue with local save as fallback
+            
+            # Always save locally as well (backup in R2 mode, primary in local mode)
             doc_file = self.documents_dir / f"{letter_id}.json"
             with open(doc_file, 'w') as f:
                 json.dump(doc, f, indent=2)
@@ -648,7 +664,16 @@ class LocalOCRStorage:
                 return False
 
             doc["context_notes"] = filtered
-            # Persist changes
+            
+            # Save to R2 if enabled
+            if self.use_r2 and self.r2:
+                try:
+                    self.r2.save_document(letter_id, doc)
+                except Exception as e:
+                    print(f"⚠️  Error saving document {letter_id} to R2 after comment deletion: {e}")
+                    # Continue with local save as fallback
+            
+            # Always save locally as well (backup in R2 mode, primary in local mode)
             doc_file = self.documents_dir / f"{letter_id}.json"
             with open(doc_file, 'w') as f:
                 json.dump(doc, f, indent=2)
